@@ -27,11 +27,14 @@
     <link rel="stylesheet" href="{{asset "built/home.css"}}">
     {{/is}}
     {{/if}}
-    {{! Webmention receiving endpoint. {{ghost_head}} emits Ghost's own
+    {{!-- Webmention receiving endpoint. {{ghost_head}} emits Ghost's own
         (/webmentions/receive/), but Ghost exposes received mentions on the
         Admin API only, so a theme cannot render them - webmentions.js reads
         webmention.io instead. Declared before {{ghost_head}} on purpose: the
-        Webmention spec resolves to the first <link> in document order. }}
+        Webmention spec resolves to the first <link> in document order.
+
+        Long comment form: {{! }} ends at the first }}, so the {{ghost_head}}
+        above would have closed it early and leaked the rest into the page. --}}
     <link rel="webmention" href="https://webmention.io/criptonautas.co/webmention">
     {{! IndieAuth identity for signing in to webmention.io. A personal profile,
         not the org: IndieLogin authenticates a GitHub *user* and compares that
