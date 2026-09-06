@@ -27,6 +27,12 @@
     <link rel="stylesheet" href="{{asset "built/home.css"}}">
     {{/is}}
     {{/if}}
+    {{! Webmention receiving endpoint. {{ghost_head}} emits Ghost's own
+        (/webmentions/receive/), but Ghost exposes received mentions on the
+        Admin API only, so a theme cannot render them - webmentions.js reads
+        webmention.io instead. Declared before {{ghost_head}} on purpose: the
+        Webmention spec resolves to the first <link> in document order. }}
+    <link rel="webmention" href="https://webmention.io/criptonautas.co/webmention">
     {{! Portal is not used on this site. Excluding it stops Ghost injecting
         the members script; the exclude list is Ghost's supported switch. }}
     {{ghost_head exclude="portal"}}
@@ -114,8 +120,10 @@
             {{navigation type="secondary"}}
         </nav>
         <div class="it-foot-social">
+            {{! rel="me" is the IndieAuth identity link webmention.io signs in
+                with. Needs the GitHub profile to link back to this site. }}
             <a href="https://github.com/somos-criptonautas/" class="github" title="{{t "Github"}}" target="_blank"
-                rel="noopener" aria-label="{{t "Github"}}">{{> "icons/github"}}</a>
+                rel="me noopener" aria-label="{{t "Github"}}">{{> "icons/github"}}</a>
             <a href="{{@site.url}}/rss/" class="rss" title="{{t "RSS"}}" target="_blank" rel="noopener"
                 aria-label="{{t "RSS"}}">{{> "icons/rss"}}</a>
         </div>

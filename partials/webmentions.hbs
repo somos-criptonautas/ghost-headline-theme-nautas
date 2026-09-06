@@ -1,115 +1,18 @@
-<link rel="webmention" href="https://brid.gy/publish/webmention">
+{{!-- Mentions received via webmention.io, rendered by assets/js/webmentions.js.
 
-<style>
-    /* Container */
-    .wm-container {
-        background: var(--color-four);
-        border-radius: var(--border-radius);
-        box-shadow: 0 4px 12px var(--opacity-four);
-        padding: 2.5rem;
-        margin: 4rem 0 6rem;
-        /* Reverted margin-top to original */
-    }
+    The endpoint <link rel="webmention"> lives in default.hbs <head>, where
+    senders can discover it - it was here in the body before, pointing at
+    Bridgy's *publish* endpoint, which receives nothing.
 
-    /* Header */
-    .wm-header {
-        font-family: var(--font-family-one);
-        font-size: 2.8rem;
-        font-weight: var(--font-weight-one-bold);
-        color: var(--color-font-one);
-        margin-bottom: 2rem;
-    }
+    No <script> tag here: webmentions.js is bundled into main.min.js by the
+    assets/js/*.js glob in gulpfile.js. It was also loaded twice more (a
+    hardcoded /assets/js/ path here and an {{asset}} tag in site-scripts), so
+    three WebmentionHandlers each fetched and each overwrote this container.
 
-    /* Likes and Retweets Section */
-    .wm-avatar-grid {
-        display: flex;
-        align-items: center;
-        padding-bottom: 2rem;
-        margin-bottom: 2rem;
-        border-bottom: var(--border) var(--color-border-one);
-    }
-
-    .wm-avatar-grid .wm-avatar-link {
-        width: 40px;
-        height: 40px;
-        margin-right: -10px;
-        position: relative;
-        z-index: 1;
-    }
-
-    .wm-avatar-grid .wm-avatar-img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        border: 2px solid var(--color-four);
-        object-fit: cover;
-    }
-
-    .wm-reactions-count {
-        font-size: 1.6rem;
-        color: var(--color-font-one);
-        margin-left: 1.5rem;
-    }
-
-    /* Comments Section */
-    .wm-mention-item {
-        display: grid;
-        grid-template-columns: 40px 1fr;
-        gap: 15px;
-        padding: 20px 0;
-        border-bottom: var(--border) var(--color-border-one);
-    }
-
-    .wm-mention-item:last-child {
-        border-bottom: none;
-    }
-
-    /* Author Image */
-    .wm-author-img {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    /* Content Container */
-    .wm-mention-content-wrapper {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    /* Author Name */
-    .wm-author-name {
-        font-size: 1.6rem;
-        font-weight: var(--font-weight-three-bold);
-        color: var(--color-font-one);
-        text-decoration: underline;
-    }
-
-    /* Content */
-    .wm-mention-content {
-        font-size: 1.6rem;
-        color: var(--color-font-one);
-        line-height: 1.5;
-    }
-
-    /* Source and Date Line */
-    .wm-mention-source-line {
-        font-size: 1.6rem;
-        color: var(--color-font-two);
-    }
-
-    .wm-mention-source {
-        color: var(--ghost-accent-color);
-        text-decoration: underline;
-    }
-
-    .wm-mention-metadata {
-        font-size: 1.6rem;
-    }
-</style>
-<div id="webmentions"><small class="global-subtitle-title"><a
-            href="https://janmonschke.com/adding-webmentions-to-your-static-blog/"
-            rel="noopener noreferrer">mentions</a></small></div>
-<script src="/assets/js/webmentions.js" async></script>
+    Styles are in assets/css/screen.css. --}}
+<div id="webmentions">
+    <small class="global-subtitle-title">
+        <a href="https://janmonschke.com/adding-webmentions-to-your-static-blog/" target="_blank"
+            rel="noopener noreferrer">mentions</a>
+    </small>
+</div>

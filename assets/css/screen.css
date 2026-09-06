@@ -4939,3 +4939,118 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
   height: 1px;
   background-color: transparent;
 }
+/* --------------------------------------------------------------------------
+Webmentions (partials/webmentions.hbs, rendered by assets/js/webmentions.js)
+
+The markup used to carry its own <style> block written against a different
+theme's tokens - --color-four, --font-family-one, --color-font-one,
+--color-border-one, --color-font-two, --opacity-four and the two
+--font-weight-*-bold. None of them exist here, so every rule that referenced
+one was dropped and the card rendered unstyled.
+-------------------------------------------------------------------------- */
+.wm-container {
+  padding: 2.5rem;
+  margin: 4rem 0 6rem;
+  background: var(--color-bg-alt);
+  border-radius: var(--border-radius);
+}
+
+.wm-header {
+  margin-bottom: 2rem;
+  font-family: var(--gh-font-heading);
+  font-size: 2.4rem;
+  font-weight: var(--font-bold);
+  color: var(--color-base);
+}
+
+/* Likes and reposts */
+.wm-avatar-grid {
+  display: flex;
+  align-items: center;
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.wm-avatar-grid .wm-avatar-link {
+  position: relative;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  margin-right: -10px;
+  opacity: 0.78;
+  transition: opacity 0.2s var(--animation-base);
+}
+
+.wm-avatar-grid .wm-avatar-link:hover {
+  opacity: 1;
+}
+
+.wm-avatar-grid .wm-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 2px solid var(--color-bg-alt);
+  border-radius: 50%;
+}
+
+.wm-reactions-count {
+  margin-left: 1.5rem;
+  font-size: 1.5rem;
+  color: var(--color-base);
+  opacity: 0.63;
+}
+
+/* Replies and mentions */
+.wm-mention-item {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 15px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.wm-mention-item:last-child {
+  border-bottom: none;
+}
+
+.wm-author-img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.wm-mention-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wm-author-name {
+  font-size: 1.5rem;
+  font-weight: var(--font-bold);
+  color: var(--color-base);
+}
+
+.wm-mention-content {
+  font-size: 1.5rem;
+  line-height: 1.5;
+  color: var(--color-base);
+}
+
+.wm-mention-source-line,
+.wm-mention-metadata {
+  font-size: 1.4rem;
+  color: var(--color-base);
+  opacity: 0.63;
+}
+
+.wm-mention-source {
+  color: var(--ghost-accent-color);
+}
+
+.wm-loading {
+  font-size: 1.5rem;
+  opacity: 0.63;
+}
