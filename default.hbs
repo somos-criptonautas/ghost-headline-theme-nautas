@@ -33,6 +33,12 @@
         webmention.io instead. Declared before {{ghost_head}} on purpose: the
         Webmention spec resolves to the first <link> in document order. }}
     <link rel="webmention" href="https://webmention.io/criptonautas.co/webmention">
+    {{! IndieAuth identity for signing in to webmention.io. A personal profile,
+        not the org: IndieLogin authenticates a GitHub *user* and compares that
+        user's profile URL against this one, and an org can neither be
+        authenticated as nor carry a link back. That profile's website field
+        must be this site for the pair to verify. }}
+    <link rel="me" href="https://github.com/satonotdead">
     {{! Portal is not used on this site. Excluding it stops Ghost injecting
         the members script; the exclude list is Ghost's supported switch. }}
     {{ghost_head exclude="portal"}}
@@ -120,10 +126,8 @@
             {{navigation type="secondary"}}
         </nav>
         <div class="it-foot-social">
-            {{! rel="me" is the IndieAuth identity link webmention.io signs in
-                with. Needs the GitHub profile to link back to this site. }}
             <a href="https://github.com/somos-criptonautas/" class="github" title="{{t "Github"}}" target="_blank"
-                rel="me noopener" aria-label="{{t "Github"}}">{{> "icons/github"}}</a>
+                rel="noopener" aria-label="{{t "Github"}}">{{> "icons/github"}}</a>
             <a href="{{@site.url}}/rss/" class="rss" title="{{t "RSS"}}" target="_blank" rel="noopener"
                 aria-label="{{t "RSS"}}">{{> "icons/rss"}}</a>
         </div>
