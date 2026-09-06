@@ -16,20 +16,25 @@
  */
 (function () {
     var DISCOURSE_ORIGIN = 'https://comunidad.criptonautas.co';
+    var embedWindow = null;
 
     function notifyEmbed() {
-        var iframe = document.getElementById('discourse-embed-frame');
-        if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage(
-                {theme: document.documentElement.getAttribute('data-theme')},
-                DISCOURSE_ORIGIN
-            );
+        // Before the handshake the frame is still about:blank (same origin as
+        // us), and posting to it with a foreign target origin throws. So this
+        // stays a no-op until the embed has identified itself.
+        if (!embedWindow) {
+            return;
         }
+        embedWindow.postMessage(
+            {theme: document.documentElement.getAttribute('data-theme')},
+            DISCOURSE_ORIGIN
+        );
     }
 
-    // The iframe announces itself when ready - it cannot be messaged before that.
     window.addEventListener('message', function (event) {
         if (event.origin === DISCOURSE_ORIGIN && event.data === 'discourse-embed-ready') {
+            // Held for later toggles - the handshake is not repeated.
+            embedWindow = event.source;
             notifyEmbed();
         }
     });
@@ -39,9 +44,4 @@
         attributes: true,
         attributeFilter: ['data-theme']
     });
-
-    // main.min.js runs at the end of <body>, so the embed may already have sent
-    // its ready message by now and it is not repeated. Harmless if the iframe
-    // is absent or not listening yet.
-    notifyEmbed();
 })();
