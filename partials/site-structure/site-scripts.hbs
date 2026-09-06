@@ -121,9 +121,8 @@
     commonSearches: ['cómo empezar', 'cómo usar Monero', 'hacer trading'] // can also be empty
   };
 </script>
-{{! Loaded on its own, not bundled: it is a third-party build that arrives
-    already minified, and it reads __MP_SEARCH_CONFIG__ above. }}
-<script defer src="{{asset "js/typesense-search.min.js"}}"></script>
+{{! The search UI itself is loaded outside the theme; only its config lives
+    here. }}
 <script defer async data-domain="criptonautas.co"
   src="https://stats.criptonautas.co/js/plausible.outbound-links.js"></script>
 <script>window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>

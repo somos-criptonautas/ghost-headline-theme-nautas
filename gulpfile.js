@@ -105,15 +105,7 @@ function js(done) {
             // theme.js is loaded on its own in <head> before first paint;
             // bundling it too would register the toggle handler twice and
             // cancel every click.
-            //
-            // typesense-search.min.js is a third-party build, already minified
-            // and shipped with its own sourcemap comment; it has its own
-            // <script> tag in site-scripts.hbs.
-            src([
-                'assets/js/*.js',
-                '!assets/js/theme.js',
-                '!assets/js/typesense-search.min.js',
-            ], {sourcemaps: true}),
+            src(['assets/js/*.js', '!assets/js/theme.js'], {sourcemaps: true}),
         ], {sourcemaps: true}),
         concat('main.min.js'),
         uglify(),
