@@ -13,19 +13,14 @@
   --content-font-size: 1.6rem;
 }
 
-/* Posts put .gh-author / post-meta between the header and the body, so the
-   shared theme's 4rem top margin is doubled there and gets zeroed. */
 .gh-content {
   margin-top: 0;
 }
 
-/* Pages have nothing between the header and the body, so zeroing it ran the
-   first paragraph straight into the title. Put the shared spacing back. */
 .page-template .gh-content.gh-canvas {
   margin-top: 4rem;
 }
 
-/* Subtitle sits directly under the cover title. */
 .gh-cover-content .gh-article-excerpt {
   margin-top: 1.2rem;
 }
@@ -636,9 +631,9 @@ gh-author-name-list {
   color: var(--color-link);
 }
 
-@media and (max-width: 991px) {
+@media (max-width: 991px) {
   .gh-cover-title {
-    font-size: 3.5rem;
+    font-size: 4rem;
   }
 }
 
@@ -4846,6 +4841,8 @@ li.nav-coaching a {
 
 .gh-burger::before,
 .gh-burger::after {
+  content: "";
+  position: absolute;
   left: 50%;
   top: 50%;
   bottom: auto;
@@ -4880,10 +4877,16 @@ li.nav-coaching a {
 }
 
 .is-head-open .gh-burger::before {
+  top: 50%;
+  bottom: auto;
+  left: 50%;
   transform: translate(-50%, -50%) rotate(45deg);
 }
 
 .is-head-open .gh-burger::after {
+  top: 50%;
+  bottom: auto;
+  left: 50%;
   transform: translate(-50%, -50%) rotate(-45deg);
 }
 
@@ -4939,6 +4942,7 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
   height: 1px;
   background-color: transparent;
 }
+
 /* --------------------------------------------------------------------------
 Webmentions (partials/webmentions.hbs, rendered by assets/js/webmentions.js)
 
