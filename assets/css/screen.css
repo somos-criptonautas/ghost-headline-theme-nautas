@@ -1739,8 +1739,11 @@ a.toc-link {
     background-color: var(--color-border);
     color: var(--color-bg);
     padding: 3rem 3.33rem;
-    max-width: 90%;
-    margin: 7rem auto !important;
+    width: 100%;
+    /* fill the content column */
+    max-width: 100%;
+    /* keep vertical spacing, drop horizontal auto-centering */
+    margin: 4rem 0 !important;
   }
 
   a.toc-link {
@@ -2719,14 +2722,15 @@ body,
   width: 98vw;
 }
 
-.pagination-section {
-  text-align: center;
-  padding-top: 3.33rem;
+/* Homepage posts: two per row on desktop instead of one full-width row. */
+@media screen and (min-width: 992px) {
+  .home-template .gh-topic-grid > .gh-topic-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-.pagination-section .btn {
-  margin: auto;
-}
+/* No visible "Load more" control anymore - infinite scroll reads the next page
+   from <link rel="next"> in the document head. */
 
 .gh-card {
   word-break: unset;
@@ -3146,6 +3150,11 @@ display: unset !important;
   .gh-full-content {
     gap: var(--toc-gap);
     align-items: flex-start;
+    /* The 1500px .gh-inner stops being centred when the window is narrower
+       (devtools docked, split screen) and the sticky TOC then hugged the
+       viewport edge. This keeps the sidebar and the article off the edge
+       together. 1.33rem matches .gh-outer's indent. */
+    padding-inline: 1.33rem;
   }
 
   .gh-sidebar {
@@ -4922,6 +4931,12 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
 
 .comments-wrap {
   border-top: 1px solid var(--color-border);
+}
+
+/* The Discourse embed already announces itself; drop the "Member discussion"
+   label rather than removing the markup from three templates. */
+.comments-wrap .global-subtitle-title {
+  display: none;
 }
 
 .account-signout-wrap {

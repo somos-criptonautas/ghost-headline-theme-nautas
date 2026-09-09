@@ -9,13 +9,6 @@
 
         <div class="gh-topic gh-topic-grid gh-topic-grid-item">
             <div class="gh-topic-content gh-feed">
-                {{#match pagination.page 2}}
-                    {{#get "posts" include="authors" limit=@config.posts_per_page as |recent|}}
-                        {{#foreach recent}}
-                            {{> "loop-grid"}}
-                        {{/foreach}}
-                    {{/get}}
-                {{/match}}
                 {{#foreach posts}}
                     {{> "loop-grid" has_large_post=false}}
                 {{/foreach}}
