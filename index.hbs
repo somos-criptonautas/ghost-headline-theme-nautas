@@ -13,8 +13,15 @@
                     {{> "loop-grid" has_large_post=false}}
                 {{/foreach}}
             </div>
-        </div>
 
+            {{!-- Without this, a reader with no JS reaches /page/2 and has no
+                way to page 3 - infinite scroll was the only path onward. Same
+                hidden-when-scripting treatment as home.hbs. --}}
+            {{#if pagination.next}}
+            <footer class="gh-topic-footer">
+                <a class="gh-topic-link gh-loadmore" href="{{@site.url}}/page/{{pagination.next}}/">{{t "Show more"}} {{> "icons/arrow"}}</a>
+            </footer>
+            {{/if}}
         </div>
 
     </div>

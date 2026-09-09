@@ -5073,3 +5073,10 @@ one was dropped and the card rendered unstyled.
   font-size: 1.5rem;
   opacity: 0.63;
 }
+/* Infinite scroll (shared theme assets, pagination(true) in assets/js/main.js)
+   appends the next page in place, so the "Show more" links in home.hbs and
+   index.hbs are a no-JS fallback only. html.js is set by theme.js in <head>
+   before first paint. */
+html.js .gh-loadmore {
+  display: none;
+}

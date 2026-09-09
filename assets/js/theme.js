@@ -18,6 +18,13 @@
 (function () {
     var media = window.matchMedia('(prefers-color-scheme: dark)');
 
+    // Progressive-enhancement hook for anything that only makes sense with
+    // scripting - currently the .gh-loadmore fallback links, which infinite
+    // scroll makes redundant. Set here rather than in main.min.js because this
+    // file is the one that runs blocking in <head>, so the class is present
+    // before first paint and the link never flashes.
+    document.documentElement.classList.add('js');
+
     function chosen() {
         try {
             var v = localStorage.getItem('selected-theme');
