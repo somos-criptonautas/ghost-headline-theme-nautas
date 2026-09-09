@@ -121,8 +121,11 @@
     commonSearches: ['cómo empezar', 'cómo usar Monero', 'hacer trading'] // can also be empty
   };
 </script>
-{{! The search UI itself is loaded outside the theme; only its config lives
-    here. }}
+{{! Served from the theme, not from unpkg. The file is the unmodified
+    MagicPages build, refreshed by .github/workflows/update-typesense.yml, and
+    is kept out of main.min.js - see the js task in gulpfile.js. It reads
+    __MP_SEARCH_CONFIG__ above, so it has to come after it. }}
+<script defer src="{{asset "js/typesense-search.min.js"}}"></script>
 <script defer async data-domain="criptonautas.co"
   src="https://stats.criptonautas.co/js/plausible.outbound-links.js"></script>
 <script>window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>

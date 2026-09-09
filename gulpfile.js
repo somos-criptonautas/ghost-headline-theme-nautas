@@ -105,7 +105,18 @@ function js(done) {
             // theme.js is loaded on its own in <head> before first paint;
             // bundling it too would register the toggle handler twice and
             // cancel every click.
-            src(['assets/js/*.js', '!assets/js/theme.js'], {sourcemaps: true}),
+            //
+            // typesense-search.min.js is the unmodified MagicPages build,
+            // refreshed by .github/workflows/update-typesense.yml. It is served
+            // locally from /assets/js/ rather than from unpkg, but kept out of
+            // the bundle: it arrives already minified, and re-uglifying 200KB
+            // of vendor code on every build only mangles its symbols into our
+            // sourcemap. It has its own <script> tag in site-scripts.hbs.
+            src([
+                'assets/js/*.js',
+                '!assets/js/theme.js',
+                '!assets/js/typesense-search.min.js',
+            ], {sourcemaps: true}),
         ], {sourcemaps: true}),
         concat('main.min.js'),
         uglify(),
