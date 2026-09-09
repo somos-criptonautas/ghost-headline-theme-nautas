@@ -9,7 +9,7 @@
     A post with no tag falls through to the latest-posts block on its own. --}}
 {{#is "post"}}
     {{#if post.primary_tag}}
-        {{#get "posts" include="authors" filter="tag:{{post.primary_tag.slug}}+id:-{{post.id}}" limit="6" as |next|}}
+        {{#get "posts" include="authors" filter="tag:{{post.primary_tag.slug}}+id:-{{post.id}}" limit="8" as |next|}}
             {{#if next}}
                 <div class="gh-read-next gh-canvas">
                     <section class="gh-pagehead">
@@ -27,7 +27,7 @@
             {{/if}}
         {{/get}}
 
-        {{#get "posts" include="authors" filter="tag:-{{post.primary_tag.slug}}+id:-{{post.id}}" limit="6" as |next|}}
+        {{#get "posts" include="authors" filter="tag:-{{post.primary_tag.slug}}+id:-{{post.id}}" limit="8" as |next|}}
             {{#if next}}
                 <div class="gh-read-next gh-canvas">
                     <section class="gh-pagehead">
@@ -45,7 +45,7 @@
             {{/if}}
         {{/get}}
     {{else}}
-        {{#get "posts" include="authors" filter="id:-{{post.id}}" limit="6" as |next|}}
+        {{#get "posts" include="authors" filter="id:-{{post.id}}" limit="8" as |next|}}
             {{#if next}}
                 <div class="gh-read-next gh-canvas">
                     <section class="gh-pagehead">
