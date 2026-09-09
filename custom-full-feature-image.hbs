@@ -1,11 +1,9 @@
-{{!< default}}
-{{#post}}
-<section class="gh-cover gh-outer">
+{{!< default}} {{#post}} <section class="gh-cover gh-outer">
     {{#if feature_image}}
-    <img class="gh-cover-image gh-feature-image" loading="lazy" srcset="{{img_url feature_image size="s" format="webp"}} 300w,
-        {{img_url feature_image size="m" format="webp"}} 720w, {{img_url feature_image size="l" format="webp"}} 960w,
-        {{img_url feature_image size="xl" format="webp"}} 1200w, {{img_url feature_image size="xxl" format="webp"}}
-        2000w" sizes="100vw" src="{{img_url feature_image size="xl" format="webp"}}" alt="{{title}}">
+    <img class="gh-cover-image gh-feature-image" loading="lazy" srcset="{{img_url feature_image size=" s" format="webp"
+        }} 300w, {{img_url feature_image size="m" format="webp" }} 720w, {{img_url feature_image size="l" format="webp"
+        }} 960w, {{img_url feature_image size="xl" format="webp" }} 1200w, {{img_url feature_image size="xxl"
+        format="webp" }} 2000w" sizes="100vw" src="{{img_url feature_image size=" xl" format="webp" }}" alt="{{title}}">
     {{/if}}
     <div class="gh-cover-content">
         {{#if primary_tag}}
@@ -17,7 +15,7 @@
         <p class="gh-article-excerpt">{{custom_excerpt}}</p>
         {{/if}}
     </div>
-</section>
+    </section>
 
     <main class="gh-main">
         {{#is "post"}}
@@ -40,24 +38,7 @@
                 </aside>
                 <section class="gh-content gh-canvas">
                     {{content}}
-                    <div class="comments-section">
-                        <div class="comments-wrap">
-                            <small class="global-subtitle-title">{{t "Member discussion"}}</small>
-                            <div id='discourse-comments'></div>
-                            <script type="text/javascript">
-                                window.DiscourseEmbed = {
-                                    discourseUrl: 'https://comunidad.criptonautas.co/',
-                                    discourseEmbedUrl: `https://criptonautas.co{{url}}`,
-                                    discourseReferrerPolicy: 'no-referrer-when-downgrade'
-                                };
-                                (function () {
-                                    var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
-                                    d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
-                                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
-                                })();
-                            </script>
-                        </div>
-                    </div>
+                    {{> "comments"}}
                 </section>
             </div>
             {{>webmentions}}
