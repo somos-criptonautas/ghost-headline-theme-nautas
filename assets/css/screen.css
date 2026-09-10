@@ -5191,3 +5191,144 @@ one was dropped and the card rendered unstyled.
 html.js .gh-loadmore {
   display: none;
 }
+
+/* --------------------------------------------------------------------------
+Tablet/mobile header bar (up to 991px, where the burger menu takes over)
+
+  [logo]  [ search field ...... ]  [theme]  [burger]
+
+Same bar with the menu closed and open. Replaces three older behaviours:
+- the logo was hidden in the bar (.gh-head-logo display:none) and only shown,
+  scaled to 70vh, in the middle of the open menu;
+- search and theme were reachable only inside the open menu;
+- the burger was position:fixed, floating over the page and lining up with
+  the header only by coincidence.
+
+The markup lives in .gh-head-brand in default.hbs. Several rules below use
+#gh-head on purpose: the rules they replace are id-scoped too.
+-------------------------------------------------------------------------- */
+.gh-head-search-field,
+.gh-head-bar-toggle {
+  display: none;
+}
+
+@media screen and (max-width: 991px) {
+  /* Sticky so the burger stays reachable mid-page, which is what the fixed
+     burger was for. Not on transparent headers (full-image covers), which must
+     stay absolute over the image, and not while open, when #gh-head is the
+     fixed full-screen menu. */
+  body:not(.is-head-transparent):not(.is-head-open) #gh-head {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+  }
+
+  body:not(.is-head-open) #gh-head {
+    height: auto;
+  }
+
+  #gh-head .gh-head-brand {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    column-gap: 1.2rem;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    margin-bottom: 0;
+    padding-block: 1.2rem;
+  }
+
+  #gh-head .gh-head-brand-wrapper,
+  .is-head-open #gh-head .gh-head-brand-wrapper {
+    flex-direction: row;
+  }
+
+  #gh-head .gh-head-logo {
+    display: flex;
+  }
+
+  #gh-head .gh-head-logo img.logo-nav {
+    width: auto;
+    max-width: 40vw;
+    max-height: 4rem;
+    margin: 0;
+  }
+
+  .gh-head-search-field {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 100%;
+    min-width: 0;
+    height: 4rem;
+    padding: 0 1.4rem;
+    font: inherit;
+    font-size: 1.5rem;
+    color: var(--color-base);
+    text-align: left;
+    cursor: text;
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+  }
+
+  .gh-head-search-field svg {
+    flex: none;
+    width: 1.8rem;
+    height: 1.8rem;
+    opacity: 0.63;
+  }
+
+  .gh-head-search-field span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.63;
+  }
+
+  .gh-head-search-field:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+  }
+
+  #gh-head .gh-head-bar-toggle {
+    display: inline-flex;
+    width: 4rem;
+    height: 4rem;
+    margin: 0;
+  }
+
+  #gh-head .gh-burger {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 4rem;
+    height: 4rem;
+    opacity: 1;
+    background-color: transparent;
+  }
+
+  #gh-head .gh-burger::before,
+  #gh-head .gh-burger::after {
+    width: 2.4rem;
+  }
+
+  /* The bar now carries search and theme; the open menu keeps Subscribe. */
+  #gh-head .gh-head-actions .nav-icons {
+    display: none;
+  }
+
+  /* Open menu: the bar stays at the top, nav and actions centre in the rest.
+     .gh-head-menu is display:contents when open, so .nav is the flex item. */
+  .is-head-open #gh-head .gh-head-inner {
+    justify-content: flex-start;
+  }
+
+  .is-head-open #gh-head .nav {
+    margin-top: auto;
+  }
+
+  .is-head-open #gh-head .gh-head-actions {
+    margin-bottom: auto;
+  }
+}

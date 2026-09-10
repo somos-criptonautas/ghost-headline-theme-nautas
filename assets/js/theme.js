@@ -48,21 +48,21 @@
         }
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        var toggle = document.querySelector('.it-dark-light');
-        if (!toggle) {
+    // Delegated rather than bound to one element: the tablet/mobile header bar
+    // and the desktop actions each carry a toggle, and querySelector only ever
+    // found the first. Also needs no DOMContentLoaded wait.
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest || !event.target.closest('.it-dark-light')) {
             return;
         }
-        toggle.addEventListener('click', function () {
-            var next = document.documentElement.getAttribute('data-theme') === 'dark'
-                ? 'light'
-                : 'dark';
-            try {
-                localStorage.setItem('selected-theme', next);
-            } catch (e) {
-                // fall through: the theme still applies for this page view
-            }
-            apply(next);
-        });
+        var next = document.documentElement.getAttribute('data-theme') === 'dark'
+            ? 'light'
+            : 'dark';
+        try {
+            localStorage.setItem('selected-theme', next);
+        } catch (e) {
+            // fall through: the theme still applies for this page view
+        }
+        apply(next);
     });
 })();

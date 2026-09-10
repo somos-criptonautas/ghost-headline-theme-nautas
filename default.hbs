@@ -77,10 +77,26 @@
                                 {{@site.title}}
                                 {{/if}}
                                 {{^is "home"}}</a>{{else}}</span>{{/is}}
-                        {{#is "home"}}</h1>{{/is}}
                     </div>
+                    {{!-- Tablet/mobile bar: logo | search field | theme | burger,
+                        the same whether the menu is closed or open. Desktop keeps
+                        search and theme in .gh-head-actions below; CSS shows
+                        exactly one of the two sets at any width, and display:none
+                        keeps the hidden one out of the accessibility tree.
+
+                        The field is a button, not an <input>: any
+                        [data-ghost-search] opens the search modal with its own
+                        input focused, so there is one search UI, not two. --}}
+                    <button type="button" class="gh-head-search-field" aria-label="{{t "Search this site"}}" data-ghost-search>
+                        {{> "icons/search"}}
+                        <span>{{t "Search"}}</span>
+                    </button>
+                    <button type="button" class="it-dark-light gh-icon-btn gh-head-bar-toggle" aria-label="{{t "Toggle theme"}}">
+                        <div class="icon-dark">{{> icons/light}}</div>
+                        <div class="icon-light">{{> icons/dark}}</div>
+                    </button>
+                    <button id="gh-burger" class="gh-burger" aria-label="{{t "Toggle menu"}}"></button>
                 </div>
-                <button id="gh-burger" class="gh-burger" aria-label="burger-menu"></button>
                 <nav class="gh-head-menu">
                     {{navigation}}
                 </nav>
