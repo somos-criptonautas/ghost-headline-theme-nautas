@@ -563,9 +563,10 @@ gh-author-name-list {
    ----------------------------------------------------------
    The shared theme gives .gh-topic-content no columns at all, and
    body:not(.home-template) pins every card to `grid-column: 1 / 3`, so the
-   read-next list came out as one full-width card per row. Four cards per row
+   read-next list came out as one full-width card per row. Three cards per row
    from 992px up, two below - the same step the homepage grid already takes at
-   992px (see the "Homepage posts" block further down). */
+   992px (see the "Homepage posts" block further down). Six posts keep both
+   layouts complete: 2 x 3 rows on desktop, 3 x 2 on mobile. */
 
 .gh-read-next .gh-topic-grid .gh-card {
   grid-column: auto;
@@ -593,8 +594,11 @@ gh-author-name-list {
   padding: 1.6rem 0 0;
 }
 
+/* Typography scales off the site's own sizes instead of hardcoded values:
+   the title is a fraction of --h1-size (the variable the article and heading
+   sizes are all built from) and the meta line uses the body-copy size. */
 .gh-read-next .gh-topic-grid .gh-card-title {
-  font-size: 1.9rem;
+  font-size: calc(var(--h1-size) * 0.55);
   line-height: 1.25;
 }
 
@@ -603,7 +607,7 @@ gh-author-name-list {
 }
 
 .gh-read-next .gh-card-footer {
-  font-size: 1.3rem;
+  font-size: var(--content-font-size);
 }
 
 /* The 767px block deeper in the file flips .gh-topic-content back to
@@ -626,7 +630,7 @@ gh-author-name-list {
   }
 
   .gh-read-next .gh-topic-grid .gh-card-title {
-    font-size: 1.6rem;
+    font-size: calc(var(--h1-size) * 0.65);
   }
 }
 
@@ -639,12 +643,17 @@ gh-author-name-list {
     justify-items: stretch;
     max-width: 100%;
   }
+
+  /* Two cards across a wide canvas - factor up over the desktop fraction. */
+  .gh-read-next .gh-topic-grid .gh-card-title {
+    font-size: calc(var(--h1-size) * 0.65);
+  }
 }
 
 @media screen and (min-width: 992px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     row-gap: 4rem;
     column-gap: var(--grid-gap);
     justify-items: stretch;
