@@ -14,6 +14,12 @@
     <link href="{{@site.url}}/continue" rel="prefetch">
     <link href="{{@site.url}}/start" rel="prefetch">
     <link rel="preconnect" href="https://comunidad.criptonautas.co">
+    {{#is "post"}}
+    {{! Comments: start fetching embed.js with the page instead of waiting for
+        main.min.js to inject it at the end of <body>. Same URL and no
+        crossorigin attribute, so the injected <script> reuses this response. }}
+    <link rel="preload" href="https://comunidad.criptonautas.co/javascripts/embed.js" as="script">
+    {{/is}}
     <script
         src='https://pay.criptonautas.co/plugins/Ftaic9XyP8AYSuMKrU2bxw7PrAn9DZjyJKGY62BXThy1/ghost/public/paywall/btcpay-ghost-paywall.js'></script>
     <!-- Blocking on purpose: sets the theme before first paint. External
