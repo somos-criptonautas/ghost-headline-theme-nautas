@@ -1,66 +1,28 @@
 {{!-- Read-next, after the comments and before the footer.
 
+    Two blocks of 4, not 6 + 6: twelve cards pushed the footer far enough down
+    that it was hard to reach, which is the whole reason for the cap.
+
+    Each {{#get}} asks for 5 and read-next.hbs renders 4, so the extra row tells
+    it whether a "Show more" link is warranted - no second count query.
+
     Filters are built from primary_tag.slug, not from {{post.tags}}: Ghost only
     interpolates simple paths into a filter string, and post.tags is an array of
-    tag objects, so "tags:[{{post.tags}}]" never resolved to a usable value. The
-    old first filter also carried a top-level ",featured:true" - a comma is OR in
-    NQL, so it pulled in every featured post regardless of tag.
+    tag objects, so "tags:[{{post.tags}}]" never resolved to a usable value.
 
     A post with no tag falls through to the latest-posts block on its own. --}}
 {{#is "post"}}
     {{#if post.primary_tag}}
-        {{#get "posts" include="authors" filter="tag:{{post.primary_tag.slug}}+id:-{{post.id}}" limit="6" as |next|}}
-            {{#if next}}
-                <div class="gh-read-next gh-canvas">
-                    <section class="gh-pagehead">
-                        <h2 class="gh-pagehead-title">{{ t "More on" }} {{post.primary_tag.name}}</h2>
-                    </section>
-
-                    <div class="gh-topic gh-topic-grid">
-                        <div class="gh-topic-content">
-                            {{#foreach next}}
-                                {{> "loop-grid" has_large_post=false}}
-                            {{/foreach}}
-                        </div>
-                    </div>
-                </div>
-            {{/if}}
+        {{#get "posts" include="authors" filter="tag:{{post.primary_tag.slug}}+id:-{{post.id}}" limit="5" as |next|}}
+            {{> "read-next" posts=next tag=post.primary_tag more_url=post.primary_tag.url}}
         {{/get}}
 
-        {{#get "posts" include="authors" filter="tag:-{{post.primary_tag.slug}}+id:-{{post.id}}" limit="6" as |next|}}
-            {{#if next}}
-                <div class="gh-read-next gh-canvas">
-                    <section class="gh-pagehead">
-                        <h2 class="gh-pagehead-title">{{ t "Want more" }}</h2>
-                    </section>
-
-                    <div class="gh-topic gh-topic-grid">
-                        <div class="gh-topic-content">
-                            {{#foreach next}}
-                                {{> "loop-grid" has_large_post=false}}
-                            {{/foreach}}
-                        </div>
-                    </div>
-                </div>
-            {{/if}}
+        {{#get "posts" include="authors" filter="tag:-{{post.primary_tag.slug}}+id:-{{post.id}}" limit="5" as |next|}}
+            {{> "read-next" posts=next title=(t "Want more") more_url="/page/2/"}}
         {{/get}}
     {{else}}
-        {{#get "posts" include="authors" filter="id:-{{post.id}}" limit="6" as |next|}}
-            {{#if next}}
-                <div class="gh-read-next gh-canvas">
-                    <section class="gh-pagehead">
-                        <h2 class="gh-pagehead-title">{{ t "Read next" }}</h2>
-                    </section>
-
-                    <div class="gh-topic gh-topic-grid">
-                        <div class="gh-topic-content">
-                            {{#foreach next}}
-                                {{> "loop-grid" has_large_post=false}}
-                            {{/foreach}}
-                        </div>
-                    </div>
-                </div>
-            {{/if}}
+        {{#get "posts" include="authors" filter="id:-{{post.id}}" limit="5" as |next|}}
+            {{> "read-next" posts=next title=(t "Read next") more_url="/page/2/"}}
         {{/get}}
     {{/if}}
 {{/is}}

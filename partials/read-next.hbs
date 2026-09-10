@@ -1,0 +1,28 @@
+{{!-- One "more articles" block. Called from related-posts.hbs.
+
+    Params: posts (a {{#get}} block param), tag (optional, titles the block and
+    is linked to), title (used when there is no tag), more_url.
+
+    The caller asks for one post more than we render, so posts.length > 4 is how
+    we know a "Show more" link is worth showing without a second query. --}}
+{{#if posts}}
+<div class="gh-read-next gh-canvas">
+    <section class="gh-pagehead">
+        <h2 class="gh-pagehead-title">{{#if tag}}{{t "More on"}} {{tag.name}}{{else}}{{title}}{{/if}}</h2>
+    </section>
+
+    <div class="gh-topic gh-topic-grid">
+        <div class="gh-topic-content">
+            {{#foreach posts limit="4"}}
+                {{> "loop-grid" has_large_post=false}}
+            {{/foreach}}
+        </div>
+    </div>
+
+    {{#match posts.length ">" 4}}
+    <footer class="gh-topic-footer">
+        <a class="gh-topic-link" href="{{more_url}}">{{t "Show more"}} {{> "icons/arrow"}}</a>
+    </footer>
+    {{/match}}
+</div>
+{{/if}}
