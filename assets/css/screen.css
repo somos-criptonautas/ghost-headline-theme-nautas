@@ -567,7 +567,10 @@ gh-author-name-list {
    768px up, one below. Four posts per block fill both layouts exactly: 2 x 2
    on desktop, a single column on phones. */
 
-.gh-read-next .gh-topic-grid .gh-card {
+/* Needs body:not(.home-template) to reach (0,4,1): the rule above that pins
+   every non-home card to `grid-column: 1 / 3` is (0,3,1), and at (0,3,0) this
+   lost - each card spanned both columns and rendered full width. */
+body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   grid-column: auto;
 }
 
@@ -2912,8 +2915,17 @@ body,
   color: var(--color-base);
 }
 
-.discourse-embed-frame {
-  border-radius: 1rem;
+/* Discourse comments iframe (created by embed.js inside #discourse-comments).
+   Height is not set here: assets/js/discourse-embed.js sizes it to the
+   embedded page's content, so every comment shows without an inner scroll.
+   The old `.discourse-embed-frame` class rule never matched - embed.js gives
+   the iframe an id, not a class. */
+#discourse-comments iframe {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: var(--border-radius);
+  background: var(--color-bg-alt);
 }
 
 .white {

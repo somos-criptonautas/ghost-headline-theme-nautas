@@ -38,6 +38,22 @@ const mobileNavBreakpoint = () => ({
 });
 mobileNavBreakpoint.postcss = true;
 
+// Same breakpoint, JS side. The shared lib/dropdown.js collapses overflowing nav
+// items into a "..." toggle whenever the viewport is wider than 767px - but from
+// 768 to 991px this theme shows the burger menu, so the items ended up hidden
+// behind "..." inside the open menu. Retarget that one query in that one file.
+// 767 -> 991 keeps the byte length, so sourcemap columns stay valid.
+const {Transform} = require('stream');
+const dropdownBreakpoint = () => new Transform({
+    objectMode: true,
+    transform(file, _encoding, callback) {
+        if (/lib[\\/]dropdown\.js$/.test(file.path)) {
+            file.contents = Buffer.from(String(file.contents).replace(/max-width:\s*767px/g, 'max-width: 991px'));
+        }
+        callback(null, file);
+    }
+});
+
 // translations support
 const { mergeLocales } = require('@tryghost/theme-translations/build');
 const sharedThemeAssetsPath = path.dirname(require.resolve('@tryghost/shared-theme-assets/package.json'));
@@ -100,7 +116,7 @@ function js(done) {
         // order across patterns - it emitted main.js first and the bundle threw
         // "reframe is not defined", aborting every script after it.
         order([
-            src(`${sharedThemeAssetsPath}/assets/js/v1/lib/**/*.js`, {sourcemaps: true}),
+            src(`${sharedThemeAssetsPath}/assets/js/v1/lib/**/*.js`, {sourcemaps: true}).pipe(dropdownBreakpoint()),
             src(`${sharedThemeAssetsPath}/assets/js/v1/main.js`, {sourcemaps: true}),
             // theme.js is loaded on its own in <head> before first paint;
             // bundling it too would register the toggle handler twice and
