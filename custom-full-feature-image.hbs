@@ -1,9 +1,9 @@
 {{!< default}} {{#post}} <section class="gh-cover gh-outer">
     {{#if feature_image}}
-    <img class="gh-cover-image gh-feature-image" loading="lazy" srcset="{{img_url feature_image size=" s" format="webp"
+    <img class="gh-cover-image gh-feature-image" loading="lazy" srcset="{{img_url feature_image size="s" format="webp"
         }} 300w, {{img_url feature_image size="m" format="webp" }} 720w, {{img_url feature_image size="l" format="webp"
         }} 960w, {{img_url feature_image size="xl" format="webp" }} 1200w, {{img_url feature_image size="xxl"
-        format="webp" }} 2000w" sizes="100vw" src="{{img_url feature_image size=" xl" format="webp" }}" alt="{{title}}">
+        format="webp" }} 2000w" sizes="100vw" src="{{img_url feature_image size="xl" format="webp" }}" alt="{{title}}">
     {{/if}}
     <div class="gh-cover-content">
         {{#if primary_tag}}
@@ -52,4 +52,4 @@
         {{> "related-posts"}}
 
     </main>
-    {{#contentFor "body_class"}} has-full-image{{#if post.feature_image}} is-head-transparent is-head-overlay{{/if}}{{/contentFor}}
+    {{#contentFor "body_class"}} has-full-image{{#if post.feature_image}} is-head-transparent{{/if}}{{/contentFor}}

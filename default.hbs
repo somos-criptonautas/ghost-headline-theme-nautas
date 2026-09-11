@@ -51,6 +51,22 @@
     {{! Portal is not used on this site. Excluding it stops Ghost injecting
         the members script; the exclude list is Ghost's supported switch. }}
     {{ghost_head exclude="portal"}}
+    {{!-- Site icons. After {{ghost_head}} on purpose: it emits its own
+        <link rel="icon"> from the publication icon, and browsers use the last
+        one declared. Ghost only serves theme files under assets/, hence
+        assets/favicon/. The root /favicon.ico that browsers request unprompted
+        is still Ghost's publication icon - set the same image there.
+
+        - favicon.ico holds 16 and 32px; the 32px PNG is for browsers that
+          prefer PNG
+        - apple-touch-icon is 180px, the size iOS asks for
+        - the manifest carries the 192 and 512px Android icons --}}
+    <link rel="icon" href="{{asset "favicon/favicon.ico"}}" sizes="16x16 32x32">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{asset "favicon/favicon-32x32.png"}}">
+    <link rel="apple-touch-icon" href="{{asset "favicon/apple-touch-icon.png"}}">
+    <link rel="manifest" href="{{asset "favicon/site.webmanifest"}}">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1C2128" media="(prefers-color-scheme: dark)">
 
 </head>
 

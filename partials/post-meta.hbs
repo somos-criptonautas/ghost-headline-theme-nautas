@@ -4,9 +4,8 @@
     <figure class="gh-author-image-list">
         {{#foreach authors}}
         {{#if profile_image}}
-        <a class="author-name-page" href="{{url}}"><img class="author-profile-image" src="{{img_url profile_image size="
-                xs" format="webp" }}" alt="{{name}}" />
-        </a></a>
+        <a class="author-name-page" href="{{url}}"><img class="author-profile-image" src="{{img_url profile_image size="xs" format="webp" }}" alt="{{name}}" />
+        </a>
         {{else}}
         <a class="author-name" href="{{url}}">
             <div class="gh-author-icon">{{> icons/avatar}}</div>
@@ -21,11 +20,8 @@
         </div>
         <h4 class="gh-author-name-list">
             {{ t "by" }}
-            {{#foreach authors}}
-            <a href="{{url}}">{{name}}</a>
+            {{#foreach authors}}<a href="{{url}}">{{name}}</a>{{#unless @last}},&nbsp;{{/unless}}{{/foreach}}
         </h4>
-        {{#unless @last}},&nbsp;{{/unless}}
-        {{/foreach}}
     </div>
 </aside>
 {{/is}}

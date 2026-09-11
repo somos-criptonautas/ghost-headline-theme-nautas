@@ -31,6 +31,16 @@ jobs:
             https://unpkg.com/@magicpages/ghost-typesense-search-ui/dist/search.min.js \
             -o assets/js/typesense-search.min.js
 
+      # assets/js/head.js styles the search modal's input by this class from
+      # outside its shadow root. Refuse a build that renamed it rather than ship
+      # a modal that silently lost that styling.
+      - name: Check the build still has the input head.js styles
+        run: |
+          if ! grep -q 'mp-search-input' assets/js/typesense-search.min.js; then
+            echo "::error::typesense-search.min.js no longer contains .mp-search-input - update SEARCH_INPUT_CSS in assets/js/head.js"
+            exit 1
+          fi
+
       - name: Check for a new version
         id: git-check
         run: |

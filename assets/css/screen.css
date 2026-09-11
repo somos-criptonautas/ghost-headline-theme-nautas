@@ -631,8 +631,9 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     padding-block: 0;
   }
 
+  /* One card per row, as on the homepage, so the homepage title size. */
   .gh-read-next .gh-topic-grid .gh-card-title {
-    font-size: calc(var(--h1-size) * 0.8);
+    font-size: var(--h1-size);
   }
 
 }
@@ -5206,15 +5207,25 @@ Tablet/mobile header bar (up to 991px, where the burger menu takes over)
                            [ logo ]
                        nav, Subscribe
 
-Fixed to the top of the viewport. Markup is in .gh-head-brand in default.hbs,
-behaviour in assets/js/head.js. The logo keeps its original behaviour: hidden
-in the bar, shown only in the open menu (the .gh-head-logo and img.logo-nav
-rules further up). Several rules use #gh-head on purpose: the rules they
+Fixed to the viewport, below anything Ghost renders above the site (the
+announcement bar): assets/js/head.js keeps --head-top at the bottom edge of
+that content while it is on screen. Markup is in .gh-head-brand in
+default.hbs. The logo keeps its original behaviour: hidden in the bar, shown
+only in the open menu. Several rules use #gh-head on purpose: the rules they
 replace are id-scoped too.
 -------------------------------------------------------------------------- */
 .gh-head-search-field,
 .gh-head-bar-toggle {
   display: none;
+}
+
+/* The search modal (MagicPages, in a shadow root) gets its input styled from
+   head.js. Our tokens are handed over under names the modal does not define
+   itself - it has its own --color-border, which would shadow ours. */
+magicpages-search {
+  --nautas-field-bg: var(--color-bg-alt);
+  --nautas-field-border: var(--color-border);
+  --nautas-field-focus: color-mix(in srgb, var(--color-base) 40%, transparent);
 }
 
 @media screen and (max-width: 991px) {
@@ -5224,27 +5235,22 @@ replace are id-scoped too.
 
   /* Fixed, not sticky: sticky silently stops working as soon as an ancestor
      becomes a scroll container, and html/body overflow can be set from outside
-     the theme (code injection, third-party scripts). While open, #gh-head is
-     already the fixed full-screen menu. Headers over a cover (is-head-overlay)
-     join only with JS, because head.js is what gives them a background once
-     the cover is scrolled past; without it they keep the absolute header. */
-  body:not(.is-head-open):not(.is-head-transparent) #gh-head,
-  html.js body.is-head-overlay:not(.is-head-open) #gh-head {
+     the theme. Opaque on every page, including over a cover, where a
+     transparent bar read as a missing header. While open, #gh-head is already
+     the fixed full-screen menu. */
+  body:not(.is-head-open) #gh-head {
     position: fixed;
-    top: 0;
+    top: var(--head-top, 0px);
     right: 0;
     left: 0;
     z-index: 90;
-  }
-
-  /* A fixed bar takes no layout space, so push the page down by its height -
-     except over a cover, where the image is meant to start under the bar. */
-  body:not(.is-head-overlay) .gh-site {
-    padding-top: var(--head-bar-height);
-  }
-
-  body:not(.is-head-open) #gh-head {
     height: auto;
+    background-color: var(--color-bg);
+  }
+
+  /* A fixed bar takes no layout space: push the page down by its height. */
+  .gh-site {
+    padding-top: var(--head-bar-height);
   }
 
   #gh-head .gh-head-brand {
@@ -5275,9 +5281,14 @@ replace are id-scoped too.
     background-color: transparent;
   }
 
+  /* The bars sit on a transparent button now, so they take the text colour in
+     both themes. The older html[data-theme="dark"] rule painted them with the
+     background colour, which suited the grey floating box and made them
+     black on black here. */
   #gh-head .gh-burger::before,
   #gh-head .gh-burger::after {
     width: 2.4rem;
+    background-color: var(--color-base);
   }
 
   /* Closed, the logo is hidden, so its wrapper must not open an empty grid
@@ -5287,17 +5298,21 @@ replace are id-scoped too.
   }
 
   /* Open: the theme toggle joins the bar left of the ✕, and the logo gets its
-     own row underneath, centred as it was before the bar existed. */
+     own row underneath. */
   .is-head-open #gh-head .gh-head-brand {
     grid-template-columns: minmax(0, 1fr) auto auto;
     grid-template-rows: var(--head-bar-height) auto;
     height: auto;
   }
 
+  /* 2.2rem, not the 3rem of .gh-icon-btn: at full size the glyph read larger
+     than the burger's 2.4rem bars. */
   .is-head-open #gh-head .gh-head-bar-toggle {
     display: inline-flex;
     grid-row: 1;
     grid-column: 2;
+    width: 2.2rem;
+    height: 2.2rem;
     margin: 0;
   }
 
@@ -5305,10 +5320,14 @@ replace are id-scoped too.
     grid-column: 3;
   }
 
+  /* 5vh is the space the open-menu brand had before the bar existed
+     (#gh-head .gh-head-brand margin-bottom); without it the logo sat hard
+     against the top. */
   .is-head-open #gh-head .gh-head-brand-wrapper {
     grid-row: 2;
     grid-column: 1 / -1;
     justify-content: center;
+    margin-block: 5vh;
   }
 
   .gh-head-search-field {
@@ -5378,5 +5397,69 @@ replace are id-scoped too.
 
   .is-head-open #gh-head .gh-head-actions {
     margin-bottom: auto;
+  }
+
+  /* Comments break out of the article's side margins (.gh-full-content, the
+     canvas gutters and, on tablet, .gh-content's 70ch cap) to the viewport
+     width minus one gutter each side; squeezed into the text column, the
+     iframe scrolled sideways inside. Desktop keeps the article column.
+     overflow-x: clip on .gh-site absorbs the few pixels a classic scrollbar
+     adds to 100vw on a narrow desktop window; clip does not create a scroll
+     container, so fixed and sticky elements are unaffected. */
+  .gh-content > .comments-section {
+    width: calc(100vw - 2 * var(--gap));
+    max-width: none;
+    margin-inline: calc(50% - 50vw + var(--gap));
+  }
+
+  .gh-site {
+    overflow-x: clip;
+  }
+}
+
+/* --------------------------------------------------------------------------
+Phone article layout
+-------------------------------------------------------------------------- */
+@media screen and (max-width: 767px) {
+  /* Half the main column's vertical padding (was 5rem): with the fixed bar's
+     spacer above it, the full amount left an empty band before the article. */
+  .gh-main {
+    padding-block: 2.5rem;
+  }
+
+  /* Half the article's side margin (was 0 3vh). */
+  .gh-full-content {
+    margin-inline: 1.5vh;
+  }
+
+  /* 30% smaller than the 4rem this width had. */
+  .gh-cover-title {
+    font-size: 2.8rem;
+  }
+
+  /* The 120px cover padding and 100px content margin made room for a
+     transparent header over the image. The bar now sits above the cover. */
+  .post-template .gh-cover,
+  .page-template .gh-cover {
+    padding-top: 3.2rem;
+  }
+
+  .gh-cover-content {
+    margin-top: 0;
+  }
+
+  /* Image to author/date: 4.23rem above .gh-author, plus 5rem under the image
+     on the wide template, left a large gap. */
+  .gh-author {
+    margin-top: 2rem;
+  }
+
+  .has-wide-image .gh-article-image {
+    margin-bottom: 2rem;
+  }
+
+  /* Author avatar 25% smaller (was 9rem). */
+  .gh-author-image-list img {
+    max-width: 6.75rem;
   }
 }
