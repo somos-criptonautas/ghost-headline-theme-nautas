@@ -565,9 +565,9 @@ gh-author-name-list {
    ----------------------------------------------------------
    The shared theme gives .gh-topic-content no columns at all, and
    body:not(.home-template) pins every card to `grid-column: 1 / 3`, so the
-   read-next list came out as one full-width card per row. Four per row from
-   992px, two on tablet, one on phones; four posts per block fill each layout
-   exactly. */
+   read-next list came out as one full-width card per row. Four per row across
+   the full width from 992px, two below; four posts per block fill each
+   layout exactly. */
 
 /* Needs body:not(.home-template) to reach (0,4,1): the rule above that pins
    every non-home card to `grid-column: 1 / 3` is (0,3,1), and at (0,3,0) this
@@ -623,8 +623,9 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
 @media screen and (max-width: 767px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     row-gap: 2.66rem; /* --grid-gap × 2, matching grid list gaps */
+    column-gap: var(--grid-gap);
     justify-items: stretch;
     max-width: 100%;
   }
@@ -633,9 +634,10 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     padding-block: 0;
   }
 
-  /* One card per row, as on the homepage, so the homepage title size. */
+  /* Two narrow cards per row: the homepage's one-per-row h1 size would wrap
+     every other word. */
   .gh-read-next .gh-topic-grid .gh-card-title {
-    font-size: var(--h1-size);
+    font-size: calc(var(--h1-size) * 0.6);
   }
 
 }
@@ -666,10 +668,16 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     max-width: 100%;
   }
 
-  /* Four across needs more than the 800px article track: span the canvas's
-     wide track, the way the homepage grids span their container. */
+  /* Four across the full page width, keeping the site gutter on both sides.
+     margin-left resets the 20vh offset .gh-read-next gets from 1700px, which
+     would push a full-width grid off the right edge. */
+  .gh-read-next {
+    margin-left: 0;
+  }
+
   .gh-read-next.gh-canvas > * {
-    grid-column: wide;
+    grid-column: full;
+    padding-inline: var(--gap);
   }
 }
 
@@ -5491,4 +5499,21 @@ shows no marker. */
   content: "";
   background-color: currentColor;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M184,80V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H176A8,8,0,0,1,184,80Z' opacity='0.2'/%3E%3Cpath d='M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Full-image cover height: 80% of the screen, so the start of the article
+   stays in view below it and reads as "scroll for more". svh where supported:
+   it ignores the mobile browser toolbar, so the cover does not jump when the
+   address bar collapses. Plain vh first because a custom property holding an
+   unsupported unit would leave min-height invalid rather than fall back. */
+.post-template .gh-cover,
+.page-template .gh-cover {
+  --cover-height: 80vh;
+}
+
+@supports (height: 1svh) {
+  .post-template .gh-cover,
+  .page-template .gh-cover {
+    --cover-height: 80svh;
+  }
 }
