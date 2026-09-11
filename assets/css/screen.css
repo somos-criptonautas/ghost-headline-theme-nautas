@@ -596,11 +596,12 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   padding: 1.8rem 0 0;
 }
 
-/* Typography scales off the site's own sizes instead of hardcoded values:
-   the title is a fraction of --h1-size (the variable the article and heading
-   sizes are all built from) and the meta line uses the body-copy size. */
+/* Card titles are <h1>, and on the homepage grid they render at the plain h1
+   size, var(--h1-size). Same token here, so read-next follows the homepage at
+   every breakpoint (--h1-size is itself redefined per breakpoint). The meta
+   line uses the body-copy size. */
 .gh-read-next .gh-topic-grid .gh-card-title {
-  font-size: calc(var(--h1-size) * 0.72);
+  font-size: var(--h1-size);
   line-height: 1.25;
 }
 
@@ -630,9 +631,6 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     padding-block: 0;
   }
 
-  .gh-read-next .gh-topic-grid .gh-card-title {
-    font-size: calc(var(--h1-size) * 0.8);
-  }
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
@@ -645,9 +643,6 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     max-width: 100%;
   }
 
-  .gh-read-next .gh-topic-grid .gh-card-title {
-    font-size: calc(var(--h1-size) * 0.72);
-  }
 }
 
 @media screen and (min-width: 992px) {
@@ -5195,32 +5190,47 @@ html.js .gh-loadmore {
 /* --------------------------------------------------------------------------
 Tablet/mobile header bar (up to 991px, where the burger menu takes over)
 
-  [logo]  [ search field ...... ]  [theme]  [burger]
+  closed:  [logo]  [ search ............ ]  [burger]
+  open:    [logo]  [ search ............ ]  [  ✕   ]
+                                            [ theme ]
 
-Same bar with the menu closed and open. Replaces three older behaviours:
-- the logo was hidden in the bar (.gh-head-logo display:none) and only shown,
-  scaled to 70vh, in the middle of the open menu;
-- search and theme were reachable only inside the open menu;
-- the burger was position:fixed, floating over the page and lining up with
-  the header only by coincidence.
-
-The markup lives in .gh-head-brand in default.hbs. Several rules below use
-#gh-head on purpose: the rules they replace are id-scoped too.
+A sticky bar, the same closed and open. Markup is in .gh-head-brand in
+default.hbs, behaviour in assets/js/head.js. Several rules use #gh-head on
+purpose: the rules they replace are id-scoped too.
 -------------------------------------------------------------------------- */
 .gh-head-search-field,
 .gh-head-bar-toggle {
   display: none;
 }
 
+/* Comments sit in their own .gh-canvas, outside .gh-full-content, so they get
+   the same main track as the read-next blocks instead of the column left
+   beside the TOC. This restores the gap they had as the last content block. */
+.gh-comments {
+  margin-top: 4vmin;
+}
+
 @media screen and (max-width: 991px) {
-  /* Sticky so the burger stays reachable mid-page, which is what the fixed
-     burger was for. Not on transparent headers (full-image covers), which must
-     stay absolute over the image, and not while open, when #gh-head is the
-     fixed full-screen menu. */
-  body:not(.is-head-transparent):not(.is-head-open) #gh-head {
+  #gh-head {
+    --head-bar-height: 6.4rem;
+  }
+
+  /* Sticky. While open #gh-head is the fixed full-screen menu, so that state
+     is excluded. Headers over a cover (is-head-overlay) join only with JS,
+     because head.js is what gives them a background once the cover is
+     scrolled past; without it they keep the absolute header over the image. */
+  body:not(.is-head-open):not(.is-head-transparent) #gh-head,
+  html.js body.is-head-overlay:not(.is-head-open) #gh-head {
     position: sticky;
     top: 0;
     z-index: 90;
+  }
+
+  /* Over a cover the bar must not take layout space, or the image would start
+     below it. is-head-overlay never changes, unlike is-head-transparent, so the
+     page does not shift when head.js toggles the latter. */
+  html.js body.is-head-overlay:not(.is-head-open) #gh-head {
+    margin-bottom: calc(-1 * var(--head-bar-height));
   }
 
   body:not(.is-head-open) #gh-head {
@@ -5229,13 +5239,19 @@ The markup lives in .gh-head-brand in default.hbs. Several rules below use
 
   #gh-head .gh-head-brand {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     column-gap: 1.2rem;
     align-items: center;
     width: 100%;
-    height: auto;
+    height: var(--head-bar-height);
     margin-bottom: 0;
-    padding-block: 1.2rem;
+    padding-block: 0;
+  }
+
+  /* Open: a second row for the theme toggle, under the ✕. */
+  .is-head-open #gh-head .gh-head-brand {
+    grid-template-rows: var(--head-bar-height) auto;
+    height: auto;
   }
 
   #gh-head .gh-head-brand-wrapper,
@@ -5262,14 +5278,15 @@ The markup lives in .gh-head-brand in default.hbs. Several rules below use
     min-width: 0;
     height: 4rem;
     padding: 0 1.4rem;
-    font: inherit;
-    font-size: 1.5rem;
     color: var(--color-base);
-    text-align: left;
-    cursor: text;
     background: var(--color-bg-alt);
     border: 1px solid var(--color-border);
     border-radius: 999px;
+  }
+
+  .gh-head-search-field:focus-within {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
   }
 
   .gh-head-search-field svg {
@@ -5279,22 +5296,36 @@ The markup lives in .gh-head-brand in default.hbs. Several rules below use
     opacity: 0.63;
   }
 
-  .gh-head-search-field span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  /* Never below 16px: iOS zooms the page when focusing a smaller input. */
+  .gh-head-search-field input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0;
+    font: inherit;
+    font-size: max(16px, 1.5rem);
+    color: inherit;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    appearance: none;
+  }
+
+  .gh-head-search-field input::placeholder {
+    color: inherit;
     opacity: 0.63;
   }
 
-  .gh-head-search-field:focus-visible {
-    outline: 2px solid var(--ghost-accent-color);
-    outline-offset: 2px;
+  .gh-head-search-field input::-webkit-search-cancel-button {
+    display: none;
   }
 
-  #gh-head .gh-head-bar-toggle {
+  /* Open menu only, at the size every other header icon uses (.gh-icon-btn). */
+  .is-head-open #gh-head .gh-head-bar-toggle {
     display: inline-flex;
-    width: 4rem;
-    height: 4rem;
+    grid-row: 2;
+    grid-column: 3;
+    justify-self: center;
     margin: 0;
   }
 
@@ -5313,7 +5344,7 @@ The markup lives in .gh-head-brand in default.hbs. Several rules below use
     width: 2.4rem;
   }
 
-  /* The bar now carries search and theme; the open menu keeps Subscribe. */
+  /* Search is in the bar and theme under the ✕; the open menu keeps Subscribe. */
   #gh-head .gh-head-actions .nav-icons {
     display: none;
   }
