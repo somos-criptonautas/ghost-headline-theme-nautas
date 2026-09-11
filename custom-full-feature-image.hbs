@@ -38,13 +38,9 @@
                 </aside>
                 <section class="gh-content gh-canvas">
                     {{content}}
+                    {{> "comments"}}
                 </section>
             </div>
-            {{!-- Outside .gh-full-content so the TOC column does not narrow it:
-                the same .gh-canvas main track as the read-next blocks. --}}
-            <section class="gh-comments gh-canvas">
-                {{> "comments"}}
-            </section>
             {{>webmentions}}
             {{else}}
             <section class="gh-content gh-canvas">

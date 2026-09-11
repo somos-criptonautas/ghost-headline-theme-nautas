@@ -7,12 +7,12 @@
  *    future build renames them, fall back to opening the modal the way any
  *    [data-ghost-search] button does.
  *
- * 2. Header over a cover. Up to 991px the bar is sticky, so once the cover
- *    scrolls out from under it a transparent bar would sit on the article
- *    text. is-head-transparent is dropped while the cover is out of view and
+ * 2. Header over a cover. Up to 991px the bar is fixed to the top, so once
+ *    the cover scrolls out from under it a transparent bar would sit on the
+ *    article text. is-head-transparent is dropped while the cover is out of view and
  *    restored when it returns. Layout is held by is-head-overlay, which never
  *    changes, so the toggle cannot shift the page. Desktop is left alone: its
- *    header is not sticky.
+ *    header is not fixed.
  */
 (function () {
     var form = document.querySelector('.gh-head-search-field');

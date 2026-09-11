@@ -563,9 +563,9 @@ gh-author-name-list {
    ----------------------------------------------------------
    The shared theme gives .gh-topic-content no columns at all, and
    body:not(.home-template) pins every card to `grid-column: 1 / 3`, so the
-   read-next list came out as one full-width card per row. Two per row from
-   768px up, one below. Four posts per block fill both layouts exactly: 2 x 2
-   on desktop, a single column on phones. */
+   read-next list came out as one full-width card per row. Four per row from
+   992px, two on tablet, one on phones; four posts per block fill each layout
+   exactly. */
 
 /* Needs body:not(.home-template) to reach (0,4,1): the rule above that pins
    every non-home card to `grid-column: 1 / 3` is (0,3,1), and at (0,3,0) this
@@ -596,12 +596,12 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   padding: 1.8rem 0 0;
 }
 
-/* Card titles are <h1>, and on the homepage grid they render at the plain h1
-   size, var(--h1-size). Same token here, so read-next follows the homepage at
-   every breakpoint (--h1-size is itself redefined per breakpoint). The meta
-   line uses the body-copy size. */
+/* Titles are a fraction of --h1-size (itself redefined per breakpoint), scaled
+   to the card width: four across on desktop, two on tablet, one on phones.
+   The full h1 size was far too large for a card. The meta line uses the
+   body-copy size. */
 .gh-read-next .gh-topic-grid .gh-card-title {
-  font-size: var(--h1-size);
+  font-size: calc(var(--h1-size) * 0.6);
   line-height: 1.25;
 }
 
@@ -631,6 +631,10 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     padding-block: 0;
   }
 
+  .gh-read-next .gh-topic-grid .gh-card-title {
+    font-size: calc(var(--h1-size) * 0.8);
+  }
+
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
@@ -643,16 +647,26 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     max-width: 100%;
   }
 
+  .gh-read-next .gh-topic-grid .gh-card-title {
+    font-size: calc(var(--h1-size) * 0.7);
+  }
+
 }
 
 @media screen and (min-width: 992px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     row-gap: 4rem;
     column-gap: var(--grid-gap);
     justify-items: stretch;
     max-width: 100%;
+  }
+
+  /* Four across needs more than the 800px article track: span the canvas's
+     wide track, the way the homepage grids span their container. */
+  .gh-read-next.gh-canvas > * {
+    grid-column: wide;
   }
 }
 
@@ -5035,14 +5049,11 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
   display: block;
 }
 
-.comments-wrap {
-  border-top: 1px solid var(--color-border);
-}
-
-/* The Discourse embed already announces itself; drop the "Member discussion"
-   label rather than removing the markup from three templates. */
+/* "Comentarios" heading over the Discourse embed: the site's subtitle style,
+   as a block with room before the thread and no rule or box around it. */
 .comments-wrap .global-subtitle-title {
-  display: none;
+  display: block;
+  margin: 0 0 1.6rem;
 }
 
 .account-signout-wrap {
@@ -5190,47 +5201,46 @@ html.js .gh-loadmore {
 /* --------------------------------------------------------------------------
 Tablet/mobile header bar (up to 991px, where the burger menu takes over)
 
-  closed:  [logo]  [ search ............ ]  [burger]
-  open:    [logo]  [ search ............ ]  [  ✕   ]
-                                            [ theme ]
+  closed:  [ search .................. ]  [burger]
+  open:    [ search ........... ]  [theme]  [  ✕  ]
+                           [ logo ]
+                       nav, Subscribe
 
-A sticky bar, the same closed and open. Markup is in .gh-head-brand in
-default.hbs, behaviour in assets/js/head.js. Several rules use #gh-head on
-purpose: the rules they replace are id-scoped too.
+Fixed to the top of the viewport. Markup is in .gh-head-brand in default.hbs,
+behaviour in assets/js/head.js. The logo keeps its original behaviour: hidden
+in the bar, shown only in the open menu (the .gh-head-logo and img.logo-nav
+rules further up). Several rules use #gh-head on purpose: the rules they
+replace are id-scoped too.
 -------------------------------------------------------------------------- */
 .gh-head-search-field,
 .gh-head-bar-toggle {
   display: none;
 }
 
-/* Comments sit in their own .gh-canvas, outside .gh-full-content, so they get
-   the same main track as the read-next blocks instead of the column left
-   beside the TOC. This restores the gap they had as the last content block. */
-.gh-comments {
-  margin-top: 4vmin;
-}
-
 @media screen and (max-width: 991px) {
-  #gh-head {
+  :root {
     --head-bar-height: 6.4rem;
   }
 
-  /* Sticky. While open #gh-head is the fixed full-screen menu, so that state
-     is excluded. Headers over a cover (is-head-overlay) join only with JS,
-     because head.js is what gives them a background once the cover is
-     scrolled past; without it they keep the absolute header over the image. */
+  /* Fixed, not sticky: sticky silently stops working as soon as an ancestor
+     becomes a scroll container, and html/body overflow can be set from outside
+     the theme (code injection, third-party scripts). While open, #gh-head is
+     already the fixed full-screen menu. Headers over a cover (is-head-overlay)
+     join only with JS, because head.js is what gives them a background once
+     the cover is scrolled past; without it they keep the absolute header. */
   body:not(.is-head-open):not(.is-head-transparent) #gh-head,
   html.js body.is-head-overlay:not(.is-head-open) #gh-head {
-    position: sticky;
+    position: fixed;
     top: 0;
+    right: 0;
+    left: 0;
     z-index: 90;
   }
 
-  /* Over a cover the bar must not take layout space, or the image would start
-     below it. is-head-overlay never changes, unlike is-head-transparent, so the
-     page does not shift when head.js toggles the latter. */
-  html.js body.is-head-overlay:not(.is-head-open) #gh-head {
-    margin-bottom: calc(-1 * var(--head-bar-height));
+  /* A fixed bar takes no layout space, so push the page down by its height -
+     except over a cover, where the image is meant to start under the bar. */
+  body:not(.is-head-overlay) .gh-site {
+    padding-top: var(--head-bar-height);
   }
 
   body:not(.is-head-open) #gh-head {
@@ -5239,7 +5249,7 @@ purpose: the rules they replace are id-scoped too.
 
   #gh-head .gh-head-brand {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 1.2rem;
     align-items: center;
     width: 100%;
@@ -5248,26 +5258,57 @@ purpose: the rules they replace are id-scoped too.
     padding-block: 0;
   }
 
-  /* Open: a second row for the theme toggle, under the ✕. */
+  #gh-head .gh-head-search-field {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  #gh-head .gh-burger {
+    position: relative;
+    top: auto;
+    right: auto;
+    grid-row: 1;
+    grid-column: 2;
+    width: 4rem;
+    height: 4rem;
+    opacity: 1;
+    background-color: transparent;
+  }
+
+  #gh-head .gh-burger::before,
+  #gh-head .gh-burger::after {
+    width: 2.4rem;
+  }
+
+  /* Closed, the logo is hidden, so its wrapper must not open an empty grid
+     row that would split the bar's height. */
+  body:not(.is-head-open) #gh-head .gh-head-brand-wrapper {
+    display: none;
+  }
+
+  /* Open: the theme toggle joins the bar left of the ✕, and the logo gets its
+     own row underneath, centred as it was before the bar existed. */
   .is-head-open #gh-head .gh-head-brand {
+    grid-template-columns: minmax(0, 1fr) auto auto;
     grid-template-rows: var(--head-bar-height) auto;
     height: auto;
   }
 
-  #gh-head .gh-head-brand-wrapper,
-  .is-head-open #gh-head .gh-head-brand-wrapper {
-    flex-direction: row;
-  }
-
-  #gh-head .gh-head-logo {
-    display: flex;
-  }
-
-  #gh-head .gh-head-logo img.logo-nav {
-    width: auto;
-    max-width: 40vw;
-    max-height: 4rem;
+  .is-head-open #gh-head .gh-head-bar-toggle {
+    display: inline-flex;
+    grid-row: 1;
+    grid-column: 2;
     margin: 0;
+  }
+
+  .is-head-open #gh-head .gh-burger {
+    grid-column: 3;
+  }
+
+  .is-head-open #gh-head .gh-head-brand-wrapper {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-content: center;
   }
 
   .gh-head-search-field {
@@ -5320,31 +5361,7 @@ purpose: the rules they replace are id-scoped too.
     display: none;
   }
 
-  /* Open menu only, at the size every other header icon uses (.gh-icon-btn). */
-  .is-head-open #gh-head .gh-head-bar-toggle {
-    display: inline-flex;
-    grid-row: 2;
-    grid-column: 3;
-    justify-self: center;
-    margin: 0;
-  }
-
-  #gh-head .gh-burger {
-    position: relative;
-    top: auto;
-    right: auto;
-    width: 4rem;
-    height: 4rem;
-    opacity: 1;
-    background-color: transparent;
-  }
-
-  #gh-head .gh-burger::before,
-  #gh-head .gh-burger::after {
-    width: 2.4rem;
-  }
-
-  /* Search is in the bar and theme under the ✕; the open menu keeps Subscribe. */
+  /* Search and theme are in the bar; the open menu keeps Subscribe. */
   #gh-head .gh-head-actions .nav-icons {
     display: none;
   }
