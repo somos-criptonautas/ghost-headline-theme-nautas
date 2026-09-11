@@ -1,3 +1,3 @@
 {{!-- BTCPay Point of Sale in an iframe; sized in assets/css/btcpay-pos.css.
-    {{> "btcpay-pos" src="https://pay.criptonautas.co/apps/<appId>/pos"}} --}}
-<iframe class="btcpay-pos" src="{{src}}" title="{{t "BTCPay point of sale"}}" allow="clipboard-write; payment" loading="lazy"></iframe>
+    {{> "btcpay-pos"}} loads the POS mapped to the BTCPay root; src="..." picks another app. --}}
+<iframe class="btcpay-pos" src="{{#if src}}{{src}}{{else}}https://pay.criptonautas.co/{{/if}}" title="{{t "BTCPay point of sale"}}" allow="clipboard-write; payment" loading="lazy"></iframe>
