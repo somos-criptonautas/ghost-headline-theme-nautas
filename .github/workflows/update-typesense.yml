@@ -37,7 +37,7 @@ jobs:
       - name: Check the build still has the input head.js styles
         run: |
           if ! grep -q 'mp-search-input' assets/js/typesense-search.min.js; then
-            echo "::error::typesense-search.min.js no longer contains .mp-search-input - update SEARCH_INPUT_CSS in assets/js/head.js"
+            echo "::error::typesense-search.min.js no longer contains .mp-search-input - update SEARCH_CSS in assets/js/head.js"
             exit 1
           fi
 

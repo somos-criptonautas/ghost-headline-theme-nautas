@@ -4,6 +4,7 @@
 @import "signin.css";
 @import "members.css";
 @import "footer.css";
+@import "btcpay-pos.css";
 
 :root {
   --head-nav-gap: 32px;
@@ -550,7 +551,8 @@ gh-author-name-list {
   margin: 3.33rem auto 1.33rem;
 }
 
-.gh-read-next .gh-pagehead-title::after {
+.gh-read-next .gh-pagehead-title::after,
+.comunidad-comments .gh-pagehead-title::after {
   display: none;
 }
 
@@ -744,13 +746,10 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
 }
 
 @media (max-width: 991px) {
-  .gh-cover-title {
-    font-size: 4rem;
-  }
 }
 
 .gh-cover-title {
-  font-size: 5rem;
+  font-size: var(--h1-size);
   color: var(--color-link);
   text-transform: uppercase;
   word-break: break-word;
@@ -5050,11 +5049,18 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
   display: block;
 }
 
-/* "Comentarios" heading over the Discourse embed: the site's subtitle style,
-   as a block with room before the thread and no rule or box around it. */
-.comments-wrap .global-subtitle-title {
-  display: block;
-  margin: 0 0 1.6rem;
+/* "Comentarios" uses the read-next heading (.gh-pagehead / .gh-pagehead-title,
+   uppercase) so both sections after an article match. It sits inside
+   .gh-content, whose `.gh-content h2 { font-size: 1.73em }` would shrink it,
+   so the plain h2 sizes are restated here. */
+.gh-content .comunidad-comments .gh-pagehead-title {
+  font-size: 3.7rem;
+}
+
+@media screen and (max-width: 767px) {
+  .gh-content .comunidad-comments .gh-pagehead-title {
+    font-size: 3rem;
+  }
 }
 
 .account-signout-wrap {
@@ -5219,13 +5225,19 @@ replace are id-scoped too.
   display: none;
 }
 
-/* The search modal (MagicPages, in a shadow root) gets its input styled from
-   head.js. Our tokens are handed over under names the modal does not define
-   itself - it has its own --color-border, which would shadow ours. */
+/* The search modal (MagicPages, in a shadow root) is restyled from head.js to
+   match the open menu: same background, text colour, font and field. Tokens
+   are handed over under names the modal does not define itself - it has its
+   own --color-border, which would shadow ours. */
 magicpages-search {
-  --nautas-field-bg: var(--color-bg-alt);
-  --nautas-field-border: var(--color-border);
-  --nautas-field-focus: color-mix(in srgb, var(--color-base) 40%, transparent);
+  --nautas-bg: var(--color-bg);
+  --nautas-bg-alt: var(--color-bg-alt);
+  --nautas-text: var(--color-base);
+  --nautas-text-muted: color-mix(in srgb, var(--color-base) 63%, transparent);
+  --nautas-border: var(--color-border);
+  --nautas-backdrop: color-mix(in srgb, var(--color-bg) 70%, transparent);
+  --nautas-focus: color-mix(in srgb, var(--color-base) 40%, transparent);
+  --nautas-font: var(--font-sans);
 }
 
 @media screen and (max-width: 991px) {
@@ -5432,11 +5444,6 @@ Phone article layout
     margin-inline: 1.5vh;
   }
 
-  /* 30% smaller than the 4rem this width had. */
-  .gh-cover-title {
-    font-size: 2.8rem;
-  }
-
   /* The 120px cover padding and 100px content margin made room for a
      transparent header over the image. The bar now sits above the cover. */
   .post-template .gh-cover,
@@ -5462,4 +5469,26 @@ Phone article layout
   .gh-author-image-list img {
     max-width: 6.75rem;
   }
+}
+
+/* --------------------------------------------------------------------------
+External link marker
+--------------------------------------------------------------------------
+Phosphor Duotone arrow-square-out (ph-dt-arrow-square-out, the sprite in
+discourse-phosphor-duotone-icons), after links in article content that leave
+criptonautas.co - subdomains such as the forum count as ours. CSS only: the
+glyph is a mask painted in currentColor, so it follows the link colour and
+the light/dark theme, and masks read alpha, so the duotone 0.2 layer
+survives. Links wrapping an image and Ghost card links (kg-*: bookmarks,
+buttons) are left alone. A browser without :has() drops the rule and simply
+shows no marker. */
+.gh-content a[href^="http"]:not([href*="criptonautas.co"]):not([class*="kg-"]):not(:has(img))::after {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-left: 0.2em;
+  vertical-align: -0.05em;
+  content: "";
+  background-color: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M184,80V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H176A8,8,0,0,1,184,80Z' opacity='0.2'/%3E%3Cpath d='M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z'/%3E%3C/svg%3E") center / contain no-repeat;
 }

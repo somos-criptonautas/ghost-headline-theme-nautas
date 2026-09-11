@@ -1,0 +1,9 @@
+/* BTCPay POS iframe: the btcpay-pos partial, or class="btcpay-pos" in an HTML card.
+   BTCPay never reports its height, so the box is fixed. */
+.btcpay-pos {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 64rem;
+  border: 0;
+}

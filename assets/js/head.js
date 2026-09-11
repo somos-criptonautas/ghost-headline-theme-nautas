@@ -1,4 +1,4 @@
-/* Tablet/mobile header bar behaviour, and the search modal's input styling.
+/* Tablet/mobile header bar behaviour, and the search modal's styling.
  * Ships inside main.min.js.
  */
 (function () {
@@ -73,25 +73,41 @@
         }
     }
 
-    /* 3. Search modal input, styled like the header field. The MagicPages UI
-     *    renders into an open shadow root, so page CSS cannot reach it, and
-     *    .github/workflows/update-typesense.yml replaces its file weekly, so
-     *    the file must not be edited either. An adopted stylesheet applies on
-     *    top of whatever build is installed and cascades after the UI's own
-     *    <style> elements. Colours come in through the --nautas-field-*
-     *    properties set on the host in screen.css. The workflow refuses a
-     *    build that no longer has .mp-search-input, so a rename upstream cannot
-     *    silently drop this.
+    /* 3. Search modal, styled like the open menu: page background and text
+     *    colour, the site font, the header field's rounded input, and no blue
+     *    accent - titles, highlights and focus take the text colour instead.
+     *    The MagicPages UI renders into an open shadow root, so page CSS
+     *    cannot reach it, and .github/workflows/update-typesense.yml replaces
+     *    its file weekly, so the file must not be edited either. An adopted
+     *    stylesheet applies on top of whatever build is installed and cascades
+     *    after the UI's own <style> elements. Overriding the UI's own custom
+     *    properties restyles every part that reads them. Colours come in
+     *    through the --nautas-* properties set on the host in screen.css. The
+     *    workflow refuses a build that no longer has .mp-search-input, so a
+     *    rename upstream cannot silently drop the input styling.
      */
-    var SEARCH_INPUT_CSS =
+    var SEARCH_CSS =
+        '.mp-search-modal,.mp-search-modal.mp-search-dark{' +
+            '--color-surface:var(--nautas-bg);' +
+            '--color-surface-elevated:var(--nautas-bg);' +
+            '--color-surface-hover:var(--nautas-bg-alt);' +
+            '--color-text:var(--nautas-text);' +
+            '--color-text-secondary:var(--nautas-text-muted);' +
+            '--color-border:var(--nautas-border);' +
+            '--color-backdrop:var(--nautas-backdrop);' +
+            '--accent-color:var(--nautas-text);' +
+            '--accent-color-hover:var(--nautas-text);' +
+            '--color-result-bg:var(--nautas-bg);' +
+            '--color-result-hover:var(--nautas-bg-alt);' +
+            'font-family:var(--nautas-font)}' +
         '.mp-search-input,.mp-search-input:focus,.mp-search-input:focus-visible{' +
-            'background:var(--nautas-field-bg);' +
-            'border:1px solid var(--nautas-field-border);' +
+            'background:var(--nautas-bg-alt);' +
+            'border:1px solid var(--nautas-border);' +
             'border-radius:999px;' +
             'box-shadow:none;' +
             'outline:none}' +
         '.mp-search-input:focus,.mp-search-input:focus-visible{' +
-            'border-color:var(--nautas-field-focus)}';
+            'border-color:var(--nautas-focus)}';
 
     var styleSearch = function (host) {
         var shadow = host.shadowRoot;
@@ -101,7 +117,7 @@
             return;
         }
         var sheet = new CSSStyleSheet();
-        sheet.replaceSync(SEARCH_INPUT_CSS);
+        sheet.replaceSync(SEARCH_CSS);
         shadow.adoptedStyleSheets = shadow.adoptedStyleSheets.concat(sheet);
     };
 

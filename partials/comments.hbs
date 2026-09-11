@@ -2,9 +2,11 @@
     live in assets/js/discourse-embed.js (bundled into main.min.js): an inline
     script here is subject to the CSP's script hashes and silently stops
     running after any edit. --}}
-<div class="comments-section">
+<div class="comments-section comunidad-comments">
+    <section class="gh-pagehead">
+        <h2 class="gh-pagehead-title">{{t "Member discussion"}}</h2>
+    </section>
     <div class="comments-wrap">
-        <small class="global-subtitle-title">{{t "Member discussion"}}</small>
         <div id="discourse-comments" data-embed-url="https://criptonautas.co{{url}}"></div>
     </div>
 </div>
