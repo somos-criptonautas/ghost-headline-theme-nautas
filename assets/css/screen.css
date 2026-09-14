@@ -486,9 +486,7 @@ gh-author-name-list {
   letter-spacing: -0.01em;
 }
 
-/* Author social icons. The link box and the icon must be the same size: an
-   18px box with a 2.33rem (~26px) icon inside overflowed and knocked the row
-   out of line. One size, spacing from gap only. */
+/* Author social icons */
 .gh-author-social {
   display: flex;
   flex-wrap: wrap;
@@ -513,8 +511,7 @@ gh-author-name-list {
   opacity: 1;
 }
 
-/* The icons ship with different viewBoxes (16, 22, 24, 512), so pin both axes
-   and let the SVG scale inside its box rather than trusting intrinsic size. */
+/* Social icon SVG sizing */
 .gh-author-social svg {
   width: 100%;
   height: 100%;
@@ -561,17 +558,9 @@ gh-author-name-list {
   margin: auto;
 }
 
-/* Read-next ("more articles") grid.
-   ----------------------------------------------------------
-   The shared theme gives .gh-topic-content no columns at all, and
-   body:not(.home-template) pins every card to `grid-column: 1 / 3`, so the
-   read-next list came out as one full-width card per row. Four per row across
-   the full width from 992px, two below; four posts per block fill each
-   layout exactly. */
+/* Read-next grid */
 
-/* Needs body:not(.home-template) to reach (0,4,1): the rule above that pins
-   every non-home card to `grid-column: 1 / 3` is (0,3,1), and at (0,3,0) this
-   lost - each card spanned both columns and rendered full width. */
+/* Override shared theme's 2-column grid-column pin */
 body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   grid-column: auto;
 }
@@ -598,10 +587,7 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   padding: 1.8rem 0 0;
 }
 
-/* Titles are a fraction of --h1-size (itself redefined per breakpoint), scaled
-   to the card width: four across on desktop, two on tablet, one on phones.
-   The full h1 size was far too large for a card. The meta line uses the
-   body-copy size. */
+/* Card title sizing */
 .gh-read-next .gh-topic-grid .gh-card-title {
   font-size: calc(var(--h1-size) * 0.6);
   line-height: 1.25;
@@ -615,15 +601,11 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   font-size: var(--content-font-size);
 }
 
-/* The 767px block deeper in the file flips .gh-topic-content back to
-   `display: inherit`, so phones need the grid re-declared, not just columns.
-   Selector specificity matches `body:not(.home-template) .gh-topic-grid
-   .gh-topic-content` at (0, 3, 1) and comes later in source order, so it wins
-   that rule's row-gap / justify-items / max-width too. */
+/* Phone grid override */
 @media screen and (max-width: 767px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     row-gap: 2.66rem; /* --grid-gap × 2, matching grid list gaps */
     column-gap: var(--grid-gap);
     justify-items: stretch;
@@ -634,8 +616,7 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     padding-block: 0;
   }
 
-  /* Two narrow cards per row: the homepage's one-per-row h1 size would wrap
-     every other word. */
+  /* Phone title size */
   .gh-read-next .gh-topic-grid .gh-card-title {
     font-size: calc(var(--h1-size) * 0.6);
   }
@@ -668,9 +649,7 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     max-width: 100%;
   }
 
-  /* Four across the full page width, keeping the site gutter on both sides.
-     margin-left resets the 20vh offset .gh-read-next gets from 1700px, which
-     would push a full-width grid off the right edge. */
+  /* Full-width grid, reset 1700px offset */
   .gh-read-next {
     margin-left: 0;
   }
@@ -693,10 +672,6 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
 }
 
 .post-template .gh-cover {
-  /* Was 100% !important, which never applied: min-height is a percentage of a
-     parent with no definite height, so it resolved to auto. The !important
-     also outranked the inline value main.js was setting, making that dead
-     code (now removed). A viewport unit actually resolves. */
   --cover-height: 60vh;
 
   align-items: flex-end;
@@ -876,9 +851,7 @@ html[data-theme="dark"].gh-pagehead-title {
   font-family: var(--font-serif);
 }
 
-/* --------------------------------------------------------------------------
-   18.Custom — Membership page
-   -------------------------------------------------------------------------- */
+/* Membership page */
 .membership-section {
   margin-bottom: 7vh;
   padding-bottom: 10vh;
@@ -894,8 +867,7 @@ html[data-theme="dark"].gh-pagehead-title {
   display: none;
 }
 
-/* Switch
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Switch */
 .membership-switch,
 .membership-switch::before,
 .membership-switch-button {
@@ -953,8 +925,7 @@ html[data-theme="dark"].gh-pagehead-title {
   box-shadow: none;
 }
 
-/* Cards
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Cards */
 .membership-cards,
 .membership-card {
   display: flex;
@@ -1064,15 +1035,12 @@ html[data-theme="dark"].gh-pagehead-title {
   background-color: var(--color-seven);
 }
 
-/* Question
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Question */
 .membership-wrap+small {
-  margin-top: 2vh;
   text-align: center;
 }
 
-/* FAQs
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* FAQs */
 .faq-section {
   margin-top: -3vh;
   margin-bottom: 20vh;
@@ -1146,8 +1114,7 @@ html[data-theme="dark"].gh-pagehead-title {
   padding: 0 4vw 0 0;
 }
 
-/* RWD — Membership page
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* RWD — Membership page */
 @media (max-width: 1480px) {
   .membership-section {
     padding-bottom: 12vh;
@@ -1302,8 +1269,7 @@ html[data-theme="dark"].gh-pagehead-title {
   }
 }
 
-/* Button
-   –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Button */
 .global-button-wrapper {
   cursor: help;
   margin: 3rem auto;
@@ -1411,8 +1377,7 @@ html[data-theme="dark"].custom-no-feature-sign p a {
   }
 }
 
-/* Tags & Members visibility label
-   –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Tags & Members visibility label */
 .global-tags {
   line-height: 0;
   display: flex;
@@ -1845,8 +1810,7 @@ a.toc-link {
   }
 }
 
-/* padding: 1rem indented the reading-time heading while .toc-list sits at
-   padding: 0, so the heading and the links had different left edges. */
+/* TOC sidebar */
 .gh-sidebar h3 {
   margin: 0 0 1.2rem;
   padding: 0;
@@ -1859,9 +1823,7 @@ a.toc-link {
     color: var(--color-bg);
     padding: 3rem 3.33rem;
     width: 100%;
-    /* fill the content column */
     max-width: 100%;
-    /* keep vertical spacing, drop horizontal auto-centering */
     margin: 4rem 0 !important;
   }
 
@@ -2016,22 +1978,18 @@ body,
   margin-top: 6.23vh;
 }
 
-/* --------------------------------------------------------------------------
-19.Custom — Account page
--------------------------------------------------------------------------- */
+/* Account page */
 .account-section {
   padding-bottom: 6.23vh;
 }
 
-/* Question
-–––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Question */
 .membership-wrap+small {
   margin-top: 2vh;
   text-align: center;
 }
 
-/* FAQs
-–––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* FAQs */
 .faq-section {
   margin-top: -3vh;
   margin-bottom: 20vh;
@@ -2105,8 +2063,7 @@ body,
   padding: 0 4vw 0 0;
 }
 
-/* RWD — Membership page
-–––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* RWD — Membership page */
 @media screen and (max-width: 1480px) {
   .membership-section {
     padding-bottom: 12vh;
@@ -2261,9 +2218,7 @@ body,
   }
 }
 
-/* --------------------------------------------------------------------------
-   9.Post — Header
-   -------------------------------------------------------------------------- */
+/* Post — Header */
 .post-header {
   width: 100%;
   color: var(--color-font-one);
@@ -2276,16 +2231,14 @@ body,
   flex-wrap: wrap;
 }
 
-/* Container
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Container */
 .post-header-container {
   align-items: flex-start;
   padding-top: 2vh;
   padding-bottom: 8vh;
 }
 
-/* Content
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Content */
 .post-header-content {
   flex: 1 0 50%;
   max-width: 900px;
@@ -2297,20 +2250,17 @@ body,
   margin-bottom: 4vh;
 }
 
-/* Tags & Members visibility label
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Tags & Members visibility label */
 .post-tags a:last-of-type {
   margin-bottom: 2vh;
 }
 
-/* Title
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Title */
 .post-title {
   letter-spacing: var(--letter-spacing, normal);
 }
 
-/* Meta
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Meta */
 .post-meta {
   font-size: 1.3rem;
   line-height: 1.35;
@@ -2450,8 +2400,7 @@ body,
   }
 }
 
-/* Subtitle
-   –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Subtitle */
 .global-subtitle {
   display: flex;
   margin-bottom: 2vh;
@@ -2472,9 +2421,7 @@ body,
   font-weight: var(--font-weight-three-bold);
 }
 
-/* --------------------------------------------------------------------------
-14.Author & Tag page
--------------------------------------------------------------------------- */
+/* Author & Tag page */
 @media (min-width: 768px) {
   .archive-section {
     margin-top: 11vh;
@@ -2500,9 +2447,6 @@ body,
   margin: 3rem auto;
 }
 
-/* (the old .gh-author-social svg override lived here; it fought the sizing
-   above and added an uneven margin-right on top of the flex gap) */
-
 .author-template .archive-title {
   cursor: none;
   padding-top: 1rem;
@@ -2523,10 +2467,8 @@ body,
   background-color: var(--color-one);
 }
 
-/* Image
-–––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Image */
 .archive-image {
-  width: 11rem;
   height: 11rem;
   margin: 2rem auto 20px;
 }
@@ -2537,8 +2479,7 @@ body,
   border-radius: 100%;
 }
 
-/* Title & Counter
-–––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Title & Counter */
 .archive-title {
   position: relative;
   margin-bottom: 3.3rem;
@@ -2564,8 +2505,7 @@ body,
   border-radius: 100px;
 }
 
-/* Excerpt
-–––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Excerpt */
 .archive-excerpt {
   max-width: 880px;
 }
@@ -2576,8 +2516,7 @@ body,
   }
 }
 
-/* Details
-–––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Details */
 .account-details {
   max-width: 600px;
   padding: 0 var(--margin-wrap-left-right);
@@ -2650,8 +2589,7 @@ body,
   font-size: 1.2rem;
 }
 
-/* Buttons
-–––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Buttons */
 .account-buttons {
   font-size: 1.2rem;
   position: relative;
@@ -2696,8 +2634,7 @@ body,
   margin-bottom: 5.33 rem;
 }
 
-/* Image
-   –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Image */
 .global-image-author img {
   width: 11rem;
   margin: auto;
@@ -2763,8 +2700,7 @@ body,
   }
 }
 
-/* Border radius
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Border radius */
 .global-radius {
   overflow: hidden;
   border-radius: var(--border-radius);
@@ -2848,9 +2784,6 @@ body,
   }
 }
 
-/* No visible "Load more" control anymore - infinite scroll reads the next page
-   from <link rel="next"> in the document head. */
-
 .gh-card {
   word-break: unset;
 }
@@ -2932,11 +2865,7 @@ body,
   color: var(--color-base);
 }
 
-/* Discourse comments iframe (created by embed.js inside #discourse-comments).
-   Height is not set here: assets/js/discourse-embed.js sizes it to the
-   embedded page's content, so every comment shows without an inner scroll.
-   The old `.discourse-embed-frame` class rule never matched - embed.js gives
-   the iframe an id, not a class. */
+/* Discourse comments iframe */
 #discourse-comments iframe {
   display: block;
   width: 100%;
@@ -2967,8 +2896,6 @@ blockquote.twitter-tweet {
   margin-bottom: 6.11rem;
 }
 
-/* One logical shorthand instead of two physical properties layered over the
-   shared theme's own padding-top/padding-bottom. */
 .gh-main {
   padding-block: 5rem 3rem;
 }
@@ -3166,11 +3093,7 @@ html[data-theme="dark"] .kg-toggle-card {
   }
 }
 
-/* Mobile-first and each property declared once. Was five rules across four
-   min/max breakpoint pairs, re-stating display twice and margin three times.
-   Computed values are unchanged at every width; only the small-screen display
-   moves from flow-root to grid, which this single-child block renders the
-   same. */
+/* Author block */
 .gh-author {
   display: grid;
   width: 90%;
@@ -3216,11 +3139,6 @@ html[data-theme="dark"] .kg-toggle-card {
   max-width: 1500px;
 }
 
-/*
-.gh-head-actions .gh-search {
-display: unset !important;
-}
-*/
 .gh-article-excerpt {
   font-size: 2rem;
   padding: 0 0.5rem;
@@ -3270,18 +3188,12 @@ display: unset !important;
   list-style-type: none;
 }
 
-/* One TOC column across the whole desktop range. Previously it was static
-   (never stuck) and ~280px between 992-1089px, then sticky and derived from
-   width: 56% above 1090px, which grew to ~930px at 1920 and pushed the article
-   off-centre. --toc-width is the only knob. */
+/* Desktop TOC column */
 @media screen and (min-width: 992px) {
   .gh-full-content {
     gap: var(--toc-gap);
     align-items: flex-start;
-    /* The 1500px .gh-inner stops being centred when the window is narrower
-       (devtools docked, split screen) and the sticky TOC then hugged the
-       viewport edge. This keeps the sidebar and the article off the edge
-       together. 1.33rem matches .gh-outer's indent. */
+/* TOC padding */
     padding-inline: 1.33rem;
   }
 
@@ -3457,16 +3369,12 @@ blockquote.kg-blockquote-alt {
   margin-bottom: 1.8rem;
 }
 
-/* Ghost's own cards.min.css pads the content 20px; ~20% off that, and the
-   thumbnail loses the same amount of column so the card is shorter too. */
+/* Bookmark card padding */
 .kg-bookmark-content {
   padding: 1.4rem 1.7rem;
 }
 
-/* Same hover language as the topic grid and nav: dimmed at rest, full on
-   hover, one 0.2s opacity transition - no lift, no colour change. The old
-   rule here was `kg-bookmark-card a...` with no leading dot, so it matched
-   nothing. */
+/* Bookmark hover */
 .kg-bookmark-container {
   opacity: 0.78;
   transition: opacity 0.2s var(--animation-base), box-shadow 0.2s var(--animation-base);
@@ -3664,11 +3572,7 @@ html[data-theme="dark"] .page-template .gh-cover::before {
   opacity: 1;
 }
 
-/* shared-theme-assets 2.7.3 added `.nav a { display: inline-flex }` to align
-   optional Ghost nav icons. That collapses the anchor to its content height,
-   so the li shrinks and the hover underline - an inset box-shadow on the li -
-   sits tight against the text instead of below it. This nav uses no Ghost nav
-   icons, so keep the previous inline flow. */
+/* Nav link display */
 #gh-head .nav a {
   display: inline;
 }
@@ -3690,12 +3594,6 @@ html[data-theme="dark"] .page-template .gh-cover::before {
 
 :not(html[data-theme="light"]).is-head-transparent.is-head-open .gh-head .nav a,
 :not(html[data-theme="light"]).is-head-transparent.is-head-open .gh-head .nav>li a,
-/*
-:not(html[data-theme="light"]).is-head-transparent.is-head-open .gh-search {
-
-color: var(--color-base) !important;
-}
-*/
 .gh-head .nav {
   font-size: 2.11rem;
 }
@@ -3706,10 +3604,7 @@ color: var(--color-base) !important;
   font-weight: 500;
 }
 
-/* Overlay anchor that makes a whole card/image clickable (item.hbs, loop.hbs).
-   Lost when basho.css was dropped - the class survived with an unrelated
-   text-transform, so feature images stopped being clickable while titles kept
-   working. Parent is .global-image-orientation, which is position: relative. */
+/* Clickable card overlay */
 .global-link {
   position: absolute;
   z-index: 1;
@@ -3960,22 +3855,16 @@ h5 {
   box-sizing: border-box;
 }
 
-/*
-*/
-
+/* Buttons */
 .it-subscribe-content .subscribe-form-input {
   outline: 0;
   box-shadow: 0 0 0 0;
   border: 3px solid #e1edf4;
-  /*padding: 1.5rem;*/
   flex: 1;
   margin: 0 auto;
   margin-bottom: 2rem;
   border-radius: 1rem;
   width: 350px;
-  /* border-right: 0;
-border-top-right-radius: 0;
-border-bottom-right-radius: 0; */
 }
 
 .subscribe-form-input::placeholder {
@@ -3989,7 +3878,6 @@ border-bottom-right-radius: 0; */
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border: 3px solid #e1edf4;
-  /* border-left: 0; */
   margin: 0 auto;
   width: 350px;
 }
@@ -4029,9 +3917,6 @@ border-bottom-right-radius: 0; */
 }
 
 /* Buttons */
-
-/* Buttons
-/* ---------------------------------------------------------- */
 
 .it-button {
   display: inline-block;
@@ -4134,8 +4019,7 @@ border-bottom-right-radius: 0; */
   background-color: var(--color-alert-error);
 }
 
-/* RWD — Account page
-    –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* RWD — Account page */
 @media screen and (max-width: 767px) {
   .account-header {
     padding-bottom: 5vh;
@@ -4156,9 +4040,7 @@ border-bottom-right-radius: 0; */
   }
 }
 
-/* --------------------------------------------------------------------------
-    20.Custom — Authors & Tags page
-    -------------------------------------------------------------------------- */
+/* Custom Authors & Tags page */
 .custom-archive {
   margin-bottom: 9vh;
 }
@@ -4190,8 +4072,7 @@ border-bottom-right-radius: 0; */
   line-clamp: 3;
 }
 
-/* RWD — Authors & Tags page
-    –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* RWD — Authors & Tags page */
 @media (min-width: 1481px) {
   .custom-archive .loop-wrap {
     grid-template-columns: repeat(3, 1fr);
@@ -4313,9 +4194,7 @@ border-bottom-right-radius: 0; */
   cursor: pointer;
 }
 
-/* --------------------------------------------------------------------------
-   5.Loop
-   -------------------------------------------------------------------------- */
+/* Loop */
 
 .loop-wrap {
   margin-bottom: var(--grid-gap);
@@ -4333,8 +4212,7 @@ border-bottom-right-radius: 0; */
   grid-gap: var(--grid-gap);
 }
 
-/* Subtitle
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Subtitle */
 .hero-section.no-slider+.loop-section .loop-subtitle {
   display: none;
 }
@@ -4350,22 +4228,14 @@ border-bottom-right-radius: 0; */
   font-weight: var(--font-weight-one-bold);
 }
 
-/* Image
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Image */
 .item-image {
   margin-bottom: 2vh;
   transition: transform 0.11s ease;
   min-height: 13vw;
 }
 
-/*      .item.is-loop:hover:hover .item-image,
-      .item-image:hover {
-         transform: translateY(-11px);
-      }
-*/
-
-/* RWD — Loop
-   –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* RWD — Loop */
 @media screen and (min-width: 992px) {
   .item.is-loop {
     opacity: 0.63;
@@ -4426,11 +4296,6 @@ border-bottom-right-radius: 0; */
     font-size: 2.4rem;
   }
 
-  /*   
-      .item-image:hover {
-         transform: translateY(0);
-      }
-*/
   .item.is-featured,
   .item.is-featured.is-small {
     width: 30%;
@@ -4549,8 +4414,7 @@ border-bottom-right-radius: 0; */
   }
 }
 
-/* Authors
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Authors */
 .global-item-author {
   position: relative;
   display: inline-block;
@@ -4635,8 +4499,7 @@ border-bottom-right-radius: 0; */
   color: var(--color-font-three);
 }
 
-/* Content
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Content */
 .item-content {
   display: flex;
   flex-direction: column;
@@ -4648,8 +4511,7 @@ html.no-infinite-scroll .pagination {
   display: grid;
 }
 
-/* Title
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Title */
 .item-title {
   font-family: var(--font-sans);
   font-size: 3rem;
@@ -4663,8 +4525,7 @@ html.no-infinite-scroll .pagination {
   text-underline-offset: 3px;
 }
 
-/* Excerpt
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Excerpt */
 .item-excerpt {
   font-size: 1.8rem;
   line-height: 1.5;
@@ -4685,20 +4546,17 @@ html.no-infinite-scroll .pagination {
   line-clamp: 10;
 }
 
-/* Item
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Item */
 .item {
   will-change: transform;
 }
 
-/* If 'loop'
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* If 'loop' */
 .item.is-loop {
   margin-bottom: 5.2vh;
 }
 
-/* If 'featured'
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* If 'featured' */
 .item.is-featured {
   width: 41%;
   margin-right: var(--grid-gap);
@@ -4722,8 +4580,7 @@ html.no-infinite-scroll .pagination {
   line-clamp: 3;
 }
 
-/* If 'special'
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* If 'special' */
 .comments-section+.special-section {
   margin-top: 0;
 }
@@ -4750,8 +4607,7 @@ html.no-infinite-scroll .pagination {
   line-height: 1.3;
 }
 
-/* Animation
-      –––––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* Animation */
 @-webkit-keyframes slideTop {
   0% {
     transform: translateY(40px);
@@ -4953,9 +4809,7 @@ li.nav-coaching a {
   height: 1.3rem !important;
 }
 
-/* Hamburger — one place, no !important wars.
-   Box is a fixed rounded square; both bars are centred on it, so the
-   closed state is symmetric and the open state's X sits dead centre. */
+/* Hamburger */
 
 .gh-burger {
   display: none;
@@ -4989,8 +4843,7 @@ li.nav-coaching a {
   background-color: var(--color-base);
 }
 
-/* The box is always light, so keep the bars dark on transparent/dark/brand
-   headers instead of the shared theme's white. */
+/* Burger bar color */
 .is-head-transparent .gh-burger::before,
 .is-head-transparent .gh-burger::after,
 .is-head-dark:not(.is-head-transparent) .gh-burger::before,
@@ -5037,12 +4890,8 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
   background-color: var(--color-base);
 }
 
-/* Migrated from the retired basho.css — the only rules there that the
-   templates still depend on. Basho's own custom properties are replaced
-   with the theme's. */
-
-/* loop.hbs renders all three author labels and relies on this to show
-   exactly one, picked by the .option-* class. */
+/* Author labels */
+/* Show first author label only */
 .global-authors small {
   display: none;
   width: 100%;
@@ -5057,10 +4906,7 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
   display: block;
 }
 
-/* "Comentarios" uses the read-next heading (.gh-pagehead / .gh-pagehead-title,
-   uppercase) so both sections after an article match. It sits inside
-   .gh-content, whose `.gh-content h2 { font-size: 1.73em }` would shrink it,
-   so the plain h2 sizes are restated here. */
+/* Comments heading */
 .gh-content .comunidad-comments .gh-pagehead-title {
   font-size: 3.7rem;
 }
@@ -5090,15 +4936,7 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
   background-color: transparent;
 }
 
-/* --------------------------------------------------------------------------
-Webmentions (partials/webmentions.hbs, rendered by assets/js/webmentions.js)
-
-The markup used to carry its own <style> block written against a different
-theme's tokens - --color-four, --font-family-one, --color-font-one,
---color-border-one, --color-font-two, --opacity-four and the two
---font-weight-*-bold. None of them exist here, so every rule that referenced
-one was dropped and the card rendered unstyled.
--------------------------------------------------------------------------- */
+/* Webmentions */
 .wm-container {
   padding: 2.5rem;
   margin: 4rem 0 6rem;
@@ -5205,38 +5043,18 @@ one was dropped and the card rendered unstyled.
   font-size: 1.5rem;
   opacity: 0.63;
 }
-/* Infinite scroll (shared theme assets, pagination(true) in assets/js/main.js)
-   appends the next page in place, so the "Show more" links in home.hbs and
-   index.hbs are a no-JS fallback only. html.js is set by theme.js in <head>
-   before first paint. */
+/* Infinite scroll */
 html.js .gh-loadmore {
   display: none;
 }
 
-/* --------------------------------------------------------------------------
-Tablet/mobile header bar (up to 991px, where the burger menu takes over)
-
-  closed:  [ search .................. ]  [burger]
-  open:    [ search ........... ]  [theme]  [  ✕  ]
-                           [ logo ]
-                       nav, Subscribe
-
-Fixed to the viewport, below anything Ghost renders above the site (the
-announcement bar): assets/js/head.js keeps --head-top at the bottom edge of
-that content while it is on screen. Markup is in .gh-head-brand in
-default.hbs. The logo keeps its original behaviour: hidden in the bar, shown
-only in the open menu. Several rules use #gh-head on purpose: the rules they
-replace are id-scoped too.
--------------------------------------------------------------------------- */
+/* Tablet/mobile header bar */
 .gh-head-search-field,
 .gh-head-bar-toggle {
   display: none;
 }
 
-/* The search modal (MagicPages, in a shadow root) is restyled from head.js to
-   match the open menu: same background, text colour, font and field. Tokens
-   are handed over under names the modal does not define itself - it has its
-   own --color-border, which would shadow ours. */
+/* Search modal */
 magicpages-search {
   --nautas-bg: var(--color-bg);
   --nautas-bg-alt: var(--color-bg-alt);
@@ -5253,11 +5071,7 @@ magicpages-search {
     --head-bar-height: 6.4rem;
   }
 
-  /* Fixed, not sticky: sticky silently stops working as soon as an ancestor
-     becomes a scroll container, and html/body overflow can be set from outside
-     the theme. Opaque on every page, including over a cover, where a
-     transparent bar read as a missing header. While open, #gh-head is already
-     the fixed full-screen menu. */
+  /* Fixed, not sticky */
   body:not(.is-head-open) #gh-head {
     position: fixed;
     top: var(--head-top, 0px);
@@ -5301,32 +5115,26 @@ magicpages-search {
     background-color: transparent;
   }
 
-  /* The bars sit on a transparent button now, so they take the text colour in
-     both themes. The older html[data-theme="dark"] rule painted them with the
-     background colour, which suited the grey floating box and made them
-     black on black here. */
+  /* Burger bar color */
   #gh-head .gh-burger::before,
   #gh-head .gh-burger::after {
     width: 2.4rem;
     background-color: var(--color-base);
   }
 
-  /* Closed, the logo is hidden, so its wrapper must not open an empty grid
-     row that would split the bar's height. */
+  /* Hidden logo wrapper */
   body:not(.is-head-open) #gh-head .gh-head-brand-wrapper {
     display: none;
   }
 
-  /* Open: the theme toggle joins the bar left of the ✕, and the logo gets its
-     own row underneath. */
+  /* Open state layout */
   .is-head-open #gh-head .gh-head-brand {
     grid-template-columns: minmax(0, 1fr) auto auto;
     grid-template-rows: var(--head-bar-height) auto;
     height: auto;
   }
 
-  /* 2.2rem, not the 3rem of .gh-icon-btn: at full size the glyph read larger
-     than the burger's 2.4rem bars. */
+  /* Toggle size */
   .is-head-open #gh-head .gh-head-bar-toggle {
     display: inline-flex;
     grid-row: 1;
@@ -5340,9 +5148,7 @@ magicpages-search {
     grid-column: 3;
   }
 
-  /* 5vh is the space the open-menu brand had before the bar existed
-     (#gh-head .gh-head-brand margin-bottom); without it the logo sat hard
-     against the top. */
+  /* Brand margin */
   .is-head-open #gh-head .gh-head-brand-wrapper {
     grid-row: 2;
     grid-column: 1 / -1;
@@ -5405,8 +5211,7 @@ magicpages-search {
     display: none;
   }
 
-  /* Open menu: the bar stays at the top, nav and actions centre in the rest.
-     .gh-head-menu is display:contents when open, so .nav is the flex item. */
+  /* Open menu layout */
   .is-head-open #gh-head .gh-head-inner {
     justify-content: flex-start;
   }
@@ -5419,13 +5224,7 @@ magicpages-search {
     margin-bottom: auto;
   }
 
-  /* Comments break out of the article's side margins (.gh-full-content, the
-     canvas gutters and, on tablet, .gh-content's 70ch cap) to the viewport
-     width minus one gutter each side; squeezed into the text column, the
-     iframe scrolled sideways inside. Desktop keeps the article column.
-     overflow-x: clip on .gh-site absorbs the few pixels a classic scrollbar
-     adds to 100vw on a narrow desktop window; clip does not create a scroll
-     container, so fixed and sticky elements are unaffected. */
+  /* Full-width comments */
   .gh-content > .comments-section {
     width: calc(100vw - 2 * var(--gap));
     max-width: none;
@@ -5437,23 +5236,19 @@ magicpages-search {
   }
 }
 
-/* --------------------------------------------------------------------------
-Phone article layout
--------------------------------------------------------------------------- */
+/* Phone article layout */
 @media screen and (max-width: 767px) {
-  /* Half the main column's vertical padding (was 5rem): with the fixed bar's
-     spacer above it, the full amount left an empty band before the article. */
+  /* Phone padding */
   .gh-main {
     padding-block: 2.5rem;
   }
 
-  /* Half the article's side margin (was 0 3vh). */
+  /* Phone side margin */
   .gh-full-content {
     margin-inline: 1.5vh;
   }
 
-  /* The 120px cover padding and 100px content margin made room for a
-     transparent header over the image. The bar now sits above the cover. */
+  /* Phone cover padding */
   .post-template .gh-cover,
   .page-template .gh-cover {
     padding-top: 3.2rem;
@@ -5463,8 +5258,7 @@ Phone article layout
     margin-top: 0;
   }
 
-  /* Image to author/date: 4.23rem above .gh-author, plus 5rem under the image
-     on the wide template, left a large gap. */
+  /* Phone author spacing */
   .gh-author {
     margin-top: 2rem;
   }
@@ -5473,23 +5267,13 @@ Phone article layout
     margin-bottom: 2rem;
   }
 
-  /* Author avatar 25% smaller (was 9rem). */
+  /* Smaller avatar */
   .gh-author-image-list img {
     max-width: 6.75rem;
   }
 }
 
-/* --------------------------------------------------------------------------
-External link marker
---------------------------------------------------------------------------
-Phosphor Duotone arrow-square-out (ph-dt-arrow-square-out, the sprite in
-discourse-phosphor-duotone-icons), after links in article content that leave
-criptonautas.co - subdomains such as the forum count as ours. CSS only: the
-glyph is a mask painted in currentColor, so it follows the link colour and
-the light/dark theme, and masks read alpha, so the duotone 0.2 layer
-survives. Links wrapping an image and Ghost card links (kg-*: bookmarks,
-buttons) are left alone. A browser without :has() drops the rule and simply
-shows no marker. */
+/* External link marker */
 .gh-content a[href^="http"]:not([href*="criptonautas.co"]):not([class*="kg-"]):not(:has(img))::after {
   display: inline-block;
   width: 0.8em;
@@ -5501,11 +5285,7 @@ shows no marker. */
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M184,80V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H176A8,8,0,0,1,184,80Z' opacity='0.2'/%3E%3Cpath d='M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-/* Full-image cover height: 80% of the screen, so the start of the article
-   stays in view below it and reads as "scroll for more". svh where supported:
-   it ignores the mobile browser toolbar, so the cover does not jump when the
-   address bar collapses. Plain vh first because a custom property holding an
-   unsupported unit would leave min-height invalid rather than fall back. */
+/* Cover height */
 .post-template .gh-cover,
 .page-template .gh-cover {
   --cover-height: 80vh;

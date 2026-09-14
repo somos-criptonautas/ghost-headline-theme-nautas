@@ -1,16 +1,4 @@
-{{!-- Read-next, after the comments and before the footer.
-
-    Two blocks of 4, not 6 + 6: twelve cards pushed the footer far enough down
-    that it was hard to reach, which is the whole reason for the cap.
-
-    Each {{#get}} asks for 5 and read-next.hbs renders 4, so the extra row tells
-    it whether a "Show more" link is warranted - no second count query.
-
-    Filters are built from primary_tag.slug, not from {{post.tags}}: Ghost only
-    interpolates simple paths into a filter string, and post.tags is an array of
-    tag objects, so "tags:[{{post.tags}}]" never resolved to a usable value.
-
-    A post with no tag falls through to the latest-posts block on its own. --}}
+{{!-- Related posts: two blocks of 4, fetched as 5 to detect "Show more". --}}
 {{#is "post"}}
     {{#if post.primary_tag}}
         {{#get "posts" include="authors" filter="tag:{{post.primary_tag.slug}}+id:-{{post.id}}" limit="5" as |next|}}
