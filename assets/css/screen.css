@@ -425,6 +425,11 @@ a.gh-card-link:hover {
   text-align: center;
 }
 
+nav.gh-article-tag {
+  display: block;
+  font-size: 1.7rem;
+}
+
 .gh-article-tag a {
   color: inherit;
 }
@@ -622,9 +627,10 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     padding-block: 0;
   }
 
-  /* Phone title size */
+  /* Phone title size: same as the index cards */
   .gh-read-next .gh-topic-grid .gh-card-title {
-    font-size: calc(var(--h1-size) * 0.6);
+    font-size: var(--h1-size);
+    line-height: 1.11;
   }
 
 }
@@ -648,7 +654,7 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
 @media screen and (min-width: 992px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     row-gap: 4rem;
     column-gap: var(--grid-gap);
     justify-items: stretch;
