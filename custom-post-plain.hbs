@@ -5,9 +5,7 @@
         2000w" sizes="100vw" src="{{img_url feature_image size="xl" format="webp" }}" alt="{{title}}">
 
     <div class="gh-cover-content">
-        {{#if primary_tag}}
-        <a class="gh-article-tag" href="{{primary_tag.url}}">{{primary_tag.name}}</a>
-        {{/if}}
+        {{> "breadcrumb"}}
 
         <h1 class="gh-cover-title">{{title}}</h1>
     </div>
@@ -18,9 +16,7 @@
             {{^if feature_image}}
             <header class="gh-article-header gh-canvas">
                 <div class="gh-cover-content">
-                    {{#if primary_tag}}
-                    <a class="gh-article-tag" href="{{primary_tag.url}}">{{primary_tag.name}}</a>
-                    {{/if}}
+                    {{> "breadcrumb"}}
                     <h1 class="gh-cover-title">{{title}}</h1>
                     {{#if custom_excerpt}}
                     <p class="gh-article-excerpt">{{custom_excerpt}}</p>

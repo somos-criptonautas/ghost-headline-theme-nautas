@@ -6,9 +6,7 @@
         format="webp" }} 2000w" sizes="100vw" src="{{img_url feature_image size="xl" format="webp" }}" alt="{{title}}">
     {{/if}}
     <div class="gh-cover-content">
-        {{#if primary_tag}}
-        <a class="gh-article-tag" href="{{primary_tag.url}}">{{primary_tag.name}}</a>
-        {{/if}}
+        {{> "breadcrumb"}}
 
         <h1 class="gh-cover-title">{{title}}</h1>
         {{#if custom_excerpt}}

@@ -1,0 +1,21 @@
+{{!-- Home / primary tag, above the post title, plus the matching
+    BreadcrumbList for search engines (Ghost's {{ghost_head}} emits Article
+    but no breadcrumbs). ld+json is data, not script, so the CSP allows it. --}}
+{{#if primary_tag}}
+<nav class="gh-article-tag" aria-label="{{t "Breadcrumb"}}">
+    <a href="{{@site.url}}/">{{t "Home"}}</a>
+    <span aria-hidden="true">/</span>
+    <a href="{{primary_tag.url}}">{{primary_tag.name}}</a>
+</nav>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "{{t "Home"}}", "item": "{{@site.url}}/"},
+        {"@type": "ListItem", "position": 2, "name": "{{primary_tag.name}}", "item": "{{#primary_tag}}{{url absolute="true"}}{{/primary_tag}}"},
+        {"@type": "ListItem", "position": 3, "name": "{{title}}", "item": "{{url absolute="true"}}"}
+    ]
+}
+</script>
+{{/if}}

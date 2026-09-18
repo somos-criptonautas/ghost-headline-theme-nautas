@@ -9,7 +9,9 @@
 :root {
   --head-nav-gap: 32px;
   --color-primary-text: var(--color-darker-gray);
-  --h1-size: 4.11rem;
+  /* 3.2rem at 360px up to 4.11rem at 1200px, linear in between (1rem =
+     11.36px, html is 71%). !important to beat the shared assets' phone rule. */
+  --h1-size: clamp(3.2rem, 2.81rem + 1.23vw, 4.11rem) !important;
   --gh-font-heading: 'Outfit', var(--font-sans);
   --content-font-size: 1.6rem;
 }
@@ -229,10 +231,6 @@ body:not(.home-template) .gh-topic-grid .gh-card .gh-card-link:nth-child(even) {
     min-height: 17vh;
     max-height: 33vh;
   }
-
-  :root {
-    --h1-size: 3.73rem;
-  }
 }
 
 @media screen and (min-width: 768px) {
@@ -425,6 +423,14 @@ a.gh-card-link:hover {
   color: inherit;
   display: inherit;
   text-align: center;
+}
+
+.gh-article-tag a {
+  color: inherit;
+}
+
+.gh-article-tag span {
+  margin-inline: 0.4em;
 }
 
 .gh-article-image {
@@ -1495,10 +1501,6 @@ html[data-theme="dark"].custom-no-feature-sign p a {
 /* Media queries */
 
 @media (min-width: 768px) and (max-width: 991px) {
-  :root {
-    --h1-size: 3.53rem;
-  }
-
   .gh-cover-content {
     margin-top: 40px;
   }
