@@ -108,23 +108,11 @@
     },
   });
 </script> --}}
-<script>
-  window.__MP_SEARCH_CONFIG__ = {
-    typesenseNodes: [{
-      host: 'typesense.criptonautas.co',
-      protocol: 'https'
-    }], // also supports a Typesense cluster
-    typesenseApiKey: '8hPtZRIeBeU4MM7c6Fy9viwynvG1F2F4', // Under no circumstances use an admin API key here. These values are stored client-side and are therefore accessible to the end user.
-    collectionName: 'ghost',
-    theme: 'system', // 'light', 'dark', or 'system'
-    enableHighlighting: true, // highlight search terms in results
-    commonSearches: ['cómo empezar', 'cómo usar Monero', 'hacer trading'] // can also be empty
-  };
-</script>
 {{! Served from the theme, not from unpkg. The file is the unmodified
     MagicPages build, refreshed by .github/workflows/update-typesense.yml, and
     is kept out of main.min.js - see the js task in gulpfile.js. It reads
-    __MP_SEARCH_CONFIG__ above, so it has to come after it. }}
+    __MP_SEARCH_CONFIG__, set by assets/js/search-config.js inside
+    main.min.js; defer makes it run after that classic script either way. }}
 <script defer src="{{asset "js/typesense-search.min.js"}}"></script>
 <script defer async data-domain="criptonautas.co"
   src="https://stats.criptonautas.co/js/plausible.outbound-links.js"></script>

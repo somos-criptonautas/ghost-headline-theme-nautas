@@ -17,14 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version-file: .nvmrc
-
-      - run: pnpm install --no-frozen-lockfile
-
       - name: Download latest Typesense Search UI
         run: |
           curl --fail --silent --show-error --location \
@@ -50,18 +42,12 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # assets/js/*.js is concatenated into built/main.min.js, which is what the
-      # theme actually loads. Without this the download never reaches the site.
-      - name: Rebuild bundled assets
-        if: steps.git-check.outputs.changed == 'true'
-        run: pnpm exec gulp build
-
       - name: Commit and push
         if: steps.git-check.outputs.changed == 'true'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add assets/js/typesense-search.min.js assets/built
+          git add assets/js/typesense-search.min.js
           git commit -m "Update Typesense Search UI to latest version"
           git push
 
