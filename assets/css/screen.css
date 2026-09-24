@@ -226,19 +226,17 @@ body:not(.home-template) .gh-topic-grid .gh-card .gh-card-link:nth-child(even) {
   height: 100%;
 }
 
-@media screen and (max-width: 767px) {
-  .gh-topic-grid .gh-card-image img {
-    min-height: 17vh;
-    max-height: 33vh;
-  }
+/* Every listing image is 3:2. It was a vh range (17-33vh on phones, 43vh
+   above), so each image settled at its own height and the rows never lined
+   up. The large featured hero fills its own box and keeps opting out. */
+.gh-topic-grid .gh-card:not(.featured.large) .gh-card-image img {
+  aspect-ratio: 3 / 2;
+  height: auto;
+  min-height: 0;
+  max-height: none;
 }
 
 @media screen and (min-width: 768px) {
-  .gh-topic-grid .gh-card-image img {
-    min-height: 43vh;
-    max-height: 43vh;
-  }
-
   .gh-topic-grid .gh-card.featured.large .gh-card-image img {
     max-height: 100% !important;
   }
@@ -580,6 +578,15 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   min-width: 0;
 }
 
+.gh-read-next-rest {
+  display: contents;
+}
+
+.gh-read-next-rest[hidden],
+.gh-read-next .gh-topic-footer[hidden] {
+  display: none;
+}
+
 .gh-read-next .gh-topic-grid .gh-card-image img {
   aspect-ratio: 3 / 2;
   width: 100%;
@@ -598,9 +605,11 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   padding: 1.8rem 0 0;
 }
 
-/* Card title sizing */
+/* Card title sizing. 2.11rem is 24px at the 71% root - the size the
+   reference deck of cards uses - rather than a fraction of the article h1,
+   which outgrew the card as the h1 clamp scaled up. */
 .gh-read-next .gh-topic-grid .gh-card-title {
-  font-size: calc(var(--h1-size) * 0.6);
+  font-size: 2.11rem;
   line-height: 1.25;
 }
 
@@ -646,7 +655,7 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   }
 
   .gh-read-next .gh-topic-grid .gh-card-title {
-    font-size: calc(var(--h1-size) * 0.7);
+    font-size: 2.11rem;
   }
 
 }
@@ -654,7 +663,7 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
 @media screen and (min-width: 992px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     row-gap: 4rem;
     column-gap: var(--grid-gap);
     justify-items: stretch;
@@ -2714,7 +2723,7 @@ body,
   border-radius: var(--border-radius);
 }
 
-@media and (max-width: 991px) {
+@media screen and (max-width: 991px) {
   body.page-template.page-tags.gh-site {
     padding-top: 11vh;
   }
@@ -2871,6 +2880,21 @@ body,
 
 .discourse .button {
   color: var(--color-base);
+}
+
+/* Comments sit in .gh-content, which desktop shifts right to clear the TOC
+   sidebar. Break out to the viewport and re-centre at the article measure. */
+@media screen and (min-width: 992px) {
+  .gh-content > .comments-section {
+    width: 100vw;
+    max-width: none;
+    margin-inline: calc(50% - 50vw);
+  }
+
+  .gh-content > .comments-section > * {
+    max-width: min(var(--content-width), calc(100vw - 2 * var(--gap)));
+    margin-inline: auto;
+  }
 }
 
 /* Discourse comments iframe */
@@ -5156,10 +5180,17 @@ magicpages-search {
     grid-column: 3;
   }
 
-  /* Brand margin */
+  /* Brand margin. The brand takes the free space above the nav and centres
+     the logo in it; 5vh is the minimum breathing room on short screens. */
+  .is-head-open #gh-head .gh-head-brand {
+    flex: 1 0 auto;
+    grid-template-rows: var(--head-bar-height) 1fr;
+  }
+
   .is-head-open #gh-head .gh-head-brand-wrapper {
     grid-row: 2;
     grid-column: 1 / -1;
+    align-self: center;
     justify-content: center;
     margin-block: 5vh;
   }

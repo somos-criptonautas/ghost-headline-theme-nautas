@@ -141,6 +141,21 @@ text-align: left;
     }
 }
 
+/* Tablet: 10% less type, 25% more page padding. Everything sizes in rem, so
+   the root size carries the type change - which shrinks rem paddings by the
+   same 10%, hence 1.25 / 0.9 = 1.39em for a net +25% gutter. The vw gutter is
+   independent of the root size, so it takes the plain 1.25. */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    html {
+        font-size: 63.9% !important;
+    }
+
+    :root {
+        --gap: 1.39em;
+        --margin-wrap-left-right: 6.25vw;
+    }
+}
+
 .shadow {
     box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
 }

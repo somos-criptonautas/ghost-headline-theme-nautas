@@ -10,11 +10,24 @@
             {{#foreach posts limit="4"}}
                 {{> "loop-grid" has_large_post=false}}
             {{/foreach}}
+
+            {{!-- Posts 5-8, plus the footer link, revealed by
+                assets/js/read-next.js when the block scrolls into view. They
+                are rendered up front rather than fetched: it is four more
+                cards of markup, against a Content API key in the theme and a
+                second round trip. --}}
+            {{#match posts.length ">" 4}}
+            <div class="gh-read-next-rest" hidden>
+                {{#foreach posts from="5" to="8"}}
+                    {{> "loop-grid" has_large_post=false}}
+                {{/foreach}}
+            </div>
+            {{/match}}
         </div>
     </div>
 
-    {{#match posts.length ">" 4}}
-    <footer class="gh-topic-footer">
+    {{#match posts.length ">" 8}}
+    <footer class="gh-topic-footer" hidden>
         <a class="gh-topic-link" href="{{more_url}}">{{t "Show more"}} {{> "icons/arrow"}}</a>
     </footer>
     {{/match}}

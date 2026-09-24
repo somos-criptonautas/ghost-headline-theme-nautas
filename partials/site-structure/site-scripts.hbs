@@ -44,7 +44,10 @@
 {{#is "post"}}
 {{! tocbot.min.js ships inside main.min.js - see the js task in gulpfile.js }}
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  /* No DOMContentLoaded wrapper: this runs at the end of <body>, so the
+     article is already parsed and the list fills in with the container
+     instead of a tick later. */
+  (() => {
     const toc = document.querySelector('.toc');
     const sidebarToc = document.getElementById('sidebar-toc');
     const headings = document.querySelectorAll('.gh-content.gh-canvas h1, .gh-content.gh-canvas h2');
@@ -69,7 +72,7 @@
       });
       if (sidebarToc) sidebarToc.style.display = 'flow-root';
     }
-  });
+  })();
 </script>
 {{! webmentions.js ships inside main.min.js - see partials/webmentions.hbs }}
 {{/is}}
