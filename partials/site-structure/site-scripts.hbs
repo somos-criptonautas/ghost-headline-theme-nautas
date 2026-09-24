@@ -42,7 +42,7 @@
   };
 </script>
 {{#is "post"}}
-<script src="{{asset "js/tocbot.min.js"}}"></script>
+{{! tocbot.min.js ships inside main.min.js - see the js task in gulpfile.js }}
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const toc = document.querySelector('.toc');
@@ -89,7 +89,7 @@
     }
   });
 </script>
-<script src="{{asset "js/flying-pages.min.js"}}"></script>
+{{! flying-pages.min.js ships inside main.min.js, same as tocbot }}
 {{!--
 <script type="module">
   import Typebot from 'https://cdn.jsdelivr.net/gh/somos-criptonautas/js/typebot-web.js'
@@ -108,11 +108,12 @@
     },
   });
 </script> --}}
+<script src="{{asset "js/search-config.js"}}"></script>
 {{! Served from the theme, not from unpkg. The file is the unmodified
     MagicPages build, refreshed by .github/workflows/update-typesense.yml, and
     is kept out of main.min.js - see the js task in gulpfile.js. It reads
-    __MP_SEARCH_CONFIG__, set by assets/js/search-config.js inside
-    main.min.js; defer makes it run after that classic script either way. }}
+    __MP_SEARCH_CONFIG__, set by the classic script above, and defer runs
+    after every classic script, so the config is always there first. }}
 <script defer src="{{asset "js/typesense-search.min.js"}}"></script>
 <script defer async data-domain="criptonautas.co"
   src="https://stats.criptonautas.co/js/plausible.outbound-links.js"></script>

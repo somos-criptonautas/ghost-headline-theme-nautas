@@ -128,10 +128,16 @@ function js(done) {
             // the bundle: it arrives already minified, and re-uglifying 200KB
             // of vendor code on every build only mangles its symbols into our
             // sourcemap. It has its own <script> tag in site-scripts.hbs.
+            //
+            // search-config.js is also on its own tag: the bundle is one
+            // concatenated file, so a throw anywhere in it would take the
+            // search config with it and the search would silently boot on
+            // Typesense's localhost defaults.
             src([
                 'assets/js/*.js',
                 '!assets/js/theme.js',
                 '!assets/js/typesense-search.min.js',
+                '!assets/js/search-config.js',
             ], {sourcemaps: true}),
         ], {sourcemaps: true}),
         concat('main.min.js'),
