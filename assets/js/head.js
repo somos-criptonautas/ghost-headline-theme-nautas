@@ -121,6 +121,43 @@
         shadow.adoptedStyleSheets = shadow.adoptedStyleSheets.concat(sheet);
     };
 
+    /* 4. Hide-on-scroll for the fixed bar, via headroom.js. Only up to 991px:
+     *    that is where #gh-head is position: fixed, so there is something to
+     *    hide. On desktop the header is static and scrolls away by itself.
+     *
+     *    headroom.js is vendored in assets/js/main.js, which the bundle
+     *    concatenates AFTER this file, so window.Headroom does not exist yet -
+     *    hence the DOMContentLoaded wrapper, by which time the whole bundle has
+     *    run. The transform pairs with the --head-top offset above rather than
+     *    fighting it: one sets top, the other translates.
+     */
+    document.addEventListener('DOMContentLoaded', function () {
+        var head = document.getElementById('gh-head');
+        var bar = window.matchMedia('(max-width: 991px)');
+        var headroom = null;
+
+        if (!head || !window.Headroom || !window.Headroom.cutsTheMustard) {
+            return;
+        }
+
+        var apply = function () {
+            if (bar.matches && !headroom) {
+                // A little tolerance upwards so a stray pixel does not flap it.
+                headroom = new window.Headroom(head, {
+                    tolerance: {up: 5, down: 0},
+                    offset: 64
+                });
+                headroom.init();
+            } else if (!bar.matches && headroom) {
+                headroom.destroy();
+                headroom = null;
+            }
+        };
+
+        apply();
+        bar.addEventListener('change', apply);
+    });
+
     if (window.customElements) {
         // The element is defined by typesense-search.min.js (deferred, so it
         // runs after this bundle) and appended to <body> just after.

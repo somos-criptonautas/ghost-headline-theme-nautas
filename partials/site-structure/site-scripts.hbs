@@ -1,46 +1,7 @@
 <script src="{{asset "built/main.min.js"}}"></script>
-<script>
-  /**
- * Boilerplate Functions
- */
-  function posf(f, a) { for (var i = 0; i < a.length; i++) { if (f(a[i])) return i; } return -1; }
-  function apos(x, a) { return (typeof x == 'function') ? posf(x, a) : Array.prototype.indexOf.call(a, x) }
-  function arem(a, x) { var i = apos(x, a); if (i >= 0) { a.splice(i, 1); } return a; }
-  function afind(x, a) { var i = apos(x, a); return (i >= 0) ? a[i] : null; }
-  function addClass(el, cl) { if (el) { var a = el.className.split(' '); if (!afind(cl, a)) { a.unshift(cl); el.className = a.join(' ') } } }
-  function remClass(el, cl) { if (el) { var a = el.className.split(' '); arem(a, cl); el.className = a.join(' ') } }
-
-
-  /**
-   * Setup Variables
-   */
-  var previousPosition = window.pageYOffset;
-  var navbar = document.getElementById("gh-burger");
-  var navbarHeight = navbar.offsetHeight;
-
-  if (previousPosition > navbarHeight) {
-    addClass(navbar, 'headroom');
-  }
-
-  var navbar2 = document.getElementById("gh-head");
-  var navbar2Height = navbar2.offsetHeight;
-
-  if (previousPosition > navbar2Height) {
-    addClass(navbar2, 'headroom');
-  }
-
-
-  /**
-   * Headroom Action
-   */
-  window.onscroll = function () {
-
-    var currentPosition = window.pageYOffset;
-
-    addClass(navbar, 'headroom');
-    addClass(navbar2, 'headroom');
-  };
-</script>
+{{! The hide-on-scroll header is headroom.js (vendored in assets/js/main.js),
+    wired up in assets/js/head.js. The hand-rolled version that used to live
+    here only ever added its class, and nothing styled it. }}
 {{#is "post"}}
 {{! tocbot.min.js ships inside main.min.js - see the js task in gulpfile.js }}
 <script>
