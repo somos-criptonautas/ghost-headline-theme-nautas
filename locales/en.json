@@ -64,7 +64,7 @@
 	"Billing info update failed.": "Billing info update failed.",
 	"Premium": "Premium",
 	"Members": "Members",
-	"Subscribe": "🍄",
+	"Subscribe": "START",
 	"Subscribe Full": "Subscribe",
 	"I want the info": "Start free",
 	"Subscribe to get all the latest & greatest posts delivered straight to your inbox": "Subscribe to get all the latest & greatest posts delivered straight to your inbox",
@@ -121,7 +121,7 @@
 	"First newsletter title": "/cryptonaut",
 	"Newsletter subtitle": "reset",
 	"Join free": "we are changing with 5k people around the world 👇",
-    "Account settings": "your profile",
+	"Account settings": "your profile",
 	"Cancel subscription": "Finaliza tu subscripción",
 	"Join now": "I'm in",
 	"Latest": "Trending",
@@ -144,7 +144,7 @@
 	"By": "by",
 	"Please check our last articles": "You can read our last articles 😬",
 	"Tourists description": "did you already say hellp?",
-	"Start free": "Have fun!",
+	"Start free": "Enter your e-mail and recieve a 6 pages free PDF to start on crypto today.",
 	"Sign out": "exit",
 	"Check out the latest posts": "Check out the latest posts",
 	"See what we’ve written lately": "See what we’ve written lately",
@@ -160,5 +160,6 @@
 	"For trading": "For trading",
 	"But": "but",
 	"Accelerate our development": "we have groupal and individual trading coach.",
-	"Member discussion ": "comments"
+	"Member discussion ": "comments",
+	"updated": "updated"
 }

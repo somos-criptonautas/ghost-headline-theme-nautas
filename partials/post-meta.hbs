@@ -17,6 +17,15 @@
         <div class="gh-article-meta-inner">
             <time class="gh-article-date" datetime="{{date format="YYYY-MM-DD"}}">{{ date published_at }} - {{ date
                 published_at format='h:mm A' }}</time>
+            {{!-- Revisions matter on evergreen posts, and Ghost already puts
+                updated_at in the Article schema and article:modified_time -
+                this is the same date, for readers. Compared by day so a post
+                tidied up on publication day does not claim to be updated. --}}
+            {{#match (date updated_at format="YYYY-MM-DD") "!=" (date published_at format="YYYY-MM-DD")}}
+            <time class="gh-article-updated" datetime="{{date updated_at format="YYYY-MM-DD"}}">
+                {{t "updated"}} {{date updated_at timeago="true"}}
+            </time>
+            {{/match}}
         </div>
         <h4 class="gh-author-name-list">
             {{ t "by" }}

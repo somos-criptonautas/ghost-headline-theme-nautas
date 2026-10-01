@@ -1801,6 +1801,13 @@ body:not(.is-head-b--a_n) .gh-head-menu::after {
   }
 }
 
+.gh-article-updated {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.85em;
+  opacity: 0.63;
+}
+
 /* Pages open with their first block under the header; 80px from the shared
    assets read as cramped against this theme's cover. */
 .page-template .gh-content:only-child > :first-child:not(.kg-width-full) {
