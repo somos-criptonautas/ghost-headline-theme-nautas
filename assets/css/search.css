@@ -1,0 +1,270 @@
+/* Search modal (assets/js/search-modal.js)
+/* ----------------------------------------------------------
+   Plain page CSS, not a shadow root: the previous search UI rendered into one
+   and had to be restyled from JS with an adopted stylesheet. Colours come from
+   the theme's own properties, so light and dark follow html[data-theme]
+   for free. The root font-size is 71%, so 1rem is ~11.4px here.
+   ---------------------------------------------------------- */
+
+.ns {
+    --ns-bg: var(--color-bg);
+    --ns-bg-alt: var(--color-bg-alt);
+    --ns-text: var(--color-base);
+    --ns-muted: color-mix(in srgb, var(--color-base) 63%, transparent);
+    --ns-border: var(--color-border);
+    --ns-backdrop: color-mix(in srgb, var(--color-bg) 70%, transparent);
+    --ns-focus: color-mix(in srgb, var(--color-base) 40%, transparent);
+
+    position: fixed;
+    inset: 0;
+    z-index: 3999999;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: var(--font-sans);
+    color: var(--ns-text);
+}
+
+.ns[hidden] {
+    display: none;
+}
+
+html.ns-open {
+    overflow: hidden;
+}
+
+.ns__backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--ns-backdrop);
+    backdrop-filter: blur(4px);
+}
+
+.ns__modal {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: min(64rem, calc(100vw - 3.2rem));
+    max-height: min(72vh, 68rem);
+    margin-top: 10vh;
+    background: var(--ns-bg);
+    border: 1px solid var(--ns-border);
+    border-radius: 1.2rem;
+    box-shadow: 0 2.4rem 6rem rgb(0 0 0 / 22%);
+    overflow: hidden;
+}
+
+/* Head */
+
+.ns__head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 1.4rem;
+    border-bottom: 1px solid var(--ns-border);
+}
+
+.ns__head-icon svg {
+    display: block;
+    width: 1.9rem;
+    height: 1.9rem;
+    color: var(--ns-muted);
+}
+
+.ns__input,
+.ns__input:focus,
+.ns__input:focus-visible {
+    flex: 1;
+    min-width: 0;
+    padding: 0.9rem 1.4rem;
+    font-size: 1.6rem;
+    font-family: inherit;
+    color: var(--ns-text);
+    background: var(--ns-bg-alt);
+    border: 1px solid var(--ns-border);
+    border-radius: 999px;
+    box-shadow: none;
+    outline: none;
+}
+
+.ns__input:focus,
+.ns__input:focus-visible {
+    border-color: var(--ns-focus);
+}
+
+.ns__input::-webkit-search-cancel-button {
+    display: none;
+}
+
+.ns__esc {
+    padding: 0.4rem 0.8rem;
+    font-size: 1.1rem;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ns-muted);
+    background: var(--ns-bg-alt);
+    border: 1px solid var(--ns-border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+/* Body */
+
+.ns__body {
+    padding: 0.6rem 0 1.2rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.ns__section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 1.4rem 1.8rem 0.6rem;
+}
+
+.ns__section-label {
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ns-muted);
+}
+
+.ns__section-count {
+    font-size: 1.15rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ns-muted);
+}
+
+/* Hits */
+
+.ns__hit {
+    display: flex;
+    gap: 1.2rem;
+    padding: 1rem 1.8rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.ns__hit:hover,
+.ns__hit.is-active {
+    background: var(--ns-bg-alt);
+}
+
+.ns__hit-icon svg {
+    display: block;
+    width: 1.7rem;
+    height: 1.7rem;
+    margin-top: 0.3rem;
+    color: var(--ns-muted);
+}
+
+.ns__hit-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.ns__hit-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.ns__hit-snippet,
+.ns__meta {
+    font-size: 1.35rem;
+    line-height: 1.45;
+    color: var(--ns-muted);
+    /* Two lines, then ellipsis - a forum snippet can be a whole paragraph. */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.ns__meta {
+    -webkit-line-clamp: 1;
+    font-size: 1.2rem;
+}
+
+.ns__hit-who {
+    font-weight: 600;
+    color: var(--ns-text);
+}
+
+/* No accent colour: matches are marked with weight and the text colour, the
+   way the rest of the theme handles emphasis. */
+.ns .ns__hit mark {
+    padding: 0;
+    font-weight: 700;
+    color: var(--ns-text);
+    background: none;
+}
+
+.ns__more {
+    display: block;
+    padding: 0.8rem 1.8rem 0.2rem;
+    font-size: 1.3rem;
+    color: var(--ns-muted);
+    text-align: right;
+    text-decoration: none;
+}
+
+.ns__more:hover {
+    color: var(--ns-text);
+}
+
+/* Empty states */
+
+.ns__state:empty {
+    display: none;
+}
+
+.ns__none {
+    margin: 0;
+    padding: 2.4rem 1.8rem;
+    font-size: 1.45rem;
+    color: var(--ns-muted);
+    text-align: center;
+}
+
+.ns__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 1.4rem 1.8rem 0.6rem;
+}
+
+.ns__chips .ns__section-label {
+    flex: 0 0 100%;
+}
+
+.ns__chip {
+    padding: 0.6rem 1.2rem;
+    font-size: 1.35rem;
+    font-family: inherit;
+    color: var(--ns-text);
+    background: var(--ns-bg-alt);
+    border: 1px solid var(--ns-border);
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.ns__chip:hover {
+    border-color: var(--ns-focus);
+}
+
+@media screen and (max-width: 600px) {
+    .ns__modal {
+        width: 100vw;
+        max-height: 100vh;
+        height: 100%;
+        margin-top: 0;
+        border: 0;
+        border-radius: 0;
+    }
+}

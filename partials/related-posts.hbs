@@ -1,16 +1,21 @@
-{{!-- Related posts: two blocks that grow from 4 to 8 on scroll, fetched as 9
-    so the "Show more" link only appears when a ninth post exists. --}}
+{{!-- Related posts: two blocks that grow from 4 to 8 on scroll. 16 are
+    fetched so assets/js/read-next.js can pick the 8 it shows at random on
+    every visit - {{#get}} cannot randomise (Ghost rejected that in
+    TryGhost/Ghost#11130: a template must render the same HTML for a URL, and
+    the HTML is CDN-cached anyway). A card costs ~240 bytes gzipped, so the 8
+    spares are cheap; raise or lower the number here and in read-next.hbs
+    together. --}}
 {{#is "post"}}
     {{#if post.primary_tag}}
-        {{#get "posts" include="authors" filter="tag:{{post.primary_tag.slug}}+id:-{{post.id}}" limit="9" as |next|}}
+        {{#get "posts" include="authors" filter="tag:{{post.primary_tag.slug}}+id:-{{post.id}}" limit="16" as |next|}}
             {{> "read-next" posts=next tag=post.primary_tag more_url=post.primary_tag.url}}
         {{/get}}
 
-        {{#get "posts" include="authors" filter="tag:-{{post.primary_tag.slug}}+id:-{{post.id}}" limit="9" as |next|}}
+        {{#get "posts" include="authors" filter="tag:-{{post.primary_tag.slug}}+id:-{{post.id}}" limit="16" as |next|}}
             {{> "read-next" posts=next title=(t "Want more") more_url="/page/2/"}}
         {{/get}}
     {{else}}
-        {{#get "posts" include="authors" filter="id:-{{post.id}}" limit="9" as |next|}}
+        {{#get "posts" include="authors" filter="id:-{{post.id}}" limit="16" as |next|}}
             {{> "read-next" posts=next title=(t "Read next") more_url="/page/2/"}}
         {{/get}}
     {{/if}}

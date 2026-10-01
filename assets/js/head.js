@@ -1,28 +1,25 @@
-/* Tablet/mobile header bar behaviour, and the search modal's styling.
+/* Tablet/mobile header bar behaviour.
  * Ships inside main.min.js.
  */
 (function () {
     /* 1. Search field. The bar has a real input, but results live in the
-     *    MagicPages search modal, so the first keystroke hands the text over
-     *    and the modal takes focus - one search UI, not two. openModal and
-     *    applyUrlQuery are what the search UI itself uses for #/search/<query>
-     *    links; if a future build renames them, fall back to opening the modal
-     *    the way any [data-ghost-search] button does.
+     *    search modal, so the first keystroke hands the text over and the
+     *    modal takes focus - one search UI, not two. window.nautasSearch is
+     *    defined by assets/js/search-modal.js, which loads deferred and so
+     *    runs after this bundle; until then, clicking the modal's own trigger
+     *    is the fallback.
      */
     var form = document.querySelector('.gh-head-search-field');
     var input = form && form.querySelector('input');
 
     if (input) {
         var handOff = function () {
-            var search = window.magicPagesSearch;
             var query = input.value;
             input.value = '';
             input.blur();
 
-            if (search && typeof search.openModal === 'function' && typeof search.applyUrlQuery === 'function') {
-                Promise.resolve(search.openModal()).then(function () {
-                    search.applyUrlQuery(query);
-                });
+            if (window.nautasSearch && typeof window.nautasSearch.open === 'function') {
+                window.nautasSearch.open(query);
                 return;
             }
 
@@ -73,55 +70,7 @@
         }
     }
 
-    /* 3. Search modal, styled like the open menu: page background and text
-     *    colour, the site font, the header field's rounded input, and no blue
-     *    accent - titles, highlights and focus take the text colour instead.
-     *    The MagicPages UI renders into an open shadow root, so page CSS
-     *    cannot reach it, and .github/workflows/update-typesense.yml replaces
-     *    its file weekly, so the file must not be edited either. An adopted
-     *    stylesheet applies on top of whatever build is installed and cascades
-     *    after the UI's own <style> elements. Overriding the UI's own custom
-     *    properties restyles every part that reads them. Colours come in
-     *    through the --nautas-* properties set on the host in screen.css. The
-     *    workflow refuses a build that no longer has .mp-search-input, so a
-     *    rename upstream cannot silently drop the input styling.
-     */
-    var SEARCH_CSS =
-        '.mp-search-modal,.mp-search-modal.mp-search-dark{' +
-            '--color-surface:var(--nautas-bg);' +
-            '--color-surface-elevated:var(--nautas-bg);' +
-            '--color-surface-hover:var(--nautas-bg-alt);' +
-            '--color-text:var(--nautas-text);' +
-            '--color-text-secondary:var(--nautas-text-muted);' +
-            '--color-border:var(--nautas-border);' +
-            '--color-backdrop:var(--nautas-backdrop);' +
-            '--accent-color:var(--nautas-text);' +
-            '--accent-color-hover:var(--nautas-text);' +
-            '--color-result-bg:var(--nautas-bg);' +
-            '--color-result-hover:var(--nautas-bg-alt);' +
-            'font-family:var(--nautas-font)}' +
-        '.mp-search-input,.mp-search-input:focus,.mp-search-input:focus-visible{' +
-            'background:var(--nautas-bg-alt);' +
-            'border:1px solid var(--nautas-border);' +
-            'border-radius:999px;' +
-            'box-shadow:none;' +
-            'outline:none}' +
-        '.mp-search-input:focus,.mp-search-input:focus-visible{' +
-            'border-color:var(--nautas-focus)}';
-
-    var styleSearch = function (host) {
-        var shadow = host.shadowRoot;
-        // Constructable stylesheets: Safari 16.4+. Older browsers keep the
-        // modal's own styling, which is still fully usable.
-        if (!shadow || !('adoptedStyleSheets' in shadow) || typeof CSSStyleSheet.prototype.replaceSync !== 'function') {
-            return;
-        }
-        var sheet = new CSSStyleSheet();
-        sheet.replaceSync(SEARCH_CSS);
-        shadow.adoptedStyleSheets = shadow.adoptedStyleSheets.concat(sheet);
-    };
-
-    /* 4. Hide-on-scroll for the fixed bar, via headroom.js. Only up to 991px:
+    /* 3. Hide-on-scroll for the fixed bar, via headroom.js. Only up to 991px:
      *    that is where #gh-head is position: fixed, so there is something to
      *    hide. On desktop the header is static and scrolls away by itself.
      *
@@ -158,20 +107,4 @@
         bar.addEventListener('change', apply);
     });
 
-    if (window.customElements) {
-        // The element is defined by typesense-search.min.js (deferred, so it
-        // runs after this bundle) and appended to <body> just after.
-        window.customElements.whenDefined('magicpages-search').then(function () {
-            var tries = 0;
-            var find = function () {
-                var host = window.magicPagesSearch || document.querySelector('magicpages-search');
-                if (host) {
-                    styleSearch(host);
-                } else if (tries++ < 50) {
-                    window.setTimeout(find, 100);
-                }
-            };
-            find();
-        });
-    }
 })();

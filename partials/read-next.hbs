@@ -23,6 +23,18 @@
                 {{/foreach}}
             </div>
             {{/match}}
+
+            {{!-- Spares. read-next.js shuffles these together with the 8 above
+                and keeps 8, so the suggestions differ per visit; without JS
+                they stay hidden and the block behaves as if they were never
+                fetched. --}}
+            {{#match posts.length ">" 8}}
+            <div class="gh-read-next-pool" hidden>
+                {{#foreach posts from="9" to="16"}}
+                    {{> "loop-grid" has_large_post=false}}
+                {{/foreach}}
+            </div>
+            {{/match}}
         </div>
     </div>
 

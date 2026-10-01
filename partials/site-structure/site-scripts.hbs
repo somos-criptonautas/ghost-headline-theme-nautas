@@ -73,12 +73,18 @@
   });
 </script> --}}
 <script src="{{asset "js/search-config.js"}}"></script>
-{{! Served from the theme, not from unpkg. The file is the unmodified
-    MagicPages build, refreshed by .github/workflows/update-typesense.yml, and
-    is kept out of main.min.js - see the js task in gulpfile.js. It reads
-    __MP_SEARCH_CONFIG__, set by the classic script above, and defer runs
-    after every classic script, so the config is always there first. }}
-<script defer src="{{asset "js/typesense-search.min.js"}}"></script>
+{{! Search modal: InstantSearch.js over Typesense, one query across the blog
+    and the forum collections. The two vendor bundles are served from the theme
+    rather than a CDN and refreshed by .github/workflows/update-typesense.yml;
+    all three files stay out of main.min.js - see the js task in gulpfile.js.
+
+    Order matters and defer guarantees it: the vendors define
+    window.instantsearch and window.TypesenseInstantSearchAdapter, which
+    search-modal.js needs, and every classic script - including the config
+    above - has already run by the time the first deferred one does. }}
+<script defer src="{{asset "js/instantsearch.min.js"}}"></script>
+<script defer src="{{asset "js/typesense-instantsearch-adapter.min.js"}}"></script>
+<script defer src="{{asset "js/search-modal.js"}}"></script>
 <script defer async data-domain="criptonautas.co"
   src="https://stats.criptonautas.co/js/plausible.outbound-links.js"></script>
 <script>window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>

@@ -1,18 +1,44 @@
-/* Config for the MagicPages search UI (typesense-search.min.js, deferred, so
- * it runs after this bundle). A file rather than an inline <script> in
- * site-scripts.hbs: the site's CSP script-src carries sha256 hashes, so an
- * inline block stops running the moment anyone edits it, and the search then
- * boots with no nodes and no key. The API key is search-only and public by
- * design - never put an admin key here.
+/* Config for the site search modal (assets/js/search-modal.js). A file rather
+ * than an inline <script> in site-scripts.hbs: the site's CSP script-src
+ * carries sha256 hashes, so an inline block stops running the moment anyone
+ * edits it, and the search then boots with no nodes and no key.
+ *
+ * Both API keys below are search-only and public by design - never put an
+ * admin key here. The key must be scoped to BOTH collections:
+ *
+ *   curl -X POST https://typesense.criptonautas.co/keys \
+ *     -H "X-TYPESENSE-API-KEY: <master>" -H 'Content-Type: application/json' \
+ *     -d '{"description":"site search",
+ *          "actions":["documents:search"],
+ *          "collections":["ghost","discourse_posts"]}'
  */
-window.__MP_SEARCH_CONFIG__ = {
+window.__NAUTAS_SEARCH_CONFIG__ = {
     typesenseNodes: [{
         host: 'typesense.criptonautas.co',
         protocol: 'https'
     }],
     typesenseApiKey: '8hPtZRIeBeU4MM7c6Fy9viwynvG1F2F4',
-    collectionName: 'ghost',
-    theme: 'system',
-    enableHighlighting: true,
+
+    // Ghost posts, filled by @magicpages/ghost-typesense (indexer only - its
+    // own search UI is not used).
+    postsCollection: 'ghost',
+    // Discourse posts, filled by the discourse-typesense-index plugin. This is
+    // the ALIAS name from its typesense_collection setting.
+    topicsCollection: 'discourse_posts',
+    // Where "see all discussions" goes. Empty hides that link.
+    forumUrl: 'https://comunidad.criptonautas.co',
+
+    /* Members-only posts: the indexer stores their whole plaintext, and the key
+     * above is public, so a snippet would hand out the paywalled text. Empty
+     * this only if the collection has no `visibility` field - Typesense rejects
+     * a filter on a field it does not have, and the posts section then shows
+     * nothing at all. Check with:
+     *   curl -H "X-TYPESENSE-API-KEY: <master>" \
+     *     https://typesense.criptonautas.co/collections/ghost | grep visibility
+     */
+    postsFilter: 'visibility:=public',
+
+    maxPosts: 4,
+    maxTopics: 5,
     commonSearches: ['cómo empezar', 'cómo usar Monero', 'hacer trading']
 };

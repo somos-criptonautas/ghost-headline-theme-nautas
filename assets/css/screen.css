@@ -5,6 +5,7 @@
 @import "members.css";
 @import "footer.css";
 @import "btcpay-pos.css";
+@import "search.css";
 
 :root {
   --head-nav-gap: 32px;
@@ -583,7 +584,8 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
 }
 
 .gh-read-next-rest[hidden],
-.gh-read-next .gh-topic-footer[hidden] {
+.gh-read-next .gh-topic-footer[hidden],
+.gh-read-next-pool {
   display: none;
 }
 
@@ -5106,18 +5108,6 @@ html.js .gh-loadmore {
 .gh-head-search-field,
 .gh-head-bar-toggle {
   display: none;
-}
-
-/* Search modal */
-magicpages-search {
-  --nautas-bg: var(--color-bg);
-  --nautas-bg-alt: var(--color-bg-alt);
-  --nautas-text: var(--color-base);
-  --nautas-text-muted: color-mix(in srgb, var(--color-base) 63%, transparent);
-  --nautas-border: var(--color-border);
-  --nautas-backdrop: color-mix(in srgb, var(--color-bg) 70%, transparent);
-  --nautas-focus: color-mix(in srgb, var(--color-base) 40%, transparent);
-  --nautas-font: var(--font-sans);
 }
 
 @media screen and (max-width: 991px) {
