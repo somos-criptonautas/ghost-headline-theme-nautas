@@ -20,11 +20,20 @@
             {{!-- Revisions matter on evergreen posts, and Ghost already puts
                 updated_at in the Article schema and article:modified_time -
                 this is the same date, for readers. Compared by day so a post
-                tidied up on publication day does not claim to be updated. --}}
+                tidied up on publication day does not claim to be updated.
+
+                The cutoff is there because updated_at is a row timestamp, not
+                an editorial statement: Ghost bumps it on any change, and every
+                post here carries an August/September 2026 bulk touch that was
+                not a rewrite. Only edits newer than this date count. Both
+                dates are YYYY-MM-DD strings, which compare correctly as text;
+                neither format is ever printed. --}}
+            {{#match (date updated_at format="YYYY-MM-DD") ">" "2026-10-01"}}
             {{#match (date updated_at format="YYYY-MM-DD") "!=" (date published_at format="YYYY-MM-DD")}}
             <time class="gh-article-updated" datetime="{{date updated_at format="YYYY-MM-DD"}}">
                 {{t "updated"}} {{date updated_at timeago="true"}}
             </time>
+            {{/match}}
             {{/match}}
         </div>
         <h4 class="gh-author-name-list">
