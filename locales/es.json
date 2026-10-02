@@ -174,5 +174,16 @@
 	"Accelerate our development": "puedes sumarte a nuestro coaching.",
 	"Member discussion ": "comentarios",
 	"Breadcrumb": "Ruta de navegación",
-	"updated": "actualizado"
+	"updated": "actualizado",
+	"Videos": "Videos",
+	"Video order": "Orden de los videos",
+	"Latest videos": "Recientes",
+	"Trending videos": "Tendencia",
+	"Random videos": "Al azar",
+	"Previous videos": "Videos anteriores",
+	"Next videos": "Videos siguientes",
+	"More videos": "Más videos",
+	"Play": "Reproducir",
+	"Live": "En vivo",
+	"Videos could not be loaded.": "No se pudieron cargar los videos."
 }

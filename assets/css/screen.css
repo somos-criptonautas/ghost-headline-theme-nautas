@@ -6,6 +6,7 @@
 @import "footer.css";
 @import "btcpay-pos.css";
 @import "search.css";
+@import "videos.css";
 
 :root {
   --head-nav-gap: 32px;

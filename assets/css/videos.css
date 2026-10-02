@@ -1,0 +1,338 @@
+/* Homepage video row
+/* partials/peertube-videos.hbs, filled by assets/js/peertube-videos.js
+/* ---------------------------------------------------------- */
+
+.gh-videos {
+    --gh-videos-gap: 2.4rem;
+    /* Cards in view. The fraction leaves the next card peeking in, which is
+       what tells a reader the row scrolls. */
+    --gh-videos-per-view: 1.2;
+    min-width: 0;
+    margin-bottom: 80px;
+}
+
+@media screen and (min-width: 768px) {
+    .gh-videos {
+        --gh-videos-per-view: 2.3;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .gh-videos {
+        --gh-videos-gap: 3.2rem;
+        --gh-videos-per-view: 4.3;
+    }
+}
+
+/* Head: title, mode tabs, arrows */
+
+.gh-videos-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.6rem 2.4rem;
+    margin-bottom: 40px;
+}
+
+.gh-videos .gh-videos-head .gh-topic-name {
+    margin: 0;
+}
+
+.gh-videos-tabs {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.gh-videos-tab {
+    padding: 0.8rem 1.4rem;
+    border: 0;
+    border-radius: 0.77rem;
+    background: none;
+    color: var(--color-secondary-text);
+    font: inherit;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.gh-videos-tab:hover {
+    color: var(--color-base);
+}
+
+.gh-videos-tab[aria-selected="true"] {
+    background-color: var(--color-base);
+    color: var(--color-bg);
+}
+
+.gh-videos-nav {
+    display: flex;
+    gap: 0.8rem;
+    margin-left: auto;
+}
+
+.gh-videos-arrow {
+    display: grid;
+    place-items: center;
+    width: 4.4rem;
+    height: 4.4rem;
+    padding: 0;
+    border: 1px solid var(--color-border, var(--color-light-gray));
+    border-radius: 50%;
+    background: none;
+    color: var(--color-base);
+    cursor: pointer;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.gh-videos-arrow svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+.gh-videos-arrow:hover:not(:disabled) {
+    border-color: var(--color-base);
+}
+
+.gh-videos-arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+:is(.gh-videos-tab, .gh-videos-arrow, .gh-videos-track):focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}
+
+/* Row */
+
+.gh-videos-track {
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* A swipe that hits either end stops there instead of turning into the
+       browser's back/forward gesture or scrolling the page sideways. */
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    /* Arrows, keys and trackpads move it; the bar would only add a second
+       control under the cards. */
+    scrollbar-width: none;
+}
+
+.gh-videos-track::-webkit-scrollbar {
+    display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .gh-videos-track {
+        scroll-behavior: smooth;
+    }
+}
+
+.gh-videos-list {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - var(--gh-videos-gap) * (var(--gh-videos-per-view) - 1)) / var(--gh-videos-per-view));
+    gap: var(--gh-videos-gap);
+    margin: 0;
+    padding: 0 0 0.4rem;
+    list-style: none;
+    transition: opacity 0.2s ease;
+}
+
+.gh-videos[aria-busy="true"] .gh-videos-list {
+    opacity: 0.5;
+}
+
+.gh-video {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    scroll-snap-align: start;
+}
+
+/* Phones: the row runs to the screen edges instead of stopping at the page
+   gutter, and a swipe moves exactly one card. Negative margins against the
+   gutter .gh-outer adds (1.33rem in screen.css), not 100vw, so a scrollbar
+   never widens the page. */
+@media screen and (max-width: 767px) {
+    .gh-videos-track {
+        --gh-videos-bleed: 1.33rem;
+        margin-inline: calc(var(--gh-videos-bleed) * -1);
+        padding-inline: var(--gh-videos-bleed);
+        scroll-padding-inline: var(--gh-videos-bleed);
+    }
+
+    .gh-video {
+        scroll-snap-stop: always;
+    }
+
+    .gh-videos-tabs {
+        flex: 1 1 100%;
+    }
+
+    .gh-videos-nav {
+        display: none;
+    }
+}
+
+/* Card */
+
+.gh-video-media {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--border-radius);
+    background-color: rgba(127, 127, 127, 0.15);
+}
+
+.gh-video-play {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.gh-video-play:focus-visible {
+    outline: 3px solid var(--ghost-accent-color);
+    outline-offset: -3px;
+}
+
+.gh-video-play img,
+.gh-video-media iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    object-fit: cover;
+}
+
+.gh-video-icon {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    inset: 0;
+    width: 5.6rem;
+    height: 5.6rem;
+    margin: auto;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.gh-video-icon svg {
+    width: 2.4rem;
+    height: 2.4rem;
+    margin-left: 0.3rem;
+}
+
+.gh-video-play:is(:hover, :focus-visible) .gh-video-icon {
+    transform: scale(1.08);
+    background-color: var(--ghost-accent-color);
+}
+
+.gh-video-badge {
+    position: absolute;
+    right: 0.8rem;
+    bottom: 0.8rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.4rem;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+}
+
+.gh-video-badge.is-live {
+    background-color: #d32f2f;
+    text-transform: uppercase;
+}
+
+.gh-video-title {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 1.4rem 0 0;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    word-break: break-word;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    /* Two lines at line-height 1.25. Newer Chromium computes the clamped box
+       as flow-root and still paints the third line below the ellipsis; the
+       height cap is what actually keeps the cards level. */
+    max-height: 2.5em;
+}
+
+.gh-video-title a {
+    color: inherit;
+}
+
+.gh-video-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.6rem;
+    margin: 0.6rem 0 0;
+    color: var(--color-secondary-text);
+    font-size: 1.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.gh-video-meta > * + *::before {
+    content: "\00B7";
+    margin-right: 0.6rem;
+}
+
+.gh-videos-message {
+    margin: 0;
+    color: var(--color-secondary-text);
+    font-size: 1.8rem;
+}
+
+/* Position dots: phones only, where the arrows are gone */
+
+.gh-videos-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-top: 2rem;
+}
+
+.gh-videos-dot {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background-color: var(--color-light-gray);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.gh-videos-dot.is-active {
+    background-color: var(--color-base);
+    transform: scale(1.25);
+}
+
+@media screen and (min-width: 768px) {
+    .gh-videos-dots {
+        display: none;
+    }
+}
+
+/* Everything fits (or the row failed): nothing to scroll, so no controls. */
+.gh-videos.is-static :is(.gh-videos-nav, .gh-videos-dots) {
+    display: none;
+}

@@ -52,6 +52,11 @@
             "enter_tag_slugs_for_secondary_sections": {
                 "type": "text",
                 "group": "homepage"
+            },
+            "peertube_source": {
+                "type": "text",
+                "group": "homepage",
+                "description": "PeerTube instance URL, or https://instance/c/channel1,channel2. Empty hides videos."
             }
         }
     },
