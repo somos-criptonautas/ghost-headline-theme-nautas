@@ -6,6 +6,8 @@
 @import "footer.css";
 @import "btcpay-pos.css";
 @import "search.css";
+@import "videos.css";
+@import "community.css";
 
 :root {
   --head-nav-gap: 32px;
@@ -496,24 +498,36 @@ gh-author-name-list {
   letter-spacing: -0.01em;
 }
 
-/* Author social icons */
+/* Author social icons. Phosphor duotone, partials/icons/phosphor/. Centered
+   like the rest of the author header; each link is a 44px tap target with the
+   glyph at 2.6rem inside it. */
 .gh-author-social {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.6rem;
+  justify-content: center;
   align-items: center;
-  margin-top: 2rem;
+  gap: 0.4rem 0.8rem;
+  max-width: 36rem;
+  margin: 2rem auto 0;
+  padding: 0 var(--margin-wrap-left-right);
 }
 
 .gh-author-social-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   color: var(--color-base);
   opacity: 0.63;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.gh-author-social-link:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--ghost-accent-color);
+  outline-offset: 2px;
 }
 
 .gh-author-social-link:hover,
@@ -523,8 +537,8 @@ gh-author-name-list {
 
 /* Social icon SVG sizing */
 .gh-author-social svg {
-  width: 100%;
-  height: 100%;
+  width: 2.6rem;
+  height: 2.6rem;
   fill: currentColor;
 }
 
@@ -2474,6 +2488,19 @@ body,
   }
 }
 
+/* Phones: author, tag, /tags/ and /authors/ start at the same height as an
+   article - .gh-main's 5rem below the header. They have no .gh-main, so the
+   header sat directly on the title (or on the avatar / tag image). */
+@media (max-width: 767px) {
+  .archive-section {
+    padding-top: 5rem;
+  }
+
+  .archive-section .archive-image {
+    margin-top: 0;
+  }
+}
+
 .archive-section .global-title {
   text-transform: uppercase;
   padding: 0 1rem;
@@ -2513,8 +2540,11 @@ body,
   background-color: var(--color-one);
 }
 
-/* Image */
+/* Image. Square box: the img is rounded to a circle, and with only a height
+   set it took the full width and came out as a wide ellipse on phones. */
 .archive-image {
+  position: relative;
+  width: 11rem;
   height: 11rem;
   margin: 2rem auto 20px;
 }

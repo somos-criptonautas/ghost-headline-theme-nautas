@@ -1,0 +1,23 @@
+{{!-- Community sidebar: latest topics or latest posts from the Discourse
+    forum, picked by the "Community sidebar" theme setting. The list is filled
+    by assets/js/community-sidebar.js from the forum's public JSON, which needs
+    CORS on the Discourse side (DISCOURSE_ENABLE_CORS plus this site in the
+    "cors origins" setting). Until it loads - or if it never does - the aside
+    stays hidden, and the layout only opens a second column for an aside that
+    is showing (.gh-with-sidebar:has() in screen.css).
+
+    Desktop: a sticky column on the right. Below 1200px: after the posts. --}}
+{{#match @custom.community_sidebar "!=" "Off"}}
+<aside class="gh-community" aria-labelledby="gh-community-title" hidden
+    data-mode="{{#match @custom.community_sidebar "Latest posts"}}posts{{else}}topics{{/match}}"
+    data-label-reply="{{t "reply"}}"
+    data-label-replies="{{t "replies"}}"
+    data-label-in="{{t "in"}}">
+    <h2 class="gh-community-title" id="gh-community-title">
+        {{> "icons/discourse"}}
+        {{#match @custom.community_sidebar "Latest posts"}}{{t "Latest posts"}}{{else}}{{t "Latest topics"}}{{/match}}
+    </h2>
+    <ol class="gh-community-list"></ol>
+    <a class="gh-community-more">{{t "Go to the community"}} {{> "icons/arrow"}}</a>
+</aside>
+{{/match}}

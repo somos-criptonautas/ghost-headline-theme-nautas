@@ -19,9 +19,10 @@
 		{{#if count.posts}}
 		<div class="item is-loop">
 			{{#if profile_image}}
-			</a><div class="item-image global-image global-image-orientation">
-				x
-			</div></a>
+			<div class="item-image global-image global-image-orientation">
+				<a href="{{url}}" class="global-link" aria-label="{{name}}"></a>
+				{{>images/other_image other_image=profile_image alt=name}}
+			</div>
 			{{/if}}
 			<div class="item-content">
 				<h2 class="item-title"><a href="{{url}}">{{name}}</a></h2>

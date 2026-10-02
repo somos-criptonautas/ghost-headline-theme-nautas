@@ -20,19 +20,19 @@
 		<div class="item is-loop">
 			{{#if feature_image}}
 			<div class="item-image is-landscape global-image global-image-orientation global-radius">
-				<a href="{{url}}" class="global-link" aria-label="#{{name}}">
-					{{>images/archive_image archive_image=feature_image}}</a>
+				<a href="{{url}}" class="global-link" aria-label="#{{name}}"></a>
+				{{>images/archive_image archive_image=feature_image}}
 			</div>
 			{{/if}}
+			{{!-- The link sits inside the title. Wrapping the title in
+				.global-link, which is absolutely positioned over the whole
+				card, lifted it out of the flow: it landed on the image, or on
+				the previous tag's post count when there was no image. --}}
 			<div class="item-content">
-			<a href="{{url}}" class="global-link" aria-label="{{name}}">
-				<h2 class="item-title">#{{name}}</h2></a>
+				<h2 class="item-title"><a href="{{url}}">#{{name}}</a></h2>
 				<small>{{plural count.posts empty=(t "no posts") singular=(t "1 post") plural=(t "% posts")}}</small>
 				{{#if description}}
-				<p class="item-excerpt">
-					{{description}}
-				</p>
-		</a>
+				<p class="item-excerpt">{{description}}</p>
 				{{/if}}
 			</div>
 		</div>

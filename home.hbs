@@ -3,7 +3,14 @@
         <div class="kg-callout-emoji">🪐</div>
         <div class="kg-callout-text m-auto"><a href=/sumar>We are in beta, you should expect bugs</a></div>
     </div> --}}
-    <divgh- class="gh-inner">
+    {{!-- .gh-with-sidebar puts the community aside next to the sections
+        from 1200px up and after them below that. It was a <divgh-> typo
+        before, an unknown inline element, so .gh-inner never limited the
+        width and there was no box to lay a column out in. --}}
+    <div class="gh-inner gh-with-sidebar">
+        <div class="gh-with-sidebar-main">
+        {{> "peertube-videos"}}
+
         <section class="gh-topic gh-topic-grid">
             <h2 class="gh-topic-name">
                 {{#match pagination.pages ">" 1}}
@@ -74,4 +81,7 @@
         {{/match}}
         {{/if}}
         </div>
-        </main>
+
+        {{> "community-sidebar"}}
+    </div>
+</main>

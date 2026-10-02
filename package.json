@@ -52,6 +52,18 @@
             "enter_tag_slugs_for_secondary_sections": {
                 "type": "text",
                 "group": "homepage"
+            },
+            "community_sidebar": {
+                "type": "select",
+                "options": ["Off", "Latest topics", "Latest posts"],
+                "default": "Latest topics",
+                "group": "homepage",
+                "description": "Discourse topics or posts beside the home and tag pages. Needs CORS on the forum."
+            },
+            "peertube_source": {
+                "type": "text",
+                "group": "homepage",
+                "description": "PeerTube instance URL, or https://instance/c/channel1,channel2. Empty hides videos."
             }
         }
     },

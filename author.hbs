@@ -5,37 +5,39 @@
     </div>
     {{/if}}
     <h1 class="archive-title global-title">{{name}}</h1>
+    {{!-- Phosphor duotone icons (MIT, partials/icons/phosphor/LICENSE).
+        Phosphor has no Bluesky mark; its butterfly stands in. --}}
     {{#has any="website,twitter,facebook,linkedin,bluesky,threads,mastodon,tiktok,youtube,instagram"}}
     <div class="gh-author-social">
         {{#if twitter}}
-        <a class="gh-author-social-link" href="{{social_url type="twitter"}}" target="_blank" rel="noopener">{{> "icons/twitter"}}</a>
+        <a class="gh-author-social-link" href="{{social_url type="twitter"}}" target="_blank" rel="me noopener" aria-label="X">{{> "icons/phosphor/x"}}</a>
         {{/if}}
         {{#if facebook}}
-        <a class="gh-author-social-link" href="{{social_url type="facebook"}}" target="_blank" rel="noopener">{{> "icons/facebook"}}</a>
+        <a class="gh-author-social-link" href="{{social_url type="facebook"}}" target="_blank" rel="me noopener" aria-label="Facebook">{{> "icons/phosphor/facebook"}}</a>
         {{/if}}
         {{#if linkedin}}
-        <a class="gh-author-social-link" href="{{social_url type="linkedin"}}" target="_blank" rel="noopener">{{> "icons/linkedin"}}</a>
+        <a class="gh-author-social-link" href="{{social_url type="linkedin"}}" target="_blank" rel="me noopener" aria-label="LinkedIn">{{> "icons/phosphor/linkedin"}}</a>
         {{/if}}
         {{#if bluesky}}
-        <a class="gh-author-social-link" href="{{social_url type="bluesky"}}" target="_blank" rel="noopener">{{> "icons/bluesky"}}</a>
+        <a class="gh-author-social-link" href="{{social_url type="bluesky"}}" target="_blank" rel="me noopener" aria-label="Bluesky">{{> "icons/phosphor/bluesky"}}</a>
         {{/if}}
         {{#if threads}}
-        <a class="gh-author-social-link" href="{{social_url type="threads"}}" target="_blank" rel="noopener">{{> "icons/threads"}}</a>
+        <a class="gh-author-social-link" href="{{social_url type="threads"}}" target="_blank" rel="me noopener" aria-label="Threads">{{> "icons/phosphor/threads"}}</a>
         {{/if}}
         {{#if mastodon}}
-        <a class="gh-author-social-link" href="{{social_url type="mastodon"}}" target="_blank" rel="noopener">{{> "icons/mastodon"}}</a>
+        <a class="gh-author-social-link" href="{{social_url type="mastodon"}}" target="_blank" rel="me noopener" aria-label="Mastodon">{{> "icons/phosphor/mastodon"}}</a>
         {{/if}}
         {{#if tiktok}}
-        <a class="gh-author-social-link" href="{{social_url type="tiktok"}}" target="_blank" rel="noopener">{{> "icons/tiktok"}}</a>
+        <a class="gh-author-social-link" href="{{social_url type="tiktok"}}" target="_blank" rel="me noopener" aria-label="TikTok">{{> "icons/phosphor/tiktok"}}</a>
         {{/if}}
         {{#if youtube}}
-        <a class="gh-author-social-link" href="{{social_url type="youtube"}}" target="_blank" rel="noopener">{{> "icons/youtube"}}</a>
+        <a class="gh-author-social-link" href="{{social_url type="youtube"}}" target="_blank" rel="me noopener" aria-label="YouTube">{{> "icons/phosphor/youtube"}}</a>
         {{/if}}
         {{#if instagram}}
-        <a class="gh-author-social-link" href="{{social_url type="instagram"}}" target="_blank" rel="noopener">{{> "icons/instagram"}}</a>
+        <a class="gh-author-social-link" href="{{social_url type="instagram"}}" target="_blank" rel="me noopener" aria-label="Instagram">{{> "icons/phosphor/instagram"}}</a>
         {{/if}}
         {{#if website}}
-        <a class="gh-author-social-link" href="{{website}}" target="_blank" rel="noopener">{{> "icons/website"}}</a>
+        <a class="gh-author-social-link" href="{{website}}" target="_blank" rel="me noopener" aria-label="{{t "Website"}}">{{> "icons/phosphor/website"}}</a>
         {{/if}}
     </div>
     {{/has}}

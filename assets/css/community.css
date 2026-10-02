@@ -1,0 +1,228 @@
+/* Community sidebar
+/* partials/community-sidebar.hbs, filled by assets/js/community-sidebar.js
+/* ---------------------------------------------------------- */
+
+/* Layout: home.hbs and tag.hbs. One column by default, so a sidebar that is
+   off, still loading or never loads (it keeps `hidden`) changes nothing. The
+   second column only opens for an aside that is actually showing. */
+.gh-with-sidebar {
+    --gh-sidebar-width: 30rem;
+    --gh-sidebar-gap: 4.8rem;
+}
+
+.gh-with-sidebar-main {
+    min-width: 0;
+}
+
+@media screen and (min-width: 1200px) {
+    .gh-with-sidebar:has(> .gh-community:not([hidden])) {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) var(--gh-sidebar-width);
+        column-gap: var(--gh-sidebar-gap);
+        align-items: start;
+    }
+
+    /* Tag pages: the loop grid's 84% cap and three columns were sized for
+       the full page width. Next to the sidebar, two columns use the room. */
+    .gh-with-sidebar:has(> .gh-community:not([hidden])) .loop-wrap {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: none;
+    }
+
+    /* The video row has less room next to the sidebar: fewer cards in view
+       keeps them the size they are without it. */
+    .gh-with-sidebar:has(> .gh-community:not([hidden])) .gh-videos {
+        --gh-videos-per-view: 3.3;
+    }
+
+    .gh-community {
+        position: sticky;
+        top: 3.2rem;
+        max-height: calc(100vh - 6.4rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+    }
+}
+
+/* tag.hbs wraps the shared loop partial, which brings its own page padding
+   and max width - the wrapper carries those now. */
+.gh-with-sidebar > .gh-with-sidebar-main > .loop-section {
+    max-width: none;
+    padding-right: 0;
+    padding-left: 0;
+}
+
+/* Below 1200px it follows the posts, as its own section. */
+@media screen and (max-width: 1199px) {
+    .gh-community {
+        max-width: 720px;
+        margin: 8rem auto 0;
+    }
+}
+
+/* Box */
+
+.gh-community {
+    padding: 2.4rem;
+    border: 1px solid var(--color-border, var(--color-light-gray));
+    border-radius: 0.77rem;
+    background-color: var(--color-bg);
+}
+
+.gh-community-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0 0 0.8rem;
+    padding: 0;
+    color: var(--color-base);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+}
+
+.gh-community-title svg {
+    flex: none;
+    width: 2.2rem;
+    height: 2.2rem;
+}
+
+.gh-community-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.gh-community-item {
+    margin: 0;
+    padding: 0;
+}
+
+.gh-community-item + .gh-community-item {
+    border-top: 1px solid var(--color-border, var(--color-light-gray));
+}
+
+.gh-community-link {
+    display: grid;
+    grid-template-columns: 3.6rem minmax(0, 1fr);
+    gap: 1.2rem;
+    padding: 1.4rem 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+/* The home page dims every link in .gh-main from 1500px; the list reads as
+   one block, so it stays at full strength and only the hovered row reacts. */
+.home-template .gh-main .gh-community a {
+    opacity: 1;
+}
+
+.gh-community-link:hover .gh-community-name,
+.gh-community-link:hover .gh-community-excerpt,
+.gh-community-link:focus-visible .gh-community-name,
+.gh-community-link:focus-visible .gh-community-excerpt {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+}
+
+.gh-community-link:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+    border-radius: 0.4rem;
+}
+
+.gh-community-avatar {
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 50%;
+    background-color: rgba(127, 127, 127, 0.15);
+    color: var(--color-base);
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+.gh-community-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gh-community-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+.gh-community-name,
+.gh-community-excerpt {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--color-base);
+    font-size: 1.6rem;
+    line-height: 1.35;
+    word-break: break-word;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    /* Same cap as the video titles: newer Chromium paints a third line
+       under the clamp without it. */
+    max-height: 2.7em;
+}
+
+.gh-community-name {
+    font-weight: 600;
+}
+
+.gh-community-topic {
+    overflow: hidden;
+    color: var(--color-base);
+    font-size: 1.4rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* One line: in a 30rem column a wrapped meta row started its second line
+   with a separator. */
+.gh-community-meta {
+    overflow: hidden;
+    color: var(--color-secondary-text);
+    font-size: 1.3rem;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Drawn dot rather than a "·" glyph, which Outfit sets near the baseline. */
+.gh-community-meta > * + *::before {
+    content: "";
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    margin: 0 0.6rem;
+    border-radius: 50%;
+    background-color: currentColor;
+    vertical-align: middle;
+}
+
+.gh-community-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+    color: var(--color-base);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.gh-community-more svg {
+    width: 1.6rem;
+    height: 1.6rem;
+}
