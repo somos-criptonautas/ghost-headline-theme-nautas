@@ -1,4 +1,4 @@
-name: Update Typesense Search UI
+name: Update search vendor builds
 
 on:
   # Run weekly on Mondays at 00:00 UTC
@@ -17,26 +17,46 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      - name: Download latest Typesense Search UI
+      # Both are unmodified vendor builds. Majors are pinned: a major bump
+      # is a breaking API change in assets/js/search-modal.js, which should be
+      # a reviewed commit rather than a Monday-morning surprise.
+      - name: Download InstantSearch.js and the Typesense adapter
         run: |
           curl --fail --silent --show-error --location \
-            https://unpkg.com/@magicpages/ghost-typesense-search-ui/dist/search.min.js \
-            -o assets/js/typesense-search.min.js
+            https://cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js \
+            -o assets/js/instantsearch.min.js
+          curl --fail --silent --show-error --location \
+            https://cdn.jsdelivr.net/npm/typesense-instantsearch-adapter@2/dist/typesense-instantsearch-adapter.min.js \
+            -o assets/js/typesense-instantsearch-adapter.min.js
 
-      # assets/js/head.js styles the search modal's input by this class from
-      # outside its shadow root. Refuse a build that renamed it rather than ship
-      # a modal that silently lost that styling.
-      - name: Check the build still has the input head.js styles
+      # search-modal.js reads these two globals and does nothing without them.
+      # Refuse a build that renamed or failed to expose one rather than ship a
+      # site whose search silently never opens.
+      - name: Check the builds still expose the globals search-modal.js needs
         run: |
-          if ! grep -q 'mp-search-input' assets/js/typesense-search.min.js; then
-            echo "::error::typesense-search.min.js no longer contains .mp-search-input - update SEARCH_CSS in assets/js/head.js"
-            exit 1
-          fi
+          for pair in "instantsearch.min.js:instantsearch" \
+                      "typesense-instantsearch-adapter.min.js:TypesenseInstantSearchAdapter"; do
+            file="assets/js/${pair%%:*}"
+            global="${pair##*:}"
+            if [ ! -s "$file" ]; then
+              echo "::error::$file is missing or empty"
+              exit 1
+            fi
+            if ! grep -q "$global" "$file"; then
+              echo "::error::$file no longer mentions $global - check assets/js/search-modal.js against the new build"
+              exit 1
+            fi
+          done
 
+      # Stage first, then diff the index: git diff alone ignores untracked
+      # files, so on the first run - when neither bundle is in the repo yet -
+      # it would report "no change" and the workflow would never commit the
+      # very files it just downloaded.
       - name: Check for a new version
         id: git-check
         run: |
-          if git diff --quiet -- assets/js/typesense-search.min.js; then
+          git add assets/js/instantsearch.min.js assets/js/typesense-instantsearch-adapter.min.js
+          if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -47,8 +67,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add assets/js/typesense-search.min.js
-          git commit -m "Update Typesense Search UI to latest version"
+          git commit -m "Update InstantSearch and Typesense adapter builds"
           git push
 
       # A GITHUB_TOKEN push does not trigger Deploy Theme, so ship it here.

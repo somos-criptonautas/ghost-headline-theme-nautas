@@ -122,22 +122,27 @@ function js(done) {
             // bundling it too would register the toggle handler twice and
             // cancel every click.
             //
-            // typesense-search.min.js is the unmodified MagicPages build,
-            // refreshed by .github/workflows/update-typesense.yml. It is served
-            // locally from /assets/js/ rather than from unpkg, but kept out of
-            // the bundle: it arrives already minified, and re-uglifying 200KB
-            // of vendor code on every build only mangles its symbols into our
-            // sourcemap. It has its own <script> tag in site-scripts.hbs.
+            // The search files each get their own <script> tag in
+            // site-scripts.hbs, so keep all four out of the bundle:
             //
-            // search-config.js is also on its own tag: the bundle is one
-            // concatenated file, so a throw anywhere in it would take the
-            // search config with it and the search would silently boot on
-            // Typesense's localhost defaults.
+            // instantsearch.min.js and typesense-instantsearch-adapter.min.js
+            // are unmodified vendor builds, refreshed by
+            // .github/workflows/update-typesense.yml. Served locally rather
+            // than from a CDN, but not bundled: they arrive already minified,
+            // and re-uglifying them on every build only mangles their symbols
+            // into our sourcemap.
+            //
+            // search-config.js and search-modal.js stay out because the bundle
+            // is one concatenated file - a throw anywhere in it would take the
+            // search down with it, and load order against the vendors above is
+            // what makes the modal work at all.
             src([
                 'assets/js/*.js',
                 '!assets/js/theme.js',
-                '!assets/js/typesense-search.min.js',
+                '!assets/js/instantsearch.min.js',
+                '!assets/js/typesense-instantsearch-adapter.min.js',
                 '!assets/js/search-config.js',
+                '!assets/js/search-modal.js',
             ], {sourcemaps: true}),
         ], {sourcemaps: true}),
         concat('main.min.js'),

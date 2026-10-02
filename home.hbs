@@ -1,6 +1,6 @@
 {{!< default}} <main class="gh-main gh-outer">
     {{!-- <div class="kg-card kg-callout-card kg-callout-card-grey beta-box">
-        <div class="kg-callout-emoji">🍄</div>
+        <div class="kg-callout-emoji">🪐</div>
         <div class="kg-callout-text m-auto"><a href=/sumar>We are in beta, you should expect bugs</a></div>
     </div> --}}
     <divgh- class="gh-inner">
@@ -20,15 +20,16 @@
             </div>
 
             {{!-- No-JS fallback. .gh-feed above turns on the shared theme's
-                infinite scroll, which appends the next page in place and leaves
-                this link pointing at /page/2 halfway up the feed. So it is
-                hidden whenever scripting is on (html.js, set by theme.js before
-                first paint) and .gh-loadmore lets the shared pagination drop it
-                once there is no rel=next left. {{name}} is a tag property and
-                was always empty here. --}}
+            infinite scroll, which appends the next page in place and leaves
+            this link pointing at /page/2 halfway up the feed. So it is
+            hidden whenever scripting is on (html.js, set by theme.js before
+            first paint) and .gh-loadmore lets the shared pagination drop it
+            once there is no rel=next left. {{name}} is a tag property and
+            was always empty here. --}}
             <footer class="gh-topic-footer">
                 {{#match pagination.pages ">" 1}}
-                <a class="gh-topic-link gh-loadmore" href="{{@site.url}}/page/2">{{t "Show more"}} {{> "icons/arrow"}}</a>
+                <a class="gh-topic-link gh-loadmore" href="{{@site.url}}/page/2">{{t "Show more"}} {{>
+                    "icons/arrow"}}</a>
                 {{/match}}
             </footer>
         </section>
