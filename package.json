@@ -72,14 +72,14 @@
         "test": "gscan .",
         "zip": "gulp zip"
     },
-    "packageManager": "pnpm@11.25.0",
+    "packageManager": "pnpm@12.8.1",
     "devDependencies": {
-        "@tryghost/shared-theme-assets": "2.7.3",
+        "@tryghost/shared-theme-assets": "2.7.5",
         "@tryghost/theme-translations": "^0.0.22",
-        "autoprefixer": "10.5.4",
+        "autoprefixer": "10.6.1",
         "beeper": "2.1.0",
-        "cssnano": "9.0.2",
-        "gscan": "6.4.2",
+        "cssnano": "9.1.1",
+        "gscan": "6.6.1",
         "gulp": "5.0.1",
         "gulp-concat": "2.6.1",
         "gulp-livereload": "4.0.2",
@@ -87,7 +87,7 @@
         "gulp-uglify": "3.0.2",
         "gulp-zip": "5.1.0",
         "ordered-read-streams": "2.0.0",
-        "postcss": "8.5.26",
+        "postcss": "8.5.28",
         "postcss-easy-import": "4.0.0",
         "pump": "3.0.4"
     }
