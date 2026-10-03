@@ -397,6 +397,8 @@
 
         nowTitle.textContent = video.title;
         nowTitle.href = video.watch;
+        nowTitle.target = '_blank';
+        nowTitle.rel = 'noopener';
         nowMeta.textContent = '';
         [video.channel, video.published ? ago(video.published) : ''].forEach(function (part) {
             if (part) {
@@ -472,6 +474,8 @@
         var title = el('h3', 'gh-video-title');
         var link = el('a', null, video.title);
         link.href = video.watch;
+        link.target = '_blank';
+        link.rel = 'noopener';
         title.appendChild(link);
         item.appendChild(title);
 

@@ -189,6 +189,9 @@
         var item = el('li', 'gh-community-item');
         var link = el('a', 'gh-community-link');
         link.href = entry.url;
+        // The forum is another site: a new tab, like every external link.
+        link.target = '_blank';
+        link.rel = 'noopener';
 
         var face = el('span', 'gh-community-avatar');
         face.setAttribute('aria-hidden', 'true');

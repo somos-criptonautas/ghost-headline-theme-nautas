@@ -3,16 +3,20 @@
         <div class="kg-callout-emoji">🪐</div>
         <div class="kg-callout-text m-auto"><a href=/sumar>We are in beta, you should expect bugs</a></div>
     </div> --}}
-    {{!-- .gh-with-sidebar puts the community aside next to the sections
-        from 1200px up and after them below that. It was a <divgh-> typo
-        before, an unknown inline element, so .gh-inner never limited the
-        width and there was no box to lay a column out in. --}}
-    <div class="gh-inner gh-with-sidebar">
+    {{!-- Homepage order: Videos across the full width, then Trending and
+        the tag sections beside the community sidebar. Trending is a fixed 4
+        with no infinite scroll here - it used to load every page of posts as
+        you reached it, pushing whatever came after it out of reach. /blog/
+        and /page/2/ onward keep infinite scroll.
+
+        .gh-with-sidebar puts the community aside next to the sections from
+        1200px up and after them below that. It was a <divgh-> typo before,
+        an unknown inline element, so .gh-inner never limited the width. --}}
+    <div class="gh-inner">
+    {{> "peertube-videos"}}
+
+    <div class="gh-with-sidebar">
         <div class="gh-with-sidebar-main">
-        {{!-- Homepage order: Trending, Videos, tag sections. Trending is a
-            fixed 4 with no infinite scroll here - it used to load every page
-            of posts as you reached it, pushing whatever came after it out of
-            reach. /blog/ and /page/2/ onward keep infinite scroll. --}}
         <section class="gh-topic gh-topic-grid">
             <h2 class="gh-topic-name">
                 {{#match pagination.total ">" 4}}
@@ -34,8 +38,6 @@
             </footer>
             {{/match}}
         </section>
-
-        {{> "peertube-videos"}}
 
         {{!-- Tag sections. The first three show; up to nine more are
             rendered hidden and assets/js/home-topics.js reveals three per
@@ -90,5 +92,6 @@
         </div>
 
         {{> "community-sidebar"}}
+    </div>
     </div>
 </main>

@@ -29,11 +29,6 @@
         max-width: none;
     }
 
-    /* The video row has less room next to the sidebar: fewer cards in view
-       keeps them the size they are without it. */
-    .gh-with-sidebar:has(> .gh-community:not([hidden])) .gh-videos {
-        --gh-videos-per-view: 3.3;
-    }
 
     .gh-community {
         position: sticky;

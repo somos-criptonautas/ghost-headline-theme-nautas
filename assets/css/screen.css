@@ -111,8 +111,15 @@ body:is(.is-head-transparent, .is-head-brand, .is-head-dark) .gh-head-logo img+i
    "+ More topics", get the same 80px as two adjacent sections - their
    wrappers break the adjacent-sibling rule above. */
 .gh-topics,
-.gh-topics-more {
+.gh-topics-more,
+.gh-videos:not([hidden]) + .gh-with-sidebar {
   margin-top: 80px;
+}
+
+/* The script swaps the button and the link with `hidden`, which the
+   display: inline-flex on .gh-topic-link would otherwise override. */
+.gh-topics-footer [hidden] {
+  display: none;
 }
 
 .gh-topics-button {
@@ -2883,6 +2890,41 @@ body,
   width: 98vw;
 }
 
+/* /blog/ and /page/2/ onward (index.hbs): the same rows as the homepage -
+   two per row from 992px, one below - instead of the one-card-per-row
+   layout the other listings use, which drew every post at full page width.
+   The 23vh/33vh padding of .gh-topic-grid-item and the empty pagehead's
+   margin went with it. */
+.gh-listing.gh-topic-grid-item {
+  padding: 0;
+}
+
+.gh-main:has(.gh-listing) .gh-pagehead {
+  margin-bottom: 0;
+}
+
+body:not(.home-template) .gh-listing .gh-topic-content {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 3.33rem;
+  column-gap: 2.22rem;
+  justify-items: stretch;
+  max-width: none;
+}
+
+body:not(.home-template) .gh-listing .gh-card {
+  grid-column: auto;
+}
+
+body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {
+  flex-direction: inherit;
+}
+
+@media screen and (min-width: 992px) {
+  body:not(.home-template) .gh-listing .gh-topic-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* Homepage posts: two per row on desktop instead of one full-width row. */
 @media screen and (min-width: 992px) {
   .home-template .gh-topic-grid > .gh-topic-content {
@@ -5398,8 +5440,13 @@ html.js .gh-loadmore {
   }
 }
 
-/* External link marker */
-.gh-content a[href^="http"]:not([href*="criptonautas.co"]):not([class*="kg-"]):not(:has(img))::after {
+/* External link marker, set by assets/js/external-links.js on the last
+   word of links that leave the site (.gh-ext), so it never wraps alone. */
+.gh-content a.is-external .gh-ext {
+  white-space: nowrap;
+}
+
+.gh-content a.is-external .gh-ext::after {
   display: inline-block;
   width: 0.8em;
   height: 0.8em;

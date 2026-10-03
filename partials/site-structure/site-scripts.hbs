@@ -38,21 +38,7 @@
 {{! webmentions.js ships inside main.min.js - see partials/webmentions.hbs }}
 {{/is}}
 
-<script type="text/javascript">
-  /* External links opens in new window */
-  document.addEventListener("DOMContentLoaded", function () {
-    var articleElement = document.getElementsByTagName("article")[0];
-    if (articleElement) {
-      var links = articleElement.querySelectorAll('a');
-      var a = new RegExp('/' + window.location.host + '/');
-      links.forEach((link) => {
-        if (!a.test(link.href)) {
-          link.setAttribute("target", "_blank");
-        }
-      });
-    }
-  });
-</script>
+{{! External links: assets/js/external-links.js, inside main.min.js. }}
 {{! flying-pages.min.js ships inside main.min.js, same as tocbot }}
 {{!--
 <script type="module">
