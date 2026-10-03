@@ -32,6 +32,20 @@
         </div>
     </header>
 
+    {{!-- Player stage: the clicked video plays here at the width of the
+        block, above the row, which stays as the playlist. Filled and shown
+        by the script; close or Esc unloads the player. --}}
+    <div class="gh-videos-stage" hidden>
+        <div class="gh-videos-screen"></div>
+        <div class="gh-videos-now">
+            <div class="gh-videos-now-text">
+                <a class="gh-videos-now-title"></a>
+                <p class="gh-videos-now-meta"></p>
+            </div>
+            <button class="gh-videos-close" type="button" aria-label="{{t "Close video"}}">{{> "icons/phosphor/close"}}</button>
+        </div>
+    </div>
+
     {{!-- The scroller is the tabpanel and is focusable, so a keyboard user can
         land on it and move the row with the arrow keys. --}}
     <div class="gh-videos-track" id="gh-videos-panel" role="tabpanel" tabindex="0" aria-labelledby="gh-videos-tab-latest">

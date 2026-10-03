@@ -8,7 +8,6 @@
        what tells a reader the row scrolls. */
     --gh-videos-per-view: 1.2;
     min-width: 0;
-    margin-bottom: 80px;
 }
 
 @media screen and (min-width: 768px) {
@@ -176,6 +175,131 @@
     .gh-videos-nav {
         display: none;
     }
+}
+
+/* Player stage */
+
+.gh-videos-stage {
+    margin-bottom: 3.2rem;
+}
+
+/* 16:9 at the full block width, capped so the player plus its caption fit
+   in the window: past that height it narrows and centers instead. */
+.gh-videos-screen {
+    position: relative;
+    overflow: hidden;
+    width: min(100%, calc(75vh * 16 / 9));
+    aspect-ratio: 16 / 9;
+    margin: 0 auto;
+    border-radius: var(--border-radius);
+    background-color: #000;
+}
+
+@supports (height: 1svh) {
+    .gh-videos-screen {
+        width: min(100%, calc(75svh * 16 / 9));
+    }
+}
+
+.gh-videos-screen iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.gh-videos-now {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.6rem;
+    width: min(100%, calc(75vh * 16 / 9));
+    margin: 1.4rem auto 0;
+}
+
+.gh-videos-now-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.gh-videos-now-title {
+    display: block;
+    color: var(--color-base);
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    word-break: break-word;
+}
+
+.gh-videos-now-meta {
+    margin: 0.4rem 0 0;
+    color: var(--color-secondary-text);
+    font-size: 1.5rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.gh-videos-now-meta > * + *::before {
+    content: "";
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    margin: 0 0.6rem;
+    border-radius: 50%;
+    background-color: currentColor;
+    vertical-align: middle;
+}
+
+.gh-videos-close {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--color-border, var(--color-light-gray));
+    border-radius: 50%;
+    background: none;
+    color: var(--color-base);
+    cursor: pointer;
+}
+
+.gh-videos-close svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+.gh-videos-close:hover {
+    border-color: var(--color-base);
+}
+
+.gh-videos-close:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}
+
+/* Phones: edge to edge, like the row below it. */
+@media screen and (max-width: 767px) {
+    .gh-videos-screen {
+        width: auto;
+        margin-inline: -1.33rem;
+        border-radius: 0;
+    }
+
+    .gh-videos-now-title {
+        font-size: 2rem;
+    }
+}
+
+/* The card whose video is on the stage. */
+.gh-video.is-playing .gh-video-media {
+    outline: 3px solid var(--ghost-accent-color);
+    outline-offset: -3px;
+}
+
+.gh-video.is-playing .gh-video-icon {
+    background-color: var(--ghost-accent-color);
 }
 
 /* Card */

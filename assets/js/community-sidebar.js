@@ -24,15 +24,24 @@
 
     var list = aside.querySelector('.gh-community-list');
     var more = aside.querySelector('.gh-community-more');
-    var mode = aside.getAttribute('data-mode') === 'posts' ? 'posts' : 'topics';
+    var picker = aside.querySelector('.gh-community-select');
+    var message = aside.querySelector('.gh-community-message');
+    var STORE = 'gh-community-mode';
+    var MODES = {topics: '/latest.json', posts: '/posts.json'};
+
+    // The visitor's last pick wins over the theme setting's default.
+    // Storage can throw (private mode, blocked site data): fall back.
+    var stored = null;
+    try {
+        stored = window.localStorage.getItem(STORE);
+    } catch (e) {}
+    var mode = MODES[stored] ? stored : (aside.getAttribute('data-mode') === 'posts' ? 'posts' : 'topics');
     var lang = document.documentElement.lang || undefined;
     var labels = {
         one: aside.getAttribute('data-label-reply') || 'reply',
         other: aside.getAttribute('data-label-replies') || 'replies',
         where: aside.getAttribute('data-label-in') || 'in'
     };
-
-    more.href = ORIGIN + (mode === 'posts' ? '/posts' : '/latest');
 
     var getJSON = function (path) {
         var controller = window.AbortController ? new AbortController() : null;
@@ -228,24 +237,75 @@
         return item;
     };
 
-    getJSON(mode === 'posts' ? '/posts.json' : '/latest.json')
-        .then(function (body) {
-            var entries = (mode === 'posts' ? posts(body) : topics(body))
-                .filter(function (entry) {
-                    return entry.url && entry.title;
-                })
-                .slice(0, SHOWN);
+    var cache = {};
 
-            if (!entries.length) {
+    // One request per list, the first time it is picked. A failure is not
+    // cached, so picking that list again retries.
+    var load = function (which) {
+        if (!cache[which]) {
+            cache[which] = getJSON(MODES[which]).then(function (body) {
+                return (which === 'posts' ? posts(body) : topics(body))
+                    .filter(function (entry) {
+                        return entry.url && entry.title;
+                    })
+                    .slice(0, SHOWN);
+            });
+            cache[which].then(null, function () {
+                delete cache[which];
+            });
+        }
+        return cache[which];
+    };
+
+    var request = 0;
+
+    var show = function (which) {
+        var ticket = ++request;
+
+        aside.setAttribute('aria-busy', 'true');
+
+        return load(which).then(function (entries) {
+            if (ticket !== request) {
                 return;
             }
-
+            if (!entries.length) {
+                throw new Error('empty');
+            }
+            // row() reads `mode` to pick the topic or the post layout.
+            mode = which;
+            list.textContent = '';
             entries.forEach(function (entry) {
                 list.appendChild(row(entry));
             });
+            list.hidden = false;
+            message.hidden = true;
+            more.href = ORIGIN + (which === 'posts' ? '/posts' : '/latest');
             aside.hidden = false;
-        })
-        // Forum down, CORS not set up, or a timeout: the aside stays hidden
-        // and the page keeps its one-column layout.
-        .then(null, function () {});
+        }).then(null, function () {
+            if (ticket !== request) {
+                return;
+            }
+            // Before the aside was ever shown this keeps it hidden (forum
+            // down, no CORS). After that, say so in place of the list.
+            list.hidden = true;
+            message.hidden = false;
+        }).then(function () {
+            if (ticket === request) {
+                aside.removeAttribute('aria-busy');
+            }
+        });
+    };
+
+    picker.value = mode;
+    picker.addEventListener('change', function () {
+        if (!MODES[picker.value]) {
+            return;
+        }
+        try {
+            window.localStorage.setItem(STORE, picker.value);
+        } catch (e) {}
+        show(picker.value);
+    });
+
+    show(mode);
 })();

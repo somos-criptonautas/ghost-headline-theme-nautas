@@ -89,6 +89,63 @@
     height: 2.2rem;
 }
 
+/* Picker: a native select styled as the heading text, with the Phosphor
+   caret as its arrow. Native so keyboards, screen readers and phone pickers
+   work without any script of ours. */
+.gh-community-picker {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.gh-community-select {
+    appearance: none;
+    -webkit-appearance: none;
+    max-width: 100%;
+    margin: 0;
+    padding: 0.2rem 3rem 0.2rem 0;
+    border: 0;
+    border-radius: 0.4rem;
+    background: none;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.gh-community-select:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}
+
+/* Options render in the OS menu: give them the page colors in dark mode. */
+.gh-community-select option {
+    background-color: var(--color-bg);
+    color: var(--color-base);
+    text-transform: none;
+}
+
+.gh-community-title .gh-community-picker svg {
+    position: absolute;
+    right: 0;
+    width: 2rem;
+    height: 2rem;
+    pointer-events: none;
+}
+
+.gh-community-message {
+    margin: 1.2rem 0;
+    color: var(--color-secondary-text);
+    font-size: 1.5rem;
+}
+
+.gh-community[aria-busy="true"] .gh-community-list {
+    opacity: 0.5;
+}
+
 .gh-community-list {
     margin: 0;
     padding: 0;

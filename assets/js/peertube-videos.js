@@ -338,20 +338,50 @@
         return relative.format(0, 'minute');
     };
 
+    /* Player stage: a full-width player above the row, so a video plays
+     * at the size of the block rather than the size of its card. Opening
+     * another card swaps the video; close (or Esc) unloads the iframe,
+     * which stops playback, and returns focus to the card it came from.
+     * ------------------------------------------------------------------ */
+
+    var stage = section.querySelector('.gh-videos-stage');
+    var screen = stage.querySelector('.gh-videos-screen');
+    var nowTitle = stage.querySelector('.gh-videos-now-title');
+    var nowMeta = stage.querySelector('.gh-videos-now-meta');
+    var closer = stage.querySelector('.gh-videos-close');
     var playing = null;
 
-    // Put the thumbnail back on the card that was playing, which also
-    // unloads its iframe and stops the audio.
-    var stop = function () {
-        if (playing) {
-            playing.media.replaceChild(playing.button, playing.media.firstChild);
-            playing = null;
+    // Highlight the card whose video is on the stage, in whichever list is
+    // showing - it survives switching tabs, since the stage does too.
+    var mark = function () {
+        var items = list.querySelectorAll('.gh-video');
+        for (var i = 0; i < items.length; i++) {
+            var on = !!playing && items[i].getAttribute('data-uuid') === playing.uuid;
+            items[i].classList.toggle('is-playing', on);
+            var button = items[i].querySelector('.gh-video-play');
+            if (on) {
+                button.setAttribute('aria-current', 'true');
+            } else {
+                button.removeAttribute('aria-current');
+            }
         }
     };
 
-    var play = function (video, media, button) {
-        stop();
+    var stop = function (returnFocus) {
+        if (!playing) {
+            return;
+        }
+        var from = playing.button;
+        playing = null;
+        screen.textContent = '';
+        stage.hidden = true;
+        mark();
+        if (returnFocus && from && document.body.contains(from)) {
+            from.focus();
+        }
+    };
 
+    var play = function (video, button) {
         var frame = document.createElement('iframe');
         // p2p=0: no WebRTC peer-to-peer, so viewers' IPs are not shared with
         // other viewers. warningTitle/peertubeLink drop the player's chrome.
@@ -362,13 +392,41 @@
         frame.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox');
         frame.referrerPolicy = 'strict-origin-when-cross-origin';
 
-        media.replaceChild(frame, button);
-        playing = {media: media, button: button};
+        screen.textContent = '';
+        screen.appendChild(frame);
+
+        nowTitle.textContent = video.title;
+        nowTitle.href = video.watch;
+        nowMeta.textContent = '';
+        [video.channel, video.published ? ago(video.published) : ''].forEach(function (part) {
+            if (part) {
+                nowMeta.appendChild(el('span', null, part));
+            }
+        });
+
+        playing = {uuid: video.uuid, button: button};
+        stage.hidden = false;
+        mark();
+
+        stage.scrollIntoView({block: 'nearest', behavior: behavior()});
         frame.focus();
     };
 
+    closer.addEventListener('click', function () {
+        stop(true);
+    });
+
+    // Esc closes the stage. Keys pressed inside the player go to its own
+    // (cross-origin) document and never reach this listener.
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && playing) {
+            stop(true);
+        }
+    });
+
     var card = function (video, index) {
         var item = el('li', 'gh-video');
+        item.setAttribute('data-uuid', video.uuid);
         var media = el('div', 'gh-video-media');
         var button = el('button', 'gh-video-play');
 
@@ -405,7 +463,7 @@
         }
 
         button.addEventListener('click', function () {
-            play(video, media, button);
+            play(video, button);
         });
 
         media.appendChild(button);
@@ -541,7 +599,6 @@
     var request = 0;
 
     var render = function (videos) {
-        stop();
         list.textContent = '';
         dotsBox.textContent = '';
 
@@ -556,6 +613,7 @@
 
         track.scrollLeft = 0;
         watch();
+        mark();
     };
 
     var select = function (tab) {
@@ -591,8 +649,8 @@
                     return;
                 }
                 // First load failed: the section was never shown, keep it so.
-                // A later tab failing says so in place of the row.
-                stop();
+                // A later tab failing says so in place of the row; a video
+                // already on the stage keeps playing.
                 track.hidden = true;
                 message.hidden = false;
                 section.classList.add('is-static');

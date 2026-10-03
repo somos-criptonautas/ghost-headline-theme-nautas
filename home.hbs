@@ -9,54 +9,73 @@
         width and there was no box to lay a column out in. --}}
     <div class="gh-inner gh-with-sidebar">
         <div class="gh-with-sidebar-main">
-        {{> "peertube-videos"}}
-
+        {{!-- Homepage order: Trending, Videos, tag sections. Trending is a
+            fixed 4 with no infinite scroll here - it used to load every page
+            of posts as you reached it, pushing whatever came after it out of
+            reach. /blog/ and /page/2/ onward keep infinite scroll. --}}
         <section class="gh-topic gh-topic-grid">
             <h2 class="gh-topic-name">
-                {{#match pagination.pages ">" 1}}
-                <a href="/blog">{{ t "Featured" }}</a>
+                {{#match pagination.total ">" 4}}
+                <a href="{{@site.url}}/blog/">{{ t "Featured" }}</a>
                 {{else}}
                 {{t "Featured" }}
                 {{/match}}
             </h2>
 
-            <div class="gh-topic-content gh-feed">
-                {{#foreach posts limit="7"}}
+            <div class="gh-topic-content">
+                {{#foreach posts limit="4"}}
                 {{> "loop-grid"}}
                 {{/foreach}}
             </div>
 
-            {{!-- No-JS fallback. .gh-feed above turns on the shared theme's
-            infinite scroll, which appends the next page in place and leaves
-            this link pointing at /page/2 halfway up the feed. So it is
-            hidden whenever scripting is on (html.js, set by theme.js before
-            first paint) and .gh-loadmore lets the shared pagination drop it
-            once there is no rel=next left. {{name}} is a tag property and
-            was always empty here. --}}
+            {{#match pagination.total ">" 4}}
             <footer class="gh-topic-footer">
-                {{#match pagination.pages ">" 1}}
-                <a class="gh-topic-link gh-loadmore" href="{{@site.url}}/page/2">{{t "Show more"}} {{>
-                    "icons/arrow"}}</a>
-                {{/match}}
+                <a class="gh-topic-link" href="{{@site.url}}/blog/">{{t "Show more"}} {{> "icons/arrow"}}</a>
             </footer>
+            {{/match}}
         </section>
 
-        {{#if @custom.enter_tag_slugs_for_primary_sections}}
-        {{#get "tags" filter="slug:[{{@custom.enter_tag_slugs_for_primary_sections}}]"}}
-        {{#foreach tags}}
-        {{> "topic-grid"}}
-        {{/foreach}}
-        {{/get}}
-        {{else}}
-        {{#match posts.length ">" 1}}
-        {{#get "tags" filter="tag:{{primary_tag.slug}}" include="count.posts" order="count.posts desc" limit="3"}}
-        {{#foreach tags}}
-        {{> "topic-grid"}}
-        {{/foreach}}
-        {{/get}}
-        {{/match}}
-        {{/if}}
+        {{> "peertube-videos"}}
 
+        {{!-- Tag sections. The first three show; up to nine more are
+            rendered hidden and assets/js/home-topics.js reveals three per
+            click of "+ More topics". Without JS, or once all are out, the
+            button gives way to the link to /tags/. --}}
+        <div class="gh-topics">
+            {{#if @custom.enter_tag_slugs_for_primary_sections}}
+            {{#get "tags" filter="slug:[{{@custom.enter_tag_slugs_for_primary_sections}}]"}}
+            {{#foreach tags}}
+            {{> "topic-grid"}}
+            {{/foreach}}
+            {{/get}}
+            {{#get "tags" filter="visibility:public+slug:-[{{@custom.enter_tag_slugs_for_primary_sections}}]" include="count.posts" order="count.posts desc" limit="9"}}
+            {{#foreach tags}}
+            {{#if count.posts}}
+            <div class="gh-topics-more" hidden>{{> "topic-grid"}}</div>
+            {{/if}}
+            {{/foreach}}
+            {{/get}}
+            {{else}}
+            {{#get "tags" filter="visibility:public" include="count.posts" order="count.posts desc" limit="12"}}
+            {{#foreach tags limit="3"}}
+            {{> "topic-grid"}}
+            {{/foreach}}
+            {{#foreach tags from="4"}}
+            {{#if count.posts}}
+            <div class="gh-topics-more" hidden>{{> "topic-grid"}}</div>
+            {{/if}}
+            {{/foreach}}
+            {{/get}}
+            {{/if}}
+
+            <footer class="gh-topic-footer gh-topics-footer">
+                <button class="gh-topic-link gh-topics-button" type="button" hidden>{{> "icons/phosphor/plus"}} {{t "More topics"}}</button>
+                <a class="gh-topic-link gh-topics-all" href="{{@site.url}}/tags/">{{t "All topics"}} {{> "icons/arrow"}}</a>
+            </footer>
+        </div>
+
+        {{!-- The small tag list only when it is set: its old default (tags
+            4-6) is now the first batch behind "+ More topics". --}}
         {{#if @custom.enter_tag_slugs_for_secondary_sections}}
         {{#get "tags" filter="slug:[{{@custom.enter_tag_slugs_for_secondary_sections}}]"}}
         {{#if tags}}
@@ -67,18 +86,6 @@
         </div>
         {{/if}}
         {{/get}}
-        {{else}}
-        {{#match posts.length ">" 1}}
-        {{#get "tags" filter="tag:{{primary_tag.slug}}" include="count.posts" order="count.posts desc"}}
-        {{#if tags.[3]}}
-        <div class="gh-topic-list">
-            {{#foreach tags from="4" limit="3"}}
-            {{> "topic-minimal"}}
-            {{/foreach}}
-        </div>
-        {{/if}}
-        {{/get}}
-        {{/match}}
         {{/if}}
         </div>
 

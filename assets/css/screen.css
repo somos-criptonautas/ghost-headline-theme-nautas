@@ -107,6 +107,36 @@ body:is(.is-head-transparent, .is-head-brand, .is-head-dark) .gh-head-logo img+i
   margin-top: 80px;
 }
 
+/* Homepage tag sections (home.hbs): the block, and each section revealed by
+   "+ More topics", get the same 80px as two adjacent sections - their
+   wrappers break the adjacent-sibling rule above. */
+.gh-topics,
+.gh-topics-more {
+  margin-top: 80px;
+}
+
+.gh-topics-button {
+  gap: 0.6rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-base);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.gh-topics-button svg {
+  width: 2.4rem;
+  height: 2.4rem;
+  margin: 0;
+}
+
+.gh-topics-button:focus-visible {
+  outline: 2px solid var(--ghost-accent-color);
+  outline-offset: 4px;
+  border-radius: 0.4rem;
+}
+
 .gh-topic-grid .gh-topic-name {
   margin-bottom: 40px;
   text-transform: uppercase;
