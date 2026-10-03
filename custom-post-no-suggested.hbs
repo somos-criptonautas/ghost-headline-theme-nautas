@@ -38,11 +38,13 @@
                     {{/if}}
                     <div class="toc">
                     </div>
+                    {{> "post-share" comments=true}}
                 </aside>
                 <section class="gh-content gh-canvas">
                     {{content}}
                 </section>
             </div>
+            {{> "post-share" end=true}}
             {{> "comments"}}
             {{/is}}
     </article>

@@ -37,7 +37,7 @@
         {{!-- Tag sections. The first three show; up to nine more are
             rendered hidden and assets/js/home-topics.js reveals three per
             click of "+ More articles". Without JS, or once all are out, the
-            button gives way to the link to /tags/. --}}
+            button gives way to "View all", to /blog/. --}}
         <div class="gh-topics">
             {{#if @custom.enter_tag_slugs_for_primary_sections}}
             {{#get "tags" filter="slug:[{{@custom.enter_tag_slugs_for_primary_sections}}]"}}
@@ -67,7 +67,7 @@
 
             <footer class="gh-topic-footer gh-topics-footer">
                 <button class="gh-topic-link gh-topics-button" type="button" hidden>+ {{t "More articles"}}</button>
-                <a class="gh-topic-link gh-topics-all" href="{{@site.url}}/tags/">{{t "All topics"}} {{> "icons/arrow"}}</a>
+                <a class="gh-topic-link gh-topics-all" href="{{@site.url}}/blog/">{{t "View all"}} {{> "icons/arrow"}}</a>
             </footer>
         </div>
 

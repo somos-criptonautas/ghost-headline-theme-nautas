@@ -8,6 +8,7 @@
 @import "search.css";
 @import "videos.css";
 @import "community.css";
+@import "post.css";
 
 :root {
   --head-nav-gap: 32px;
@@ -113,7 +114,7 @@ body:is(.is-head-transparent, .is-head-brand, .is-head-dark) .gh-head-logo img+i
 .gh-topics,
 .gh-topics-more,
 .gh-videos:not([hidden]) + .gh-with-sidebar {
-  margin-top: 80px;
+  margin-top: 7rem;
 }
 
 /* The script swaps the button and the link with `hidden`, which the
@@ -530,8 +531,8 @@ gh-author-name-list {
 }
 
 /* Author social icons. Phosphor duotone, partials/icons/phosphor/. Centered
-   like the rest of the author header; each link is a 44px tap target with the
-   glyph at 2.6rem inside it. */
+   like the rest of the author header; each link is a 3.9rem (44px) tap
+   target with the glyph at 2.6rem inside it. */
 .gh-author-social {
   display: flex;
   flex-wrap: wrap;
@@ -547,8 +548,8 @@ gh-author-name-list {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 3.9rem;
+  height: 3.9rem;
   border-radius: 50%;
   color: var(--color-base);
   opacity: 0.63;
@@ -587,8 +588,11 @@ gh-author-name-list {
   align-items: baseline;
 }
 
+/* With the comments' bottom margin gone, the block heading's own top
+   margin (3.33rem) and the webmentions block are the whole gap after the
+   thread: about 7rem. */
 .gh-read-next {
-  padding-top: 7rem;
+  padding-top: 0;
 }
 
 @media screen and (min-width: 1700px) {
@@ -634,12 +638,30 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   display: none;
 }
 
-.gh-read-next .gh-topic-grid .gh-card-image img {
+/* Every card the same height: the box is 3:2 and the image covers it, so
+   no other image rule can stretch one. Posts without a feature image get a
+   placeholder of the same size, so a row never steps. */
+.gh-read-next .gh-topic-grid .gh-card-image {
+  overflow: hidden;
   aspect-ratio: 3 / 2;
+  border-radius: var(--border-radius);
+}
+
+.gh-read-next .gh-topic-grid .gh-card-image img {
+  aspect-ratio: auto;
   width: 100%;
-  height: auto;
+  height: 100%;
   min-height: 0;
   max-height: none;
+  object-fit: cover;
+}
+
+.gh-read-next .gh-topic-grid .gh-card.no-image .gh-card-link::before {
+  content: "";
+  display: block;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--border-radius);
+  background-color: var(--color-bg-alt, var(--color-lighter-gray));
 }
 
 /* Compact cards: the theme inflates them into 400px panels on tablet. */
@@ -652,11 +674,19 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   padding: 1.8rem 0 0;
 }
 
-/* Card titles at the site's card size - var(--h1-size), as on the
-   homepage and /blog/ - in rows of two from 992px, the same as those. */
+/* Card titles: 3rem in rows of three - between the old 2.11rem and the
+   full var(--h1-size) of the two-per-row listings. Phones, one per row,
+   keep var(--h1-size) like every other card list there. */
 .gh-read-next .gh-topic-grid .gh-card-title {
-  font-size: var(--h1-size);
-  line-height: 1.11;
+  font-size: 3rem;
+  line-height: 1.15;
+}
+
+@media screen and (max-width: 767px) {
+  .gh-read-next .gh-topic-grid .gh-card-title {
+    font-size: var(--h1-size);
+    line-height: 1.11;
+  }
 }
 
 .gh-read-next .gh-topic-grid .gh-card:not(.large) .gh-card-excerpt {
@@ -698,7 +728,7 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
 @media screen and (min-width: 992px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     row-gap: 4rem;
     column-gap: var(--grid-gap);
     justify-items: stretch;
@@ -1861,6 +1891,12 @@ body:not(.is-head-b--a_n) .gh-head-menu::after {
   overflow-y: auto;
 }
 
+/* assets/js/toc.js hides the list on posts with fewer than 3 headings;
+   the display: flex above would otherwise override `hidden`. */
+.toc[hidden] {
+  display: none;
+}
+
 .toc-list-item {
   padding: 0.6rem 0;
   opacity: 0.63;
@@ -2907,6 +2943,16 @@ body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {
   }
 }
 
+/* Next to the community sidebar the homepage cards are about half as wide,
+   so their titles drop from var(--h1-size) to the 3rem of the related-posts
+   cards. Without the sidebar they keep the full size. */
+@media screen and (min-width: 1200px) {
+  .gh-with-sidebar:has(> .gh-community:not([hidden])) .gh-topic-grid .gh-card .gh-card-title {
+    font-size: 3rem;
+    line-height: 1.15;
+  }
+}
+
 /* Homepage posts: two per row on desktop instead of one full-width row. */
 @media screen and (min-width: 992px) {
   .home-template .gh-topic-grid > .gh-topic-content {
@@ -3031,7 +3077,7 @@ blockquote.twitter-tweet {
 }
 
 .comunidad-comments {
-  margin-bottom: 6.11rem;
+  margin-bottom: 0;
 }
 
 .gh-main {
@@ -5054,16 +5100,18 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
 }
 
 /* Comments heading */
-/* "Comentarios" is a label over the forum thread, not a section title:
-   subheading size, centered, in the secondary text color. */
+/* "Comentarios": a subheading over the forum thread - the size of an h2
+   inside an article (.gh-content h2, 1.73em of the content text), centered,
+   with room above it and little between it and the thread. */
 .comunidad-comments .gh-pagehead-title,
 .gh-content .comunidad-comments .gh-pagehead-title {
-  margin-bottom: 2rem;
-  color: var(--color-secondary-text);
-  font-size: 1.8rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  margin: 0;
+  font-size: calc(var(--content-font-size) * 1.73);
   text-align: center;
+}
+
+.comunidad-comments .gh-pagehead {
+  margin: 5rem auto 1.2rem;
 }
 
 .account-signout-wrap {

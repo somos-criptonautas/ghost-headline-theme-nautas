@@ -51,7 +51,7 @@
 /* Below 1200px it follows the posts, as its own section. */
 @media screen and (max-width: 1199px) {
     .gh-community {
-        max-width: 720px;
+        max-width: 63.4rem;
         margin: 8rem auto 0;
     }
 }
@@ -269,8 +269,8 @@
 .gh-community-meta > * + *::before {
     content: "";
     display: inline-block;
-    width: 3px;
-    height: 3px;
+    width: 0.25em;
+    height: 0.25em;
     margin: 0 0.6rem;
     border-radius: 50%;
     background-color: currentColor;

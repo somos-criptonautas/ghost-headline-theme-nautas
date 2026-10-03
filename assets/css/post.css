@@ -1,0 +1,168 @@
+/* Post extras: share links (partials/post-share.hbs), the TOC column
+/* without a list (assets/js/toc.js) and back to top (partials/to-top.hbs)
+/* ---------------------------------------------------------- */
+
+/* Share */
+
+.gh-share {
+    margin-top: 3.2rem;
+}
+
+.gh-share-label {
+    margin: 0 0 0.8rem;
+    color: var(--color-secondary-text);
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.gh-share-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+/* 3.9rem is a 44px tap target at the 71% root. */
+.gh-share-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.9rem;
+    height: 3.9rem;
+    border-radius: 50%;
+    color: var(--color-base);
+    opacity: 0.63;
+    transition: opacity 0.2s ease;
+}
+
+.gh-share-link:hover,
+.gh-share-link:focus-visible {
+    opacity: 1;
+}
+
+.gh-share-link svg {
+    width: 2.6rem;
+    height: 2.6rem;
+}
+
+.gh-share-comments {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.6rem;
+    color: var(--color-base);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.gh-share-comments svg {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+:is(.gh-share-link, .gh-share-comments):focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}
+
+/* In the sticky TOC column from 992px; at the end of the article below. */
+.gh-share-end {
+    display: none;
+}
+
+@media screen and (max-width: 991px) {
+    .gh-sidebar .gh-share {
+        display: none;
+    }
+
+    .gh-share-end {
+        display: block;
+        max-width: min(var(--content-width, 720px), calc(100vw - 2 * var(--gap)));
+        margin: 4rem auto 0;
+        text-align: center;
+    }
+
+    .gh-share-end .gh-share-links {
+        justify-content: center;
+    }
+
+    /* Below 992px the column is a box above the article: with no list it
+       would hold only the reading time, so it goes. */
+    .gh-sidebar.is-toc-empty {
+        display: none;
+    }
+}
+
+/* Back to top */
+
+.gh-to-top {
+    position: fixed;
+    right: max(2rem, env(safe-area-inset-right));
+    bottom: max(2rem, env(safe-area-inset-bottom));
+    z-index: 80;
+    display: grid;
+    place-items: center;
+    width: 4.4rem;
+    height: 4.4rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background-color: var(--color-bg);
+    color: var(--color-base);
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.8rem);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+}
+
+.gh-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+}
+
+.gh-to-top:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}
+
+.gh-to-top > svg:not(.gh-to-top-ring) {
+    width: 1.8rem;
+    height: 1.8rem;
+}
+
+/* The ring: a faint full track, and the read share drawn over it from
+   12 o'clock. pathLength="100" makes the offset a plain percentage. */
+.gh-to-top-ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.gh-to-top-ring circle {
+    fill: none;
+    stroke-width: 2;
+}
+
+.gh-to-top-track {
+    stroke: var(--color-border, var(--color-light-gray));
+}
+
+.gh-to-top-bar {
+    stroke: var(--color-base);
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    stroke-linecap: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gh-to-top {
+        transition: none;
+    }
+}

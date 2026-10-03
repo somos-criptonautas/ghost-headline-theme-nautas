@@ -3,7 +3,7 @@
  * Ghost renders up to nine extra tag sections, each in a hidden
  * .gh-topics-more wrapper. This reveals them three at a time - no requests,
  * they are already in the page, and their lazy images only load once shown.
- * Without this script the button stays hidden and the link to /tags/ shows.
+ * Without this script the button stays hidden and "View all" (/blog/) shows.
  */
 (function () {
     var box = document.querySelector('.gh-topics');

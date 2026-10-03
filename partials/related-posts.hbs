@@ -14,7 +14,7 @@
         {{/get}}
 
         {{#get "posts" include="authors" filter="tag:-{{post.primary_tag.slug}}+id:-{{post.id}}" limit="16" as |next|}}
-            {{> "read-next" posts=next title=(t "All articles") view_all=true}}
+            {{> "read-next" posts=next title=(t "More articles") view_all=true}}
         {{/get}}
     {{else}}
         {{#get "posts" include="authors" filter="id:-{{post.id}}" limit="16" as |next|}}

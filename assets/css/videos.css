@@ -3,11 +3,50 @@
 /* ---------------------------------------------------------- */
 
 .gh-videos {
+    /* Contrast band. The videos sit on the dark theme's own colors in both
+       modes - the light theme's inverse, and in dark mode the raised dark
+       surface instead of a glaring white band. The theme's color variables
+       are re-pointed inside the band, so tabs, arrows, dots and text follow
+       without per-element rules. */
+    --gh-band-bg: #1c2128;
+    --color-bg: var(--gh-band-bg);
+    --color-base: #e7e7e7;
+    --color-secondary-text: #9ea7b3;
+    --color-border: #444c56;
+    --color-light-gray: #444c56;
     --gh-videos-gap: 2.4rem;
     /* Cards in view. The fraction leaves the next card peeking in, which is
        what tells a reader the row scrolls. */
     --gh-videos-per-view: 1.2;
     min-width: 0;
+    position: relative;
+    padding-block: 5rem;
+    color: var(--color-base);
+    background-color: var(--gh-band-bg);
+    /* Full-bleed without 100vw: the border image paints the band out to
+       both window edges as ink overflow, which never adds a scrollbar. */
+    border-image: linear-gradient(var(--gh-band-bg) 0 0) fill 0 / / 0 100vmax;
+}
+
+html[data-theme="dark"] .gh-videos {
+    --gh-band-bg: #22272e;
+}
+
+/* Flush with the header when the band opens the page (.gh-main's top
+   padding is 5rem). */
+.gh-inner > .gh-videos:first-child {
+    margin-top: -5rem;
+}
+
+@media screen and (max-width: 767px) {
+    .gh-inner > .gh-videos:first-child {
+        margin-top: -2.5rem;
+    }
+}
+
+.gh-videos h2,
+.gh-videos h3 {
+    color: var(--color-base);
 }
 
 @media screen and (min-width: 768px) {
@@ -30,7 +69,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 1.6rem 2.4rem;
-    margin-bottom: 40px;
+    margin-bottom: 3.5rem;
 }
 
 .gh-videos .gh-videos-head .gh-topic-name {
@@ -243,8 +282,8 @@
 .gh-videos-now-meta > * + *::before {
     content: "";
     display: inline-block;
-    width: 3px;
-    height: 3px;
+    width: 0.25em;
+    height: 0.25em;
     margin: 0 0.6rem;
     border-radius: 50%;
     background-color: currentColor;
@@ -255,8 +294,8 @@
     display: grid;
     flex: none;
     place-items: center;
-    width: 44px;
-    height: 44px;
+    width: 3.9rem;
+    height: 3.9rem;
     padding: 0;
     border: 1px solid var(--color-border, var(--color-light-gray));
     border-radius: 50%;
@@ -421,8 +460,8 @@
 .gh-video-meta > * + *::before {
     content: "";
     display: inline-block;
-    width: 3px;
-    height: 3px;
+    width: 0.25em;
+    height: 0.25em;
     margin-right: 0.6rem;
     border-radius: 50%;
     background-color: currentColor;
