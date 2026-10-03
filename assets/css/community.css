@@ -65,11 +65,19 @@
     background-color: var(--color-bg);
 }
 
+.gh-community-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    margin: 0 0 0.8rem;
+}
+
 .gh-community-title {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin: 0 0 0.8rem;
+    margin: 0;
     padding: 0;
     color: var(--color-base);
     font-size: 2rem;
@@ -99,16 +107,21 @@
     -webkit-appearance: none;
     max-width: 100%;
     margin: 0;
-    padding: 0.2rem 3rem 0.2rem 0;
-    border: 0;
-    border-radius: 0.4rem;
+    padding: 0.4rem 2.6rem 0.4rem 0.8rem;
+    border: 1px solid var(--color-border, var(--color-light-gray));
+    border-radius: 0.6rem;
     background: none;
-    color: inherit;
+    color: var(--color-secondary-text);
     font: inherit;
-    letter-spacing: inherit;
-    text-transform: inherit;
-    text-overflow: ellipsis;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-transform: uppercase;
     cursor: pointer;
+}
+
+.gh-community-select:hover {
+    border-color: var(--color-base);
+    color: var(--color-base);
 }
 
 .gh-community-select:focus-visible {
@@ -123,11 +136,12 @@
     text-transform: none;
 }
 
-.gh-community-title .gh-community-picker svg {
+.gh-community-picker svg {
     position: absolute;
-    right: 0;
-    width: 2rem;
-    height: 2rem;
+    right: 0.7rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    color: var(--color-secondary-text);
     pointer-events: none;
 }
 

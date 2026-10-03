@@ -38,10 +38,21 @@
         </div>
     </div>
 
+    {{!-- The last block on the page always ends in a way on - "Ver todo"
+        to every post - so a reader who reaches it is not left with only the
+        site footer; it shows from the start, without waiting for the reveal.
+        The tag block keeps its link to the tag, with more than 8 posts,
+        hidden until read-next.js reveals the block's rest. --}}
+    {{#if view_all}}
+    <footer class="gh-topic-footer gh-read-next-all">
+        <a class="gh-topic-link" href="{{@site.url}}/blog/">{{t "View all"}} {{> "icons/arrow"}}</a>
+    </footer>
+    {{else}}
     {{#match posts.length ">" 8}}
     <footer class="gh-topic-footer" hidden>
         <a class="gh-topic-link" href="{{more_url}}">{{t "Show more"}} {{> "icons/arrow"}}</a>
     </footer>
     {{/match}}
+    {{/if}}
 </div>
 {{/if}}

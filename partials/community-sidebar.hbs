@@ -14,19 +14,23 @@
     data-label-reply="{{t "reply"}}"
     data-label-replies="{{t "replies"}}"
     data-label-in="{{t "in"}}">
-    {{!-- The heading is the picker: visitors switch between topics and
-        posts, and the choice is remembered in their browser. The theme
-        setting only picks which one a first visit opens on. --}}
-    <h2 class="gh-community-title" id="gh-community-title">
-        {{> "icons/discourse"}}
+    {{!-- "Comunidad" as the heading, with the list picker beside it:
+        visitors switch between topics and replies, and the choice is
+        remembered in their browser. The theme setting only picks which one a
+        first visit opens on. --}}
+    <div class="gh-community-head">
+        <h2 class="gh-community-title" id="gh-community-title">
+            {{> "icons/discourse"}}
+            {{t "Community"}}
+        </h2>
         <span class="gh-community-picker">
-            <select class="gh-community-select" aria-label="{{t "Community"}}">
-                <option value="topics">{{t "Latest topics"}}</option>
-                <option value="posts">{{t "Latest posts"}}</option>
+            <select class="gh-community-select" aria-label="{{t "Community list"}}">
+                <option value="topics">{{t "Topics"}}</option>
+                <option value="posts">{{t "Replies"}}</option>
             </select>
             {{> "icons/phosphor/caret-down"}}
         </span>
-    </h2>
+    </div>
     <ol class="gh-community-list"></ol>
     <p class="gh-community-message" role="status" hidden>{{t "The community could not be loaded."}}</p>
     <a class="gh-community-more" target="_blank" rel="noopener">{{t "Go to the community"}} {{> "icons/phosphor/arrow-square-out"}}</a>

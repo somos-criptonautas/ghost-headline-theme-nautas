@@ -32,16 +32,11 @@
                 {{/foreach}}
             </div>
 
-            {{#match pagination.total ">" 4}}
-            <footer class="gh-topic-footer">
-                <a class="gh-topic-link" href="{{@site.url}}/blog/">{{t "Show more"}} {{> "icons/arrow"}}</a>
-            </footer>
-            {{/match}}
         </section>
 
         {{!-- Tag sections. The first three show; up to nine more are
             rendered hidden and assets/js/home-topics.js reveals three per
-            click of "+ More topics". Without JS, or once all are out, the
+            click of "+ More articles". Without JS, or once all are out, the
             button gives way to the link to /tags/. --}}
         <div class="gh-topics">
             {{#if @custom.enter_tag_slugs_for_primary_sections}}
@@ -71,13 +66,13 @@
             {{/if}}
 
             <footer class="gh-topic-footer gh-topics-footer">
-                <button class="gh-topic-link gh-topics-button" type="button" hidden>{{> "icons/phosphor/plus"}} {{t "More topics"}}</button>
+                <button class="gh-topic-link gh-topics-button" type="button" hidden>+ {{t "More articles"}}</button>
                 <a class="gh-topic-link gh-topics-all" href="{{@site.url}}/tags/">{{t "All topics"}} {{> "icons/arrow"}}</a>
             </footer>
         </div>
 
         {{!-- The small tag list only when it is set: its old default (tags
-            4-6) is now the first batch behind "+ More topics". --}}
+            4-6) is now the first batch behind "+ More articles". --}}
         {{#if @custom.enter_tag_slugs_for_secondary_sections}}
         {{#get "tags" filter="slug:[{{@custom.enter_tag_slugs_for_secondary_sections}}]"}}
         {{#if tags}}

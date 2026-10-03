@@ -132,12 +132,6 @@ body:is(.is-head-transparent, .is-head-brand, .is-head-dark) .gh-head-logo img+i
   cursor: pointer;
 }
 
-.gh-topics-button svg {
-  width: 2.4rem;
-  height: 2.4rem;
-  margin: 0;
-}
-
 .gh-topics-button:focus-visible {
   outline: 2px solid var(--ghost-accent-color);
   outline-offset: 4px;
@@ -658,12 +652,11 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   padding: 1.8rem 0 0;
 }
 
-/* Card title sizing. 2.11rem is 24px at the 71% root - the size the
-   reference deck of cards uses - rather than a fraction of the article h1,
-   which outgrew the card as the h1 clamp scaled up. */
+/* Card titles at the site's card size - var(--h1-size), as on the
+   homepage and /blog/ - in rows of two from 992px, the same as those. */
 .gh-read-next .gh-topic-grid .gh-card-title {
-  font-size: 2.11rem;
-  line-height: 1.25;
+  font-size: var(--h1-size);
+  line-height: 1.11;
 }
 
 .gh-read-next .gh-topic-grid .gh-card:not(.large) .gh-card-excerpt {
@@ -689,12 +682,6 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     padding-block: 0;
   }
 
-  /* Phone title size: same as the index cards */
-  .gh-read-next .gh-topic-grid .gh-card-title {
-    font-size: var(--h1-size);
-    line-height: 1.11;
-  }
-
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
@@ -706,17 +693,12 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
     justify-items: stretch;
     max-width: 100%;
   }
-
-  .gh-read-next .gh-topic-grid .gh-card-title {
-    font-size: 2.11rem;
-  }
-
 }
 
 @media screen and (min-width: 992px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     row-gap: 4rem;
     column-gap: var(--grid-gap);
     justify-items: stretch;
@@ -5072,14 +5054,16 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
 }
 
 /* Comments heading */
+/* "Comentarios" is a label over the forum thread, not a section title:
+   subheading size, centered, in the secondary text color. */
+.comunidad-comments .gh-pagehead-title,
 .gh-content .comunidad-comments .gh-pagehead-title {
-  font-size: 3.7rem;
-}
-
-@media screen and (max-width: 767px) {
-  .gh-content .comunidad-comments .gh-pagehead-title {
-    font-size: 3rem;
-  }
+  margin-bottom: 2rem;
+  color: var(--color-secondary-text);
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 .account-signout-wrap {
