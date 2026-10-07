@@ -48,18 +48,18 @@
         root.innerHTML =
             '<div class="ns__backdrop" data-ns-close></div>' +
             '<div class="ns__modal" role="dialog" aria-modal="true" aria-label="' + t(['Buscar', 'Search']) + '">' +
-                '<form class="ns__head" role="search">' +
-                    '<span class="ns__head-icon">' + ICON_SEARCH + '</span>' +
-                    '<input class="ns__input" type="search" autocomplete="off" autocorrect="off" ' +
-                        'spellcheck="false" aria-label="' + t(['Buscar en el sitio', 'Search this site']) + '" ' +
-                        'placeholder="' + t(['Buscar artículos y discusiones…', 'Search posts and discussions…']) + '">' +
-                    '<button type="button" class="ns__esc" data-ns-close>esc</button>' +
-                '</form>' +
-                '<div class="ns__body">' +
-                    '<div class="ns__section" data-ns-pane="posts" hidden></div>' +
-                    '<div class="ns__section" data-ns-pane="topics" hidden></div>' +
-                    '<div class="ns__state" data-ns-pane="state"></div>' +
-                '</div>' +
+            '<form class="ns__head" role="search">' +
+            '<span class="ns__head-icon">' + ICON_SEARCH + '</span>' +
+            '<input class="ns__input" type="search" autocomplete="off" autocorrect="off" ' +
+            'spellcheck="false" aria-label="' + t(['Buscar en el sitio', 'Search this site']) + '" ' +
+            'placeholder="' + t(['Buscar artículos e historias…', 'Search posts and stories…']) + '">' +
+            '<button type="button" class="ns__esc" data-ns-close>esc</button>' +
+            '</form>' +
+            '<div class="ns__body">' +
+            '<div class="ns__section" data-ns-pane="posts" hidden></div>' +
+            '<div class="ns__section" data-ns-pane="topics" hidden></div>' +
+            '<div class="ns__state" data-ns-pane="state"></div>' +
+            '</div>' +
             '</div>';
 
         document.body.appendChild(root);
@@ -133,12 +133,34 @@
         });
     };
 
-    var hitRow = function (href, icon, title, snippet, metaLine) {
+    /* Ghost serves resized copies under /content/images/size/<w>/..., so a
+     * 64px-wide thumbnail costs a fraction of the feature image. Anything not
+     * matching that path (an external or already-sized URL) is used as is.
+     */
+    var thumbUrl = function (url) {
+        return url.replace(/(\/content\/images\/)(?!size\/)/, '$1size/w160/');
+    };
+
+    var hitRow = function (href, icon, title, snippet, metaLine, thumb) {
         var a = document.createElement('a');
         a.className = 'ns__hit';
         a.href = href;
 
-        a.innerHTML = '<span class="ns__hit-icon">' + icon + '</span>';
+        // The thumbnail takes the icon's slot, so the row layout is unchanged.
+        if (thumb) {
+            var img = document.createElement('img');
+            img.className = 'ns__hit-thumb';
+            img.src = thumbUrl(thumb);
+            img.alt = '';
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            var slot = document.createElement('span');
+            slot.className = 'ns__hit-icon ns__hit-icon--thumb';
+            slot.appendChild(img);
+            a.appendChild(slot);
+        } else {
+            a.innerHTML = '<span class="ns__hit-icon">' + icon + '</span>';
+        }
         var body = document.createElement('span');
         body.className = 'ns__hit-body';
 
@@ -190,7 +212,7 @@
 
     /* ------------------------------------------------------------ rendering */
 
-    var counts = {posts: null, topics: null};
+    var counts = { posts: null, topics: null };
 
     var paint = function () {
         var state = panes.state;
@@ -233,16 +255,17 @@
 
     var renderPosts = function (hits) {
         counts.posts = hits.length;
-        var rows = hits.slice(0, cfg.maxPosts || 4).map(function (hit) {
+        var rows = hits.slice(0, cfg.maxPosts || 3).map(function (hit) {
             return hitRow(
                 hit.url || '/',
                 ICON_POST,
-                {hit: hit, attribute: 'title', fallback: hit.title},
-                {hit: hit, attribute: 'excerpt', fallback: hit.excerpt},
-                [hit.tags && hit.tags[0], date(hit.published_at)]
+                { hit: hit, attribute: 'title', fallback: hit.title },
+                { hit: hit, attribute: 'excerpt', fallback: hit.excerpt },
+                [hit.tags && hit.tags[0], date(hit.published_at)],
+                hit.feature_image
             );
         });
-        section(panes.posts, t(['Artículos', 'Posts']), hits.length, rows);
+        section(panes.posts, t(['Artículos y publicaciones', 'Posts']), hits.length, rows);
     };
 
     var renderTopics = function (hits) {
@@ -263,12 +286,12 @@
 
         counts.topics = topics.length;
 
-        var rows = topics.slice(0, cfg.maxTopics || 5).map(function (hit) {
+        var rows = topics.slice(0, cfg.maxTopics || 6).map(function (hit) {
             return hitRow(
                 hit.url || '/',
                 ICON_TOPIC,
-                {hit: hit, attribute: 'title', fallback: hit.title},
-                {hit: hit, attribute: 'text', fallback: hit.text, prefix: hit.username ? '@' + hit.username + ': ' : ''},
+                { hit: hit, attribute: 'title', fallback: hit.title },
+                { hit: hit, attribute: 'text', fallback: hit.text, prefix: hit.username ? '@' + hit.username + ': ' : '' },
                 [
                     hit.category,
                     hit.reply_count ? hit.reply_count + ' ' + t(['respuestas', 'replies']) : '',
@@ -282,10 +305,10 @@
             footer = document.createElement('a');
             footer.className = 'ns__more';
             footer.href = cfg.forumUrl.replace(/\/$/, '') + '/search?q=' + encodeURIComponent(lastQuery);
-            footer.textContent = t(['Ver todas las discusiones →', 'See all discussions →']);
+            footer.textContent = t(['Buscar en la comunidad →', 'Search on Community →']);
         }
 
-        section(panes.topics, t(['Discusiones de la comunidad', 'Community discussions']), topics.length, rows, footer);
+        section(panes.topics, t(['Historias en la comunidad', 'Community discussions']), topics.length, rows, footer);
     };
 
     /* --------------------------------------------------------- instantsearch */
@@ -326,7 +349,7 @@
         var search = window.instantsearch({
             indexName: cfg.postsCollection,
             searchClient: adapter.searchClient,
-            future: {preserveSharedStateOnUnmount: true}
+            future: { preserveSharedStateOnUnmount: true }
         });
 
         var box = window.instantsearch.connectors.connectSearchBox(function (opts, first) {
@@ -360,14 +383,14 @@
                     };
                 })()
             }),
-            window.instantsearch.widgets.configure({hitsPerPage: 8}),
+            window.instantsearch.widgets.configure({ hitsPerPage: 8 }),
             hits(function (opts) {
                 renderPosts(lastQuery ? opts.hits : []);
                 paint();
             })({}),
-            window.instantsearch.widgets.index({indexName: cfg.topicsCollection}).addWidgets([
+            window.instantsearch.widgets.index({ indexName: cfg.topicsCollection }).addWidgets([
                 // Over-fetch: several hits can collapse into one discussion.
-                window.instantsearch.widgets.configure({hitsPerPage: 24}),
+                window.instantsearch.widgets.configure({ hitsPerPage: 24 }),
                 hits(function (opts) {
                     renderTopics(lastQuery ? opts.hits : []);
                     paint();
@@ -397,7 +420,7 @@
             row.classList.remove('is-active');
         });
         rows[next].classList.add('is-active');
-        rows[next].scrollIntoView({block: 'nearest'});
+        rows[next].scrollIntoView({ block: 'nearest' });
     };
 
     function onKeydown(event) {
@@ -448,7 +471,7 @@
         }
     };
 
-    window.nautasSearch = {open: open, close: close};
+    window.nautasSearch = { open: open, close: close };
 
     document.addEventListener('click', function (event) {
         var trigger = event.target.closest('[data-ghost-search]');

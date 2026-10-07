@@ -153,6 +153,23 @@ html.ns-open {
     background: var(--ns-bg-alt);
 }
 
+/* Posts carry feature_image in the index, so their rows show a thumbnail in
+   place of the glyph. Forum rows keep the icon: the Discourse collection has
+   no image field. */
+.ns__hit-icon--thumb {
+    flex: 0 0 auto;
+}
+
+.ns__hit-thumb {
+    display: block;
+    width: 6.4rem;
+    aspect-ratio: 3 / 2;
+    margin-top: 0.3rem;
+    border-radius: var(--global-radius, 0.25rem);
+    object-fit: cover;
+    background: var(--ns-muted, rgba(127, 127, 127, 0.2));
+}
+
 .ns__hit-icon svg {
     display: block;
     width: 1.7rem;
