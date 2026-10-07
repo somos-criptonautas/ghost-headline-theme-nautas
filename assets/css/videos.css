@@ -42,6 +42,27 @@ html[data-theme="dark"] .gh-videos {
     .gh-inner > .gh-videos:first-child {
         margin-top: -2.5rem;
     }
+
+    /* Phones: less band around the row. */
+    .gh-videos {
+        padding-block: 3rem;
+    }
+
+    /* Phones: compact pills. Without an explicit line-height they took the
+       page's and stood 42px tall around 16px of text. Scoped under
+       .gh-videos to outrank the base pill rule further down. */
+    .gh-videos .gh-videos-tab {
+        padding: 0.5rem 1.2rem;
+        border-radius: 10rem;
+        font-size: 1.4rem;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    .gh-videos .gh-videos-tabs {
+        flex-wrap: nowrap;
+        gap: 0.6rem;
+    }
 }
 
 .gh-videos h2,

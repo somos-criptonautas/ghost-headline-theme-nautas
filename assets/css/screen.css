@@ -117,6 +117,21 @@ body:is(.is-head-transparent, .is-head-brand, .is-head-dark) .gh-head-logo img+i
   margin-top: 7rem;
 }
 
+/* Phones: tighter steps between the homepage blocks - videos, Trending,
+   each tag section - and less air above each section's footer link. */
+@media screen and (max-width: 767px) {
+  .home-template .gh-topic-grid + .gh-topic-grid,
+  .gh-topics,
+  .gh-topics-more,
+  .gh-videos:not([hidden]) + .gh-with-sidebar {
+    margin-top: 3.5rem;
+  }
+
+  .home-template .gh-topic-footer {
+    padding-top: 2.4rem;
+  }
+}
+
 /* The script swaps the button and the link with `hidden`, which the
    display: inline-flex on .gh-topic-link would otherwise override. */
 .gh-topics-footer [hidden] {
