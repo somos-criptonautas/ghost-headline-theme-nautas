@@ -48,9 +48,12 @@
         authenticated as nor carry a link back. That profile's website field
         must be this site for the pair to verify. }}
     <link rel="me" href="https://github.com/satonotdead">
-    {{! Portal is not used on this site. Excluding it stops Ghost injecting
-        the members script; the exclude list is Ghost's supported switch. }}
-    {{ghost_head exclude="portal"}}
+    {{! Portal is not used on this site, and search is assets/js/search-modal.js,
+        which owns [data-ghost-search] itself - Ghost's sodo-search tag was
+        loading a file that 404s since the MagicPages build was dropped. The
+        exclude list is Ghost's supported switch; it splits on "," with no
+        trimming, so do not put a space after the comma. }}
+    {{ghost_head exclude="portal,search"}}
     {{!-- Site icons. After {{ghost_head}} on purpose: it emits its own
         <link rel="icon"> from the publication icon, and browsers use the last
         one declared. Ghost only serves theme files under assets/, hence
