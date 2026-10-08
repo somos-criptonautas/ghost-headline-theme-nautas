@@ -28,6 +28,20 @@ jobs:
 
       - run: pnpm install --no-frozen-lockfile
 
+      # assets/built/ is committed and Deploy Theme uploads it as-is, with no
+      # build step. Rebuild from the lockfile's dependencies and fail when the
+      # result differs from what was committed, so a bundle built from stale
+      # local node_modules is caught here instead of reaching the live site.
+      - run: pnpm exec gulp build
+
+      - name: Committed assets/built matches a fresh build
+        run: |
+          if ! git diff --quiet -- assets/built; then
+            git diff --stat -- assets/built
+            echo "::error::assets/built is out of date. Run pnpm install, then pnpm exec gulp build, and commit the result."
+            exit 1
+          fi
+
       - run: pnpm zip
 
       - run: pnpm exec gscan --fatal --verbose .
