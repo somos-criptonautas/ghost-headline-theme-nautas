@@ -129,7 +129,7 @@ function js(done) {
             //
             // instantsearch.min.js and typesense-instantsearch-adapter.min.js
             // are unmodified vendor builds, refreshed by
-            // .github/workflows/update-typesense.yml. Served locally rather
+            // .github/workflows/update-search-vendor.yml. Served locally rather
             // than from a CDN, but not bundled: they arrive already minified,
             // and re-uglifying them on every build only mangles their symbols
             // into our sourcemap.

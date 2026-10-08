@@ -30,7 +30,7 @@
 <script src="{{asset "js/search-config.js"}}"></script>
 {{! Search modal: InstantSearch.js over Typesense, one query across the blog
     and the forum collections. The two vendor bundles are served from the theme
-    rather than a CDN and refreshed by .github/workflows/update-typesense.yml;
+    rather than a CDN and refreshed by .github/workflows/update-search-vendor.yml;
     all three files stay out of main.min.js - see the js task in gulpfile.js.
 
     Order matters and defer guarantees it: the vendors define
