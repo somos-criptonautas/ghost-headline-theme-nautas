@@ -40,5 +40,16 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
 
     maxPosts: 4,
     maxTopics: 5,
+
+    /* Semantic (hybrid) search, per collection. Keep false until that
+     * collection has an `embedding` field: Typesense rejects a query naming a
+     * field it does not have, and the section then comes back empty. A
+     * collection is ready when this returns hits rather than "Could not find
+     * a field named `embedding`":
+     *   curl -H "X-TYPESENSE-API-KEY: <the key above>" \
+     *     "https://typesense.criptonautas.co/collections/discourse_posts/documents/search?q=hola&query_by=embedding"
+     */
+    semanticPosts: false,
+    semanticTopics: false,
     commonSearches: ['cómo empezar', 'cómo usar Monero', 'hacer trading']
 };

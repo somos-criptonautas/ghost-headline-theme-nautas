@@ -325,6 +325,22 @@
                 highlight_end_tag: MARK_CLOSE
             },
             collectionSpecificSearchParameters: (function () {
+                /* Hybrid search. Naming `embedding` in query_by makes Typesense
+                 * fuse keyword and vector rank; alpha is the vector share, so
+                 * 0.2 keeps keyword matches on top, and the distance threshold
+                 * drops vector-only hits that are only loosely related.
+                 * exclude_fields stops every hit carrying its whole vector back.
+                 * Each query is embedded by the provider too, so this leans on
+                 * the search box's debounce below. */
+                var semantic = function (p, on) {
+                    if (on) {
+                        p.query_by += ',embedding';
+                        p.exclude_fields = 'embedding';
+                        p.vector_query = 'embedding:([], alpha: 0.2, distance_threshold: 0.8)';
+                    }
+                    return p;
+                };
+
                 var params = {};
                 params[cfg.postsCollection] = {
                     query_by: 'title,excerpt,plaintext',
@@ -342,6 +358,8 @@
                     query_by: 'title,text',
                     highlight_fields: 'title,text'
                 };
+                semantic(params[cfg.postsCollection], cfg.semanticPosts);
+                semantic(params[cfg.topicsCollection], cfg.semanticTopics);
                 return params;
             })()
         });
