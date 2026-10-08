@@ -1,19 +1,51 @@
 name: Deploy Theme
 on:
-  push:
-    branches:
-      - master
-      - main
+  # Deploy only what passed Test: this runs when the Test workflow finishes,
+  # and the job below goes ahead only for a successful run on a push to main.
+  # Test fails when assets/built is stale, so a stale bundle never ships.
+  workflow_run:
+    workflows: [Test]
+    types: [completed]
+    branches: [main]
+  # Manual redeploy of the current main from the Actions tab.
+  workflow_dispatch:
+
+# One deploy at a time; a queued one waits rather than racing the upload.
+concurrency:
+  group: deploy-theme
+  cancel-in-progress: false
+
 jobs:
   deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The commit Test actually checked, not whatever main is now.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      # Two quick pushes finish Test in either order. Skip this deploy when
+      # main has already moved on - the newer commit's own run deploys it,
+      # and an older bundle never overwrites a newer one.
+      - name: Skip if main has moved on
+        id: latest
+        if: github.event_name == 'workflow_run'
+        run: |
+          head=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$head" != "${{ github.event.workflow_run.head_sha }}" ]; then
+            echo "main is at $head; a newer run deploys it."
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          fi
       # The action logs "successfully uploaded" for any 2xx, so when /ghost/ sits
       # behind a forward-auth proxy the POST is redirected to a login page and
       # the deploy reports success while Ghost never sees the theme. Fail here
       # instead: unauthenticated Ghost answers 401 JSON, a proxy answers 3xx.
       - name: Preflight - Ghost Admin API must be reachable
+        if: steps.latest.outputs.stale != 'true'
         env:
           API_URL: ${{ secrets.GHOST_ADMIN_API_URL }}
         run: |
@@ -34,6 +66,7 @@ jobs:
           esac
 
       - name: Deploy Ghost Theme
+        if: steps.latest.outputs.stale != 'true'
         uses: TryGhost/action-deploy-theme@v2
         with:
           api-url: ${{ secrets.GHOST_ADMIN_API_URL }}
