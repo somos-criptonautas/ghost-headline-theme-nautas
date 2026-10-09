@@ -343,9 +343,9 @@
                         p.prefix = p.query_by.split(',').map(function (f) {
                             return f === 'embedding' ? 'false' : 'true';
                         }).join(',');
-                        // Defaults are 30 s x 2 tries; a stalled provider would hang
-                        // the search for a minute before the fallback below kicks in.
-                        p.remote_embedding_timeout_ms = 3000;
+                        // Nobody waits on this call any more (see the progressive
+                        // client below), so allow a slow wake-up; the default is 30 s x 2.
+                        p.remote_embedding_timeout_ms = 10000;
                         p.remote_embedding_num_tries = 1;
                     }
                     return p;
@@ -375,22 +375,35 @@
         }).searchClient;
         };
 
-        /* The adapter rejects the whole multi-search when any one collection
-         * errors, so a single failed embedding call would blank the blog
-         * results too. On a failure, rerun the same request keyword-only and
-         * stay keyword-only for the rest of the visit. */
-        var semanticOn = !!(cfg.semanticPosts || cfg.semanticTopics);
-        var client = makeClient(semanticOn);
+        /* Progressive: keyword results answer at once, the semantic ranking is
+         * asked for alongside and swapped in when it arrives. The provider is
+         * slow to wake (first query after idle took 5.5 s, the next ones
+         * 0.7 s), so waiting on it - or giving up on it for the visit after one
+         * slow answer - left visitors with keyword results. A failed semantic
+         * call costs nothing: the keyword results are already on screen. */
+        var keywordClient = makeClient(false);
+        var semanticClient = (cfg.semanticPosts || cfg.semanticTopics) ? makeClient(true) : null;
+        var semanticResults = {};
+        var latestKey = null;
         var searchClient = {
             search: function (requests) {
-                return client.search(requests).catch(function (error) {
-                    if (!semanticOn) {
-                        throw error;
+                if (!semanticClient) {
+                    return keywordClient.search(requests);
+                }
+                var key = JSON.stringify(requests);
+                latestKey = key;
+                if (semanticResults[key]) {
+                    return Promise.resolve(semanticResults[key]);
+                }
+                semanticClient.search(requests).then(function (response) {
+                    semanticResults[key] = response;
+                    // Redraw only if the visitor is still on this query; the
+                    // refresh comes back through here and takes the cached answer.
+                    if (key === latestKey) {
+                        search.refresh();
                     }
-                    semanticOn = false;
-                    client = makeClient(false);
-                    return client.search(requests);
-                });
+                }, function () {});
+                return keywordClient.search(requests);
             }
         };
 
