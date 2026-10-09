@@ -284,30 +284,21 @@ html.ns-open {
     text-align: center;
 }
 
-.ns__chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.8rem;
-    padding: 1.4rem 1.8rem 0.6rem;
+.ns__suggestions .ns__section-label {
+    display: block;
+    padding: 1.4rem 1.8rem 0.4rem;
 }
 
-.ns__chips .ns__section-label {
-    flex: 0 0 100%;
+.ns__hit--suggestion {
+    align-items: center;
 }
 
-.ns__chip {
-    padding: 0.6rem 1.2rem;
-    font-size: 1.35rem;
-    font-family: inherit;
-    color: var(--ns-text);
-    background: var(--ns-bg-alt);
-    border: 1px solid var(--ns-border);
-    border-radius: 999px;
-    cursor: pointer;
+.ns__hit--suggestion .ns__hit-icon svg {
+    margin-top: 0;
 }
 
-.ns__chip:hover {
-    border-color: var(--ns-focus);
+.ns__hit--suggestion .ns__hit-title {
+    font-weight: 400;
 }
 
 @media screen and (max-width: 600px) {

@@ -390,27 +390,31 @@
         state.textContent = '';
 
         if (!lastQuery) {
-            var chips = cfg.commonSearches || [];
-            if (!chips.length) {
+            var suggestions = cfg.commonSearches || [];
+            if (!suggestions.length) {
                 return;
             }
+            /* Rows, not pills: the pills above are the source filters, and a
+             * suggestion is a search - it reads and keys like a result row. */
             var wrap = document.createElement('div');
-            wrap.className = 'ns__chips';
+            wrap.className = 'ns__suggestions';
             var label = document.createElement('div');
             label.className = 'ns__section-label';
             label.textContent = t(['Búsquedas frecuentes', 'Common searches']);
             wrap.appendChild(label);
-            chips.forEach(function (text) {
-                var b = document.createElement('button');
-                b.type = 'button';
-                b.className = 'ns__chip';
-                b.textContent = text;
-                b.addEventListener('click', function () {
+            suggestions.forEach(function (text) {
+                var a = document.createElement('a');
+                a.className = 'ns__hit ns__hit--suggestion';
+                a.href = '#/search/' + encodeURIComponent(text);
+                a.innerHTML = '<span class="ns__hit-icon">' + ICON_SEARCH + '</span><span class="ns__hit-title"></span>';
+                a.lastChild.textContent = text;
+                a.addEventListener('click', function (event) {
+                    event.preventDefault();
                     input.value = text;
                     refine(text);
                     input.focus();
                 });
-                wrap.appendChild(b);
+                wrap.appendChild(a);
             });
             state.appendChild(wrap);
             return;
