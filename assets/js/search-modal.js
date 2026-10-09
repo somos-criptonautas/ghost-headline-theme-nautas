@@ -314,7 +314,8 @@
     /* --------------------------------------------------------- instantsearch */
 
     var start = function () {
-        var adapter = new window.TypesenseInstantSearchAdapter({
+        var makeClient = function (semanticOn) {
+        return new window.TypesenseInstantSearchAdapter({
             server: {
                 apiKey: cfg.typesenseApiKey,
                 nodes: cfg.typesenseNodes,
@@ -337,6 +338,15 @@
                         p.query_by += ',embedding';
                         p.exclude_fields = 'embedding';
                         p.vector_query = 'embedding:([], alpha: 0.2, distance_threshold: 0.8)';
+                        // Typesense refuses prefix search on a remote embedder; the
+                        // keyword fields keep it, so typing still autocompletes.
+                        p.prefix = p.query_by.split(',').map(function (f) {
+                            return f === 'embedding' ? 'false' : 'true';
+                        }).join(',');
+                        // Defaults are 30 s x 2 tries; a stalled provider would hang
+                        // the search for a minute before the fallback below kicks in.
+                        p.remote_embedding_timeout_ms = 3000;
+                        p.remote_embedding_num_tries = 1;
                     }
                     return p;
                 };
@@ -358,15 +368,35 @@
                     query_by: 'title,text',
                     highlight_fields: 'title,text'
                 };
-                semantic(params[cfg.postsCollection], cfg.semanticPosts);
-                semantic(params[cfg.topicsCollection], cfg.semanticTopics);
+                semantic(params[cfg.postsCollection], semanticOn && cfg.semanticPosts);
+                semantic(params[cfg.topicsCollection], semanticOn && cfg.semanticTopics);
                 return params;
             })()
-        });
+        }).searchClient;
+        };
+
+        /* The adapter rejects the whole multi-search when any one collection
+         * errors, so a single failed embedding call would blank the blog
+         * results too. On a failure, rerun the same request keyword-only and
+         * stay keyword-only for the rest of the visit. */
+        var semanticOn = !!(cfg.semanticPosts || cfg.semanticTopics);
+        var client = makeClient(semanticOn);
+        var searchClient = {
+            search: function (requests) {
+                return client.search(requests).catch(function (error) {
+                    if (!semanticOn) {
+                        throw error;
+                    }
+                    semanticOn = false;
+                    client = makeClient(false);
+                    return client.search(requests);
+                });
+            }
+        };
 
         var search = window.instantsearch({
             indexName: cfg.postsCollection,
-            searchClient: adapter.searchClient,
+            searchClient: searchClient,
             future: { preserveSharedStateOnUnmount: true }
         });
 

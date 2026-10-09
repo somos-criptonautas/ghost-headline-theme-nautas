@@ -50,6 +50,6 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
      *     "https://typesense.criptonautas.co/collections/discourse_posts/documents/search?q=hola&query_by=embedding"
      */
     semanticPosts: false,
-    semanticTopics: false,
+    semanticTopics: true,
     commonSearches: ['cómo empezar', 'cómo usar Monero', 'hacer trading']
 };
