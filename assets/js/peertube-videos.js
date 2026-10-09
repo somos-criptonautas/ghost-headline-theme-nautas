@@ -1,13 +1,15 @@
-/* Homepage video row (partials/peertube-videos.hbs). Ships inside main.min.js.
+/* Videos page (custom-videos.hbs + partials/peertube-videos.hbs). Ships
+ * inside main.min.js; does nothing on pages without the .gh-videos shell.
  *
  * Lists videos from a self-hosted PeerTube through its public REST API, which
- * answers cross-origin (PeerTube mounts cors() on /api). One request per
- * channel, since the API has no multi-channel filter, merged client side.
+ * answers cross-origin (PeerTube mounts cors() on /api). With two or more
+ * channels in the setting, each gets a chip; "Todos" merges them. Order is
+ * Random (the default), Trending or Latest, and "Cargar más" adds 12 at a
+ * time.
  *
  * Nothing from the instance goes in through innerHTML: every string is set
- * with textContent, URLs are rebuilt on the instance origin and the player
- * only loads when a visitor presses play - until then the page fetches JSON
- * and thumbnails, never the PeerTube player.
+ * with textContent, URLs are rebuilt on the instance origin, and the player
+ * only loads when a visitor presses play.
  */
 (function () {
     var section = document.querySelector('.gh-videos');
@@ -16,13 +18,15 @@
         return;
     }
 
-    var SHOWN = 6;
-    // Random has no API sort, so it shuffles the newest POOL of each channel.
-    var POOL = 50;
+    var PAGE = 12;
+    // Random has no API sort: it shuffles each source's newest RANDOM_POOL
+    // (the API's maximum page) once, then deals PAGE at a time.
+    var RANDOM_POOL = 100;
     var TIMEOUT = 8000;
     var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     // PeerTube actor names, optionally @host for a federated channel.
     var HANDLE = /^[\w.-]+(@[\w.-]+(:\d+)?)?$/;
+    var ALL = '';
 
     var parseSource = function (raw) {
         var url;
@@ -71,21 +75,21 @@
         return;
     }
 
-    var track = section.querySelector('.gh-videos-track');
-    var list = section.querySelector('.gh-videos-list');
+    var grid = section.querySelector('.gh-videos-grid');
     var message = section.querySelector('.gh-videos-message');
-    var dotsBox = section.querySelector('.gh-videos-dots');
+    var chipsBox = section.querySelector('.gh-videos-channels');
+    var loadButton = section.querySelector('.gh-videos-load');
     var more = section.querySelector('.gh-videos-more');
     var tabs = Array.prototype.slice.call(section.querySelectorAll('.gh-videos-tab'));
-    var arrows = Array.prototype.slice.call(section.querySelectorAll('.gh-videos-arrow'));
     var labelPlay = section.getAttribute('data-label-play') || 'Play';
     var labelLive = section.getAttribute('data-label-live') || 'Live';
+    var labelAll = section.getAttribute('data-label-all') || 'All';
     var lang = document.documentElement.lang || undefined;
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    more.href = source.channels.length === 1
-        ? source.origin + '/c/' + encodeURIComponent(source.channels[0]) + '/videos'
-        : source.origin + '/';
+    var behavior = function () {
+        return reduceMotion && reduceMotion.matches ? 'auto' : 'smooth';
+    };
 
     /* Data
      * ------------------------------------------------------------------ */
@@ -109,33 +113,22 @@
             })
             .then(function (body) {
                 clearTimeout(timer);
-                return body && Array.isArray(body.data) ? body.data : [];
+                return body;
             }, function (error) {
                 clearTimeout(timer);
                 throw error;
             });
     };
 
-    // Promise.allSettled without needing Safari 13: a channel that fails
-    // resolves to null, so one dead channel does not empty the whole row.
-    var settle = function (promises) {
-        return Promise.all(promises.map(function (promise) {
-            return promise.then(null, function () {
-                return null;
-            });
-        }));
-    };
+    // One video list endpoint per source: a channel, or the instance's local
+    // videos when the setting names no channels.
+    var endpoint = function (handle, sort, start, count) {
+        var query = '?start=' + start + '&count=' + count + '&sort=' + sort + '&nsfw=false&skipCount=true';
 
-    var endpoints = function (sort, count) {
-        var query = '?count=' + count + '&sort=' + sort + '&nsfw=false&skipCount=true';
-
-        if (!source.channels.length) {
-            return [source.origin + '/api/v1/videos' + query + '&isLocal=true'];
+        if (!handle) {
+            return source.origin + '/api/v1/videos' + query + '&isLocal=true';
         }
-
-        return source.channels.map(function (name) {
-            return source.origin + '/api/v1/video-channels/' + encodeURIComponent(name) + '/videos' + query;
-        });
+        return source.origin + '/api/v1/video-channels/' + encodeURIComponent(handle) + '/videos' + query;
     };
 
     // Absolute http(s) URL or nothing. Paths resolve against the instance.
@@ -205,17 +198,6 @@
         };
     };
 
-    var unique = function (videos) {
-        var seen = {};
-        return videos.filter(function (video) {
-            if (!video || seen[video.uuid]) {
-                return false;
-            }
-            seen[video.uuid] = true;
-            return true;
-        });
-    };
-
     var shuffle = function (items) {
         for (var i = items.length - 1; i > 0; i--) {
             var j = Math.floor(Math.random() * (i + 1));
@@ -226,73 +208,153 @@
         return items;
     };
 
-    var flatten = function (lists) {
-        return [].concat.apply([], lists);
+    /* Feeds. One per channel choice and order, kept while the page is open,
+     * so switching back shows what was already loaded.
+     *
+     * Latest and Trending page through the API: each source is a queue that
+     * is topped up a page at a time, and every "load more" takes the next
+     * PAGE across the queues - newest first for Latest, taking turns for
+     * Trending (the score is not in the response, so channels cannot be
+     * ranked against each other). The merge stays in order across loads.
+     * ------------------------------------------------------------------ */
+
+    var SORTS = {latest: '-publishedAt', trending: '-trending'};
+
+    var Feed = function (handles, mode) {
+        this.mode = mode;
+        this.shown = [];
+        this.seen = {};
+        this.queues = handles.map(function (handle) {
+            return {handle: handle, items: [], start: 0, done: false};
+        });
+        this.pool = null;
+        this.turn = 0;
     };
 
-    var MODES = {
-        latest: {
-            sort: '-publishedAt',
-            count: SHOWN,
-            merge: function (lists) {
-                return flatten(lists).sort(function (a, b) {
-                    return (b.published || 0) - (a.published || 0);
-                });
-            }
-        },
-        trending: {
-            sort: '-trending',
-            count: SHOWN,
-            // The trending score is not in the response, so channels cannot
-            // be ranked against each other: take turns, best of each first.
-            merge: function (lists) {
-                var merged = [];
-                for (var i = 0; i < SHOWN; i++) {
-                    for (var c = 0; c < lists.length; c++) {
-                        if (lists[c][i]) {
-                            merged.push(lists[c][i]);
-                        }
-                    }
-                }
-                return merged;
-            }
-        },
-        random: {
-            sort: '-publishedAt',
-            count: POOL,
-            merge: flatten,
-            // Reshuffled from the cached pool every time the tab is chosen.
-            pick: shuffle
+    Feed.prototype.done = function () {
+        if (this.mode === 'random') {
+            return !!this.pool && !this.pool.length;
         }
+        return this.queues.every(function (queue) {
+            return queue.done && !queue.items.length;
+        });
     };
 
-    var cache = {};
+    Feed.prototype.fill = function (queue) {
+        var url = endpoint(queue.handle, SORTS[this.mode], queue.start, PAGE);
+        queue.start += PAGE;
 
-    var load = function (mode) {
-        if (!cache[mode]) {
-            var spec = MODES[mode];
+        return getJSON(url).then(function (body) {
+            var data = body && Array.isArray(body.data) ? body.data : [];
+            if (data.length < PAGE) {
+                queue.done = true;
+            }
+            data.map(normalize).filter(Boolean).forEach(function (video) {
+                queue.items.push(video);
+            });
+        }, function () {
+            // A channel that fails stops contributing; the rest carry on.
+            queue.done = true;
+            queue.failed = true;
+        });
+    };
 
-            cache[mode] = settle(endpoints(spec.sort, spec.count).map(getJSON))
-                .then(function (lists) {
-                    lists = lists.filter(Boolean);
-                    if (!lists.length) {
-                        throw new Error('unreachable');
-                    }
-                    return unique(spec.merge(lists.map(function (videos) {
-                        return videos.map(normalize).filter(Boolean);
-                    })));
+    Feed.prototype.take = function () {
+        var picked = [];
+        var queues = this.queues;
+        var self = this;
+
+        var pickOne = function () {
+            var open = queues.filter(function (queue) {
+                return queue.items.length;
+            });
+            if (!open.length) {
+                return null;
+            }
+            if (self.mode === 'latest') {
+                open.sort(function (a, b) {
+                    return (b.items[0].published || 0) - (a.items[0].published || 0);
                 });
+                return open[0].items.shift();
+            }
+            // Trending: round robin over the channels that still have items.
+            for (var tries = 0; tries < queues.length; tries++) {
+                var queue = queues[self.turn % queues.length];
+                self.turn++;
+                if (queue.items.length) {
+                    return queue.items.shift();
+                }
+            }
+            return null;
+        };
 
-            // Do not cache a failure: choosing the tab again retries.
-            cache[mode].then(null, function () {
-                delete cache[mode];
+        while (picked.length < PAGE) {
+            var video = pickOne();
+            if (!video) {
+                break;
+            }
+            if (!this.seen[video.uuid]) {
+                this.seen[video.uuid] = true;
+                picked.push(video);
+            }
+        }
+        return picked;
+    };
+
+    Feed.prototype.next = function () {
+        var self = this;
+
+        if (this.mode === 'random') {
+            var ready = this.pool ? Promise.resolve() : Promise.all(this.queues.map(function (queue) {
+                return getJSON(endpoint(queue.handle, '-publishedAt', 0, RANDOM_POOL)).then(function (body) {
+                    return (body && Array.isArray(body.data) ? body.data : []).map(normalize).filter(Boolean);
+                }, function () {
+                    queue.failed = true;
+                    return [];
+                });
+            })).then(function (lists) {
+                var pool = [];
+                [].concat.apply([], lists).forEach(function (video) {
+                    if (!self.seen[video.uuid]) {
+                        self.seen[video.uuid] = true;
+                        pool.push(video);
+                    }
+                });
+                self.pool = shuffle(pool);
+            });
+
+            return ready.then(function () {
+                var batch = self.pool.splice(0, PAGE);
+                self.shown = self.shown.concat(batch);
+                return batch;
             });
         }
 
-        return cache[mode].then(function (videos) {
-            var pick = MODES[mode].pick;
-            return (pick ? pick(videos.slice()) : videos).slice(0, SHOWN);
+        // Top up every queue that cannot cover a page on its own.
+        return Promise.all(this.queues.map(function (queue) {
+            return !queue.done && queue.items.length < PAGE ? self.fill(queue) : null;
+        })).then(function () {
+            var batch = self.take();
+            self.shown = self.shown.concat(batch);
+            return batch;
         });
+    };
+
+    Feed.prototype.allFailed = function () {
+        return this.queues.every(function (queue) {
+            return queue.failed;
+        });
+    };
+
+    var feeds = {};
+
+    var feedFor = function (channel, mode) {
+        var key = channel + '|' + mode;
+        if (!feeds[key]) {
+            var handles = channel ? [channel] : (source.channels.length ? source.channels : [null]);
+            feeds[key] = new Feed(handles, mode);
+        }
+        return feeds[key];
     };
 
     /* Cards
@@ -338,9 +400,8 @@
         return relative.format(0, 'minute');
     };
 
-    /* Player stage: a full-width player above the row, so a video plays
-     * at the size of the block rather than the size of its card. Opening
-     * another card swaps the video; close (or Esc) unloads the iframe,
+    /* Player stage: the clicked video plays above the grid at the width of
+     * the page. Another card swaps it; close or Esc unloads the iframe,
      * which stops playback, and returns focus to the card it came from.
      * ------------------------------------------------------------------ */
 
@@ -351,10 +412,8 @@
     var closer = stage.querySelector('.gh-videos-close');
     var playing = null;
 
-    // Highlight the card whose video is on the stage, in whichever list is
-    // showing - it survives switching tabs, since the stage does too.
     var mark = function () {
-        var items = list.querySelectorAll('.gh-video');
+        var items = grid.querySelectorAll('.gh-video');
         for (var i = 0; i < items.length; i++) {
             var on = !!playing && items[i].getAttribute('data-uuid') === playing.uuid;
             items[i].classList.toggle('is-playing', on);
@@ -410,7 +469,7 @@
         stage.hidden = false;
         mark();
 
-        stage.scrollIntoView({block: 'nearest', behavior: behavior()});
+        stage.scrollIntoView({block: 'start', behavior: behavior()});
         frame.focus();
     };
 
@@ -440,13 +499,13 @@
             img.src = video.image.src;
             if (video.image.srcset) {
                 img.srcset = video.image.srcset;
-                img.sizes = '(min-width: 992px) 280px, (min-width: 768px) 42vw, 82vw';
+                img.sizes = '(min-width: 992px) 300px, (min-width: 768px) 46vw, 92vw';
             }
             img.alt = '';
             img.width = 560;
             img.height = 315;
             img.decoding = 'async';
-            // The first cards are on screen at load; the rest wait for a scroll.
+            // The first row is on screen at load; the rest wait for a scroll.
             img.loading = index < 4 ? 'eager' : 'lazy';
             button.appendChild(img);
         }
@@ -494,203 +553,170 @@
         return item;
     };
 
-    /* Scrolling
+    /* State and controls
      * ------------------------------------------------------------------ */
 
-    var cards = [];
-    var dots = [];
-    var ratios = [];
-    var observer = null;
-
-    var behavior = function () {
-        return reduceMotion && reduceMotion.matches ? 'auto' : 'smooth';
-    };
-
-    // Distance between two card starts: card width plus the grid gap.
-    var step = function () {
-        if (cards.length > 1) {
-            return cards[1].offsetLeft - cards[0].offsetLeft;
-        }
-        return track.clientWidth;
-    };
-
-    var scrollByCards = function (count) {
-        track.scrollBy({left: count * step(), behavior: behavior()});
-    };
-
-    var page = function () {
-        return Math.max(1, Math.floor((track.clientWidth + 1) / step()));
-    };
-
-    var update = function () {
-        // Visible enough to count as "in view" - fractional widths and
-        // sub-pixel scroll positions never reach a clean 1.
-        var start = ratios[0] > 0.9;
-        var end = ratios[cards.length - 1] > 0.9;
-        var active = -1;
-
-        for (var i = 0; i < ratios.length; i++) {
-            if (ratios[i] > 0.6) {
-                active = i;
-                break;
-            }
-        }
-
-        arrows[0].disabled = start;
-        arrows[1].disabled = end;
-        section.classList.toggle('is-static', start && end);
-
-        dots.forEach(function (dot, j) {
-            dot.classList.toggle('is-active', j === active);
-        });
-    };
-
-    var watch = function () {
-        if (observer) {
-            observer.disconnect();
-        }
-
-        ratios = cards.map(function () {
-            return 0;
-        });
-
-        // No IntersectionObserver: arrows stay usable, and scrollBy past
-        // either end is a no-op anyway.
-        if (!window.IntersectionObserver) {
-            arrows[0].disabled = false;
-            arrows[1].disabled = false;
-            return;
-        }
-
-        observer = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                ratios[cards.indexOf(entry.target)] = entry.intersectionRatio;
-            });
-            update();
-        }, {root: track, threshold: [0, 0.6, 0.9, 1]});
-
-        cards.forEach(function (item) {
-            observer.observe(item);
-        });
-    };
-
-    arrows.forEach(function (arrow) {
-        arrow.addEventListener('click', function () {
-            scrollByCards(Number(arrow.getAttribute('data-dir')) * page());
-        });
-    });
-
-    track.addEventListener('keydown', function (event) {
-        var keys = {ArrowLeft: -1, ArrowRight: 1};
-
-        if (event.altKey || event.ctrlKey || event.metaKey) {
-            return;
-        }
-        if (keys[event.key]) {
-            scrollByCards(keys[event.key]);
-        } else if (event.key === 'Home' || event.key === 'End') {
-            track.scrollTo({left: event.key === 'Home' ? 0 : track.scrollWidth, behavior: behavior()});
-        } else {
-            return;
-        }
-        event.preventDefault();
-    });
-
-    /* Tabs
-     * ------------------------------------------------------------------ */
-
+    var state = {channel: ALL, mode: 'random'};
     var shown = false;
     var request = 0;
 
-    var render = function (videos) {
-        list.textContent = '';
-        dotsBox.textContent = '';
-
-        cards = videos.map(card);
-        cards.forEach(function (item) {
-            list.appendChild(item);
-        });
-
-        dots = cards.map(function () {
-            return dotsBox.appendChild(el('span', 'gh-videos-dot'));
-        });
-
-        track.scrollLeft = 0;
-        watch();
-        mark();
+    var channelUrl = function (handle) {
+        return handle
+            ? source.origin + '/c/' + encodeURIComponent(handle) + '/videos'
+            : (source.channels.length === 1
+                ? source.origin + '/c/' + encodeURIComponent(source.channels[0]) + '/videos'
+                : source.origin + '/');
     };
 
-    var select = function (tab) {
-        var mode = tab.getAttribute('data-mode');
+    var sync = function (feed) {
+        loadButton.hidden = feed.done();
+        more.href = channelUrl(state.channel);
+    };
+
+    // Show a feed: its loaded cards, then its first batch if it has none.
+    var show = function () {
+        var feed = feedFor(state.channel, state.mode);
         var ticket = ++request;
 
-        tabs.forEach(function (other) {
-            var selected = other === tab;
-            other.setAttribute('aria-selected', String(selected));
-            other.tabIndex = selected ? 0 : -1;
+        grid.textContent = '';
+        feed.shown.forEach(function (video, i) {
+            grid.appendChild(card(video, i));
         });
-        track.setAttribute('aria-labelledby', tab.id);
-        section.setAttribute('aria-busy', 'true');
+        mark();
 
-        load(mode)
-            .then(function (videos) {
-                if (ticket !== request) {
-                    return;
-                }
-                if (!videos.length) {
-                    throw new Error('empty');
-                }
-                message.hidden = true;
-                track.hidden = false;
-                render(videos);
-                if (!shown) {
-                    shown = true;
-                    section.hidden = false;
-                }
-            })
-            .then(null, function () {
-                if (ticket !== request) {
-                    return;
-                }
-                // First load failed: the section was never shown, keep it so.
-                // A later tab failing says so in place of the row; a video
-                // already on the stage keeps playing.
-                track.hidden = true;
-                message.hidden = false;
-                section.classList.add('is-static');
-            })
-            .then(function () {
-                if (ticket === request) {
-                    section.removeAttribute('aria-busy');
-                }
-            });
+        if (feed.shown.length) {
+            message.hidden = true;
+            sync(feed);
+            return Promise.resolve();
+        }
+
+        return load(feed, ticket);
     };
 
-    tabs.forEach(function (tab, i) {
-        tab.addEventListener('click', function () {
-            // Re-choosing Random deals a new set; the others would just
-            // re-render the same six.
-            if (tab.getAttribute('aria-selected') !== 'true' || tab.getAttribute('data-mode') === 'random') {
-                select(tab);
+    var load = function (feed, ticket) {
+        section.setAttribute('aria-busy', 'true');
+        loadButton.disabled = true;
+
+        return feed.next().then(function (batch) {
+            if (ticket !== request) {
+                return;
+            }
+            var offset = grid.children.length;
+            batch.forEach(function (video, i) {
+                grid.appendChild(card(video, offset + i));
+            });
+            mark();
+
+            var empty = !grid.children.length;
+            message.hidden = !empty;
+            if (empty && !shown && feed.allFailed()) {
+                // The first request failed outright: keep the page as it was.
+                return;
+            }
+            if (!shown) {
+                shown = true;
+                section.hidden = false;
+            }
+            sync(feed);
+        }).then(function () {
+            if (ticket === request) {
+                section.removeAttribute('aria-busy');
+                loadButton.disabled = false;
+            }
+        }, function () {
+            if (ticket === request) {
+                section.removeAttribute('aria-busy');
+                loadButton.disabled = false;
+                message.hidden = false;
             }
         });
+    };
 
-        // Tablist keyboard pattern: arrows and Home/End move and select.
-        tab.addEventListener('keydown', function (event) {
-            var target = {
-                ArrowLeft: tabs[(i - 1 + tabs.length) % tabs.length],
-                ArrowRight: tabs[(i + 1) % tabs.length],
-                Home: tabs[0],
-                End: tabs[tabs.length - 1]
-            }[event.key];
-
-            if (target) {
-                event.preventDefault();
-                target.focus();
-                select(target);
+    loadButton.addEventListener('click', function () {
+        var first = grid.children.length;
+        load(feedFor(state.channel, state.mode), request).then(function () {
+            // Land keyboard users on the first new card.
+            var next = grid.children[first];
+            var target = next && next.querySelector('.gh-video-play');
+            if (target && document.activeElement === loadButton) {
+                target.focus({preventScroll: false});
             }
         });
     });
 
-    select(tabs[0]);
+    var press = function (buttons, active) {
+        buttons.forEach(function (button) {
+            button.setAttribute('aria-pressed', String(button === active));
+        });
+    };
+
+    tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            var mode = tab.getAttribute('data-mode');
+            if (mode === state.mode) {
+                return;
+            }
+            state.mode = mode;
+            press(tabs, tab);
+            show();
+        });
+    });
+
+    /* Channel chips: only with two or more channels in the setting. Names
+     * and avatars come from each channel's public profile; until (or unless)
+     * that answers, a chip shows the handle.
+     * ------------------------------------------------------------------ */
+
+    var chips = [];
+
+    var chip = function (handle, label) {
+        var button = el('button', 'gh-videos-chip');
+        button.type = 'button';
+        button.setAttribute('aria-pressed', String(handle === state.channel));
+        button.appendChild(el('span', 'gh-videos-chip-name', label));
+        button.addEventListener('click', function () {
+            if (handle === state.channel) {
+                return;
+            }
+            state.channel = handle;
+            press(chips, button);
+            show();
+        });
+        chips.push(button);
+        chipsBox.appendChild(button);
+        return button;
+    };
+
+    if (source.channels.length > 1) {
+        chip(ALL, labelAll);
+        source.channels.forEach(function (handle) {
+            var button = chip(handle, handle.split('@')[0]);
+
+            getJSON(source.origin + '/api/v1/video-channels/' + encodeURIComponent(handle)).then(function (info) {
+                if (info && info.displayName) {
+                    button.querySelector('.gh-videos-chip-name').textContent = String(info.displayName);
+                }
+                var avatars = info && Array.isArray(info.avatars) ? info.avatars.slice() : [];
+                avatars.sort(function (a, b) {
+                    return (a.width || 0) - (b.width || 0);
+                });
+                var small = avatars.filter(function (avatar) {
+                    return (avatar.width || 0) >= 48;
+                })[0] || avatars[avatars.length - 1];
+                var url = small && safeUrl(small.fileUrl || small.path);
+                if (url) {
+                    var img = el('img', 'gh-videos-chip-avatar');
+                    img.src = url;
+                    img.alt = '';
+                    img.width = 24;
+                    img.height = 24;
+                    img.loading = 'lazy';
+                    button.insertBefore(img, button.firstChild);
+                }
+            }, function () {});
+        });
+        chipsBox.hidden = false;
+    }
+
+    show();
 })();

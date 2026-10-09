@@ -3,8 +3,8 @@
         <div class="kg-callout-emoji">🪐</div>
         <div class="kg-callout-text m-auto"><a href=/sumar>We are in beta, you should expect bugs</a></div>
     </div> --}}
-    {{!-- Homepage order: Videos across the full width, then Trending and
-        the tag sections beside the community sidebar. Trending is a fixed 4
+    {{!-- Homepage order: Trending and the tag sections beside the community
+        sidebar. Videos have their own page (custom-videos.hbs). Trending is a fixed 4
         with no infinite scroll here - it used to load every page of posts as
         you reached it, pushing whatever came after it out of reach. /blog/
         and /page/2/ onward keep infinite scroll.
@@ -13,8 +13,6 @@
         1200px up and after them below that. It was a <divgh-> typo before,
         an unknown inline element, so .gh-inner never limited the width. --}}
     <div class="gh-inner">
-    {{> "peertube-videos"}}
-
     <div class="gh-with-sidebar">
         <div class="gh-with-sidebar-main">
         <section class="gh-topic gh-topic-grid">

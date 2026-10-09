@@ -62,8 +62,7 @@
             },
             "peertube_source": {
                 "type": "text",
-                "group": "homepage",
-                "description": "PeerTube instance URL, or https://instance/c/channel1,channel2. Empty hides videos."
+                "description": "Videos page: PeerTube instance URL, or https://instance/c/channel1,channel2."
             }
         }
     },

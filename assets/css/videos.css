@@ -1,240 +1,192 @@
-/* Homepage video row
-/* partials/peertube-videos.hbs, filled by assets/js/peertube-videos.js
+/* Videos page
+/* custom-videos.hbs + partials/peertube-videos.hbs, filled by
+/* assets/js/peertube-videos.js. The page's normal background; the
+/* sizes are rem like the rest of the theme.
 /* ---------------------------------------------------------- */
 
+.gh-videos-page {
+    margin-top: 4rem;
+}
+
 .gh-videos {
-    /* Contrast band. The videos sit on the dark theme's own colors in both
-       modes - the light theme's inverse, and in dark mode the raised dark
-       surface instead of a glaring white band. The theme's color variables
-       are re-pointed inside the band, so tabs, arrows, dots and text follow
-       without per-element rules. */
-    --gh-band-bg: #1c2128;
-    --color-bg: var(--gh-band-bg);
-    --color-base: #e7e7e7;
-    --color-secondary-text: #9ea7b3;
-    --color-border: #444c56;
-    --color-light-gray: #444c56;
     --gh-videos-gap: 2.4rem;
-    /* Cards in view. The fraction leaves the next card peeking in, which is
-       what tells a reader the row scrolls. */
-    --gh-videos-per-view: 1.2;
     min-width: 0;
-    position: relative;
-    padding-block: 5rem;
-    color: var(--color-base);
-    background-color: var(--gh-band-bg);
-    /* Full-bleed without 100vw: the border image paints the band out to
-       both window edges as ink overflow, which never adds a scrollbar. */
-    border-image: linear-gradient(var(--gh-band-bg) 0 0) fill 0 / / 0 100vmax;
 }
 
-html[data-theme="dark"] .gh-videos {
-    --gh-band-bg: #22272e;
+.gh-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 }
 
-/* Flush with the header when the band opens the page (.gh-main's top
-   padding is 5rem). */
-.gh-inner > .gh-videos:first-child {
-    margin-top: -5rem;
-}
+/* Controls: channel chips, then the order pills */
 
-@media screen and (max-width: 767px) {
-    .gh-inner > .gh-videos:first-child {
-        margin-top: -2.5rem;
-    }
-
-    /* Phones: less band around the row. */
-    .gh-videos {
-        padding-block: 3rem;
-    }
-
-    /* Phones: compact pills. Without an explicit line-height they took the
-       page's and stood 42px tall around 16px of text. Scoped under
-       .gh-videos to outrank the base pill rule further down. */
-    .gh-videos .gh-videos-tab {
-        padding: 0.5rem 1.2rem;
-        border-radius: 10rem;
-        font-size: 1.4rem;
-        line-height: 1.2;
-        white-space: nowrap;
-    }
-
-    .gh-videos .gh-videos-tabs {
-        flex-wrap: nowrap;
-        gap: 0.6rem;
-    }
-}
-
-.gh-videos h2,
-.gh-videos h3 {
-    color: var(--color-base);
-}
-
-@media screen and (min-width: 768px) {
-    .gh-videos {
-        --gh-videos-per-view: 2.3;
-    }
-}
-
-@media screen and (min-width: 992px) {
-    .gh-videos {
-        --gh-videos-gap: 3.2rem;
-        --gh-videos-per-view: 4.3;
-    }
-}
-
-/* Head: title, mode tabs, arrows */
-
-.gh-videos-head {
+.gh-videos-controls {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
     gap: 1.6rem 2.4rem;
-    margin-bottom: 3.5rem;
+    margin-bottom: 3.2rem;
 }
 
-.gh-videos .gh-videos-head .gh-topic-name {
-    margin: 0;
-}
-
+.gh-videos-channels,
 .gh-videos-tabs {
     display: flex;
-    gap: 0.4rem;
+    flex-wrap: wrap;
+    gap: 0.8rem;
 }
 
-.gh-videos-tab {
-    padding: 0.8rem 1.4rem;
-    border: 0;
-    border-radius: 0.77rem;
+.gh-videos-channels[hidden] {
+    display: none;
+}
+
+/* Pills and chips share one shape: fully rounded, 3.2rem tall. */
+.gh-videos-tab,
+.gh-videos-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-height: 3.2rem;
+    padding: 0.6rem 1.4rem;
+    border: 1px solid var(--color-border, var(--color-light-gray));
+    border-radius: 10rem;
     background: none;
     color: var(--color-secondary-text);
     font: inherit;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
+    line-height: 1.2;
+    white-space: nowrap;
     cursor: pointer;
-    transition: color 0.2s ease, background-color 0.2s ease;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.gh-videos-tab:hover {
+.gh-videos-tab {
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+}
+
+.gh-videos-tab:hover,
+.gh-videos-chip:hover {
+    border-color: var(--color-base);
     color: var(--color-base);
 }
 
-.gh-videos-tab[aria-selected="true"] {
+.gh-videos-tab[aria-pressed="true"],
+.gh-videos-chip[aria-pressed="true"] {
+    border-color: var(--color-base);
     background-color: var(--color-base);
     color: var(--color-bg);
 }
 
-.gh-videos-nav {
-    display: flex;
-    gap: 0.8rem;
-    margin-left: auto;
-}
-
-.gh-videos-arrow {
-    display: grid;
-    place-items: center;
-    width: 4.4rem;
-    height: 4.4rem;
-    padding: 0;
-    border: 1px solid var(--color-border, var(--color-light-gray));
+.gh-videos-chip-avatar {
+    width: 2.2rem;
+    height: 2.2rem;
+    margin-left: -0.6rem;
     border-radius: 50%;
-    background: none;
-    color: var(--color-base);
-    cursor: pointer;
-    transition: opacity 0.2s ease, border-color 0.2s ease;
+    object-fit: cover;
 }
 
-.gh-videos-arrow svg {
-    width: 2rem;
-    height: 2rem;
-}
-
-.gh-videos-arrow:hover:not(:disabled) {
-    border-color: var(--color-base);
-}
-
-.gh-videos-arrow:disabled {
-    opacity: 0.35;
-    cursor: default;
-}
-
-:is(.gh-videos-tab, .gh-videos-arrow, .gh-videos-track):focus-visible {
+:is(.gh-videos-tab, .gh-videos-chip, .gh-videos-load):focus-visible {
     outline: 2px solid var(--ghost-accent-color);
     outline-offset: 2px;
 }
 
-/* Row */
+/* Phones: the chips scroll sideways in one line rather than stacking into
+   a wall above the grid; the pills stay on one line below them. */
+@media screen and (max-width: 767px) {
+    .gh-videos-controls {
+        margin-bottom: 2.4rem;
+    }
 
-.gh-videos-track {
-    overflow-x: auto;
-    overflow-y: hidden;
-    /* A swipe that hits either end stops there instead of turning into the
-       browser's back/forward gesture or scrolling the page sideways. */
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    /* Arrows, keys and trackpads move it; the bar would only add a second
-       control under the cards. */
-    scrollbar-width: none;
-}
+    .gh-videos-channels {
+        flex-wrap: nowrap;
+        width: calc(100% + 2 * 1.33rem);
+        margin-inline: -1.33rem;
+        padding-inline: 1.33rem;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+    }
 
-.gh-videos-track::-webkit-scrollbar {
-    display: none;
-}
+    .gh-videos-channels::-webkit-scrollbar {
+        display: none;
+    }
 
-@media (prefers-reduced-motion: no-preference) {
-    .gh-videos-track {
-        scroll-behavior: smooth;
+    .gh-videos-tabs {
+        flex-wrap: nowrap;
     }
 }
 
-.gh-videos-list {
+/* Grid: 4 per row from 992px, 2 from 768px, 1 below */
+
+.gh-videos-grid {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: calc((100% - var(--gh-videos-gap) * (var(--gh-videos-per-view) - 1)) / var(--gh-videos-per-view));
-    gap: var(--gh-videos-gap);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3.2rem var(--gh-videos-gap);
     margin: 0;
-    padding: 0 0 0.4rem;
+    padding: 0;
     list-style: none;
     transition: opacity 0.2s ease;
 }
 
-.gh-videos[aria-busy="true"] .gh-videos-list {
-    opacity: 0.5;
+@media screen and (min-width: 768px) {
+    .gh-videos-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .gh-videos-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.gh-videos[aria-busy="true"] .gh-videos-grid {
+    opacity: 0.6;
 }
 
 .gh-video {
     min-width: 0;
     margin: 0;
     padding: 0;
-    scroll-snap-align: start;
 }
 
-/* Phones: the row runs to the screen edges instead of stopping at the page
-   gutter, and a swipe moves exactly one card. Negative margins against the
-   gutter .gh-outer adds (1.33rem in screen.css), not 100vw, so a scrollbar
-   never widens the page. */
-@media screen and (max-width: 767px) {
-    .gh-videos-track {
-        --gh-videos-bleed: 1.33rem;
-        margin-inline: calc(var(--gh-videos-bleed) * -1);
-        padding-inline: var(--gh-videos-bleed);
-        scroll-padding-inline: var(--gh-videos-bleed);
-    }
+/* Footer: load more, then the link to PeerTube */
 
-    .gh-video {
-        scroll-snap-stop: always;
-    }
+.gh-videos-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.4rem;
+    padding-top: 4.23rem;
+    text-align: center;
+}
 
-    .gh-videos-tabs {
-        flex: 1 1 100%;
-    }
+.gh-videos-load {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-base);
+    font-family: inherit;
+    cursor: pointer;
+}
 
-    .gh-videos-nav {
-        display: none;
-    }
+.gh-videos-load[hidden] {
+    display: none;
+}
+
+.gh-videos-load:disabled {
+    opacity: 0.5;
+    cursor: progress;
+}
+
+.gh-videos-more {
+    font-size: 2rem;
 }
 
 /* Player stage */
@@ -339,7 +291,7 @@ html[data-theme="dark"] .gh-videos {
     outline-offset: 2px;
 }
 
-/* Phones: edge to edge, like the row below it. */
+/* Phones: edge to edge. */
 @media screen and (max-width: 767px) {
     .gh-videos-screen {
         width: auto;
@@ -495,35 +447,3 @@ html[data-theme="dark"] .gh-videos {
     font-size: 1.8rem;
 }
 
-/* Position dots: phones only, where the arrows are gone */
-
-.gh-videos-dots {
-    display: flex;
-    justify-content: center;
-    gap: 0.8rem;
-    margin-top: 2rem;
-}
-
-.gh-videos-dot {
-    width: 0.8rem;
-    height: 0.8rem;
-    border-radius: 50%;
-    background-color: var(--color-light-gray);
-    transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.gh-videos-dot.is-active {
-    background-color: var(--color-base);
-    transform: scale(1.25);
-}
-
-@media screen and (min-width: 768px) {
-    .gh-videos-dots {
-        display: none;
-    }
-}
-
-/* Everything fits (or the row failed): nothing to scroll, so no controls. */
-.gh-videos.is-static :is(.gh-videos-nav, .gh-videos-dots) {
-    display: none;
-}

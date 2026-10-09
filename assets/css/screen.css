@@ -112,18 +112,16 @@ body:is(.is-head-transparent, .is-head-brand, .is-head-dark) .gh-head-logo img+i
    "+ More topics", get the same 80px as two adjacent sections - their
    wrappers break the adjacent-sibling rule above. */
 .gh-topics,
-.gh-topics-more,
-.gh-videos:not([hidden]) + .gh-with-sidebar {
+.gh-topics-more {
   margin-top: 7rem;
 }
 
-/* Phones: tighter steps between the homepage blocks - videos, Trending,
-   each tag section - and less air above each section's footer link. */
+/* Phones: tighter steps between the homepage blocks - Trending and each
+   tag section - and less air above each section's footer link. */
 @media screen and (max-width: 767px) {
   .home-template .gh-topic-grid + .gh-topic-grid,
   .gh-topics,
-  .gh-topics-more,
-  .gh-videos:not([hidden]) + .gh-with-sidebar {
+  .gh-topics-more {
     margin-top: 3.5rem;
   }
 

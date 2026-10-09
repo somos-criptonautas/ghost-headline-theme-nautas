@@ -1,40 +1,32 @@
-{{!-- Homepage video row. Ghost cannot fetch a third-party API while rendering,
-    so this is only the shell: assets/js/peertube-videos.js reads the PeerTube
-    instance in data-source, fills the list and drops `hidden` once the first
-    request succeeds. No JS, or an instance that does not answer, means the
-    section never shows - there is no empty block to hide again.
+{{!-- Videos page body (custom-videos.hbs). Ghost cannot fetch a third-party
+    API while rendering, so this is only the shell: assets/js/peertube-videos.js
+    reads the PeerTube instance in data-source, builds the channel chips and
+    the grid, and drops `hidden` once the first request succeeds. Without JS
+    the page shows only its own text.
 
     data-source is the "Peertube source" theme setting: an instance URL for
-    all of its local videos, or https://host/c/channel1,channel2 for just
-    those channels. The labels ride along as data attributes because the
-    script has no access to the theme's translations. --}}
+    all of its local videos, or https://host/c/channel1,channel2 for those
+    channels - with two or more, each gets a chip. The labels ride along as
+    data attributes because the script has no access to the translations. --}}
 {{#if @custom.peertube_source}}
-<section class="gh-topic gh-topic-grid gh-videos" aria-labelledby="gh-videos-title" hidden
+<section class="gh-videos" aria-labelledby="gh-videos-title" hidden
     data-source="{{@custom.peertube_source}}"
     data-label-play="{{t "Play"}}"
-    data-label-live="{{t "Live"}}">
-    <header class="gh-videos-head">
-        <h2 class="gh-topic-name" id="gh-videos-title">{{t "Videos"}}</h2>
+    data-label-live="{{t "Live"}}"
+    data-label-all="{{t "All channels"}}">
+    <h2 class="gh-visually-hidden" id="gh-videos-title">{{t "Videos"}}</h2>
 
-        <div class="gh-videos-tabs" role="tablist" aria-label="{{t "Video order"}}">
-            <button class="gh-videos-tab" type="button" role="tab" id="gh-videos-tab-latest" data-mode="latest" aria-selected="true" aria-controls="gh-videos-panel">{{t "Latest videos"}}</button>
-            <button class="gh-videos-tab" type="button" role="tab" id="gh-videos-tab-trending" data-mode="trending" aria-selected="false" aria-controls="gh-videos-panel" tabindex="-1">{{t "Trending videos"}}</button>
-            <button class="gh-videos-tab" type="button" role="tab" id="gh-videos-tab-random" data-mode="random" aria-selected="false" aria-controls="gh-videos-panel" tabindex="-1">{{t "Random videos"}}</button>
+    <div class="gh-videos-controls">
+        <div class="gh-videos-channels" role="group" aria-label="{{t "Channels"}}" hidden></div>
+        <div class="gh-videos-tabs" role="group" aria-label="{{t "Video order"}}">
+            <button class="gh-videos-tab" type="button" data-mode="random" aria-pressed="true">{{t "Random videos"}}</button>
+            <button class="gh-videos-tab" type="button" data-mode="trending" aria-pressed="false">{{t "Trending videos"}}</button>
+            <button class="gh-videos-tab" type="button" data-mode="latest" aria-pressed="false">{{t "Latest videos"}}</button>
         </div>
+    </div>
 
-        <div class="gh-videos-nav">
-            <button class="gh-videos-arrow" type="button" data-dir="-1" aria-label="{{t "Previous videos"}}" aria-controls="gh-videos-panel" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            </button>
-            <button class="gh-videos-arrow" type="button" data-dir="1" aria-label="{{t "Next videos"}}" aria-controls="gh-videos-panel">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </button>
-        </div>
-    </header>
-
-    {{!-- Player stage: the clicked video plays here at the width of the
-        block, above the row, which stays as the playlist. Filled and shown
-        by the script; close or Esc unloads the player. --}}
+    {{!-- Player stage: the clicked video plays here, at the width of the
+        page, above the grid. Close or Esc unloads the player. --}}
     <div class="gh-videos-stage" hidden>
         <div class="gh-videos-screen"></div>
         <div class="gh-videos-now">
@@ -46,16 +38,11 @@
         </div>
     </div>
 
-    {{!-- The scroller is the tabpanel and is focusable, so a keyboard user can
-        land on it and move the row with the arrow keys. --}}
-    <div class="gh-videos-track" id="gh-videos-panel" role="tabpanel" tabindex="0" aria-labelledby="gh-videos-tab-latest">
-        <ul class="gh-videos-list"></ul>
-    </div>
+    <ul class="gh-videos-grid" aria-live="polite"></ul>
     <p class="gh-videos-message" role="status" hidden>{{t "Videos could not be loaded."}}</p>
 
-    <div class="gh-videos-dots" aria-hidden="true"></div>
-
-    <footer class="gh-topic-footer">
+    <footer class="gh-videos-footer">
+        <button class="gh-topic-link gh-videos-load" type="button" hidden>+ {{t "Load more videos"}}</button>
         <a class="gh-topic-link gh-videos-more" target="_blank" rel="noopener">{{t "More videos"}} {{> "icons/phosphor/arrow-square-out"}}</a>
     </footer>
 </section>

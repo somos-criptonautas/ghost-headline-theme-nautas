@@ -179,7 +179,7 @@
 	"Video order": "Orden de los videos",
 	"Latest videos": "Recientes",
 	"Trending videos": "Tendencia",
-	"Random videos": "Al azar",
+	"Random videos": "Random",
 	"Previous videos": "Videos anteriores",
 	"Next videos": "Videos siguientes",
 	"More videos": "Más videos",
@@ -209,5 +209,8 @@
 	"Share on Reddit": "Compartir en Reddit",
 	"Share on X": "Compartir en X",
 	"Go to comments": "Ir a los comentarios",
-	"Back to top": "Volver arriba"
+	"Back to top": "Volver arriba",
+	"Channels": "Canales",
+	"All channels": "Todos",
+	"Load more videos": "Cargar más"
 }
