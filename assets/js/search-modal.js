@@ -73,6 +73,19 @@
     var lastQuery = '';
     var search = null;
 
+    /* The box is the one source of truth for the query, and lastQuery follows
+     * it as soon as it changes - not when an answer arrives, so a slow or
+     * failed search never leaves the empty box's suggestions up, and a
+     * re-render mid-search never puts an older query back. */
+    var setQuery = function (q) {
+        input.value = q;
+        lastQuery = q;
+        paint();
+        refine(q);
+    };
+    // The query whose semantic ranking is still on its way, if any.
+    var meaningPending = null;
+
     var build = function () {
         root = document.createElement('div');
         root.className = 'ns';
@@ -275,7 +288,7 @@
                 ICON_POST,
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 { hit: hit, attribute: 'excerpt', fallback: hit.excerpt },
-                ['blog', hit.tags && hit.tags[0], date(hit.published_at)],
+                [hit.tags && hit.tags[0], date(hit.published_at)],
                 hit.feature_image
             );
         },
@@ -286,7 +299,6 @@
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 { hit: hit, attribute: 'text', fallback: hit.text, prefix: hit.username ? '@' + hit.username + ': ' : '' },
                 [
-                    t(['comunidad', 'community']),
                     hit.category,
                     hit.reply_count ? hit.reply_count + ' ' + t(['respuestas', 'replies']) : '',
                     hit.like_count ? hit.like_count + ' ♥' : ''
@@ -422,8 +434,7 @@
                 a.lastChild.textContent = text;
                 a.addEventListener('click', function (event) {
                     event.preventDefault();
-                    input.value = text;
-                    refine(text);
+                    setQuery(text);
                     input.focus();
                 });
                 wrap.appendChild(a);
@@ -444,10 +455,15 @@
             return;
         }
 
-        var answered = SOURCES.filter(function (source) {
+        /* "No results" only once it is true for what is typed: not while the
+         * answer still on screen belongs to the previous query, not while a
+         * search is in flight, and not before the semantic ranking - which can
+         * find what keywords did not - has come back. */
+        var answered = search && search.status === 'idle' && !meaningPending && SOURCES.filter(function (source) {
             return source.on;
         }).every(function (source) {
-            return results[source.key] && results[source.key].nbHits === 0;
+            var r = results[source.key];
+            return r && r.query === lastQuery && r.nbHits === 0;
         });
         if (answered) {
             var none = document.createElement('p');
@@ -599,11 +615,25 @@
                 var key = JSON.stringify(live);
                 latestKey = key;
                 if (semanticResults[key]) {
+                    meaningPending = null;
                     return Promise.resolve(answer(semanticResults[key]));
                 }
                 var semantic = semanticClient.search(live).then(function (response) {
                     semanticResults[key] = response;
                     return response;
+                });
+                meaningPending = key;
+                // On success the refresh below redraws; a failure leaves the
+                // keyword answer as final, so draw its empty state now.
+                semantic.then(function () {
+                    if (meaningPending === key) {
+                        meaningPending = null;
+                    }
+                }, function () {
+                    if (meaningPending === key) {
+                        meaningPending = null;
+                        paint();
+                    }
                 });
                 // A further page extends a list already ranked by meaning, so
                 // wait for that ranking rather than splice keyword pages into it.
@@ -631,14 +661,8 @@
             refine = opts.refine;
             if (first) {
                 input.addEventListener('input', function () {
-                    refine(input.value);
+                    setQuery(input.value);
                 });
-            }
-            if (opts.query !== lastQuery) {
-                lastQuery = opts.query;
-            }
-            if (input.value !== opts.query && document.activeElement !== input) {
-                input.value = opts.query;
             }
         });
 
@@ -650,6 +674,7 @@
                     results[source.key] = {
                         hits: opts.items,
                         nbHits: opts.results ? opts.results.nbHits : 0,
+                        query: opts.results ? opts.results.query : '',
                         // An empty page also ends it, whatever the total claims.
                         isLastPage: opts.isLastPage || !(opts.results && opts.results.hits.length),
                         showMore: opts.showMore
@@ -737,8 +762,7 @@
         document.documentElement.classList.add('ns-open');
 
         if (query != null) {
-            input.value = query;
-            refine(query);
+            setQuery(query);
         }
         paint();
         input.focus();

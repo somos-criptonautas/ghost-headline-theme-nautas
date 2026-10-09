@@ -132,8 +132,7 @@ html.ns-open {
 /* Sources: one toggle per collection, under the box. Each source has a
    colour from the Nautas palette (v0.3: tertiary, quaternary, success) and
    a shape - square, triangle, diamond - so the toggle and its rows match at
-   a glance without relying on colour. The marker never sets text, and the
-   source is also named on the row. */
+   a glance without relying on colour. The marker never sets text. */
 
 .ns {
     --ns-src-posts: #462c6d;
