@@ -130,9 +130,10 @@ html.ns-open {
 }
 
 /* Sources: one toggle per collection, under the box. Each source has a
-   colour from the Nautas palette (v0.3: tertiary, quaternary, success); a
-   dot carries it on the toggle and on every row from that source, and never
-   sets text - the source is also named on the row. */
+   colour from the Nautas palette (v0.3: tertiary, quaternary, success) and
+   a shape - square, triangle, diamond - so the toggle and its rows match at
+   a glance without relying on colour. The marker never sets text, and the
+   source is also named on the row. */
 
 .ns {
     --ns-src-posts: #462c6d;
@@ -146,21 +147,19 @@ html[data-theme="dark"] .ns {
     --ns-src-mushin: #4fb894;
 }
 
-[data-source="posts"] { --ns-src: var(--ns-src-posts); }
-[data-source="topics"] { --ns-src: var(--ns-src-topics); }
-[data-source="mushin"] { --ns-src: var(--ns-src-mushin); }
+[data-source="posts"] { --ns-src: var(--ns-src-posts); --ns-src-shape: none; }
+[data-source="topics"] { --ns-src: var(--ns-src-topics); --ns-src-shape: polygon(50% 0, 100% 100%, 0 100%); }
+[data-source="mushin"] { --ns-src: var(--ns-src-mushin); --ns-src-shape: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
 
 .ns__source::before,
 .ns__hit[data-source] .ns__meta::before {
     content: "";
     display: inline-block;
     flex: 0 0 auto;
-    width: 0.8rem;
-    height: 0.8rem;
-    border-radius: 50%;
+    width: 0.9rem;
+    height: 0.9rem;
     background: var(--ns-src);
-    /* A ring in the surface colour keeps the dot visible on a pressed toggle. */
-    box-shadow: 0 0 0 1.5px var(--ns-bg);
+    clip-path: var(--ns-src-shape);
 }
 
 .ns__hit[data-source] .ns__meta::before {
@@ -190,10 +189,16 @@ html[data-theme="dark"] .ns {
     cursor: pointer;
 }
 
+/* Pressed is outlined rather than filled: a dark fill hid the marker. */
 .ns__source[aria-pressed="true"] {
-    color: var(--ns-bg);
-    background: var(--ns-text);
+    color: var(--ns-text);
+    background: var(--ns-bg-alt);
     border-color: var(--ns-text);
+    box-shadow: inset 0 0 0 1px var(--ns-text);
+}
+
+.ns__source[aria-pressed="false"]::before {
+    opacity: 0.4;
 }
 
 .ns__source:focus-visible {

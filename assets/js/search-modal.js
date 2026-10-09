@@ -84,7 +84,7 @@
             '<span class="ns__head-icon">' + ICON_SEARCH + '</span>' +
             '<input class="ns__input" type="search" autocomplete="off" autocorrect="off" ' +
             'spellcheck="false" aria-label="' + t(['Buscar en el sitio', 'Search this site']) + '" ' +
-            'placeholder="' + t(['Buscar artículos e historias…', 'Search posts and stories…']) + '">' +
+            'placeholder="' + t(['buscar artículos e historias…', 'search posts and stories…']) + '">' +
             '<button type="button" class="ns__esc" data-ns-close>esc</button>' +
             '</form>' +
             '<div class="ns__sources" role="group" aria-label="' + t(['Fuentes', 'Sources']) + '" data-ns-pane="sources"></div>' +
@@ -275,7 +275,7 @@
                 ICON_POST,
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 { hit: hit, attribute: 'excerpt', fallback: hit.excerpt },
-                ['Blog', hit.tags && hit.tags[0], date(hit.published_at)],
+                ['blog', hit.tags && hit.tags[0], date(hit.published_at)],
                 hit.feature_image
             );
         },
@@ -286,7 +286,7 @@
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 { hit: hit, attribute: 'text', fallback: hit.text, prefix: hit.username ? '@' + hit.username + ': ' : '' },
                 [
-                    t(['Comunidad', 'Community']),
+                    t(['comunidad', 'community']),
                     hit.category,
                     hit.reply_count ? hit.reply_count + ' ' + t(['respuestas', 'replies']) : '',
                     hit.like_count ? hit.like_count + ' ♥' : ''
@@ -430,6 +430,18 @@
             return;
         }
 
+        // A failed search must not read as "no results": the counts it left
+        // behind belong to the empty box.
+        if (search && search.status === 'error') {
+            // Rows still on screen answer the previous query, not this one.
+            panes.list.textContent = '';
+            var failed = document.createElement('p');
+            failed.className = 'ns__none';
+            failed.textContent = t(['no se pudo buscar ahora; probá de nuevo en un momento', 'search failed; try again in a moment']);
+            state.appendChild(failed);
+            return;
+        }
+
         var answered = SOURCES.filter(function (source) {
             return source.on;
         }).every(function (source) {
@@ -438,7 +450,7 @@
         if (answered) {
             var none = document.createElement('p');
             none.className = 'ns__none';
-            none.textContent = t(['Sin resultados para ', 'No results for ']) + '“' + lastQuery + '”';
+            none.textContent = t(['sin resultados para ', 'no results for ']) + '“' + lastQuery + '”';
             state.appendChild(none);
         }
     };
@@ -667,6 +679,7 @@
 
         // After every render, so a list shorter than the modal keeps filling.
         search.on('render', more);
+        search.on('error', paint);
 
         search.start();
         started = true;

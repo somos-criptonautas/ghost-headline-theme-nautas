@@ -30,6 +30,9 @@
         };
 
         input.addEventListener('input', handOff);
+        // A tap alone opens the modal too, so its common searches show before
+        // anything is typed; it is a user gesture, so mobile keeps the keyboard up.
+        input.addEventListener('click', handOff);
         form.addEventListener('submit', function (event) {
             event.preventDefault();
             handOff();
