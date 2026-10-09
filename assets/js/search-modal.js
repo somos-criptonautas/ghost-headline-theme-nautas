@@ -1,4 +1,4 @@
-/* Site search modal: blog posts, community discussions and curated links in
+/* Site search modal: blog posts, community discussions and mushin (curated links) in
  * one list, each source switched on or off by the visitor.
  *
  * InstantSearch.js talks to Typesense through typesense-instantsearch-adapter,
@@ -34,13 +34,13 @@
         return (document.documentElement.lang || 'es').indexOf('es') === 0 ? es[0] : es[1];
     };
 
-    /* Sources in the order the merged list takes them. Links stay off until
+    /* Sources in the order the merged list takes them. Mushin stays off until
      * the visitor turns them on - they are the only results that leave the
      * site - and a source without a collection configured is not offered. */
     var SOURCES = [
         { key: 'posts', collection: cfg.postsCollection, label: ['blog', 'blog'], on: true, perPage: 8 },
         { key: 'topics', collection: cfg.topicsCollection, label: ['comunidad', 'community'], on: true, perPage: 10 },
-        { key: 'links', collection: cfg.linksCollection, label: ['enlaces', 'links'], on: false, perPage: 8 }
+        { key: 'mushin', collection: cfg.mushinCollection, label: ['mushin', 'mushin'], on: false, perPage: 8 }
     ].filter(function (source) {
         return source.collection;
     });
@@ -104,6 +104,7 @@
             var b = document.createElement('button');
             b.type = 'button';
             b.className = 'ns__source';
+            b.setAttribute('data-source', source.key);
             b.innerHTML = '<span></span><span class="ns__source-count"></span>';
             b.firstChild.textContent = t(source.label);
             b.setAttribute('aria-pressed', String(source.on));
@@ -160,7 +161,7 @@
         return span;
     };
 
-    /* Epoch numbers come in seconds (forum, links) or milliseconds (the Ghost
+    /* Epoch numbers come in seconds (forum, mushin) or milliseconds (the Ghost
      * indexer's published_at); anything past 1e11 cannot be seconds before
      * the year 5000. A string date field would otherwise render "Invalid Date". */
     var date = function (value) {
@@ -193,7 +194,7 @@
         var a = document.createElement('a');
         a.className = 'ns__hit';
         a.href = href;
-        // Only links leave the site, so only they get a tab of their own.
+        // Only mushin links leave the site, so only they get a tab of their own.
         if (external) {
             a.target = '_blank';
             a.rel = 'noopener';
@@ -211,6 +212,11 @@
             img.decoding = 'async';
             var slot = document.createElement('span');
             slot.className = 'ns__hit-icon ns__hit-icon--thumb';
+            // An external image can vanish; the glyph is better than a broken frame.
+            img.addEventListener('error', function () {
+                slot.className = 'ns__hit-icon';
+                slot.innerHTML = icon;
+            });
             slot.appendChild(img);
             a.appendChild(slot);
         } else {
@@ -287,15 +293,16 @@
                 ]
             );
         },
-        links: function (hit) {
+        mushin: function (hit) {
+            // The page's og:image when it has one, else its favicon.
             return hitRow(
                 hit.url,
-                favicon(hit.favicon),
+                hit.image ? ICON_LINK : favicon(hit.favicon),
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 // A meaning-only match has no highlight and would fall back to the whole page.
                 { hit: hit, attribute: 'text', fallback: String(hit.text || '').slice(0, 300) },
                 [hit.domain + ' ↗', date(hit.added)],
-                null,
+                hit.image,
                 true
             );
         }
@@ -321,6 +328,7 @@
                 var hit = results[source.key].hits[i];
                 if (hit) {
                     var row = rowFor[source.key](hit);
+                    row.setAttribute('data-source', source.key);
                     if (activeHref && row.getAttribute('href') === activeHref) {
                         row.classList.add('is-active');
                     }
@@ -500,8 +508,8 @@
                     group_by: 'topic_id',
                     group_limit: 1
                 };
-                if (cfg.linksCollection) {
-                    params[cfg.linksCollection] = {
+                if (cfg.mushinCollection) {
+                    params[cfg.mushinCollection] = {
                         query_by: 'title,text',
                         highlight_fields: 'title,text'
                     };
@@ -518,8 +526,8 @@
                 semantic(params[cfg.postsCollection], semanticOn && cfg.semanticPosts, 0.8, 0.65);
                 semantic(params[cfg.topicsCollection], semanticOn && cfg.semanticTopics, 0.5, 0.42);
                 // shortcut: not measured yet - tune like the two above once the collection has content.
-                if (cfg.linksCollection) {
-                    semantic(params[cfg.linksCollection], semanticOn && cfg.semanticLinks, 0.5, 0.5);
+                if (cfg.mushinCollection) {
+                    semantic(params[cfg.mushinCollection], semanticOn && cfg.semanticMushin, 0.5, 0.5);
                 }
                 return params;
             })()
@@ -537,7 +545,7 @@
          * get an empty result here, so InstantSearch still sees one answer per
          * index. */
         var keywordClient = makeClient(false);
-        var semanticClient = (cfg.semanticPosts || cfg.semanticTopics || cfg.semanticLinks) ? makeClient(true) : null;
+        var semanticClient = (cfg.semanticPosts || cfg.semanticTopics || cfg.semanticMushin) ? makeClient(true) : null;
         var semanticResults = {};
         var latestKey = null;
         var wanted = function (request) {
@@ -631,7 +639,9 @@
                         showMore: opts.showMore
                     };
                     render();
-                })({})
+                // Hit text reaches the DOM as text nodes only (see marked), so
+                // InstantSearch's own escaping would show "&quot;" literally.
+                })({ escapeHTML: false })
             ];
         };
 

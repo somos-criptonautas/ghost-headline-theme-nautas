@@ -10,7 +10,7 @@
  *     -H "X-TYPESENSE-API-KEY: <master>" -H 'Content-Type: application/json' \
  *     -d '{"description":"site search",
  *          "actions":["documents:search"],
- *          "collections":["ghost","discourse_posts","links"]}'
+ *          "collections":["ghost","discourse_posts","mushin"]}'
  */
 window.__NAUTAS_SEARCH_CONFIG__ = {
     typesenseNodes: [{
@@ -25,11 +25,11 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
     // Discourse posts, filled by the discourse-typesense-index plugin. This is
     // the ALIAS name from its typesense_collection setting.
     topicsCollection: 'discourse_posts',
-    /* Hister's global documents (user 0), mirrored hourly by
-     * .github/workflows/sync-hister-links.yml. Empty hides the Links toggle -
+    /* Mushin: Hister's global documents (user 0), mirrored hourly by
+     * .github/workflows/sync-mushin.yml. Empty hides the mushin toggle -
      * keep it so until the collection exists and the key above covers it, or
      * Typesense rejects the request and every source comes back empty. */
-    linksCollection: '',
+    mushinCollection: '',
 
     /* Members-only posts: the indexer stores their whole plaintext, and the key
      * above is public, so a snippet would hand out the paywalled text. Empty
@@ -51,6 +51,6 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
      */
     semanticPosts: true,
     semanticTopics: true,
-    semanticLinks: true,
+    semanticMushin: true,
     commonSearches: ['cómo empezar', 'cómo usar Monero', 'hacer trading']
 };
