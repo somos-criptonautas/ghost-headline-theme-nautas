@@ -291,8 +291,9 @@
                     hit.reply_count ? hit.reply_count + ' ' + t(['respuestas', 'replies']) : '',
                     hit.like_count ? hit.like_count + ' ♥' : ''
                 ],
-                // The topic's own thumbnail, indexed by discourse-typesense-index.
-                hit.image
+                // The topic's own thumbnail, else its category's logo; both
+                // indexed by discourse-typesense-index.
+                hit.image || hit.category_image
             );
         },
         mushin: function (hit) {
