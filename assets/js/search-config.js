@@ -36,7 +36,10 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
      *   curl -H "X-TYPESENSE-API-KEY: <master>" \
      *     https://typesense.criptonautas.co/collections/ghost | grep visibility
      */
-    postsFilter: 'visibility:=public',
+    // Empty while the ghost collection has no `visibility` field (a custom
+    // `fields` list in ghost-typesense.config.json replaced the default schema).
+    // All indexed posts are public; restore the filter once the field is back.
+    postsFilter: '',
 
     maxPosts: 4,
     maxTopics: 5,
