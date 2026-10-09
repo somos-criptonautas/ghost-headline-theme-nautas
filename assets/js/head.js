@@ -36,6 +36,14 @@
         });
     }
 
+    /* 1b. Desktop search bar: name the shortcut the modal answers to on this
+     *     platform (it takes both Cmd and Ctrl). */
+    var key = document.querySelector('.gh-search-bar-key');
+    if (key) {
+        key.textContent = /Mac|iPhone|iPad/.test(navigator.platform) ? '⌘K' : 'Ctrl K';
+        key.hidden = false;
+    }
+
     /* 2. Bar position. Up to 991px the bar is fixed to the viewport (header
      *    block in screen.css). Ghost renders its announcement bar above
      *    .gh-site, so a bar pinned at top:0 covered it. --head-top follows the

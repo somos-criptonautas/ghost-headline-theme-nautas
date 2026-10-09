@@ -129,7 +129,44 @@ html.ns-open {
     color: var(--ns-muted);
 }
 
-/* Sources: one toggle per collection, under the box */
+/* Sources: one toggle per collection, under the box. Each source has a
+   colour from the Nautas palette (v0.3: tertiary, quaternary, success); a
+   dot carries it on the toggle and on every row from that source, and never
+   sets text - the source is also named on the row. */
+
+.ns {
+    --ns-src-posts: #462c6d;
+    --ns-src-topics: #b24b38;
+    --ns-src-mushin: #1f7a5c;
+}
+
+html[data-theme="dark"] .ns {
+    --ns-src-posts: #9771d0;
+    --ns-src-topics: #db9284;
+    --ns-src-mushin: #4fb894;
+}
+
+[data-source="posts"] { --ns-src: var(--ns-src-posts); }
+[data-source="topics"] { --ns-src: var(--ns-src-topics); }
+[data-source="mushin"] { --ns-src: var(--ns-src-mushin); }
+
+.ns__source::before,
+.ns__hit[data-source] .ns__meta::before {
+    content: "";
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: var(--ns-src);
+    /* A ring in the surface colour keeps the dot visible on a pressed toggle. */
+    box-shadow: 0 0 0 1.5px var(--ns-bg);
+}
+
+.ns__hit[data-source] .ns__meta::before {
+    margin-right: 0.6rem;
+    vertical-align: 0.05em;
+}
 
 .ns__sources {
     display: flex;
@@ -142,7 +179,7 @@ html.ns-open {
 .ns__source {
     display: inline-flex;
     gap: 0.6rem;
-    align-items: baseline;
+    align-items: center;
     padding: 0.5rem 1.2rem;
     font-size: 1.3rem;
     font-family: inherit;
@@ -310,4 +347,54 @@ html.ns-open {
         border: 0;
         border-radius: 0;
     }
+}
+
+/* Desktop header search bar (default.hbs): looks like the tablet/mobile
+   field in screen.css, but only opens the modal. */
+.gh-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    width: 22rem;
+    height: 4rem;
+    margin-right: 0.8rem;
+    padding: 0 1rem 0 1.4rem;
+    font: inherit;
+    font-size: 1.5rem;
+    color: var(--color-base);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.gh-search-bar:hover {
+    border-color: color-mix(in srgb, var(--color-base) 40%, transparent);
+}
+
+.gh-search-bar:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}
+
+.gh-search-bar svg {
+    flex: none;
+    width: 1.8rem;
+    height: 1.8rem;
+    opacity: 0.63;
+}
+
+.gh-search-bar-label {
+    flex: 1;
+    text-align: left;
+    opacity: 0.63;
+}
+
+.gh-search-bar-key {
+    padding: 0.1rem 0.6rem;
+    font: inherit;
+    font-size: 1.15rem;
+    opacity: 0.63;
+    border: 1px solid var(--color-border);
+    border-radius: 0.4rem;
 }

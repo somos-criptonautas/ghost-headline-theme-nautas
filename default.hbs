@@ -128,7 +128,13 @@
                             href="{{@site.url}}/nauta">{{ t "Account" }}</a>
                         {{/unless}}
                         <div class="nav-icons">
-                            <button class="gh-search gh-icon-btn" data-ghost-search>{{> "icons/search"}}</button>
+                            {{!-- Desktop: a bar, like Discourse Horizon's, that opens the
+                                search modal. The shortcut hint is set by assets/js/head.js. --}}
+                            <button type="button" class="gh-search gh-search-bar" data-ghost-search aria-label="{{t "Search this site"}}">
+                                {{> "icons/search"}}
+                                <span class="gh-search-bar-label">{{t "Search"}}</span>
+                                <kbd class="gh-search-bar-key" hidden></kbd>
+                            </button>
                             <button type="button" class="it-dark-light gh-icon-btn" aria-label="{{t "Toggle theme"}}">
                                 <div class="icon-dark">
                                     {{> icons/light}}
