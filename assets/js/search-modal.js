@@ -1,7 +1,8 @@
-/* Site search modal: Ghost posts and community discussions in one place.
+/* Site search modal: blog posts, community discussions and curated links in
+ * one list, each source switched on or off by the visitor.
  *
  * InstantSearch.js talks to Typesense through typesense-instantsearch-adapter,
- * so one query fans out to both collections (the adapter turns InstantSearch's
+ * so one query fans out to every collection (the adapter turns InstantSearch's
  * multi-index request into a Typesense multi_search) and this file only has to
  * render. Loaded on its own deferred <script> after the two vendor bundles -
  * see site-scripts.hbs - so window.instantsearch is already defined here.
@@ -27,9 +28,39 @@
     var ICON_SEARCH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>';
     var ICON_POST = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h9l5 5v13H5z"></path><path d="M14 3v5h5"></path><path d="M8 13h8M8 17h5"></path></svg>';
     var ICON_TOPIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"></path></svg>';
+    var ICON_LINK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"></path><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"></path></svg>';
 
     var t = function (es) {
         return (document.documentElement.lang || 'es').indexOf('es') === 0 ? es[0] : es[1];
+    };
+
+    /* Sources in the order the merged list takes them. Links stay off until
+     * the visitor turns them on - they are the only results that leave the
+     * site - and a source without a collection configured is not offered. */
+    var SOURCES = [
+        { key: 'posts', collection: cfg.postsCollection, label: ['Blog', 'Blog'], on: true, perPage: 8 },
+        { key: 'topics', collection: cfg.topicsCollection, label: ['Comunidad', 'Community'], on: true, perPage: 10 },
+        { key: 'links', collection: cfg.linksCollection, label: ['Enlaces', 'Links'], on: false, perPage: 8 }
+    ].filter(function (source) {
+        return source.collection;
+    });
+
+    // The visitor's choice outlives the visit; storage can be blocked, so it is only a nicety.
+    try {
+        var saved = JSON.parse(window.localStorage.getItem('ns-sources') || 'null');
+        if (saved) {
+            SOURCES.forEach(function (source) {
+                if (typeof saved[source.key] === 'boolean') {
+                    source.on = saved[source.key];
+                }
+            });
+        }
+    } catch (e) {}
+
+    var byCollection = function (name) {
+        return SOURCES.filter(function (source) {
+            return source.collection === name;
+        })[0];
     };
 
     /* ---------------------------------------------------------------- DOM */
@@ -40,6 +71,7 @@
     var started = false;
     var refine = null;
     var lastQuery = '';
+    var search = null;
 
     var build = function () {
         root = document.createElement('div');
@@ -55,18 +87,34 @@
             'placeholder="' + t(['Buscar artículos e historias…', 'Search posts and stories…']) + '">' +
             '<button type="button" class="ns__esc" data-ns-close>esc</button>' +
             '</form>' +
-            '<div class="ns__body">' +
-            '<div class="ns__section" data-ns-pane="posts" hidden></div>' +
-            '<div class="ns__section" data-ns-pane="topics" hidden></div>' +
+            '<div class="ns__sources" role="group" aria-label="' + t(['Fuentes', 'Sources']) + '" data-ns-pane="sources"></div>' +
+            '<div class="ns__body" data-ns-pane="body">' +
+            '<div class="ns__list" data-ns-pane="list"></div>' +
             '<div class="ns__state" data-ns-pane="state"></div>' +
             '</div>' +
             '</div>';
 
         document.body.appendChild(root);
         input = root.querySelector('.ns__input');
-        ['posts', 'topics', 'state'].forEach(function (name) {
+        ['sources', 'body', 'list', 'state'].forEach(function (name) {
             panes[name] = root.querySelector('[data-ns-pane="' + name + '"]');
         });
+
+        SOURCES.forEach(function (source) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'ns__source';
+            b.innerHTML = '<span></span><span class="ns__source-count"></span>';
+            b.firstChild.textContent = t(source.label);
+            b.setAttribute('aria-pressed', String(source.on));
+            b.addEventListener('click', function () {
+                toggle(source);
+            });
+            source.button = b;
+            panes.sources.appendChild(b);
+        });
+
+        panes.body.addEventListener('scroll', more, { passive: true });
 
         root.addEventListener('click', function (event) {
             if (event.target.closest('[data-ns-close]')) {
@@ -112,16 +160,16 @@
         return span;
     };
 
-    /* published_at is int64 unix seconds in the Ghost collection and created_at
-     * is the same in the forum one, but a collection built with a string date
-     * field would otherwise render "Invalid Date". Accept both.
-     */
+    /* Epoch numbers come in seconds (forum, links) or milliseconds (the Ghost
+     * indexer's published_at); anything past 1e11 cannot be seconds before
+     * the year 5000. A string date field would otherwise render "Invalid Date". */
     var date = function (value) {
         if (!value) {
             return '';
         }
+        var n = Number(value);
         var d = typeof value === 'number' || /^\d+$/.test(value)
-            ? new Date(Number(value) * 1000)
+            ? new Date(n > 1e11 ? n : n * 1000)
             : new Date(value);
 
         if (isNaN(d.getTime())) {
@@ -141,13 +189,20 @@
         return url.replace(/(\/content\/images\/)(?!size\/)/, '$1size/w160/');
     };
 
-    var hitRow = function (href, icon, title, snippet, metaLine, thumb) {
+    var hitRow = function (href, icon, title, snippet, metaLine, thumb, external) {
         var a = document.createElement('a');
         a.className = 'ns__hit';
         a.href = href;
+        // Only links leave the site, so only they get a tab of their own.
+        if (external) {
+            a.target = '_blank';
+            a.rel = 'noopener';
+        }
 
         // The thumbnail takes the icon's slot, so the row layout is unchanged.
-        if (thumb) {
+        if (icon.nodeType) {
+            a.appendChild(icon);
+        } else if (thumb) {
             var img = document.createElement('img');
             img.className = 'ns__hit-thumb';
             img.src = thumbUrl(thumb);
@@ -185,34 +240,150 @@
         return a;
     };
 
-    var section = function (pane, label, count, rows, footer) {
-        pane.textContent = '';
-
-        if (!rows.length) {
-            pane.hidden = true;
-            return;
-        }
-
-        var head = document.createElement('div');
-        head.className = 'ns__section-head';
-        head.innerHTML = '<span class="ns__section-label"></span><span class="ns__section-count"></span>';
-        head.querySelector('.ns__section-label').textContent = label;
-        head.querySelector('.ns__section-count').textContent = count;
-        pane.appendChild(head);
-        rows.forEach(function (row) {
-            pane.appendChild(row);
-        });
-
-        if (footer) {
-            pane.appendChild(footer);
-        }
-
-        pane.hidden = false;
-    };
-
     /* ------------------------------------------------------------ rendering */
 
-    var counts = { posts: null, topics: null };
+    /* Favicons come from the Hister instance; a blocked or missing one falls
+     * back to the plain link icon rather than a broken image. */
+    var favicon = function (url) {
+        var slot = document.createElement('span');
+        slot.className = 'ns__hit-icon';
+        slot.innerHTML = ICON_LINK;
+        if (url) {
+            var img = document.createElement('img');
+            img.className = 'ns__hit-favicon';
+            img.alt = '';
+            img.loading = 'lazy';
+            img.addEventListener('load', function () {
+                slot.textContent = '';
+                slot.appendChild(img);
+            });
+            img.src = url;
+        }
+        return slot;
+    };
+
+    var rowFor = {
+        posts: function (hit) {
+            return hitRow(
+                hit.url || '/',
+                ICON_POST,
+                { hit: hit, attribute: 'title', fallback: hit.title },
+                { hit: hit, attribute: 'excerpt', fallback: hit.excerpt },
+                ['Blog', hit.tags && hit.tags[0], date(hit.published_at)],
+                hit.feature_image
+            );
+        },
+        topics: function (hit) {
+            return hitRow(
+                hit.url || '/',
+                ICON_TOPIC,
+                { hit: hit, attribute: 'title', fallback: hit.title },
+                { hit: hit, attribute: 'text', fallback: hit.text, prefix: hit.username ? '@' + hit.username + ': ' : '' },
+                [
+                    t(['Comunidad', 'Community']),
+                    hit.category,
+                    hit.reply_count ? hit.reply_count + ' ' + t(['respuestas', 'replies']) : '',
+                    hit.like_count ? hit.like_count + ' ♥' : ''
+                ]
+            );
+        },
+        links: function (hit) {
+            return hitRow(
+                hit.url,
+                favicon(hit.favicon),
+                { hit: hit, attribute: 'title', fallback: hit.title },
+                // A meaning-only match has no highlight and would fall back to the whole page.
+                { hit: hit, attribute: 'text', fallback: String(hit.text || '').slice(0, 300) },
+                [hit.domain + ' ↗', date(hit.added)],
+                null,
+                true
+            );
+        }
+    };
+
+    // Filled by each source's infinite-hits widget: every page so far, and how to ask for the next.
+    var results = {};
+
+    /* One list, taking each source's next hit in turn. A row's place depends
+     * only on how many hits come before it in its own source, so pages that
+     * arrive later only add to the end and nothing already read moves. */
+    var render = function () {
+        var active = root.querySelector('.ns__hit.is-active');
+        var activeHref = active && active.getAttribute('href');
+        var lists = SOURCES.filter(function (source) {
+            return source.on && lastQuery && results[source.key];
+        });
+
+        panes.list.textContent = '';
+        for (var i = 0; ; i++) {
+            var added = false;
+            lists.forEach(function (source) {
+                var hit = results[source.key].hits[i];
+                if (hit) {
+                    var row = rowFor[source.key](hit);
+                    if (activeHref && row.getAttribute('href') === activeHref) {
+                        row.classList.add('is-active');
+                    }
+                    panes.list.appendChild(row);
+                    added = true;
+                }
+            });
+            if (!added) {
+                break;
+            }
+        }
+
+        SOURCES.forEach(function (source) {
+            var r = results[source.key];
+            source.button.lastChild.textContent = source.on && lastQuery && r ? r.nbHits : '';
+        });
+
+        paint();
+    };
+
+    /* Infinite scroll: near the bottom of the list, every source with pages
+     * left asks for its next one. */
+    var more = function () {
+        var body = panes.body;
+        /* One page at a time: InstantSearch keeps a page in the list only if
+         * it renders it with no search in flight, so asking again before the
+         * answer drops pages and re-asks for ever. A closed modal measures as
+         * zero height and would read as scrolled to the end. */
+        if (search.status !== 'idle' || !lastQuery || root.hidden || body.scrollTop + body.clientHeight < body.scrollHeight - 300) {
+            return;
+        }
+        SOURCES.forEach(function (source) {
+            var r = results[source.key];
+            if (source.on && r && !r.isLastPage) {
+                r.showMore();
+            }
+        });
+    };
+
+    var toggle = function (source) {
+        // Never every source off: the box would search nothing.
+        if (source.on && SOURCES.filter(function (s) { return s.on; }).length === 1) {
+            return;
+        }
+        source.on = !source.on;
+        source.button.setAttribute('aria-pressed', String(source.on));
+        try {
+            var saved = {};
+            SOURCES.forEach(function (s) {
+                saved[s.key] = s.on;
+            });
+            window.localStorage.setItem('ns-sources', JSON.stringify(saved));
+        } catch (e) {}
+
+        // Back to the first page everywhere: the list is rebuilt for the new mix.
+        search.setUiState(function (ui) {
+            Object.keys(ui).forEach(function (id) {
+                delete ui[id].page;
+            });
+            return ui;
+        });
+        input.focus();
+    };
 
     var paint = function () {
         var state = panes.state;
@@ -245,70 +416,17 @@
             return;
         }
 
-        if (counts.posts === 0 && counts.topics === 0) {
+        var answered = SOURCES.filter(function (source) {
+            return source.on;
+        }).every(function (source) {
+            return results[source.key] && results[source.key].nbHits === 0;
+        });
+        if (answered) {
             var none = document.createElement('p');
             none.className = 'ns__none';
             none.textContent = t(['Sin resultados para ', 'No results for ']) + '“' + lastQuery + '”';
             state.appendChild(none);
         }
-    };
-
-    var renderPosts = function (hits) {
-        counts.posts = hits.length;
-        var rows = hits.slice(0, cfg.maxPosts || 3).map(function (hit) {
-            return hitRow(
-                hit.url || '/',
-                ICON_POST,
-                { hit: hit, attribute: 'title', fallback: hit.title },
-                { hit: hit, attribute: 'excerpt', fallback: hit.excerpt },
-                [hit.tags && hit.tags[0], date(hit.published_at)],
-                hit.feature_image
-            );
-        });
-        section(panes.posts, t(['Artículos y publicaciones', 'Posts']), hits.length, rows);
-    };
-
-    var renderTopics = function (hits) {
-        /* One row per discussion. The index holds a document per forum post, so
-         * a topic whose replies all match would otherwise fill the whole
-         * section; keeping the first hit per topic_id keeps the best-matching
-         * reply and drops the rest. Done here rather than with Typesense's
-         * group_by so it does not depend on the adapter passing that through.
-         */
-        var seen = {};
-        var topics = hits.filter(function (hit) {
-            if (seen[hit.topic_id]) {
-                return false;
-            }
-            seen[hit.topic_id] = true;
-            return true;
-        });
-
-        counts.topics = topics.length;
-
-        var rows = topics.slice(0, cfg.maxTopics || 6).map(function (hit) {
-            return hitRow(
-                hit.url || '/',
-                ICON_TOPIC,
-                { hit: hit, attribute: 'title', fallback: hit.title },
-                { hit: hit, attribute: 'text', fallback: hit.text, prefix: hit.username ? '@' + hit.username + ': ' : '' },
-                [
-                    hit.category,
-                    hit.reply_count ? hit.reply_count + ' ' + t(['respuestas', 'replies']) : '',
-                    hit.like_count ? hit.like_count + ' ♥' : ''
-                ]
-            );
-        });
-
-        var footer = null;
-        if (rows.length && cfg.forumUrl) {
-            footer = document.createElement('a');
-            footer.className = 'ns__more';
-            footer.href = cfg.forumUrl.replace(/\/$/, '') + '/search?q=' + encodeURIComponent(lastQuery);
-            footer.textContent = t(['Buscar en la comunidad →', 'Search on Community →']);
-        }
-
-        section(panes.topics, t(['Historias en la comunidad', 'Community discussions']), topics.length, rows, footer);
     };
 
     /* --------------------------------------------------------- instantsearch */
@@ -337,7 +455,11 @@
                     if (on) {
                         p.query_by += ',embedding';
                         p.exclude_fields = 'embedding';
-                        p.vector_query = 'embedding:([], alpha: ' + alpha + ', distance_threshold: ' + threshold + ')';
+                        // A fixed k: by default it grows with the page asked for, so
+                        // the total grew too (87, 111, 125 topics on pages 1, 9, 20)
+                        // and the infinite list never reached its last page. The
+                        // threshold already cuts every query tried well under 200.
+                        p.vector_query = 'embedding:([], alpha: ' + alpha + ', distance_threshold: ' + threshold + ', k: 200)';
                         // Typesense refuses prefix search on a remote embedder; the
                         // keyword fields keep it, so typing still autocompletes.
                         p.prefix = p.query_by.split(',').map(function (f) {
@@ -364,10 +486,22 @@
                 if (cfg.postsFilter) {
                     params[cfg.postsCollection].filter_by = cfg.postsFilter;
                 }
+                /* The index holds a document per forum post; grouping by topic
+                 * gives one row per discussion (its best-matching post) and
+                 * lets Typesense page over discussions, which the infinite
+                 * list needs - dropping repeats here would leave pages short. */
                 params[cfg.topicsCollection] = {
                     query_by: 'title,text',
-                    highlight_fields: 'title,text'
+                    highlight_fields: 'title,text',
+                    group_by: 'topic_id',
+                    group_limit: 1
                 };
+                if (cfg.linksCollection) {
+                    params[cfg.linksCollection] = {
+                        query_by: 'title,text',
+                        highlight_fields: 'title,text'
+                    };
+                }
                 /* Tuned per collection against real queries. The blog is a handful
                  * of long essays, so keyword matches are mostly noise ("cómo usar
                  * Monero" led with an unrelated post) and loosely related vectors
@@ -379,6 +513,10 @@
                  * pull their weight in short titles, so meaning gets half. */
                 semantic(params[cfg.postsCollection], semanticOn && cfg.semanticPosts, 0.8, 0.65);
                 semantic(params[cfg.topicsCollection], semanticOn && cfg.semanticTopics, 0.5, 0.42);
+                // shortcut: not measured yet - tune like the two above once the collection has content.
+                if (cfg.linksCollection) {
+                    semantic(params[cfg.linksCollection], semanticOn && cfg.semanticLinks, 0.5, 0.5);
+                }
                 return params;
             })()
         }).searchClient;
@@ -389,35 +527,74 @@
          * slow to wake (first query after idle took 5.5 s, the next ones
          * 0.7 s), so waiting on it - or giving up on it for the visit after one
          * slow answer - left visitors with keyword results. A failed semantic
-         * call costs nothing: the keyword results are already on screen. */
+         * call costs nothing: the keyword results are already on screen.
+         *
+         * Switched-off sources and the empty box never reach Typesense: they
+         * get an empty result here, so InstantSearch still sees one answer per
+         * index. */
         var keywordClient = makeClient(false);
-        var semanticClient = (cfg.semanticPosts || cfg.semanticTopics) ? makeClient(true) : null;
+        var semanticClient = (cfg.semanticPosts || cfg.semanticTopics || cfg.semanticLinks) ? makeClient(true) : null;
         var semanticResults = {};
         var latestKey = null;
+        var wanted = function (request) {
+            var source = byCollection(request.indexName);
+            return source && source.on && request.params && request.params.query;
+        };
+        var empty = function (request) {
+            return {
+                hits: [], nbHits: 0, page: 0, nbPages: 0, processingTimeMS: 0,
+                hitsPerPage: (request.params && request.params.hitsPerPage) || 0,
+                exhaustiveNbHits: true, query: '', params: '', index: request.indexName
+            };
+        };
         var searchClient = {
             search: function (requests) {
-                if (!semanticClient) {
-                    return keywordClient.search(requests);
+                var live = requests.filter(wanted);
+                var answer = function (response) {
+                    var i = 0;
+                    return {
+                        results: requests.map(function (request) {
+                            return wanted(request) ? response.results[i++] : empty(request);
+                        })
+                    };
+                };
+                var keyword = function () {
+                    return keywordClient.search(live).then(answer);
+                };
+
+                if (!live.length) {
+                    return Promise.resolve(answer({ results: [] }));
                 }
-                var key = JSON.stringify(requests);
+                if (!semanticClient) {
+                    return keyword();
+                }
+                var key = JSON.stringify(live);
                 latestKey = key;
                 if (semanticResults[key]) {
-                    return Promise.resolve(semanticResults[key]);
+                    return Promise.resolve(answer(semanticResults[key]));
                 }
-                semanticClient.search(requests).then(function (response) {
+                var semantic = semanticClient.search(live).then(function (response) {
                     semanticResults[key] = response;
+                    return response;
+                });
+                // A further page extends a list already ranked by meaning, so
+                // wait for that ranking rather than splice keyword pages into it.
+                if (live.some(function (request) { return request.params.page > 0; })) {
+                    return semantic.then(answer, keyword);
+                }
+                semantic.then(function () {
                     // Redraw only if the visitor is still on this query; the
                     // refresh comes back through here and takes the cached answer.
                     if (key === latestKey) {
                         search.refresh();
                     }
                 }, function () {});
-                return keywordClient.search(requests);
+                return keyword();
             }
         };
 
-        var search = window.instantsearch({
-            indexName: cfg.postsCollection,
+        search = window.instantsearch({
+            indexName: SOURCES[0].collection,
             searchClient: searchClient,
             future: { preserveSharedStateOnUnmount: true }
         });
@@ -437,7 +614,22 @@
             }
         });
 
-        var hits = window.instantsearch.connectors.connectHits;
+        var infiniteHits = window.instantsearch.connectors.connectInfiniteHits;
+        var listFor = function (source) {
+            return [
+                window.instantsearch.widgets.configure({ hitsPerPage: source.perPage }),
+                infiniteHits(function (opts) {
+                    results[source.key] = {
+                        hits: opts.items,
+                        nbHits: opts.results ? opts.results.nbHits : 0,
+                        // An empty page also ends it, whatever the total claims.
+                        isLastPage: opts.isLastPage || !(opts.results && opts.results.hits.length),
+                        showMore: opts.showMore
+                    };
+                    render();
+                })({})
+            ];
+        };
 
         search.addWidgets([
             box({
@@ -452,21 +644,13 @@
                         }, 120);
                     };
                 })()
-            }),
-            window.instantsearch.widgets.configure({ hitsPerPage: 8 }),
-            hits(function (opts) {
-                renderPosts(lastQuery ? opts.hits : []);
-                paint();
-            })({}),
-            window.instantsearch.widgets.index({ indexName: cfg.topicsCollection }).addWidgets([
-                // Over-fetch: several hits can collapse into one discussion.
-                window.instantsearch.widgets.configure({ hitsPerPage: 24 }),
-                hits(function (opts) {
-                    renderTopics(lastQuery ? opts.hits : []);
-                    paint();
-                })({})
-            ])
-        ]);
+            })
+        ].concat(listFor(SOURCES[0]), SOURCES.slice(1).map(function (source) {
+            return window.instantsearch.widgets.index({ indexName: source.collection }).addWidgets(listFor(source));
+        })));
+
+        // After every render, so a list shorter than the modal keeps filling.
+        search.on('render', more);
 
         search.start();
         started = true;

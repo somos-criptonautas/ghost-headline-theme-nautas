@@ -4,13 +4,13 @@
  * edits it, and the search then boots with no nodes and no key.
  *
  * Both API keys below are search-only and public by design - never put an
- * admin key here. The key must be scoped to BOTH collections:
+ * admin key here. The key must be scoped to every collection below:
  *
  *   curl -X POST https://typesense.criptonautas.co/keys \
  *     -H "X-TYPESENSE-API-KEY: <master>" -H 'Content-Type: application/json' \
  *     -d '{"description":"site search",
  *          "actions":["documents:search"],
- *          "collections":["ghost","discourse_posts"]}'
+ *          "collections":["ghost","discourse_posts","links"]}'
  */
 window.__NAUTAS_SEARCH_CONFIG__ = {
     typesenseNodes: [{
@@ -25,8 +25,11 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
     // Discourse posts, filled by the discourse-typesense-index plugin. This is
     // the ALIAS name from its typesense_collection setting.
     topicsCollection: 'discourse_posts',
-    // Where "see all discussions" goes. Empty hides that link.
-    forumUrl: 'https://comunidad.criptonautas.co',
+    /* Hister's global documents (user 0), mirrored hourly by
+     * .github/workflows/sync-hister-links.yml. Empty hides the Links toggle -
+     * keep it so until the collection exists and the key above covers it, or
+     * Typesense rejects the request and every source comes back empty. */
+    linksCollection: '',
 
     /* Members-only posts: the indexer stores their whole plaintext, and the key
      * above is public, so a snippet would hand out the paywalled text. Empty
@@ -38,9 +41,6 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
      */
     postsFilter: 'visibility:=public',
 
-    maxPosts: 4,
-    maxTopics: 5,
-
     /* Semantic (hybrid) search, per collection. Keep false until that
      * collection has an `embedding` field: Typesense rejects a query naming a
      * field it does not have, and the section then comes back empty. A
@@ -51,5 +51,6 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
      */
     semanticPosts: true,
     semanticTopics: true,
+    semanticLinks: true,
     commonSearches: ['cómo empezar', 'cómo usar Monero', 'hacer trading']
 };

@@ -117,13 +117,6 @@ html.ns-open {
     overscroll-behavior: contain;
 }
 
-.ns__section-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    padding: 1.4rem 1.8rem 0.6rem;
-}
-
 .ns__section-label {
     font-size: 1.15rem;
     font-weight: 600;
@@ -132,13 +125,64 @@ html.ns-open {
     color: var(--ns-muted);
 }
 
-.ns__section-count {
-    font-size: 1.15rem;
-    font-variant-numeric: tabular-nums;
+/* Sources: one toggle per collection, under the box */
+
+.ns__sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 1.2rem 1.8rem;
+    border-bottom: 1px solid var(--ns-border);
+}
+
+.ns__source {
+    display: inline-flex;
+    gap: 0.6rem;
+    align-items: baseline;
+    padding: 0.5rem 1.2rem;
+    font-size: 1.3rem;
+    font-family: inherit;
     color: var(--ns-muted);
+    background: none;
+    border: 1px solid var(--ns-border);
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.ns__source[aria-pressed="true"] {
+    color: var(--ns-bg);
+    background: var(--ns-text);
+    border-color: var(--ns-text);
+}
+
+.ns__source:focus-visible {
+    outline: 2px solid var(--ns-focus);
+    outline-offset: 2px;
+}
+
+.ns__source-count {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.75;
+}
+
+.ns__source-count:empty {
+    display: none;
 }
 
 /* Hits */
+
+.ns__list {
+    padding-top: 0.6rem;
+}
+
+.ns__hit-favicon {
+    display: block;
+    width: 1.7rem;
+    height: 1.7rem;
+    margin-top: 0.3rem;
+    border-radius: 3px;
+}
+
 
 .ns__hit {
     display: flex;
@@ -220,19 +264,6 @@ html.ns-open {
     font-weight: 700;
     color: var(--ns-text);
     background: none;
-}
-
-.ns__more {
-    display: block;
-    padding: 0.8rem 1.8rem 0.2rem;
-    font-size: 1.3rem;
-    color: var(--ns-muted);
-    text-align: right;
-    text-decoration: none;
-}
-
-.ns__more:hover {
-    color: var(--ns-text);
 }
 
 /* Empty states */

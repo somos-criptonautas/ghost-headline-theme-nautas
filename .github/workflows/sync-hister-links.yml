@@ -1,0 +1,28 @@
+name: Sync Hister links
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-hister-links
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    # Off until the links collection and its key exist; see the script header.
+    if: vars.HISTER_URL != ''
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Mirror Hister's global documents into Typesense
+        env:
+          HISTER_URL: ${{ vars.HISTER_URL }}
+          TYPESENSE_URL: https://typesense.criptonautas.co
+          TYPESENSE_LINKS_KEY: ${{ secrets.TYPESENSE_LINKS_KEY }}
+        run: python3 .github/scripts/hister_links_sync.py
