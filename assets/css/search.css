@@ -45,8 +45,12 @@ html.ns-open {
     display: flex;
     flex-direction: column;
     width: min(64rem, calc(100vw - 3.2rem));
-    max-height: min(72vh, 68rem);
-    margin-top: 10vh;
+    /* Nearly the full height: the list scrolls on, so height is what it needs.
+       dvh keeps the bottom gap clear of a mobile browser's toolbar. */
+    max-height: 92vh;
+    max-height: 92dvh;
+    margin-top: 4vh;
+    margin-top: 4dvh;
     background: var(--ns-bg);
     border: 1px solid var(--ns-border);
     border-radius: 1.2rem;
