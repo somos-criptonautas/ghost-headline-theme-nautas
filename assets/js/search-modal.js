@@ -373,10 +373,12 @@
                  * Monero" led with an unrelated post) and loosely related vectors
                  * covered every post: meaning weighs 0.8 and only distances under
                  * 0.65 count (an unrelated control query scored 0.79+ on all).
-                 * The forum is thousands of short posts where keywords still pull
-                 * their weight. */
+                 * The forum is thousands of short posts, so distances run lower:
+                 * the right answer sat at 0.22-0.28 and related ones under 0.39,
+                 * while unrelated control queries started at 0.46. Keywords still
+                 * pull their weight in short titles, so meaning gets half. */
                 semantic(params[cfg.postsCollection], semanticOn && cfg.semanticPosts, 0.8, 0.65);
-                semantic(params[cfg.topicsCollection], semanticOn && cfg.semanticTopics, 0.2, 0.8);
+                semantic(params[cfg.topicsCollection], semanticOn && cfg.semanticTopics, 0.5, 0.42);
                 return params;
             })()
         }).searchClient;
