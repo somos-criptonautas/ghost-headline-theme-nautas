@@ -34,10 +34,13 @@ jobs:
       # local node_modules is caught here instead of reaching the live site.
       - run: pnpm exec gulp build
 
+      # core.fileMode=false: the check is about content. A build that writes an
+      # identical file with different permissions is not out of date, and failed
+      # this check once with "main.min.js | 0" and no changed lines.
       - name: Committed assets/built matches a fresh build
         run: |
-          if ! git diff --quiet -- assets/built; then
-            git diff --stat -- assets/built
+          if ! git -c core.fileMode=false diff --quiet -- assets/built; then
+            git -c core.fileMode=false diff --stat -- assets/built
             echo "::error::assets/built is out of date. Run pnpm install, then pnpm exec gulp build, and commit the result."
             exit 1
           fi
