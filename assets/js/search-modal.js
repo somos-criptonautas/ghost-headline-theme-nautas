@@ -38,9 +38,9 @@
      * the visitor turns them on - they are the only results that leave the
      * site - and a source without a collection configured is not offered. */
     var SOURCES = [
-        { key: 'posts', collection: cfg.postsCollection, label: ['Blog', 'Blog'], on: true, perPage: 8 },
-        { key: 'topics', collection: cfg.topicsCollection, label: ['Comunidad', 'Community'], on: true, perPage: 10 },
-        { key: 'links', collection: cfg.linksCollection, label: ['Enlaces', 'Links'], on: false, perPage: 8 }
+        { key: 'posts', collection: cfg.postsCollection, label: ['blog', 'blog'], on: true, perPage: 8 },
+        { key: 'topics', collection: cfg.topicsCollection, label: ['comunidad', 'community'], on: true, perPage: 10 },
+        { key: 'links', collection: cfg.linksCollection, label: ['enlaces', 'links'], on: false, perPage: 8 }
     ].filter(function (source) {
         return source.collection;
     });
