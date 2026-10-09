@@ -36,10 +36,7 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
      *   curl -H "X-TYPESENSE-API-KEY: <master>" \
      *     https://typesense.criptonautas.co/collections/ghost | grep visibility
      */
-    // Empty while the ghost collection has no `visibility` field (a custom
-    // `fields` list in ghost-typesense.config.json replaced the default schema).
-    // All indexed posts are public; restore the filter once the field is back.
-    postsFilter: '',
+    postsFilter: 'visibility:=public',
 
     maxPosts: 4,
     maxTopics: 5,
@@ -52,7 +49,7 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
      *   curl -H "X-TYPESENSE-API-KEY: <the key above>" \
      *     "https://typesense.criptonautas.co/collections/discourse_posts/documents/search?q=hola&query_by=embedding"
      */
-    semanticPosts: false,
+    semanticPosts: true,
     semanticTopics: true,
     commonSearches: ['cómo empezar', 'cómo usar Monero', 'hacer trading']
 };

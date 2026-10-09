@@ -333,11 +333,11 @@
                  * exclude_fields stops every hit carrying its whole vector back.
                  * Each query is embedded by the provider too, so this leans on
                  * the search box's debounce below. */
-                var semantic = function (p, on) {
+                var semantic = function (p, on, alpha, threshold) {
                     if (on) {
                         p.query_by += ',embedding';
                         p.exclude_fields = 'embedding';
-                        p.vector_query = 'embedding:([], alpha: 0.2, distance_threshold: 0.8)';
+                        p.vector_query = 'embedding:([], alpha: ' + alpha + ', distance_threshold: ' + threshold + ')';
                         // Typesense refuses prefix search on a remote embedder; the
                         // keyword fields keep it, so typing still autocompletes.
                         p.prefix = p.query_by.split(',').map(function (f) {
@@ -368,8 +368,15 @@
                     query_by: 'title,text',
                     highlight_fields: 'title,text'
                 };
-                semantic(params[cfg.postsCollection], semanticOn && cfg.semanticPosts);
-                semantic(params[cfg.topicsCollection], semanticOn && cfg.semanticTopics);
+                /* Tuned per collection against real queries. The blog is a handful
+                 * of long essays, so keyword matches are mostly noise ("cómo usar
+                 * Monero" led with an unrelated post) and loosely related vectors
+                 * covered every post: meaning weighs 0.8 and only distances under
+                 * 0.65 count (an unrelated control query scored 0.79+ on all).
+                 * The forum is thousands of short posts where keywords still pull
+                 * their weight. */
+                semantic(params[cfg.postsCollection], semanticOn && cfg.semanticPosts, 0.8, 0.65);
+                semantic(params[cfg.topicsCollection], semanticOn && cfg.semanticTopics, 0.2, 0.8);
                 return params;
             })()
         }).searchClient;
