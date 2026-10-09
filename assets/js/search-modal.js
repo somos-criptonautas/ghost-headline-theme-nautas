@@ -290,7 +290,9 @@
                     hit.category,
                     hit.reply_count ? hit.reply_count + ' ' + t(['respuestas', 'replies']) : '',
                     hit.like_count ? hit.like_count + ' ♥' : ''
-                ]
+                ],
+                // The topic's own thumbnail, indexed by discourse-typesense-index.
+                hit.image
             );
         },
         mushin: function (hit) {
