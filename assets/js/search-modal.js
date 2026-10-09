@@ -393,7 +393,8 @@
             });
             return ui;
         });
-        input.focus();
+        // Focus stays on the toggle: moving it to the box raised the mobile
+        // keyboard over results for a query already typed.
     };
 
     var paint = function () {
