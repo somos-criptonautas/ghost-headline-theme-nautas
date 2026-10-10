@@ -2911,8 +2911,8 @@ body,
   width: 98vw;
 }
 
-/* /blog/ and /page/2/ onward (index.hbs): the same rows as the homepage -
-   two per row from 992px, one below - instead of the one-card-per-row
+/* /blog/ and /page/2/ onward (index.hbs): the homepage's cards - three per
+   row from 1200px, two from 992px, one below - instead of the one-card-per-row
    layout the other listings use, which drew every post at full page width.
    The 23vh/33vh padding of .gh-topic-grid-item and the empty pagehead's
    margin went with it. */
@@ -2943,6 +2943,19 @@ body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {
 @media screen and (min-width: 992px) {
   body:not(.home-template) .gh-listing .gh-topic-content {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Three per row from 1200px: two made every card nearly half the screen and
+   the list slow to scan. Titles take the related-posts cards' size to fit. */
+@media screen and (min-width: 1200px) {
+  body:not(.home-template) .gh-listing .gh-topic-content {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  body:not(.home-template) .gh-listing .gh-card .gh-card-title {
+    font-size: 3rem;
+    line-height: 1.15;
   }
 }
 

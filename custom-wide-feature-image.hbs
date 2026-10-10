@@ -47,7 +47,7 @@
             {{> "post-share" end=true}}
             {{> "comments"}}
             {{>webmentions}}
-            {{> "community-related"}}
+            {{#if primary_tag}}{{> "community-related" category=primary_tag.slug label=primary_tag.name}}{{/if}}
             {{/is}}
     </article>
     {{/post}}

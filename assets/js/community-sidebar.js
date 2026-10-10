@@ -363,14 +363,15 @@
         return item;
     };
 
-    // The forum category with the post's primary tag slug (tags and categories
-    // are kept in step). /c/<slug>/... redirects to the id-qualified path; the
-    // redirect carries the CORS headers too. No category, no topics or no
-    // answer: the section keeps `hidden`.
+    // Posts: the forum category with the primary tag's slug (tags and
+    // categories are kept in step); /c/<slug>/... redirects to the id-qualified
+    // path, and the redirect carries the CORS headers too. /blog passes none:
+    // the whole forum's latest. No topics or no answer: it keeps `hidden`.
     if (related) {
-        var category = related.getAttribute('data-category');
-        if (category && SLUG.test(category)) {
-            getJSON('/c/' + category + '/l/latest.json').then(function (body) {
+        var category = related.getAttribute('data-category') || '';
+        if (SLUG.test(category)) {
+            var path = category ? '/c/' + category : '/latest';
+            getJSON(category ? path + '/l/latest.json' : '/latest.json').then(function (body) {
                 var entries = topics(body)
                     .filter(function (entry) {
                         return entry.url && entry.title;
@@ -383,7 +384,7 @@
                 entries.forEach(function (entry) {
                     cards.appendChild(card(entry));
                 });
-                related.querySelector('.gh-community-more').href = ORIGIN + '/c/' + category;
+                related.querySelector('.gh-community-more').href = ORIGIN + path;
                 related.hidden = false;
             }, function () {});
         }
