@@ -5611,12 +5611,6 @@ html.js .gh-loadmore {
     grid-column: 1;
   }
 
-  /* About 85% of the theme's size, to leave the four links their room. */
-  #gh-head .gh-head-logo img {
-    max-height: 5.4rem;
-    width: auto;
-  }
-
   #gh-head .gh-head-search {
     grid-column: 2;
     width: 100%;
