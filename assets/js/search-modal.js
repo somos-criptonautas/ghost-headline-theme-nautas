@@ -78,6 +78,7 @@
      * failed search never leaves the empty box's suggestions up, and a
      * re-render mid-search never puts an older query back. */
     var setQuery = function (q) {
+        closeReader();
         input.value = q;
         lastQuery = q;
         paint();
@@ -281,6 +282,80 @@
         return slot;
     };
 
+    /* Reader: a community result opens here, inside the modal, rather than
+     * sending the visitor to the forum. Leaving the site is a separate,
+     * announced step - the link at the end opens a new tab and says so. The
+     * text is the post as indexed (plain text), not the live thread. */
+    var reader = null;
+    var readerScroll = 0;
+
+    var openReader = function (hit, row) {
+        closeReader();
+        readerScroll = panes.body.scrollTop;
+        reader = document.createElement('article');
+        reader.className = 'ns__reader';
+
+        var back = document.createElement('button');
+        back.type = 'button';
+        back.className = 'ns__reader-back';
+        back.textContent = t(['← volver a los resultados', '← back to results']);
+        back.addEventListener('click', function () {
+            closeReader(row);
+        });
+        reader.appendChild(back);
+
+        var title = document.createElement('h2');
+        title.className = 'ns__reader-title';
+        title.textContent = String(hit.title || '');
+        reader.appendChild(title);
+
+        reader.appendChild(meta([
+            hit.username ? '@' + hit.username : '',
+            hit.category,
+            date(hit.created_at),
+            hit.reply_count ? hit.reply_count + ' ' + t(['respuestas', 'replies']) : ''
+        ]));
+
+        var text = document.createElement('div');
+        text.className = 'ns__reader-text';
+        text.textContent = String(hit.text || '');
+        reader.appendChild(text);
+
+        var out = document.createElement('a');
+        out.className = 'ns__reader-out';
+        out.href = hit.url;
+        out.target = '_blank';
+        out.rel = 'noopener';
+        out.textContent = t(['ver en la comunidad ↗', 'view in the community ↗']);
+        var note = document.createElement('span');
+        note.className = 'ns__reader-note';
+        note.textContent = t(['se abre en una pestaña nueva', 'opens in a new tab']);
+        out.appendChild(note);
+        reader.appendChild(out);
+
+        panes.list.hidden = true;
+        panes.state.hidden = true;
+        panes.body.insertBefore(reader, panes.body.firstChild);
+        panes.body.scrollTop = 0;
+        back.focus();
+    };
+
+    // Back to the list where it was left; true if a reader was open.
+    var closeReader = function (row) {
+        if (!reader) {
+            return false;
+        }
+        reader.remove();
+        reader = null;
+        panes.list.hidden = false;
+        panes.state.hidden = false;
+        panes.body.scrollTop = readerScroll;
+        if (row && row.isConnected) {
+            row.focus();
+        }
+        return true;
+    };
+
     var rowFor = {
         posts: function (hit) {
             return hitRow(
@@ -293,7 +368,7 @@
             );
         },
         topics: function (hit) {
-            return hitRow(
+            var row = hitRow(
                 hit.url || '/',
                 ICON_TOPIC,
                 { hit: hit, attribute: 'title', fallback: hit.title },
@@ -308,6 +383,15 @@
                 // indexed by discourse-typesense-index.
                 hit.image || hit.category_image
             );
+            // Read it here; a modified click (new tab, new window) still goes straight there.
+            row.addEventListener('click', function (event) {
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+                    return;
+                }
+                event.preventDefault();
+                openReader(hit, row);
+            });
+            return row;
         },
         mushin: function (hit) {
             // The page's og:image when it has one, else its favicon.
@@ -373,7 +457,7 @@
          * it renders it with no search in flight, so asking again before the
          * answer drops pages and re-asks for ever. A closed modal measures as
          * zero height and would read as scrolled to the end. */
-        if (search.status !== 'idle' || !lastQuery || root.hidden || body.scrollTop + body.clientHeight < body.scrollHeight - 300) {
+        if (search.status !== 'idle' || !lastQuery || root.hidden || reader || body.scrollTop + body.clientHeight < body.scrollHeight - 300) {
             return;
         }
         SOURCES.forEach(function (source) {
@@ -385,6 +469,7 @@
     };
 
     var toggle = function (source) {
+        closeReader();
         // Never every source off: the box would search nothing.
         if (source.on && SOURCES.filter(function (s) { return s.on; }).length === 1) {
             return;
@@ -736,7 +821,12 @@
 
     function onKeydown(event) {
         if (event.key === 'Escape') {
-            close();
+            // Esc steps back out of a reader first, then closes the modal.
+            if (!closeReader()) {
+                close();
+            }
+        } else if (reader) {
+            return;
         } else if (event.key === 'ArrowDown') {
             event.preventDefault();
             move(1);
@@ -774,6 +864,7 @@
         if (!root || root.hidden) {
             return;
         }
+        closeReader();
         root.hidden = true;
         document.documentElement.classList.remove('ns-open');
         if (opener && typeof opener.focus === 'function') {
