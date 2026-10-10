@@ -1,40 +1,66 @@
 {{!-- Videos page body (custom-videos.hbs). Ghost cannot fetch a third-party
     API while rendering, so this is only the shell: assets/js/peertube-videos.js
-    reads the PeerTube instance in data-source, builds the channel picker and
-    the grid, and drops `hidden` once the first request succeeds. Without JS
-    the page shows only its own text.
+    reads the PeerTube instance in data-source, builds the category picker
+    and the grid, and drops `hidden` once the first request succeeds. Without
+    JS the page shows only its own text.
 
-    data-source is the "Peertube source" theme setting: an instance URL for
-    all of its local videos, or https://host/c/channel1,channel2 for those
-    channels - with two or more, a channel picker appears. The labels ride along as
-    data attributes because the script has no access to the translations. --}}
+    data-source is the "Peertube source" theme setting: the instance URL,
+    optionally followed by the categories to offer, as in
+    `https://host | 15, 13` or `https://host | 15 Trading, 13 Educación`.
+    Without a list the picker offers the categories of the instance's newest
+    videos. The labels ride along as data attributes, and PeerTube's built-in
+    category names as the template below, because the script has no access
+    to the translations. --}}
 {{#if @custom.peertube_source}}
 <section class="gh-videos" aria-labelledby="gh-videos-title" hidden
     data-source="{{@custom.peertube_source}}"
     data-label-play="{{t "Play"}}"
     data-label-live="{{t "Live"}}"
-    data-label-all="{{t "All channels"}}">
+    data-label-all="{{t "All categories"}}">
     <h2 class="gh-visually-hidden" id="gh-videos-title">{{t "Videos"}}</h2>
 
     <div class="gh-videos-controls">
-        {{!-- Channel picker: a native select, so every channel fits and the
-            phone's own picker opens. Built by the script with two or more
-            channels in the setting; the selected channel's avatar sits
-            beside it. --}}
-        <div class="gh-videos-channel" hidden>
-            <img class="gh-videos-channel-avatar" alt="" width="24" height="24" hidden>
-            <label class="gh-videos-channel-label" for="gh-videos-channel">{{t "Channel"}}:</label>
-            <span class="gh-videos-select-wrap">
-                <select class="gh-videos-select" id="gh-videos-channel"></select>
-                {{> "icons/phosphor/caret-down"}}
-            </span>
-        </div>
+        {{!-- Category picker: one box holding the label and the choice. A
+            transparent native select covers all of it, so a click or tap
+            anywhere opens the browser's own picker; the visible value is a
+            copy the script keeps in step. Built once there are two or more
+            categories. --}}
+        <label class="gh-videos-category" hidden>
+            <span class="gh-videos-category-label">{{t "Category"}}</span>
+            <span class="gh-videos-category-value" aria-hidden="true"></span>
+            {{> "icons/phosphor/caret-down"}}
+            <select class="gh-videos-select"></select>
+        </label>
         <div class="gh-videos-tabs" role="group" aria-label="{{t "Video order"}}">
             <button class="gh-videos-tab" type="button" data-mode="random" aria-pressed="true">{{t "Random videos"}}</button>
             <button class="gh-videos-tab" type="button" data-mode="trending" aria-pressed="false">{{t "Trending videos"}}</button>
             <button class="gh-videos-tab" type="button" data-mode="latest" aria-pressed="false">{{t "Latest videos"}}</button>
         </div>
     </div>
+
+    {{!-- PeerTube's built-in categories (ids 1-18) in the site language. The
+        API names them in English; categories added by a plugin keep the
+        name the instance gives them. --}}
+    <template class="gh-videos-names">
+        <option value="1">{{t "Music"}}</option>
+        <option value="2">{{t "Films"}}</option>
+        <option value="3">{{t "Vehicles"}}</option>
+        <option value="4">{{t "Art"}}</option>
+        <option value="5">{{t "Sports"}}</option>
+        <option value="6">{{t "Travels"}}</option>
+        <option value="7">{{t "Gaming"}}</option>
+        <option value="8">{{t "People"}}</option>
+        <option value="9">{{t "Comedy"}}</option>
+        <option value="10">{{t "Entertainment"}}</option>
+        <option value="11">{{t "News & Politics"}}</option>
+        <option value="12">{{t "How To"}}</option>
+        <option value="13">{{t "Education"}}</option>
+        <option value="14">{{t "Activism"}}</option>
+        <option value="15">{{t "Science & Technology"}}</option>
+        <option value="16">{{t "Animals"}}</option>
+        <option value="17">{{t "Kids"}}</option>
+        <option value="18">{{t "Food"}}</option>
+    </template>
 
     {{!-- Player stage: the clicked video plays here, at the width of the
         page, above the grid. Close or Esc unloads the player. --}}

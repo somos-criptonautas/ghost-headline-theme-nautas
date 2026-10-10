@@ -62,7 +62,7 @@
             },
             "peertube_source": {
                 "type": "text",
-                "description": "Videos page: PeerTube instance URL, or https://instance/c/channel1,channel2."
+                "description": "Videos page: PeerTube URL, optionally | category ids, e.g. https://host | 15, 13 Educación"
             }
         }
     },

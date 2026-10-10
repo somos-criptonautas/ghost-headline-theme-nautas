@@ -2,8 +2,9 @@
  * inside main.min.js; does nothing on pages without the .gh-videos shell.
  *
  * Lists videos from a self-hosted PeerTube through its public REST API, which
- * answers cross-origin (PeerTube mounts cors() on /api). With two or more
- * channels in the setting, a channel picker appears; "Todos" merges them.
+ * answers cross-origin (PeerTube mounts cors() on /api): the instance's own
+ * videos, filtered by category when two or more are on offer - the ones the
+ * setting lists, or else those of the newest videos. "todos" is every one.
  * Order is Random (the default), Trending or Latest. Nearing the end of the
  * grid loads the next 12 on its own, up to AUTO_BATCHES in a view; after
  * that "Cargar más" takes over, so the footer stays reachable.
@@ -27,15 +28,17 @@
     var RANDOM_POOL = 100;
     var TIMEOUT = 8000;
     var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    // PeerTube actor names, optionally @host for a federated channel.
-    var HANDLE = /^[\w.-]+(@[\w.-]+(:\d+)?)?$/;
     var ALL = '';
 
+    // "https://host" or "https://host | 15, 13 Educación": the instance, then
+    // optionally the category ids to offer, each with its own name. Any path
+    // on the URL (an old /c/channel setting) is ignored.
     var parseSource = function (raw) {
+        var parts = String(raw || '').split('|');
         var url;
 
         try {
-            url = new URL(String(raw || '').trim());
+            url = new URL(parts[0].trim());
         } catch (e) {
             return null;
         }
@@ -44,32 +47,18 @@
             return null;
         }
 
-        // /c/a,b is today's channel URL, /video-channels/a the older one.
-        var match = url.pathname.match(/^\/(?:c|video-channels)\/([^/]+)/);
-        var channels = [];
-
-        if (match) {
-            try {
-                channels = decodeURIComponent(match[1]).split(',');
-            } catch (e) {
-                return null;
+        var categories = [];
+        (parts[1] || '').split(',').forEach(function (item) {
+            var match = item.trim().match(/^(\d{1,9})(?:\s+(.+))?$/);
+            var known = match && categories.some(function (category) {
+                return category.id === match[1];
+            });
+            if (match && !known) {
+                categories.push({id: match[1], label: match[2] ? match[2].trim() : ''});
             }
-            channels = channels
-                .map(function (name) {
-                    return name.trim();
-                })
-                .filter(function (name, i, all) {
-                    return HANDLE.test(name) && all.indexOf(name) === i;
-                });
+        });
 
-            // A channel path that held nothing usable: showing the whole
-            // instance instead would not be what was asked for.
-            if (!channels.length) {
-                return null;
-            }
-        }
-
-        return {origin: url.origin, channels: channels};
+        return {origin: url.origin, categories: categories};
     };
 
     var source = parseSource(section.getAttribute('data-source'));
@@ -80,9 +69,10 @@
 
     var grid = section.querySelector('.gh-videos-grid');
     var message = section.querySelector('.gh-videos-message');
-    var channelBox = section.querySelector('.gh-videos-channel');
+    var categoryBox = section.querySelector('.gh-videos-category');
     var picker = section.querySelector('.gh-videos-select');
-    var channelAvatar = section.querySelector('.gh-videos-channel-avatar');
+    var pickerValue = section.querySelector('.gh-videos-category-value');
+    var names = section.querySelector('.gh-videos-names');
     var loading = section.querySelector('.gh-videos-loading');
     var loadButton = section.querySelector('.gh-videos-load');
     var more = section.querySelector('.gh-videos-more');
@@ -126,15 +116,26 @@
             });
     };
 
-    // One video list endpoint per source: a channel, or the instance's local
-    // videos when the setting names no channels.
-    var endpoint = function (handle, sort, start, count) {
-        var query = '?start=' + start + '&count=' + count + '&sort=' + sort + '&nsfw=false&skipCount=true';
+    // The instance's own videos, in any of the given categories (all of them
+    // with none given).
+    var endpoint = function (ids, sort, start, count) {
+        return source.origin + '/api/v1/videos?start=' + start + '&count=' + count + '&sort=' + sort +
+            '&nsfw=false&skipCount=true&isLocal=true' + ids.map(function (id) {
+            return '&categoryOneOf=' + encodeURIComponent(id);
+        }).join('');
+    };
 
-        if (!handle) {
-            return source.origin + '/api/v1/videos' + query + '&isLocal=true';
+    // The same request twice (the "todos" random pool, which also lists the
+    // categories) goes out once.
+    var requests = {};
+    var getOnce = function (url) {
+        if (!requests[url]) {
+            requests[url] = getJSON(url);
+            requests[url].catch(function () {
+                delete requests[url];
+            });
         }
-        return source.origin + '/api/v1/video-channels/' + encodeURIComponent(handle) + '/videos' + query;
+        return requests[url];
     };
 
     // Absolute http(s) URL or nothing. Paths resolve against the instance.
@@ -214,120 +215,56 @@
         return items;
     };
 
-    /* Feeds. One per channel choice and order, kept while the page is open,
-     * so switching back shows what was already loaded.
-     *
-     * Latest and Trending page through the API: each source is a queue that
-     * is topped up a page at a time, and every "load more" takes the next
-     * PAGE across the queues - newest first for Latest, taking turns for
-     * Trending (the score is not in the response, so channels cannot be
-     * ranked against each other). The merge stays in order across loads.
+    /* Feeds. One per category choice and order, kept while the page is
+     * open, so switching back shows what was already loaded. Latest and
+     * Trending page through the API in its own order; Random shuffles the
+     * newest RANDOM_POOL once and deals PAGE at a time.
      * ------------------------------------------------------------------ */
 
     var SORTS = {latest: '-publishedAt', trending: '-trending'};
 
-    var Feed = function (handles, mode) {
+    var videos = function (body) {
+        return (body && Array.isArray(body.data) ? body.data : []).map(normalize).filter(Boolean);
+    };
+
+    var Feed = function (ids, mode) {
+        this.ids = ids;
         this.mode = mode;
         this.shown = [];
         this.seen = {};
-        this.queues = handles.map(function (handle) {
-            return {handle: handle, items: [], start: 0, done: false};
-        });
+        this.start = 0;
+        this.ended = false;
+        this.failed = false;
         this.pool = null;
-        this.turn = 0;
     };
 
     Feed.prototype.done = function () {
-        if (this.mode === 'random') {
-            return !!this.pool && !this.pool.length;
-        }
-        return this.queues.every(function (queue) {
-            return queue.done && !queue.items.length;
-        });
+        return this.mode === 'random' ? !!this.pool && !this.pool.length : this.ended;
     };
 
-    Feed.prototype.fill = function (queue) {
-        var url = endpoint(queue.handle, SORTS[this.mode], queue.start, PAGE);
-        queue.start += PAGE;
-
-        return getJSON(url).then(function (body) {
-            var data = body && Array.isArray(body.data) ? body.data : [];
-            if (data.length < PAGE) {
-                queue.done = true;
-            }
-            data.map(normalize).filter(Boolean).forEach(function (video) {
-                queue.items.push(video);
-            });
-        }, function () {
-            // A channel that fails stops contributing; the rest carry on.
-            queue.done = true;
-            queue.failed = true;
+    // Drops repeats: a video published while the reader pages through would
+    // otherwise come back one page later.
+    Feed.prototype.fresh = function (list) {
+        var seen = this.seen;
+        return list.filter(function (video) {
+            return !seen[video.uuid] && (seen[video.uuid] = true);
         });
-    };
-
-    Feed.prototype.take = function () {
-        var picked = [];
-        var queues = this.queues;
-        var self = this;
-
-        var pickOne = function () {
-            var open = queues.filter(function (queue) {
-                return queue.items.length;
-            });
-            if (!open.length) {
-                return null;
-            }
-            if (self.mode === 'latest') {
-                open.sort(function (a, b) {
-                    return (b.items[0].published || 0) - (a.items[0].published || 0);
-                });
-                return open[0].items.shift();
-            }
-            // Trending: round robin over the channels that still have items.
-            for (var tries = 0; tries < queues.length; tries++) {
-                var queue = queues[self.turn % queues.length];
-                self.turn++;
-                if (queue.items.length) {
-                    return queue.items.shift();
-                }
-            }
-            return null;
-        };
-
-        while (picked.length < PAGE) {
-            var video = pickOne();
-            if (!video) {
-                break;
-            }
-            if (!this.seen[video.uuid]) {
-                this.seen[video.uuid] = true;
-                picked.push(video);
-            }
-        }
-        return picked;
     };
 
     Feed.prototype.next = function () {
         var self = this;
+        var fail = function () {
+            self.failed = true;
+            self.ended = true;
+            return [];
+        };
 
         if (this.mode === 'random') {
-            var ready = this.pool ? Promise.resolve() : Promise.all(this.queues.map(function (queue) {
-                return getJSON(endpoint(queue.handle, '-publishedAt', 0, RANDOM_POOL)).then(function (body) {
-                    return (body && Array.isArray(body.data) ? body.data : []).map(normalize).filter(Boolean);
-                }, function () {
-                    queue.failed = true;
-                    return [];
+            var ready = this.pool ? Promise.resolve() : getOnce(endpoint(this.ids, '-publishedAt', 0, RANDOM_POOL))
+                .then(videos, fail)
+                .then(function (list) {
+                    self.pool = shuffle(self.fresh(list));
                 });
-            })).then(function (lists) {
-                var pool = [];
-                [].concat.apply([], lists).forEach(function (video) {
-                    if (!self.seen[video.uuid]) {
-                        self.seen[video.uuid] = true;
-                        pool.push(video);
-                    }
-                });
-                self.pool = shuffle(pool);
-            });
 
             return ready.then(function () {
                 var batch = self.pool.splice(0, PAGE);
@@ -336,29 +273,33 @@
             });
         }
 
-        // Top up every queue that cannot cover a page on its own.
-        return Promise.all(this.queues.map(function (queue) {
-            return !queue.done && queue.items.length < PAGE ? self.fill(queue) : null;
-        })).then(function () {
-            var batch = self.take();
+        var url = endpoint(this.ids, SORTS[this.mode], this.start, PAGE);
+        this.start += PAGE;
+
+        return getJSON(url).then(function (body) {
+            var list = videos(body);
+            if (list.length < PAGE) {
+                self.ended = true;
+            }
+            return list;
+        }, fail).then(function (list) {
+            var batch = self.fresh(list);
             self.shown = self.shown.concat(batch);
             return batch;
         });
     };
 
-    Feed.prototype.allFailed = function () {
-        return this.queues.every(function (queue) {
-            return queue.failed;
-        });
-    };
-
     var feeds = {};
 
-    var feedFor = function (channel, mode) {
-        var key = channel + '|' + mode;
+    // "todos" is the setting's categories together, or everything without a
+    // list.
+    var feedFor = function (category, mode) {
+        var key = category + '|' + mode;
         if (!feeds[key]) {
-            var handles = channel ? [channel] : (source.channels.length ? source.channels : [null]);
-            feeds[key] = new Feed(handles, mode);
+            var ids = category ? [category] : source.categories.map(function (item) {
+                return item.id;
+            });
+            feeds[key] = new Feed(ids, mode);
         }
         return feeds[key];
     };
@@ -562,20 +503,17 @@
     /* State and controls
      * ------------------------------------------------------------------ */
 
-    var state = {channel: ALL, mode: 'random'};
+    var state = {category: ALL, mode: 'random'};
     var shown = false;
     var request = 0;
     var busy = false;
-    // Batches loaded in the current view (channel + order); reset by show().
+    // Batches loaded in the current view (category + order); reset by show().
     var batches = 0;
     var watcher = null;
 
-    var channelUrl = function (handle) {
-        return handle
-            ? source.origin + '/c/' + encodeURIComponent(handle) + '/videos'
-            : (source.channels.length === 1
-                ? source.origin + '/c/' + encodeURIComponent(source.channels[0]) + '/videos'
-                : source.origin + '/');
+    // PeerTube's own browse page for the category, or the instance.
+    var moreUrl = function (category) {
+        return source.origin + (category ? '/videos/browse?categoryOneOf=' + encodeURIComponent(category) : '/');
     };
 
     // The button only once the automatic batches are used up (or when the
@@ -583,7 +521,7 @@
     var sync = function (feed) {
         var auto = !!watcher && batches < AUTO_BATCHES;
         loadButton.hidden = feed.done() || auto;
-        more.href = channelUrl(state.channel);
+        more.href = moreUrl(state.category);
     };
 
     var load = function (feed, ticket) {
@@ -615,7 +553,7 @@
 
             var empty = !grid.children.length;
             message.hidden = !empty;
-            if (empty && !shown && feed.allFailed()) {
+            if (empty && !shown && feed.failed) {
                 // The first request failed outright: keep the page as it was.
                 return;
             }
@@ -638,7 +576,7 @@
     // Show a feed from the start: its loaded cards, then its first batch if
     // it has none. A new view gets the automatic batches again.
     var show = function () {
-        var feed = feedFor(state.channel, state.mode);
+        var feed = feedFor(state.category, state.mode);
         var ticket = ++request;
 
         busy = false;
@@ -682,7 +620,7 @@
     };
 
     var loadNext = function () {
-        var feed = feedFor(state.channel, state.mode);
+        var feed = feedFor(state.category, state.mode);
         if (busy || feed.done()) {
             return Promise.resolve();
         }
@@ -730,60 +668,86 @@
         });
     });
 
-    /* Channel picker: only with two or more channels in the setting. Names
-     * and avatars come from each channel's public profile; until (or unless)
-     * that answers, an option shows the handle.
+    /* Category picker: with two or more categories on offer. Built-in ones
+     * (ids 1-18) take the site's translation from the template; others the
+     * name the setting gives, else the instance's. Without a list in the
+     * setting, the offer is the categories of the newest videos - the same
+     * request as the "todos" random pool, so it costs nothing extra.
      * ------------------------------------------------------------------ */
 
-    var avatars = {};
+    var translated = {};
+    if (names && names.content) {
+        Array.prototype.forEach.call(names.content.querySelectorAll('option'), function (option) {
+            translated[option.value] = option.textContent.trim();
+        });
+    }
 
-    var showAvatar = function () {
-        var url = avatars[state.channel];
-        channelAvatar.hidden = !url;
-        if (url) {
-            channelAvatar.src = url;
-        }
+    var syncValue = function () {
+        var option = picker.options[picker.selectedIndex];
+        pickerValue.textContent = option ? option.textContent : '';
     };
 
-    if (source.channels.length > 1) {
+    var build = function (categories) {
+        if (categories.length < 2) {
+            return;
+        }
+
         var all = el('option', null, labelAll);
         all.value = ALL;
         picker.appendChild(all);
-
-        source.channels.forEach(function (handle) {
-            var option = el('option', null, handle.split('@')[0]);
-            option.value = handle;
+        categories.forEach(function (category) {
+            var option = el('option', null, category.label || category.id);
+            option.value = category.id;
             picker.appendChild(option);
-
-            getJSON(source.origin + '/api/v1/video-channels/' + encodeURIComponent(handle)).then(function (info) {
-                if (info && info.displayName) {
-                    option.textContent = String(info.displayName);
-                }
-                var list = info && Array.isArray(info.avatars) ? info.avatars.slice() : [];
-                list.sort(function (a, b) {
-                    return (a.width || 0) - (b.width || 0);
-                });
-                var small = list.filter(function (avatar) {
-                    return (avatar.width || 0) >= 48;
-                })[0] || list[list.length - 1];
-                var url = small && safeUrl(small.fileUrl || small.path);
-                if (url) {
-                    avatars[handle] = url;
-                    showAvatar();
-                }
-            }, function () {});
         });
 
         picker.value = ALL;
+        syncValue();
         picker.addEventListener('change', function () {
-            if (picker.value === state.channel) {
-                return;
+            syncValue();
+            if (picker.value !== state.category) {
+                state.category = picker.value;
+                show();
             }
-            state.channel = picker.value;
-            showAvatar();
-            show();
         });
-        channelBox.hidden = false;
+        categoryBox.hidden = false;
+    };
+
+    var name = function (id, given, instance) {
+        return given || translated[id] || instance || '';
+    };
+
+    if (source.categories.length) {
+        var unnamed = source.categories.some(function (category) {
+            return !name(category.id, category.label);
+        });
+        // Only for ids the setting does not name and PeerTube does not ship.
+        (unnamed ? getJSON(source.origin + '/api/v1/videos/categories') : Promise.resolve({}))
+            .then(null, function () {
+                return {};
+            })
+            .then(function (labels) {
+                build(source.categories.map(function (category) {
+                    var instance = labels && typeof labels[category.id] === 'string' ? labels[category.id] : '';
+                    return {id: category.id, label: name(category.id, category.label, instance)};
+                }));
+            });
+    } else {
+        getOnce(endpoint([], '-publishedAt', 0, RANDOM_POOL)).then(function (body) {
+            var found = {};
+            (body && Array.isArray(body.data) ? body.data : []).forEach(function (video) {
+                var category = video && video.category;
+                var id = category && category.id !== null && category.id !== undefined ? String(category.id) : '';
+                if (/^\d{1,9}$/.test(id) && !found[id]) {
+                    found[id] = {id: id, label: name(id, '', typeof category.label === 'string' ? category.label : '')};
+                }
+            });
+            build(Object.keys(found).map(function (id) {
+                return found[id];
+            }).sort(function (a, b) {
+                return String(a.label).localeCompare(String(b.label), lang);
+            }));
+        }, function () {});
     }
 
     show();

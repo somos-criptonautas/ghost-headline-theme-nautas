@@ -22,7 +22,7 @@
     white-space: nowrap;
 }
 
-/* Controls: the channel picker, then the order pills - one line from
+/* Controls: the category picker, then the order pills - one line from
    768px, stacked below that so there is only ever one row of pills. */
 
 .gh-videos-controls {
@@ -40,80 +40,93 @@
     gap: 0.8rem;
 }
 
-/* Channel picker: a native select in a pill, the Phosphor caret as its
-   arrow, and the selected channel's avatar in front. */
-.gh-videos-channel {
-    display: flex;
+/* Category picker: label and value share one light pill, the same height
+   and text size as the order pills. The select itself is transparent and
+   stretched over the whole box, so every part of it opens the picker. */
+.gh-videos-category {
+    position: relative;
+    display: inline-flex;
     align-items: center;
     gap: 0.8rem;
     min-width: 0;
-}
-
-.gh-videos-channel[hidden],
-.gh-videos-channel-avatar[hidden] {
-    display: none;
-}
-
-.gh-videos-channel-avatar {
-    flex: none;
-    width: 2.8rem;
-    height: 2.8rem;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.gh-videos-channel-label {
-    color: var(--color-secondary-text);
-    font-size: 1.5rem;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-.gh-videos-select-wrap {
-    position: relative;
-    display: inline-flex;
-    flex: 1 1 auto;
-    min-width: 0;
-}
-
-.gh-videos-select {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 100%;
     min-height: 3.2rem;
-    margin: 0;
-    padding: 0.6rem 3.4rem 0.6rem 1.4rem;
+    padding: 0.6rem 1.2rem 0.6rem 1.4rem;
     border: 1px solid var(--color-border, var(--color-light-gray));
     border-radius: 10rem;
-    background: none;
-    color: var(--color-base);
-    font: inherit;
+    background-color: rgba(127, 127, 127, 0.08);
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.2;
-    text-overflow: ellipsis;
     cursor: pointer;
+    transition: border-color 0.2s ease;
 }
 
-.gh-videos-select:hover {
+.gh-videos-category[hidden] {
+    display: none;
+}
+
+.gh-videos-category:hover {
     border-color: var(--color-base);
+}
+
+.gh-videos-category:focus-within {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}
+
+.gh-videos-category-label {
+    flex: none;
+    color: var(--color-secondary-text);
+}
+
+.gh-videos-category-value {
+    flex: 1 1 auto;
+    overflow: hidden;
+    color: var(--color-base);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Drawn dot rather than a "·" glyph, which Outfit sets near the baseline. */
+.gh-videos-category-value::before {
+    content: "";
+    display: inline-block;
+    width: 0.3rem;
+    height: 0.3rem;
+    margin-right: 0.8rem;
+    border-radius: 50%;
+    background-color: var(--color-secondary-text);
+    vertical-align: middle;
+}
+
+.gh-videos-category svg {
+    flex: none;
+    width: 1.4rem;
+    height: 1.4rem;
+    color: var(--color-secondary-text);
+}
+
+/* 1.6rem keeps iOS from zooming the page when the picker opens. */
+.gh-videos-select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    font: inherit;
+    font-size: 1.6rem;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 /* Options open in the OS menu: give them the page colors in dark mode. */
 .gh-videos-select option {
     background-color: var(--color-bg);
     color: var(--color-base);
-}
-
-.gh-videos-select-wrap svg {
-    position: absolute;
-    top: 50%;
-    right: 1.2rem;
-    width: 1.4rem;
-    height: 1.4rem;
-    color: var(--color-secondary-text);
-    transform: translateY(-50%);
-    pointer-events: none;
 }
 
 /* Order pills: fully rounded, 3.2rem tall. */
@@ -152,7 +165,7 @@
     color: var(--color-bg);
 }
 
-:is(.gh-videos-tab, .gh-videos-select, .gh-videos-load):focus-visible {
+:is(.gh-videos-tab, .gh-videos-load):focus-visible {
     outline: 2px solid var(--ghost-accent-color);
     outline-offset: 2px;
 }
