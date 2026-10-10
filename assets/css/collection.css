@@ -9,16 +9,16 @@
     list-style: none;
 }
 
-/* Hub: the chapters as tarot cards, before the hub's own text - a portrait
-   card with a hard shadow, the numeral on top, the art in an inner frame, the
-   title and its arcana below. Four across from 768px; below, a carousel. */
+/* The chapters as tarot cards, on every page of the series - a portrait card
+   with a hard shadow, the numeral on top, the art in an inner frame, the title
+   and its arcana below. Four across from 768px; below, a carousel. */
 .gh-collection[data-place="top"] {
     width: min(110rem, calc(100vw - 2 * var(--gap)));
     margin: 4rem auto;
 }
 
 @media screen and (min-width: 768px) {
-    .gh-collection.is-hub .gh-collection-list {
+    .gh-collection.is-cards .gh-collection-list {
         display: grid;
         grid-auto-flow: row;
         grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -27,14 +27,14 @@
 }
 
 @media screen and (max-width: 767px) {
-    .gh-collection.is-hub .gh-collection-list {
+    .gh-collection.is-cards .gh-collection-list {
         /* .gh-carousel (carousel.css) is on the list; it only runs here. */
         display: grid;
     }
 }
 
 @media screen and (min-width: 768px) {
-    .gh-collection.is-hub .gh-carousel {
+    .gh-collection.is-cards .gh-carousel {
         overflow: visible;
         padding: 0;
     }
@@ -97,6 +97,22 @@
     text-transform: uppercase;
 }
 
+/* On a chapter its own card leads: raised, with the accent in its shadow,
+   while the others step back a little until pointed at. */
+.gh-collection-link[aria-current="page"] {
+    transform: translate(-2px, -4px);
+    box-shadow: 6px 8px 0 var(--ghost-accent-color);
+}
+
+.gh-collection-list:has([aria-current]) .gh-collection-link:not([aria-current]) {
+    opacity: 0.72;
+}
+
+.gh-collection-list:has([aria-current]) .gh-collection-link:not([aria-current]):hover,
+.gh-collection-list:has([aria-current]) .gh-collection-link:not([aria-current]):focus-visible {
+    opacity: 1;
+}
+
 /* The page's excerpt, read as the chapter's arcana: two lines at most. */
 .gh-collection-excerpt {
     display: -webkit-box;
@@ -108,23 +124,24 @@
     line-height: 1.4;
 }
 
-/* Previous / next: as wide as the article column plus a little, not the page. */
+/* Previous / next, at the end of the article column (inside .gh-content, so
+   the selectors carry .gh-collection to win over its link and image rules).
+   Images face inward: [← previous  title  image] [image  title  next →]. */
 .gh-collection[data-place="bottom"] {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.6rem;
-    width: min(calc(var(--content-width, 720px) + 12rem), calc(100vw - 2 * var(--gap)));
-    margin: 6rem auto 0;
+    margin-top: 6rem;
 }
 
 .gh-collection[data-place="bottom"][hidden] {
     display: none;
 }
 
-/* The chapter's image on the left of the card, its label and title beside it. */
-.gh-collection-pager {
+.gh-collection .gh-collection-pager {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 1.4rem;
     padding: 1.2rem;
     border: 1px solid var(--color-border);
@@ -133,13 +150,23 @@
     text-decoration: none;
 }
 
-.gh-collection-pager:hover {
+.gh-collection .gh-collection-pager:hover {
     border-color: var(--color-base);
 }
 
-.gh-collection-pager-image {
+/* The image comes first in the markup: previous turns it to the right. */
+.gh-collection .gh-collection-pager--prev {
+    flex-direction: row-reverse;
+}
+
+.gh-collection .gh-collection-pager--next {
+    text-align: right;
+}
+
+.gh-collection .gh-collection-pager-image {
     flex: none;
     width: 9.6rem;
+    margin: 0;
     aspect-ratio: 3 / 2;
     object-fit: cover;
     border-radius: 0.5rem;

@@ -1,10 +1,12 @@
 /* Page series (partials/collection.hbs, custom-collection.hbs). Ships inside
  * main.min.js.
  *
- * The top nav holds the chapters in order. On the hub (a page not in that
- * list) it shows as cards, with "next" into the first chapter below. On a
- * chapter it stays hidden and only feeds previous / next: the hub before the
- * first chapter and after the last. Each step carries its chapter's image.
+ * The top nav holds the chapters in order and shows as cards on every page
+ * of the series; on a chapter its own card is marked current. The hub (a
+ * page not in that list) gets "next" into the first chapter at the end of
+ * its text; a chapter gets previous / next - the hub before the first and
+ * after the last. Each step carries its chapter's image, facing inward:
+ * [← previous  title  image] [image  title  next →].
  */
 (function () {
     var top = document.querySelector('.gh-collection[data-place="top"]');
@@ -89,9 +91,10 @@
         }
     });
 
+    top.classList.add('is-cards');
+    top.hidden = false;
+
     if (current < 0) {
-        top.classList.add('is-hub');
-        top.hidden = false;
         // The hub reads as chapter 0: only a "next" into the first chapter.
         if (bottom) {
             bottom.appendChild(step(0, 'next'));
@@ -99,6 +102,8 @@
         }
         return;
     }
+
+    links[current].setAttribute('aria-current', 'page');
 
     if (bottom) {
         bottom.appendChild(step(current - 1, 'prev'));

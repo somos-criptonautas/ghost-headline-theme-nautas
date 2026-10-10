@@ -2,7 +2,8 @@
 {{!-- Collection: a page in a series (pick "Collection" in the page's
     settings). The series is the page's primary tag - see
     partials/collection.hbs for the hub and chapter conventions. Full-width
-    cover, the TOC column posts have, then previous / next. --}}
+    cover, the series cards, the TOC column posts have (not on the hub), and
+    previous / next at the end of the text. --}}
 {{#post}}
 <section class="gh-cover gh-outer">
     {{#if feature_image}}
@@ -23,24 +24,30 @@
 </section>
 
 <main class="gh-main">
-    <article class="gh-article {{post_class}}">
-        {{#if primary_tag}}{{> "collection" place="top" tag=primary_tag.slug label=primary_tag.name}}{{/if}}
-        <div class="gh-full-content">
-            <aside class="gh-sidebar" id="sidebar-toc">
-                {{#if reading_time}}
-                <h3>
-                    {{reading_time minute="1 min de lectura" minutes="% mins de lectura"}}
-                </h3>
-                {{/if}}
-                <div class="toc">
-                </div>
-            </aside>
-            <section class="gh-content gh-canvas">
-                {{content}}
-            </section>
-        </div>
-        {{#if primary_tag}}{{> "collection" place="bottom" tag=primary_tag.slug label=primary_tag.name}}{{/if}}
-    </article>
+    <div class="gh-inner">
+        <article class="gh-article {{post_class}}">
+            {{#if primary_tag}}{{> "collection" place="top" tag=primary_tag.slug label=primary_tag.name}}{{/if}}
+            <div class="gh-full-content">
+                {{!-- The hub (slug = the tag's slug) is a contents page: no TOC there. --}}
+                {{#match slug "!=" primary_tag.slug}}
+                <aside class="gh-sidebar" id="sidebar-toc">
+                    {{#if reading_time}}
+                    <h3>
+                        {{reading_time minute="1 min de lectura" minutes="% mins de lectura"}}
+                    </h3>
+                    {{/if}}
+                    <div class="toc">
+                    </div>
+                </aside>
+                {{/match}}
+                <section class="gh-content gh-canvas">
+                    {{content}}
+                    {{!-- Inside the article column, so previous / next line up with the text. --}}
+                    {{#if primary_tag}}{{> "collection" place="bottom" tag=primary_tag.slug label=primary_tag.name}}{{/if}}
+                </section>
+            </div>
+        </article>
+    </div>
 </main>
 {{/post}}
 {{#contentFor "body_class"}} has-full-image{{/contentFor}}

@@ -5537,15 +5537,15 @@ html.js .gh-loadmore {
 }
 
 @media screen and (min-width: 992px) {
-  /* 0.5rem more air than the theme's 1.63rem, above and below: the logo sat
-     against the top, and the page against the logo. */
+  /* A quarter rem more air than the theme's 1.63rem, above and below: the logo
+     sat against the top, and the page against the logo. */
   #gh-head .gh-head-inner {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 3.2rem;
     align-items: center;
-    padding-top: 2.13rem;
-    padding-bottom: 2.13rem;
+    padding-top: 1.88rem;
+    padding-bottom: 1.88rem;
   }
 
   /* Up to 1439px the logo is hidden (below), so the search takes its place. */
@@ -5634,6 +5634,39 @@ html.js .gh-loadmore {
   }
 
   #gh-head .gh-head-end {
+    grid-column: 3;
+  }
+}
+
+/* Tablet bar (768-991px): the site icon before the search, as the way back to
+   the blog. Phones keep search | burger; desktop has the full logo. */
+.gh-head-icon {
+  display: none;
+}
+
+.gh-head-icon img {
+  display: block;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 0.6rem;
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  body:not(.is-head-open) #gh-head .gh-head-brand {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  body:not(.is-head-open) #gh-head .gh-head-icon {
+    display: block;
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  body:not(.is-head-open) #gh-head .gh-head-search-field {
+    grid-column: 2;
+  }
+
+  body:not(.is-head-open) #gh-head .gh-burger {
     grid-column: 3;
   }
 }

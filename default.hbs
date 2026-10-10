@@ -97,6 +97,12 @@
                                 {{/if}}
                                 {{^is "home"}}</a>{{else}}</span>{{/is}}
                     </div>
+                    {{!-- Tablet bar only: the site icon as the way back to the blog. --}}
+                    {{#if @site.icon}}
+                    <a class="gh-head-icon" href="{{@site.url}}" aria-label="{{@site.title}}">
+                        <img src="{{@site.icon}}" alt="" width="32" height="32">
+                    </a>
+                    {{/if}}
                     {{!-- Tablet/mobile bar: logo | search | burger, sticky. The
                         theme toggle shows only with the menu open, under the ✕.
                         Desktop keeps search and theme in .gh-head-actions below;
@@ -175,12 +181,12 @@
             {{navigation type="secondary"}}
         </nav>
         <div class="it-foot-social">
-            <a href="https://github.com/somos-criptonautas/" class="github" title="{{t "Github"}}" target="_blank"
-                rel="noopener" aria-label="{{t "Github"}}">{{> "icons/github"}}</a>
-            <a href="{{@site.url}}/rss/" class="rss" title="{{t "RSS"}}" target="_blank" rel="noopener"
-                aria-label="{{t "RSS"}}">{{> "icons/rss"}}</a>
             <a href="https://comunidad.criptonautas.co" class="discourse" title="{{t "Community"}}" target="_blank"
                 rel="noopener" aria-label="{{t "Community"}}">{{> "icons/discourse"}}</a>
+            <a href="{{@site.url}}/rss/" class="rss" title="{{t "RSS"}}" target="_blank" rel="noopener"
+                aria-label="{{t "RSS"}}">{{> "icons/rss"}}</a>
+            <a href="https://github.com/somos-criptonautas/" class="github" title="{{t "Github"}}" target="_blank"
+                rel="noopener" aria-label="{{t "Github"}}">{{> "icons/github"}}</a>
         </div>
         <span class="no-estamos">(no estamos en Discord)</span>
         <div class="gh-copyright">
