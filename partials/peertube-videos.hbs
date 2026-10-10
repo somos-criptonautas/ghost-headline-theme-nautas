@@ -1,12 +1,12 @@
 {{!-- Videos page body (custom-videos.hbs). Ghost cannot fetch a third-party
     API while rendering, so this is only the shell: assets/js/peertube-videos.js
-    reads the PeerTube instance in data-source, builds the channel chips and
+    reads the PeerTube instance in data-source, builds the channel picker and
     the grid, and drops `hidden` once the first request succeeds. Without JS
     the page shows only its own text.
 
     data-source is the "Peertube source" theme setting: an instance URL for
     all of its local videos, or https://host/c/channel1,channel2 for those
-    channels - with two or more, each gets a chip. The labels ride along as
+    channels - with two or more, a channel picker appears. The labels ride along as
     data attributes because the script has no access to the translations. --}}
 {{#if @custom.peertube_source}}
 <section class="gh-videos" aria-labelledby="gh-videos-title" hidden
@@ -17,7 +17,18 @@
     <h2 class="gh-visually-hidden" id="gh-videos-title">{{t "Videos"}}</h2>
 
     <div class="gh-videos-controls">
-        <div class="gh-videos-channels" role="group" aria-label="{{t "Channels"}}" hidden></div>
+        {{!-- Channel picker: a native select, so every channel fits and the
+            phone's own picker opens. Built by the script with two or more
+            channels in the setting; the selected channel's avatar sits
+            beside it. --}}
+        <div class="gh-videos-channel" hidden>
+            <img class="gh-videos-channel-avatar" alt="" width="24" height="24" hidden>
+            <label class="gh-videos-channel-label" for="gh-videos-channel">{{t "Channel"}}:</label>
+            <span class="gh-videos-select-wrap">
+                <select class="gh-videos-select" id="gh-videos-channel"></select>
+                {{> "icons/phosphor/caret-down"}}
+            </span>
+        </div>
         <div class="gh-videos-tabs" role="group" aria-label="{{t "Video order"}}">
             <button class="gh-videos-tab" type="button" data-mode="random" aria-pressed="true">{{t "Random videos"}}</button>
             <button class="gh-videos-tab" type="button" data-mode="trending" aria-pressed="false">{{t "Trending videos"}}</button>
@@ -39,6 +50,9 @@
     </div>
 
     <ul class="gh-videos-grid" aria-live="polite"></ul>
+    {{!-- Shown while the next batch loads; also the point the script watches
+        to load the next batch on its own as the reader nears it. --}}
+    <div class="gh-videos-loading" aria-hidden="true"><span></span><span></span><span></span></div>
     <p class="gh-videos-message" role="status" hidden>{{t "Videos could not be loaded."}}</p>
 
     <footer class="gh-videos-footer">

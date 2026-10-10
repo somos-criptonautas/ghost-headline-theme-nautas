@@ -3,9 +3,10 @@
  *
  * Lists videos from a self-hosted PeerTube through its public REST API, which
  * answers cross-origin (PeerTube mounts cors() on /api). With two or more
- * channels in the setting, each gets a chip; "Todos" merges them. Order is
- * Random (the default), Trending or Latest, and "Cargar más" adds 12 at a
- * time.
+ * channels in the setting, a channel picker appears; "Todos" merges them.
+ * Order is Random (the default), Trending or Latest. Nearing the end of the
+ * grid loads the next 12 on its own, up to AUTO_BATCHES in a view; after
+ * that "Cargar más" takes over, so the footer stays reachable.
  *
  * Nothing from the instance goes in through innerHTML: every string is set
  * with textContent, URLs are rebuilt on the instance origin, and the player
@@ -19,6 +20,8 @@
     }
 
     var PAGE = 12;
+    // Batches a view loads without a click (the first included): 3 x 12.
+    var AUTO_BATCHES = 3;
     // Random has no API sort: it shuffles each source's newest RANDOM_POOL
     // (the API's maximum page) once, then deals PAGE at a time.
     var RANDOM_POOL = 100;
@@ -77,7 +80,10 @@
 
     var grid = section.querySelector('.gh-videos-grid');
     var message = section.querySelector('.gh-videos-message');
-    var chipsBox = section.querySelector('.gh-videos-channels');
+    var channelBox = section.querySelector('.gh-videos-channel');
+    var picker = section.querySelector('.gh-videos-select');
+    var channelAvatar = section.querySelector('.gh-videos-channel-avatar');
+    var loading = section.querySelector('.gh-videos-loading');
     var loadButton = section.querySelector('.gh-videos-load');
     var more = section.querySelector('.gh-videos-more');
     var tabs = Array.prototype.slice.call(section.querySelectorAll('.gh-videos-tab'));
@@ -559,6 +565,10 @@
     var state = {channel: ALL, mode: 'random'};
     var shown = false;
     var request = 0;
+    var busy = false;
+    // Batches loaded in the current view (channel + order); reset by show().
+    var batches = 0;
+    var watcher = null;
 
     var channelUrl = function (handle) {
         return handle
@@ -568,39 +578,35 @@
                 : source.origin + '/');
     };
 
+    // The button only once the automatic batches are used up (or when the
+    // browser cannot watch the scroll position); never with nothing left.
     var sync = function (feed) {
-        loadButton.hidden = feed.done();
+        var auto = !!watcher && batches < AUTO_BATCHES;
+        loadButton.hidden = feed.done() || auto;
         more.href = channelUrl(state.channel);
     };
 
-    // Show a feed: its loaded cards, then its first batch if it has none.
-    var show = function () {
-        var feed = feedFor(state.channel, state.mode);
-        var ticket = ++request;
-
-        grid.textContent = '';
-        feed.shown.forEach(function (video, i) {
-            grid.appendChild(card(video, i));
-        });
-        mark();
-
-        if (feed.shown.length) {
-            message.hidden = true;
-            sync(feed);
-            return Promise.resolve();
-        }
-
-        return load(feed, ticket);
-    };
-
     var load = function (feed, ticket) {
+        busy = true;
         section.setAttribute('aria-busy', 'true');
+        loading.classList.add('is-active');
         loadButton.disabled = true;
+
+        var settle = function () {
+            if (ticket === request) {
+                busy = false;
+                section.removeAttribute('aria-busy');
+                loading.classList.remove('is-active');
+                loadButton.disabled = false;
+                grid.style.minHeight = '';
+            }
+        };
 
         return feed.next().then(function (batch) {
             if (ticket !== request) {
                 return;
             }
+            batches++;
             var offset = grid.children.length;
             batch.forEach(function (video, i) {
                 grid.appendChild(card(video, offset + i));
@@ -619,30 +625,92 @@
             }
             sync(feed);
         }).then(function () {
-            if (ticket === request) {
-                section.removeAttribute('aria-busy');
-                loadButton.disabled = false;
-            }
+            settle();
+            keepFilling();
         }, function () {
+            settle();
             if (ticket === request) {
-                section.removeAttribute('aria-busy');
-                loadButton.disabled = false;
                 message.hidden = false;
             }
         });
     };
 
+    // Show a feed from the start: its loaded cards, then its first batch if
+    // it has none. A new view gets the automatic batches again.
+    var show = function () {
+        var feed = feedFor(state.channel, state.mode);
+        var ticket = ++request;
+
+        busy = false;
+        // An empty grid would shrink the page under the reader, and the
+        // browser's scroll anchoring then follows the footer down as the new
+        // cards arrive. Hold the height until they land.
+        grid.style.minHeight = feed.shown.length ? '' : grid.offsetHeight + 'px';
+        grid.textContent = '';
+        feed.shown.forEach(function (video, i) {
+            grid.appendChild(card(video, i));
+        });
+        mark();
+        batches = Math.ceil(feed.shown.length / PAGE);
+
+        // Bring the controls back into view if the reader had scrolled past.
+        // Instant: the page sets scroll-behavior: smooth, and the grid has
+        // just been swapped anyway.
+        if (section.getBoundingClientRect().top < 0) {
+            section.scrollIntoView({block: 'start', behavior: 'instant'});
+        }
+
+        if (feed.shown.length) {
+            message.hidden = true;
+            sync(feed);
+            return Promise.resolve();
+        }
+        return load(feed, ticket);
+    };
+
+    // The watcher only fires when the loading row enters range; a short batch
+    // can leave it in range, so check again after each one.
+    var keepFilling = function () {
+        if (!watcher || !shown || batches >= AUTO_BATCHES) {
+            return;
+        }
+        window.requestAnimationFrame(function () {
+            if (loading.getBoundingClientRect().top < window.innerHeight + 600) {
+                loadNext();
+            }
+        });
+    };
+
+    var loadNext = function () {
+        var feed = feedFor(state.channel, state.mode);
+        if (busy || feed.done()) {
+            return Promise.resolve();
+        }
+        return load(feed, request);
+    };
+
     loadButton.addEventListener('click', function () {
         var first = grid.children.length;
-        load(feedFor(state.channel, state.mode), request).then(function () {
+        loadNext().then(function () {
             // Land keyboard users on the first new card.
             var next = grid.children[first];
             var target = next && next.querySelector('.gh-video-play');
             if (target && document.activeElement === loadButton) {
-                target.focus({preventScroll: false});
+                target.focus();
             }
         });
     });
+
+    // Automatic batches: the loading row sits right after the grid, so it
+    // comes into range (600px ahead) as the reader nears the end.
+    if (window.IntersectionObserver) {
+        watcher = new IntersectionObserver(function (entries) {
+            if (entries[0].isIntersecting && shown && batches < AUTO_BATCHES) {
+                loadNext();
+            }
+        }, {rootMargin: '0px 0px 600px 0px'});
+        watcher.observe(loading);
+    }
 
     var press = function (buttons, active) {
         buttons.forEach(function (button) {
@@ -662,60 +730,60 @@
         });
     });
 
-    /* Channel chips: only with two or more channels in the setting. Names
+    /* Channel picker: only with two or more channels in the setting. Names
      * and avatars come from each channel's public profile; until (or unless)
-     * that answers, a chip shows the handle.
+     * that answers, an option shows the handle.
      * ------------------------------------------------------------------ */
 
-    var chips = [];
+    var avatars = {};
 
-    var chip = function (handle, label) {
-        var button = el('button', 'gh-videos-chip');
-        button.type = 'button';
-        button.setAttribute('aria-pressed', String(handle === state.channel));
-        button.appendChild(el('span', 'gh-videos-chip-name', label));
-        button.addEventListener('click', function () {
-            if (handle === state.channel) {
-                return;
-            }
-            state.channel = handle;
-            press(chips, button);
-            show();
-        });
-        chips.push(button);
-        chipsBox.appendChild(button);
-        return button;
+    var showAvatar = function () {
+        var url = avatars[state.channel];
+        channelAvatar.hidden = !url;
+        if (url) {
+            channelAvatar.src = url;
+        }
     };
 
     if (source.channels.length > 1) {
-        chip(ALL, labelAll);
+        var all = el('option', null, labelAll);
+        all.value = ALL;
+        picker.appendChild(all);
+
         source.channels.forEach(function (handle) {
-            var button = chip(handle, handle.split('@')[0]);
+            var option = el('option', null, handle.split('@')[0]);
+            option.value = handle;
+            picker.appendChild(option);
 
             getJSON(source.origin + '/api/v1/video-channels/' + encodeURIComponent(handle)).then(function (info) {
                 if (info && info.displayName) {
-                    button.querySelector('.gh-videos-chip-name').textContent = String(info.displayName);
+                    option.textContent = String(info.displayName);
                 }
-                var avatars = info && Array.isArray(info.avatars) ? info.avatars.slice() : [];
-                avatars.sort(function (a, b) {
+                var list = info && Array.isArray(info.avatars) ? info.avatars.slice() : [];
+                list.sort(function (a, b) {
                     return (a.width || 0) - (b.width || 0);
                 });
-                var small = avatars.filter(function (avatar) {
+                var small = list.filter(function (avatar) {
                     return (avatar.width || 0) >= 48;
-                })[0] || avatars[avatars.length - 1];
+                })[0] || list[list.length - 1];
                 var url = small && safeUrl(small.fileUrl || small.path);
                 if (url) {
-                    var img = el('img', 'gh-videos-chip-avatar');
-                    img.src = url;
-                    img.alt = '';
-                    img.width = 24;
-                    img.height = 24;
-                    img.loading = 'lazy';
-                    button.insertBefore(img, button.firstChild);
+                    avatars[handle] = url;
+                    showAvatar();
                 }
             }, function () {});
         });
-        chipsBox.hidden = false;
+
+        picker.value = ALL;
+        picker.addEventListener('change', function () {
+            if (picker.value === state.channel) {
+                return;
+            }
+            state.channel = picker.value;
+            showAvatar();
+            show();
+        });
+        channelBox.hidden = false;
     }
 
     show();

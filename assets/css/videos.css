@@ -22,7 +22,8 @@
     white-space: nowrap;
 }
 
-/* Controls: channel chips, then the order pills */
+/* Controls: the channel picker, then the order pills - one line from
+   768px, stacked below that so there is only ever one row of pills. */
 
 .gh-videos-controls {
     display: flex;
@@ -33,20 +34,90 @@
     margin-bottom: 3.2rem;
 }
 
-.gh-videos-channels,
 .gh-videos-tabs {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.8rem;
 }
 
-.gh-videos-channels[hidden] {
+/* Channel picker: a native select in a pill, the Phosphor caret as its
+   arrow, and the selected channel's avatar in front. */
+.gh-videos-channel {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-width: 0;
+}
+
+.gh-videos-channel[hidden],
+.gh-videos-channel-avatar[hidden] {
     display: none;
 }
 
-/* Pills and chips share one shape: fully rounded, 3.2rem tall. */
-.gh-videos-tab,
-.gh-videos-chip {
+.gh-videos-channel-avatar {
+    flex: none;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.gh-videos-channel-label {
+    color: var(--color-secondary-text);
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.gh-videos-select-wrap {
+    position: relative;
+    display: inline-flex;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.gh-videos-select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    min-height: 3.2rem;
+    margin: 0;
+    padding: 0.6rem 3.4rem 0.6rem 1.4rem;
+    border: 1px solid var(--color-border, var(--color-light-gray));
+    border-radius: 10rem;
+    background: none;
+    color: var(--color-base);
+    font: inherit;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.gh-videos-select:hover {
+    border-color: var(--color-base);
+}
+
+/* Options open in the OS menu: give them the page colors in dark mode. */
+.gh-videos-select option {
+    background-color: var(--color-bg);
+    color: var(--color-base);
+}
+
+.gh-videos-select-wrap svg {
+    position: absolute;
+    top: 50%;
+    right: 1.2rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    color: var(--color-secondary-text);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+/* Order pills: fully rounded, 3.2rem tall. */
+.gh-videos-tab {
     display: inline-flex;
     align-items: center;
     gap: 0.8rem;
@@ -70,55 +141,36 @@
     letter-spacing: -0.01em;
 }
 
-.gh-videos-tab:hover,
-.gh-videos-chip:hover {
+.gh-videos-tab:hover {
     border-color: var(--color-base);
     color: var(--color-base);
 }
 
-.gh-videos-tab[aria-pressed="true"],
-.gh-videos-chip[aria-pressed="true"] {
+.gh-videos-tab[aria-pressed="true"] {
     border-color: var(--color-base);
     background-color: var(--color-base);
     color: var(--color-bg);
 }
 
-.gh-videos-chip-avatar {
-    width: 2.2rem;
-    height: 2.2rem;
-    margin-left: -0.6rem;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-:is(.gh-videos-tab, .gh-videos-chip, .gh-videos-load):focus-visible {
+:is(.gh-videos-tab, .gh-videos-select, .gh-videos-load):focus-visible {
     outline: 2px solid var(--ghost-accent-color);
     outline-offset: 2px;
 }
 
-/* Phones: the chips scroll sideways in one line rather than stacking into
-   a wall above the grid; the pills stay on one line below them. */
+/* Phones: the picker takes the full width on its own line, the pills one
+   row under it. */
 @media screen and (max-width: 767px) {
     .gh-videos-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1.4rem;
         margin-bottom: 2.4rem;
     }
 
-    .gh-videos-channels {
-        flex-wrap: nowrap;
-        width: calc(100% + 2 * 1.33rem);
-        margin-inline: -1.33rem;
-        padding-inline: 1.33rem;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-        scrollbar-width: none;
-    }
-
-    .gh-videos-channels::-webkit-scrollbar {
-        display: none;
-    }
-
-    .gh-videos-tabs {
-        flex-wrap: nowrap;
+    .gh-videos-tab {
+        flex: 1 1 0;
+        justify-content: center;
+        padding-inline: 0.8rem;
     }
 }
 
@@ -154,6 +206,54 @@
     min-width: 0;
     margin: 0;
     padding: 0;
+}
+
+/* Loading: three quiet dots after the grid while a batch is on its way.
+   The row is always laid out - it is also the point assets/js watches to
+   load the next batch automatically - and only its dots fade in. */
+
+.gh-videos-loading {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    height: 2.4rem;
+    padding-top: 1.6rem;
+}
+
+.gh-videos-loading span {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background-color: var(--color-secondary-text);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.gh-videos-loading.is-active span {
+    opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .gh-videos-loading.is-active span {
+        animation: gh-videos-dot 1s ease-in-out infinite;
+    }
+
+    .gh-videos-loading.is-active span:nth-child(2) {
+        animation-delay: 0.15s;
+    }
+
+    .gh-videos-loading.is-active span:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+}
+
+@keyframes gh-videos-dot {
+    0%, 100% {
+        opacity: 0.25;
+    }
+    50% {
+        opacity: 0.9;
+    }
 }
 
 /* Footer: load more, then the link to PeerTube */
