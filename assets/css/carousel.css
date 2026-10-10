@@ -1,0 +1,24 @@
+/* Carousel: one row that scrolls sideways and snaps to each item. CSS only -
+   no arrows, no script; the next item peeks in at the edge to say there is
+   more. Add .gh-carousel to a list and scope it with a media query where it
+   should apply (collection.css: the series cards below 768px). */
+.gh-carousel {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 72%;
+    gap: 1.6rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    /* Room for the cards' hard shadow, which overflow would clip. */
+    padding: 0 0.8rem 1.2rem 0;
+}
+
+.gh-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.gh-carousel > * {
+    scroll-snap-align: start;
+}

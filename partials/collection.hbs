@@ -12,7 +12,7 @@
     data-label-previous="{{t "Previous"}}"
     data-label-next="{{t "Next"}}">
     {{#match place "top"}}
-    <ol class="gh-collection-list">
+    <ol class="gh-collection-list gh-carousel">
         {{#get "pages" filter="tag:{{tag}}+slug:-{{tag}}" order="slug asc" limit="20"}}
         {{#foreach pages}}
         <li class="gh-collection-step">

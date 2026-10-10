@@ -9,68 +9,103 @@
     list-style: none;
 }
 
-/* Hub: the chapters as cards, before the hub's own text. */
+/* Hub: the chapters as tarot cards, before the hub's own text - a portrait
+   card with a hard shadow, the numeral on top, the art in an inner frame, the
+   title and its arcana below. Four across from 768px; below, a carousel. */
 .gh-collection[data-place="top"] {
     width: min(110rem, calc(100vw - 2 * var(--gap)));
     margin: 4rem auto;
 }
 
-.gh-collection.is-hub .gh-collection-list {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 2rem;
-}
-
-@media screen and (max-width: 991px) {
+@media screen and (min-width: 768px) {
     .gh-collection.is-hub .gh-collection-list {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        display: grid;
+        grid-auto-flow: row;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 2.4rem;
     }
 }
 
-@media screen and (max-width: 599px) {
+@media screen and (max-width: 767px) {
     .gh-collection.is-hub .gh-collection-list {
-        grid-template-columns: minmax(0, 1fr);
+        /* .gh-carousel (carousel.css) is on the list; it only runs here. */
+        display: grid;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .gh-collection.is-hub .gh-carousel {
+        overflow: visible;
+        padding: 0;
     }
 }
 
 .gh-collection-link {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 1rem;
     height: 100%;
+    padding: 1.2rem 1.2rem 1.6rem;
+    border: 2px solid var(--color-base);
+    border-radius: 0.6rem;
+    background-color: var(--color-bg);
+    box-shadow: 4px 4px 0 var(--color-base);
     color: inherit;
+    text-align: center;
     text-decoration: none;
 }
 
-.gh-collection-image {
-    width: 100%;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
-    border-radius: 0.77rem;
+@media (prefers-reduced-motion: no-preference) {
+    .gh-collection-link {
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+}
+
+.gh-collection-link:hover,
+.gh-collection-link:focus-visible {
+    transform: translate(-2px, -4px);
+    box-shadow: 6px 8px 0 var(--color-base);
+}
+
+.gh-collection-link:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 4px;
 }
 
 .gh-collection-num {
-    color: var(--color-secondary-text);
-    font-size: 1.4rem;
+    order: -1;
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
     font-weight: 700;
-    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.12em;
+}
+
+/* The art in its own thin frame, as on a printed card. */
+.gh-collection-image {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border: 1px solid var(--color-base);
+    border-radius: 0.3rem;
 }
 
 .gh-collection-title {
-    font-size: 2.2rem;
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 
+/* The page's excerpt, read as the chapter's arcana: two lines at most. */
 .gh-collection-excerpt {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
     color: var(--color-secondary-text);
-    font-size: 1.5rem;
-    line-height: 1.45;
-}
-
-.gh-collection-link:hover .gh-collection-title {
-    text-decoration: underline;
-    text-underline-offset: 3px;
+    font-size: 1.4rem;
+    line-height: 1.4;
 }
 
 /* Previous / next: as wide as the article column plus a little, not the page. */

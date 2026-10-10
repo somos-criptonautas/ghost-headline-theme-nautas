@@ -23,15 +23,33 @@
     var path = function (href) {
         return new URL(href, window.location.href).pathname.replace(/\/?$/, '/');
     };
+    // Chapters are numbered as tarot arcana are: I, II, III, IV.
+    var roman = function (n) {
+        var out = '';
+        [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']].forEach(function (pair) {
+            for (; n >= pair[0]; n -= pair[0]) {
+                out += pair[1];
+            }
+        });
+        return out;
+    };
+
     // Titles like "Journey -> La partida" repeat the series name the page already shows.
     var titles = links.map(function (link, i) {
-        link.querySelector('.gh-collection-num').textContent = String(i + 1).padStart(2, '0');
+        link.querySelector('.gh-collection-num').textContent = roman(i + 1);
         var node = link.querySelector('.gh-collection-title');
         node.textContent = node.textContent.replace(/^[^>]{0,40}?-+>\s*/, '');
         return node.textContent;
     });
 
     var hub = top.getAttribute('data-hub');
+    // Ghost marks a nav item current only on its exact URL: on a chapter,
+    // mark the hub's item too, so the header says "you are here".
+    Array.prototype.forEach.call(document.querySelectorAll('#gh-head .nav a'), function (a) {
+        if (path(a.href) === path(hub)) {
+            a.parentNode.classList.add('nav-current');
+        }
+    });
     var step = function (index, direction) {
         var a = document.createElement('a');
         a.className = 'gh-collection-pager gh-collection-pager--' + direction;
@@ -56,7 +74,7 @@
         kicker.textContent = direction === 'prev' ? '← ' + label('previous') : label('next') + ' →';
         var title = document.createElement('span');
         title.className = 'gh-collection-pager-title';
-        title.textContent = inSeries ? String(index + 1).padStart(2, '0') + ' - ' + titles[index] : label('hub');
+        title.textContent = inSeries ? roman(index + 1) + ' - ' + titles[index] : label('hub');
         text.appendChild(kicker);
         text.appendChild(title);
         a.appendChild(text);

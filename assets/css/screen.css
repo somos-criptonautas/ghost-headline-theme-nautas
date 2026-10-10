@@ -8,6 +8,7 @@
 @import "search.css";
 @import "videos.css";
 @import "community.css";
+@import "carousel.css";
 @import "collection.css";
 @import "post.css";
 
@@ -5533,13 +5534,15 @@ html.js .gh-loadmore {
 }
 
 @media screen and (min-width: 992px) {
-  /* 0.5rem more air above than the theme's 1.63rem: the logo sat against the top. */
+  /* 0.5rem more air than the theme's 1.63rem, above and below: the logo sat
+     against the top, and the page against the logo. */
   #gh-head .gh-head-inner {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 3.2rem;
     align-items: center;
     padding-top: 2.13rem;
+    padding-bottom: 2.13rem;
   }
 
   /* Up to 1439px the logo is hidden (below), so the search takes its place. */
@@ -5604,6 +5607,16 @@ html.js .gh-loadmore {
 @media screen and (min-width: 1440px) {
   #gh-head .gh-head-inner {
     grid-template-columns: minmax(0, 1fr) minmax(20rem, 30rem) minmax(max-content, 1fr);
+  }
+
+  /* A third bigger than the theme's 6.33rem. The 100px header would cut it,
+     so the header grows to the logo plus the padding above. */
+  #gh-head {
+    height: auto;
+  }
+
+  #gh-head .gh-head-logo img {
+    max-height: 8.42rem;
   }
 
   #gh-head .gh-head-brand {
