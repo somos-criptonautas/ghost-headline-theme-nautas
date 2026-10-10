@@ -170,7 +170,7 @@
     var meta = function (parts) {
         var span = document.createElement('div');
         span.className = 'ns__meta';
-        span.textContent = parts.filter(Boolean).join(' · ');
+        span.textContent = parts.filter(Boolean).join(' - ');
         return span;
     };
 
@@ -288,7 +288,7 @@
                 ICON_POST,
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 { hit: hit, attribute: 'excerpt', fallback: hit.excerpt },
-                [hit.tags && hit.tags[0], date(hit.published_at)],
+                ['blog', hit.tags && hit.tags[0], date(hit.published_at)],
                 hit.feature_image
             );
         },
@@ -299,6 +299,7 @@
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 { hit: hit, attribute: 'text', fallback: hit.text, prefix: hit.username ? '@' + hit.username + ': ' : '' },
                 [
+                    t(['comunidad', 'community']),
                     hit.category,
                     hit.reply_count ? hit.reply_count + ' ' + t(['respuestas', 'replies']) : '',
                     hit.like_count ? hit.like_count + ' ♥' : ''
@@ -316,7 +317,7 @@
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 // A meaning-only match has no highlight and would fall back to the whole page.
                 { hit: hit, attribute: 'text', fallback: String(hit.text || '').slice(0, 300) },
-                [hit.domain + ' ↗', date(hit.added)],
+                ['mushin', hit.domain + ' ↗', date(hit.added)],
                 hit.image,
                 true
             );
