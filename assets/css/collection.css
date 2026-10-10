@@ -27,9 +27,18 @@
 }
 
 @media screen and (max-width: 767px) {
+    /* Full bleed, with the gutter as padding on both ends, so the first and
+       last card sit the same distance from the screen edge. */
+    .gh-collection[data-place="top"] {
+        width: auto;
+        margin-inline: 0;
+    }
+
     .gh-collection.is-cards .gh-collection-list {
         /* .gh-carousel (carousel.css) is on the list; it only runs here. */
         display: grid;
+        padding: 0.4rem var(--gap) 1.2rem;
+        scroll-padding-inline: var(--gap);
     }
 }
 
