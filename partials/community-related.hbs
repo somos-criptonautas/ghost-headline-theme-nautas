@@ -1,0 +1,20 @@
+{{!-- Latest topics from the forum category that shares the post's primary tag
+    slug, as horizontal cards after the comments. Filled by
+    assets/js/community-sidebar.js from the forum's public JSON (same CORS
+    setup as the sidebar); it stays hidden until there is something to show,
+    so a tag with no matching category, or a forum that does not answer,
+    leaves no trace. --}}
+{{#primary_tag}}
+<section class="gh-community-related" aria-labelledby="gh-community-related-title" hidden
+    data-category="{{slug}}"
+    data-label-reply="{{t "reply"}}"
+    data-label-replies="{{t "replies"}}">
+    <h2 class="gh-community-related-title" id="gh-community-related-title">
+        {{> "icons/discourse"}}
+        {{t "Community"}}
+        <span class="gh-community-related-tag">#{{name}}</span>
+    </h2>
+    <ol class="gh-community-cards"></ol>
+    <a class="gh-community-more" target="_blank" rel="noopener">{{t "Go to the community"}} {{> "icons/phosphor/arrow-square-out"}}</a>
+</section>
+{{/primary_tag}}

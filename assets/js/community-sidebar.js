@@ -1,4 +1,6 @@
-/* Community sidebar (partials/community-sidebar.hbs). Ships inside main.min.js.
+/* Community sidebar (partials/community-sidebar.hbs) and the category cards
+ * after a post's comments (partials/community-related.hbs). Ships inside
+ * main.min.js.
  *
  * Reads the forum's public /latest.json (topics) or /posts.json (posts). Both
  * are anonymous endpoints, so only public content ever shows, and both need
@@ -16,16 +18,19 @@
     var SHOWN = 8;
     var TIMEOUT = 8000;
 
-    var aside = document.querySelector('.gh-community');
+    var RELATED = 4;
 
-    if (!aside || !window.fetch || !window.Promise) {
+    var aside = document.querySelector('.gh-community');
+    var related = document.querySelector('.gh-community-related');
+
+    if ((!aside && !related) || !window.fetch || !window.Promise) {
         return;
     }
 
-    var list = aside.querySelector('.gh-community-list');
-    var more = aside.querySelector('.gh-community-more');
-    var picker = aside.querySelector('.gh-community-select');
-    var message = aside.querySelector('.gh-community-message');
+    var list = aside && aside.querySelector('.gh-community-list');
+    var more = aside && aside.querySelector('.gh-community-more');
+    var picker = aside && aside.querySelector('.gh-community-select');
+    var message = aside && aside.querySelector('.gh-community-message');
     var STORE = 'gh-community-mode';
     var MODES = {topics: '/latest.json', posts: '/posts.json'};
 
@@ -35,12 +40,14 @@
     try {
         stored = window.localStorage.getItem(STORE);
     } catch (e) {}
-    var mode = MODES[stored] ? stored : (aside.getAttribute('data-mode') === 'posts' ? 'posts' : 'topics');
+    var mode = MODES[stored] ? stored : ((aside && aside.getAttribute('data-mode')) === 'posts' ? 'posts' : 'topics');
     var lang = document.documentElement.lang || undefined;
+    // Both partials carry the same translated labels; either will do.
+    var labelled = aside || related;
     var labels = {
-        one: aside.getAttribute('data-label-reply') || 'reply',
-        other: aside.getAttribute('data-label-replies') || 'replies',
-        where: aside.getAttribute('data-label-in') || 'in'
+        one: labelled.getAttribute('data-label-reply') || 'reply',
+        other: labelled.getAttribute('data-label-replies') || 'replies',
+        where: labelled.getAttribute('data-label-in') || 'in'
     };
 
     var getJSON = function (path) {
@@ -90,6 +97,16 @@
         }
     };
 
+    // A topic's thumbnail: an absolute https URL (the forum or its CDN), or none.
+    var image = function (value) {
+        try {
+            var url = new URL(String(value || ''), ORIGIN);
+            return value && url.protocol === 'https:' ? url.href : null;
+        } catch (e) {
+            return null;
+        }
+    };
+
     var plainText = function (html) {
         if (typeof html !== 'string' || !window.DOMParser) {
             return '';
@@ -126,6 +143,7 @@
                 var user = poster && users[poster.user_id];
                 return {
                     url: topicUrl(topic.slug, topic.id),
+                    image: image(topic.image_url),
                     title: String(topic.title || ''),
                     user: user ? String(user.username || '') : '',
                     avatar: user ? avatar(user.avatar_template) : null,
@@ -298,6 +316,82 @@
             }
         });
     };
+
+    // Post pages: a horizontal card per topic, the thumbnail (or the poster's
+    // avatar) beside the title, then who, when and how many replies.
+    var card = function (entry) {
+        var item = el('li', 'gh-community-card');
+        var link = el('a', 'gh-community-card-link');
+        link.href = entry.url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+
+        var media = el('span', 'gh-community-card-media' + (entry.image ? '' : ' is-avatar'));
+        media.setAttribute('aria-hidden', 'true');
+        var src = entry.image || entry.avatar;
+        if (src) {
+            var img = el('img');
+            img.src = src;
+            img.alt = '';
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            img.referrerPolicy = 'no-referrer';
+            media.appendChild(img);
+        } else {
+            media.textContent = (entry.user || '?').charAt(0).toUpperCase();
+        }
+        link.appendChild(media);
+
+        var body = el('span', 'gh-community-body');
+        body.appendChild(el('span', 'gh-community-name', entry.title));
+        var meta = el('span', 'gh-community-meta');
+        if (entry.user) {
+            meta.appendChild(el('span', null, entry.user));
+        }
+        if (entry.date) {
+            var time = el('time', null, ago(entry.date));
+            time.dateTime = entry.date.toISOString();
+            meta.appendChild(time);
+        }
+        if (entry.replies) {
+            var form = plurals && plurals.select(entry.replies) === 'one' ? labels.one : labels.other;
+            meta.appendChild(el('span', null, entry.replies + ' ' + form));
+        }
+        body.appendChild(meta);
+        link.appendChild(body);
+        item.appendChild(link);
+        return item;
+    };
+
+    // The forum category with the post's primary tag slug (tags and categories
+    // are kept in step). /c/<slug>/... redirects to the id-qualified path; the
+    // redirect carries the CORS headers too. No category, no topics or no
+    // answer: the section keeps `hidden`.
+    if (related) {
+        var category = related.getAttribute('data-category');
+        if (category && SLUG.test(category)) {
+            getJSON('/c/' + category + '/l/latest.json').then(function (body) {
+                var entries = topics(body)
+                    .filter(function (entry) {
+                        return entry.url && entry.title;
+                    })
+                    .slice(0, RELATED);
+                if (!entries.length) {
+                    return;
+                }
+                var cards = related.querySelector('.gh-community-cards');
+                entries.forEach(function (entry) {
+                    cards.appendChild(card(entry));
+                });
+                related.querySelector('.gh-community-more').href = ORIGIN + '/c/' + category;
+                related.hidden = false;
+            }, function () {});
+        }
+    }
+
+    if (!aside) {
+        return;
+    }
 
     picker.value = mode;
     picker.addEventListener('change', function () {
