@@ -37,9 +37,9 @@
                 </aside>
                 <section class="gh-content gh-canvas">
                     {{content}}
+                    {{> "reactions"}}
                 </section>
             </div>
-            {{> "reactions"}}
             {{> "post-share" end=true}}
             {{> "comments"}}
             {{>webmentions}}

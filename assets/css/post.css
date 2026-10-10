@@ -98,11 +98,11 @@
     }
 }
 
-/* Reactions (partials/reactions.hbs), centred under the article */
+/* Reactions (partials/reactions.hbs): the last thing in the article column,
+   centred on the text. */
 
-.gh-reactions {
-    max-width: min(var(--content-width, 720px), calc(100vw - 2 * var(--gap)));
-    margin: 4rem auto 0;
+.gh-content > .gh-reactions {
+    margin-top: 4rem;
 }
 
 .gh-reactions[hidden] {
