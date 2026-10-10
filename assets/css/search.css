@@ -214,6 +214,39 @@ html[data-theme="dark"] .ns {
     display: none;
 }
 
+/* What a pill searches: below it, on hover or focus (a tap focuses it on touch). */
+.ns__source {
+    position: relative;
+}
+
+.ns__source-hint {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    left: 0;
+    z-index: 2;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    white-space: nowrap;
+    color: var(--ns-bg);
+    background: var(--ns-text);
+    border-radius: 0.6rem;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s;
+}
+
+.ns__source:is(:hover, :focus) .ns__source-hint {
+    opacity: 1;
+    visibility: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ns__source-hint {
+        transition: none;
+    }
+}
+
 /* Hits */
 
 .ns__list {

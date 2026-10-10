@@ -38,9 +38,9 @@
      * the visitor turns them on - they are the only results that leave the
      * site - and a source without a collection configured is not offered. */
     var SOURCES = [
-        { key: 'posts', collection: cfg.postsCollection, label: ['blog', 'blog'], on: true, perPage: 8 },
-        { key: 'topics', collection: cfg.topicsCollection, label: ['comunidad', 'community'], on: true, perPage: 10 },
-        { key: 'mushin', collection: cfg.mushinCollection, label: ['mushin', 'mushin'], on: false, perPage: 8 }
+        { key: 'posts', collection: cfg.postsCollection, label: ['blog', 'blog'], hint: ['busca en los artículos publicados', 'searches published articles'], on: true, perPage: 8 },
+        { key: 'topics', collection: cfg.topicsCollection, label: ['comunidad', 'community'], hint: ['busca en nuestra comunidad', 'searches our community'], on: true, perPage: 10 },
+        { key: 'mushin', collection: cfg.mushinCollection, label: ['mushin', 'mushin'], hint: ['busca en enlaces seleccionados, fuera del sitio', 'searches curated links, off the site'], on: false, perPage: 8 }
     ].filter(function (source) {
         return source.collection;
     });
@@ -119,8 +119,12 @@
             b.type = 'button';
             b.className = 'ns__source';
             b.setAttribute('data-source', source.key);
-            b.innerHTML = '<span></span><span class="ns__source-count"></span>';
+            b.innerHTML = '<span></span><span class="ns__source-count"></span><span class="ns__source-hint" role="tooltip"></span>';
             b.firstChild.textContent = t(source.label);
+            // What the pill searches, shown on hover or focus (search.css).
+            b.lastChild.id = 'ns-hint-' + source.key;
+            b.lastChild.textContent = t(source.hint);
+            b.setAttribute('aria-describedby', b.lastChild.id);
             b.setAttribute('aria-pressed', String(source.on));
             b.addEventListener('click', function () {
                 toggle(source);
@@ -443,7 +447,7 @@
 
         SOURCES.forEach(function (source) {
             var r = results[source.key];
-            source.button.lastChild.textContent = source.on && lastQuery && r ? r.nbHits : '';
+            source.button.querySelector('.ns__source-count').textContent = source.on && lastQuery && r ? r.nbHits : '';
         });
 
         paint();

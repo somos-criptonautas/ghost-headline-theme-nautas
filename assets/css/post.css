@@ -98,6 +98,105 @@
     }
 }
 
+/* Reactions (partials/reactions.hbs), centred under the article */
+
+.gh-reactions {
+    max-width: min(var(--content-width, 720px), calc(100vw - 2 * var(--gap)));
+    margin: 4rem auto 0;
+}
+
+.gh-reactions[hidden] {
+    display: none;
+}
+
+.gh-reactions-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+}
+
+/* 3.9rem tall: a 44px tap target at the 71% root. */
+.gh-reaction {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 3.9rem;
+    height: 3.9rem;
+    padding: 0 1.2rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-base);
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.gh-reaction:hover {
+    transform: translateY(-1px);
+}
+
+.gh-reaction[aria-pressed="true"] {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+}
+
+.gh-reaction-count {
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.gh-reaction-count:empty {
+    display: none;
+}
+
+:is(.gh-reaction, .gh-reactions-close):focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}
+
+.gh-reactions-dialog {
+    max-width: min(36rem, calc(100vw - 3.2rem));
+    padding: 2.4rem;
+    border: 1px solid var(--color-border);
+    border-radius: 1.2rem;
+    background: var(--color-bg, #fff);
+    color: var(--color-base);
+    font-size: 1.6rem;
+    text-align: center;
+}
+
+.gh-reactions-dialog::backdrop {
+    background: rgb(0 0 0 / 0.5);
+}
+
+.gh-reactions-dialog p {
+    margin: 0 0 1.6rem;
+}
+
+.gh-reactions-close {
+    padding: 0.8rem 2rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gh-reaction {
+        transition: none;
+    }
+
+    .gh-reaction:hover {
+        transform: none;
+    }
+}
+
 /* Back to top */
 
 .gh-to-top {

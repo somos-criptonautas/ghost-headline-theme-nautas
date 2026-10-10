@@ -44,6 +44,7 @@
                     {{content}}
                 </section>
             </div>
+            {{> "reactions"}}
             {{> "post-share" end=true}}
             {{> "comments"}}
             {{#if primary_tag}}{{> "community-related" category=primary_tag.slug label=primary_tag.name}}{{/if}}
