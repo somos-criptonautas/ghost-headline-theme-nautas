@@ -4,8 +4,8 @@
  * The top nav holds the chapters in order and shows as cards on every page
  * of the series; on a chapter its own card is marked current. The hub (a
  * page not in that list) gets "next" into the first chapter at the end of
- * its text; a chapter gets previous / next - the hub before the first and
- * after the last. Each step carries its chapter's image, facing inward:
+ * its text; a chapter gets previous / next - the hub before the first -
+ * except the last, which ends the series. Each step carries its chapter's image, facing inward:
  * [← previous  title  image] [image  title  next →].
  */
 (function () {
@@ -105,7 +105,9 @@
 
     links[current].setAttribute('aria-current', 'page');
 
-    if (bottom) {
+    // The last chapter closes the series: its page carries the survey and
+    // comments as embeds, so no previous / next there.
+    if (bottom && current < links.length - 1) {
         bottom.appendChild(step(current - 1, 'prev'));
         bottom.appendChild(step(current + 1, 'next'));
         bottom.hidden = false;
