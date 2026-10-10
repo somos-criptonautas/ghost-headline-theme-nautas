@@ -2,15 +2,17 @@
     post of the article's forum topic, so the blog and the forum share one
     count. Filled by assets/js/reactions.js; hidden until the topic is found.
     Members signed in to the forum react from here; anyone else gets the
-    dialog. 👎 (-1) is left out on purpose: it drives a forum-only workflow. --}}
+    dialog. Same order as the forum's reactions; 🍄 (mushroom) is left out
+    on purpose, it stays forum-only. --}}
 <div class="gh-reactions" hidden data-embed-url="https://criptonautas.co{{url}}">
     <div class="gh-reactions-list" role="group" aria-label="{{t "Reactions"}}">
         <button class="gh-reaction" type="button" data-reaction="heart" aria-pressed="false"><span>❤️</span><span class="gh-reaction-count"></span></button>
-        <button class="gh-reaction" type="button" data-reaction="100" aria-pressed="false"><span>💯</span><span class="gh-reaction-count"></span></button>
-        <button class="gh-reaction" type="button" data-reaction="exploding_head" aria-pressed="false"><span>🤯</span><span class="gh-reaction-count"></span></button>
-        <button class="gh-reaction" type="button" data-reaction="rocket" aria-pressed="false"><span>🚀</span><span class="gh-reaction-count"></span></button>
+        <button class="gh-reaction" type="button" data-reaction="ok_hand" aria-pressed="false"><span>👌</span><span class="gh-reaction-count"></span></button>
         <button class="gh-reaction" type="button" data-reaction="joy" aria-pressed="false"><span>😂</span><span class="gh-reaction-count"></span></button>
         <button class="gh-reaction" type="button" data-reaction="smiling_face_with_tear" aria-pressed="false"><span>🥲</span><span class="gh-reaction-count"></span></button>
+        <button class="gh-reaction" type="button" data-reaction="rocket" aria-pressed="false"><span>🚀</span><span class="gh-reaction-count"></span></button>
+        <button class="gh-reaction" type="button" data-reaction="star_struck" aria-pressed="false"><span>🤩</span><span class="gh-reaction-count"></span></button>
+        <button class="gh-reaction" type="button" data-reaction="exploding_head" aria-pressed="false"><span>🤯</span><span class="gh-reaction-count"></span></button>
         <button class="gh-reaction" type="button" data-reaction="eyes" aria-pressed="false"><span>👀</span><span class="gh-reaction-count"></span></button>
     </div>
     <dialog class="gh-reactions-dialog" aria-labelledby="gh-reactions-dialog-text">
