@@ -1,0 +1,145 @@
+/* Page series
+/* partials/collection.hbs in custom-collection.hbs, laid out by
+/* assets/js/collection.js
+/* ---------------------------------------------------------- */
+
+.gh-collection-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Hub: the chapters as cards, before the hub's own text. */
+.gh-collection[data-place="top"] {
+    width: min(110rem, calc(100vw - 2 * var(--gap)));
+    margin: 4rem auto;
+}
+
+.gh-collection.is-hub .gh-collection-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
+}
+
+@media screen and (max-width: 991px) {
+    .gh-collection.is-hub .gh-collection-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media screen and (max-width: 599px) {
+    .gh-collection.is-hub .gh-collection-list {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.gh-collection-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+
+.gh-collection-image {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: 0.77rem;
+}
+
+.gh-collection-num {
+    color: var(--color-secondary-text);
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.gh-collection-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.gh-collection-excerpt {
+    color: var(--color-secondary-text);
+    font-size: 1.5rem;
+    line-height: 1.45;
+}
+
+.gh-collection-link:hover .gh-collection-title {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Previous / next: as wide as the article column plus a little, not the page. */
+.gh-collection[data-place="bottom"] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem;
+    width: min(calc(var(--content-width, 720px) + 12rem), calc(100vw - 2 * var(--gap)));
+    margin: 6rem auto 0;
+}
+
+.gh-collection[data-place="bottom"][hidden] {
+    display: none;
+}
+
+/* The chapter's image on the left of the card, its label and title beside it. */
+.gh-collection-pager {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    padding: 1.2rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.77rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.gh-collection-pager:hover {
+    border-color: var(--color-base);
+}
+
+.gh-collection-pager-image {
+    flex: none;
+    width: 9.6rem;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.gh-collection-pager-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+.gh-collection-pager-label {
+    color: var(--color-secondary-text);
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.gh-collection-pager-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+/* The hub has only "next": it keeps the right-hand column. */
+.gh-collection-pager--next:only-child {
+    grid-column: 2;
+}
+
+@media screen and (max-width: 599px) {
+    .gh-collection[data-place="bottom"] {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .gh-collection-pager--next:only-child {
+        grid-column: auto;
+    }
+}

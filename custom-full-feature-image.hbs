@@ -44,11 +44,9 @@
             {{>webmentions}}
             {{#if primary_tag}}{{> "community-related" category=primary_tag.slug label=primary_tag.name}}{{/if}}
             {{else}}
-            {{#has tag="journey"}}{{> "journey" place="top"}}{{/has}}
             <section class="gh-content gh-canvas">
                 {{content}}
             </section>
-            {{#has tag="journey"}}{{> "journey" place="bottom"}}{{/has}}
             {{/is}}
         </article>
         {{/post}}

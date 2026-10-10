@@ -1,0 +1,32 @@
+{{!-- A page series (custom-collection.hbs). The collection is the page's
+    primary tag: its hub is the page whose slug is the tag's slug, its
+    chapters the other pages with that tag, ordered by slug (name-1, name-2,
+    ...). Rendered as a plain list of chapters; assets/js/collection.js shows
+    it as cards on the hub, keeps it hidden on a chapter, and fills
+    place="bottom" with previous / next.
+    shortcut: slug order is text order, so name-10 would sort before name-2;
+    switch to a custom order field if a series passes nine. --}}
+<nav class="gh-collection" data-place="{{place}}" aria-label="{{label}}" hidden
+    data-hub="{{@site.url}}/{{tag}}/"
+    data-label-hub="{{label}}"
+    data-label-previous="{{t "Previous"}}"
+    data-label-next="{{t "Next"}}">
+    {{#match place "top"}}
+    <ol class="gh-collection-list">
+        {{#get "pages" filter="tag:{{tag}}+slug:-{{tag}}" order="slug asc" limit="20"}}
+        {{#foreach pages}}
+        <li class="gh-collection-step">
+            <a class="gh-collection-link" href="{{url}}">
+                {{#if feature_image}}
+                <img class="gh-collection-image" src="{{img_url feature_image size="s"}}" alt="" loading="lazy" decoding="async">
+                {{/if}}
+                <span class="gh-collection-num">{{@number}}</span>
+                <span class="gh-collection-title">{{title}}</span>
+                {{#if custom_excerpt}}<span class="gh-collection-excerpt">{{custom_excerpt}}</span>{{/if}}
+            </a>
+        </li>
+        {{/foreach}}
+        {{/get}}
+    </ol>
+    {{/match}}
+</nav>

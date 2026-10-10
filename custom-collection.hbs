@@ -1,0 +1,46 @@
+{{!< default}}
+{{!-- Collection: a page in a series (pick "Collection" in the page's
+    settings). The series is the page's primary tag - see
+    partials/collection.hbs for the hub and chapter conventions. Full-width
+    cover, the TOC column posts have, then previous / next. --}}
+{{#post}}
+<section class="gh-cover gh-outer">
+    {{#if feature_image}}
+    <img class="gh-cover-image gh-feature-image" loading="lazy" srcset="{{img_url feature_image size="s" format="webp"}} 300w,
+        {{img_url feature_image size="m" format="webp"}} 720w,
+        {{img_url feature_image size="l" format="webp"}} 960w,
+        {{img_url feature_image size="xl" format="webp"}} 1200w,
+        {{img_url feature_image size="xxl" format="webp"}} 2000w"
+        sizes="100vw" src="{{img_url feature_image size="xl" format="webp"}}" alt="{{title}}">
+    {{/if}}
+    <div class="gh-cover-content">
+        {{> "breadcrumb"}}
+        <h1 class="gh-cover-title">{{title}}</h1>
+        {{#if custom_excerpt}}
+        <p class="gh-article-excerpt">{{custom_excerpt}}</p>
+        {{/if}}
+    </div>
+</section>
+
+<main class="gh-main">
+    <article class="gh-article {{post_class}}">
+        {{#if primary_tag}}{{> "collection" place="top" tag=primary_tag.slug label=primary_tag.name}}{{/if}}
+        <div class="gh-full-content">
+            <aside class="gh-sidebar" id="sidebar-toc">
+                {{#if reading_time}}
+                <h3>
+                    {{reading_time minute="1 min de lectura" minutes="% mins de lectura"}}
+                </h3>
+                {{/if}}
+                <div class="toc">
+                </div>
+            </aside>
+            <section class="gh-content gh-canvas">
+                {{content}}
+            </section>
+        </div>
+        {{#if primary_tag}}{{> "collection" place="bottom" tag=primary_tag.slug label=primary_tag.name}}{{/if}}
+    </article>
+</main>
+{{/post}}
+{{#contentFor "body_class"}} has-full-image{{/contentFor}}
