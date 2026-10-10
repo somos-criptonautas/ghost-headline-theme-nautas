@@ -3410,6 +3410,19 @@ html[data-theme="dark"] .kg-toggle-card {
     min-width: 0;
     max-height: calc(100vh - 4.5rem);
     padding-right: 1.77rem;
+    /* A long TOC scrolls inside the column instead of spilling out of it,
+       so the column leaves with the article and never covers the comments. */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .gh-sidebar > * {
+    flex: none;
+  }
+
+  .gh-sidebar .toc {
+    flex: 0 1 auto;
+    min-height: 0;
   }
 }
 

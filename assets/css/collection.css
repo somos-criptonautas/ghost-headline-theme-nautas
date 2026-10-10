@@ -13,7 +13,8 @@
    with a hard shadow, the numeral on top, the art in an inner frame, the title
    and its arcana below. Four across from 768px; below, a carousel. */
 .gh-collection[data-place="top"] {
-    width: min(110rem, calc(100vw - 2 * var(--gap)));
+    /* 100%, not 100vw: with a classic scrollbar (Firefox desktop) 100vw is wider than the page. */
+    width: min(110rem, calc(100% - 2 * var(--gap)));
     margin: 4rem auto;
 }
 
@@ -92,7 +93,7 @@
 /* The art in its own thin frame, as on a printed card. */
 .gh-collection-image {
     width: 100%;
-    aspect-ratio: 2 / 3;
+    aspect-ratio: 3 / 4;
     object-fit: cover;
     border: 1px solid var(--color-base);
     border-radius: 0.3rem;
