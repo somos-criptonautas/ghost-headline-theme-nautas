@@ -3102,7 +3102,7 @@ blockquote.twitter-tweet {
 }
 
 .gh-main {
-  padding-block: 5rem 3rem;
+  padding-block: 5rem 6rem;
 }
 
 @media screen and (max-width: 767px) {
@@ -5460,7 +5460,7 @@ html.js .gh-loadmore {
 @media screen and (max-width: 767px) {
   /* Phone padding */
   .gh-main {
-    padding-block: 2.5rem;
+    padding-block: 2.5rem 5rem;
   }
 
   /* Phone side margin */
