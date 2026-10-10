@@ -75,7 +75,6 @@
     var names = section.querySelector('.gh-videos-names');
     var loading = section.querySelector('.gh-videos-loading');
     var loadButton = section.querySelector('.gh-videos-load');
-    var more = section.querySelector('.gh-videos-more');
     var tabs = Array.prototype.slice.call(section.querySelectorAll('.gh-videos-tab'));
     var labelPlay = section.getAttribute('data-label-play') || 'Play';
     var labelLive = section.getAttribute('data-label-live') || 'Live';
@@ -511,17 +510,11 @@
     var batches = 0;
     var watcher = null;
 
-    // PeerTube's own browse page for the category, or the instance.
-    var moreUrl = function (category) {
-        return source.origin + (category ? '/videos/browse?categoryOneOf=' + encodeURIComponent(category) : '/');
-    };
-
     // The button only once the automatic batches are used up (or when the
     // browser cannot watch the scroll position); never with nothing left.
     var sync = function (feed) {
         var auto = !!watcher && batches < AUTO_BATCHES;
         loadButton.hidden = feed.done() || auto;
-        more.href = moreUrl(state.category);
     };
 
     var load = function (feed, ticket) {
