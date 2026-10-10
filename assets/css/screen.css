@@ -5514,3 +5514,102 @@ html.js .gh-loadmore {
     --cover-height: 80svh;
   }
 }
+
+/* Desktop header (default.hbs): search, then the menu and theme toggle on the right.
+   Ghost's nav dropdown (shared-theme-assets) folds links into "..." while the nav is
+   not 64px narrower than .gh-head-menu, so the menu carries that slack as padding. */
+.gh-head-search {
+  display: none;
+}
+
+@media screen and (max-width: 991px) {
+  .gh-head-end {
+    display: contents;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  #gh-head .gh-head-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 3.2rem;
+    align-items: center;
+  }
+
+  /* Up to 1439px the logo is hidden (below), so the search takes its place. */
+  #gh-head .gh-head-brand {
+    display: none;
+  }
+
+  #gh-head .gh-head-search {
+    display: block;
+    grid-row: 1;
+    grid-column: 1;
+    width: min(100%, 34rem);
+  }
+
+  #gh-head .gh-head-search .gh-search-bar {
+    width: 100%;
+    margin: 0;
+  }
+
+  #gh-head .gh-head-end {
+    grid-row: 1;
+    grid-column: 2;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+  }
+
+  #gh-head .gh-head-menu {
+    height: auto;
+    margin: 0;
+    padding-left: 64px;
+    flex-direction: row;
+  }
+
+  #gh-head .gh-head-menu .nav {
+    gap: 2rem;
+  }
+
+  #gh-head .gh-head-menu .nav li {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* The theme toggle closes the row: icon-sized, after a hairline. */
+  #gh-head .gh-head-actions {
+    display: flex;
+    height: auto;
+    margin-left: 1.6rem;
+    padding-left: 1.6rem;
+    border-left: 1px solid var(--color-border);
+  }
+
+  #gh-head .gh-head-actions .it-dark-light {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+/* From 1440px the logo, centred search and right-hand group all fit. */
+@media screen and (min-width: 1440px) {
+  #gh-head .gh-head-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(24rem, 34rem) minmax(0, 1fr);
+  }
+
+  #gh-head .gh-head-brand {
+    display: flex;
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  #gh-head .gh-head-search {
+    grid-column: 2;
+    width: 100%;
+  }
+
+  #gh-head .gh-head-end {
+    grid-column: 3;
+  }
+}

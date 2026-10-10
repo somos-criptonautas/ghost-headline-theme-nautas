@@ -115,34 +115,34 @@
                     </button>
                     <button id="gh-burger" class="gh-burger" aria-label="{{t "Toggle menu"}}"></button>
                 </div>
-                <nav class="gh-head-menu">
-                    {{navigation}}
-                </nav>
-                <div class="gh-head-actions">
-                    <div class="actions-container">
-                        {{#unless @member}}
-                        <a aria-label="signup-button" title="start here" class="gh-head-btn gh-btn shadow"
-                            href="{{@site.url}}/start">{{ t "Subscribe" }}</a>
-                        {{else}}
-                        <a aria-label="signin-button" title="your profile" class="gh-head-btn gh-btn shadow d-none"
-                            href="{{@site.url}}/nauta">{{ t "Account" }}</a>
-                        {{/unless}}
-                        <div class="nav-icons">
-                            {{!-- Desktop: a bar, like Discourse Horizon's, that opens the
-                                search modal. The shortcut hint is set by assets/js/head.js. --}}
-                            <button type="button" class="gh-search gh-search-bar" data-ghost-search aria-label="{{t "Search this site"}}">
-                                {{> "icons/search"}}
-                                <span class="gh-search-bar-label">{{t "Search"}}</span>
-                                <kbd class="gh-search-bar-key" hidden></kbd>
-                            </button>
-                            <button type="button" class="it-dark-light gh-icon-btn" aria-label="{{t "Toggle theme"}}">
-                                <div class="icon-dark">
-                                    {{> icons/light}}
-                                </div>
-                                <div class="icon-light">
-                                    {{> icons/dark}}
-                                </div>
-                            </button>
+                {{!-- Desktop: a bar, like Discourse Horizon's, that opens the search
+                    modal; centred from 1440px, where the logo shows (search.css). The
+                    shortcut hint is set by assets/js/head.js. --}}
+                <div class="gh-head-search">
+                    <button type="button" class="gh-search gh-search-bar" data-ghost-search aria-label="{{t "Search this site"}}">
+                        {{> "icons/search"}}
+                        <span class="gh-search-bar-label">{{t "Search"}}</span>
+                        <kbd class="gh-search-bar-key" hidden></kbd>
+                    </button>
+                </div>
+                {{!-- Menu and theme toggle share the right-hand column on desktop; below
+                    992px this wrapper steps aside (display: contents) for the mobile sheet. --}}
+                <div class="gh-head-end">
+                    <nav class="gh-head-menu">
+                        {{navigation}}
+                    </nav>
+                    <div class="gh-head-actions">
+                        <div class="actions-container">
+                            <div class="nav-icons">
+                                <button type="button" class="it-dark-light gh-icon-btn" aria-label="{{t "Toggle theme"}}">
+                                    <div class="icon-dark">
+                                        {{> icons/light}}
+                                    </div>
+                                    <div class="icon-light">
+                                        {{> icons/dark}}
+                                    </div>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
