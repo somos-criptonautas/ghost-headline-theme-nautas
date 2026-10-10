@@ -3065,6 +3065,9 @@ body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {
 .comments-section {
   max-width: min(var(--content-width), calc(100vw - 2 * var(--gap)));
   margin-inline: auto;
+  /* "Go to comments" (#comments) lands on the heading, clear of the fixed
+     phone bar; desktop keeps a little air above it. */
+  scroll-margin-top: calc(var(--head-bar-height, 0px) + 2.4rem);
 }
 
 /* Discourse comments iframe */
