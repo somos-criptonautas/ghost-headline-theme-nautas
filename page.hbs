@@ -34,9 +34,11 @@
         </header>
         {{/match}}
         
+        {{#has tag="journey"}}{{> "journey" place="top"}}{{/has}}
         <section class="gh-content gh-canvas">
             {{content}}
         </section>
+        {{#has tag="journey"}}{{> "journey" place="bottom"}}{{/has}}
 
     </article>
 </main>

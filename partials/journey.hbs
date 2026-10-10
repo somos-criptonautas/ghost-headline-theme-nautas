@@ -1,0 +1,35 @@
+{{!-- Journey: the hub page (slug journey) and its chapters (pages tagged
+    journey, ordered by slug: journey-1, journey-2, ...). Rendered as a plain
+    list of chapters; assets/js/journey.js turns it into the four cards and a
+    start link on the hub, or a "chapter N of M" stepper on a chapter, and
+    fills place="bottom" with previous / next.
+    shortcut: slug order is text order, so journey-10 would sort before
+    journey-2; switch to a custom order field if the series passes nine. --}}
+<nav class="gh-journey" data-place="{{place}}" aria-label="Journey" hidden
+    data-hub="{{@site.url}}/journey/"
+    data-label-chapter="{{t "Chapter"}}"
+    data-label-of="{{t "of"}}"
+    data-label-previous="{{t "Previous"}}"
+    data-label-next="{{t "Next"}}"
+    data-label-hub="{{t "Back to the journey"}}">
+    {{#match place "top"}}
+    <p class="gh-journey-counter"></p>
+    <ol class="gh-journey-list">
+        {{#get "pages" filter="tag:journey+slug:-journey" order="slug asc" limit="20"}}
+        {{#foreach pages}}
+        <li class="gh-journey-step">
+            <a class="gh-journey-link" href="{{url}}">
+                {{#if feature_image}}
+                <img class="gh-journey-image" src="{{img_url feature_image size="s"}}" alt="" loading="lazy" decoding="async">
+                {{/if}}
+                <span class="gh-journey-num">{{@number}}</span>
+                <span class="gh-journey-title">{{title}}</span>
+                {{#if custom_excerpt}}<span class="gh-journey-excerpt">{{custom_excerpt}}</span>{{/if}}
+            </a>
+        </li>
+        {{/foreach}}
+        {{/get}}
+    </ol>
+    <a class="gh-journey-start" hidden>{{t "Start"}} {{> "icons/arrow"}}</a>
+    {{/match}}
+</nav>
