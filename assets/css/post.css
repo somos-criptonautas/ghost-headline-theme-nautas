@@ -8,15 +8,6 @@
     margin-top: 3.2rem;
 }
 
-.gh-share-label {
-    margin: 0 0 0.8rem;
-    color: var(--color-secondary-text);
-    font-size: 1.4rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-}
-
 .gh-share-links {
     display: flex;
     flex-wrap: wrap;
@@ -72,6 +63,24 @@
     display: none;
 }
 
+/* No headings to list: the column goes at every width (assets/js/toc.js). */
+.gh-sidebar.is-toc-empty {
+    display: none;
+}
+
+/* The share links sit at the end of the article below 992px, and at every
+   width when there is no column to hold them. */
+.has-no-toc .gh-share-end {
+    display: block;
+    max-width: min(var(--content-width, 720px), calc(100vw - 2 * var(--gap)));
+    margin: 4rem auto 0;
+    text-align: center;
+}
+
+.has-no-toc .gh-share-end .gh-share-links {
+    justify-content: center;
+}
+
 @media screen and (max-width: 991px) {
     .gh-sidebar .gh-share {
         display: none;
@@ -86,12 +95,6 @@
 
     .gh-share-end .gh-share-links {
         justify-content: center;
-    }
-
-    /* Below 992px the column is a box above the article: with no list it
-       would hold only the reading time, so it goes. */
-    .gh-sidebar.is-toc-empty {
-        display: none;
     }
 }
 

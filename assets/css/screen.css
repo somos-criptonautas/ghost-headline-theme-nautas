@@ -780,16 +780,6 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   background-color: transparent;
 }
 
-/* The transparent header is absolutely positioned at the top of the page, so
-   a top margin here moves the image down and leaves the header its own room.
-   Desktop only - the phone header is a solid fixed bar, not an overlay. */
-@media screen and (min-width: 992px) {
-  .post-template .gh-cover,
-  .page-template .gh-cover {
-    margin-top: 10rem;
-  }
-}
-
 .post-template .gh-cover::before,
 .page-template .gh-cover::before {
   position: absolute;
@@ -5529,11 +5519,13 @@ html.js .gh-loadmore {
 }
 
 @media screen and (min-width: 992px) {
+  /* 0.5rem more air above than the theme's 1.63rem: the logo sat against the top. */
   #gh-head .gh-head-inner {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 3.2rem;
     align-items: center;
+    padding-top: 2.13rem;
   }
 
   /* Up to 1439px the logo is hidden (below), so the search takes its place. */
@@ -5592,16 +5584,24 @@ html.js .gh-loadmore {
   }
 }
 
-/* From 1440px the logo, centred search and right-hand group all fit. */
+/* From 1440px the logo, centred search and right-hand group all fit. The right
+   column never goes narrower than its links (max-content): when space runs short
+   the search gives way - down to 20rem - instead of sliding under the first link. */
 @media screen and (min-width: 1440px) {
   #gh-head .gh-head-inner {
-    grid-template-columns: minmax(0, 1fr) minmax(24rem, 34rem) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 30rem) minmax(max-content, 1fr);
   }
 
   #gh-head .gh-head-brand {
     display: flex;
     grid-row: 1;
     grid-column: 1;
+  }
+
+  /* About 85% of the theme's size, to leave the four links their room. */
+  #gh-head .gh-head-logo img {
+    max-height: 5.4rem;
+    width: auto;
   }
 
   #gh-head .gh-head-search {

@@ -4,10 +4,9 @@
  * Moved out of an inline <script> in site-scripts.hbs: the site's CSP pins
  * inline scripts by hash, so editing one silently stops it running.
  *
- * With fewer than 3 headings there is nothing to navigate: the list hides.
- * The column itself stays on desktop for the reading time and share links;
- * below 992px, where it is a box above the article, it goes entirely (the
- * share links repeat at the end of the article there).
+ * With fewer than 3 headings there is nothing to navigate, so the whole
+ * column goes at every width, and the share links show at the end of the
+ * article instead (.is-toc-empty / .has-no-toc in post.css).
  */
 (function () {
     var sidebar = document.getElementById('sidebar-toc');
@@ -20,8 +19,8 @@
     var headings = document.querySelectorAll('.gh-content.gh-canvas h1, .gh-content.gh-canvas h2');
 
     if (headings.length < 3) {
-        toc.hidden = true;
         sidebar.classList.add('is-toc-empty');
+        document.body.classList.add('has-no-toc');
         return;
     }
 
