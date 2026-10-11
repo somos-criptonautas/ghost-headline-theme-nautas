@@ -738,6 +738,9 @@
                     group_by: 'topic_id',
                     group_limit: 1
                 };
+                if (cfg.topicsByLocale) {
+                    params[cfg.topicsCollection].filter_by = 'locale:=' + (document.documentElement.lang || 'es').slice(0, 2);
+                }
                 if (cfg.mushinCollection) {
                     params[cfg.mushinCollection] = {
                         query_by: 'title,text',
