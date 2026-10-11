@@ -151,7 +151,7 @@ html[data-theme="dark"] .ns {
 [data-source="mushin"] { --ns-src: var(--ns-src-mushin); --ns-src-shape: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
 
 .ns__source::before,
-.ns__hit[data-source] .ns__meta::before {
+.ns__pill::before {
     content: "";
     display: inline-block;
     flex: 0 0 auto;
@@ -161,9 +161,30 @@ html[data-theme="dark"] .ns {
     clip-path: var(--ns-src-shape);
 }
 
-.ns__hit[data-source] .ns__meta::before {
-    margin-right: 0.6rem;
-    vertical-align: 0.05em;
+/* A row's source, filled with its colour; marker and text are knocked out of
+   it - white on the dark light-theme colours, the page background on the
+   pale dark-theme ones. */
+.ns__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-right: 0.8rem;
+    padding: 0.1rem 0.8rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #fff;
+    background: var(--ns-src);
+    border-radius: 999px;
+}
+
+html[data-theme="dark"] .ns__pill {
+    color: var(--ns-bg);
+}
+
+.ns__pill::before {
+    width: 0.8rem;
+    height: 0.8rem;
+    background: currentColor;
 }
 
 .ns__sources {
@@ -188,21 +209,12 @@ html[data-theme="dark"] .ns {
     cursor: pointer;
 }
 
-/* Pressed is filled with the source's colour, the marker and text knocked
-   out of it: white on the dark light-theme colours, the page background on
-   the pale dark-theme ones. */
+/* Pressed is outlined rather than filled: a dark fill hid the marker. */
 .ns__source[aria-pressed="true"] {
-    color: #fff;
-    background: var(--ns-src);
-    border-color: var(--ns-src);
-}
-
-html[data-theme="dark"] .ns__source[aria-pressed="true"] {
-    color: var(--ns-bg);
-}
-
-.ns__source[aria-pressed="true"]::before {
-    background: currentColor;
+    color: var(--ns-text);
+    background: var(--ns-bg-alt);
+    border-color: var(--ns-text);
+    box-shadow: inset 0 0 0 1px var(--ns-text);
 }
 
 .ns__source[aria-pressed="false"]::before {

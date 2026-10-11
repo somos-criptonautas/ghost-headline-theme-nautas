@@ -260,7 +260,13 @@
             body.appendChild(marked(p, snippet.hit, snippet.attribute, snippet.fallback));
         }
 
-        body.appendChild(meta(metaLine));
+        // The source (the line's first part) leads it as a pill in its colour.
+        var line = meta(metaLine.slice(1));
+        var pill = document.createElement('span');
+        pill.className = 'ns__pill';
+        pill.textContent = metaLine[0];
+        line.insertBefore(pill, line.firstChild);
+        body.appendChild(line);
         a.appendChild(body);
         return a;
     };
