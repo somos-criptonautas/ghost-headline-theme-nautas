@@ -5,7 +5,7 @@
 .gh-carousel {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 72%;
+    grid-auto-columns: 48%;
     gap: 1.6rem;
     overflow-x: auto;
     overscroll-behavior-x: contain;

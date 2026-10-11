@@ -11,7 +11,18 @@
 .gh-share-links {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.4rem;
+}
+
+/* Beside the icons at the end of the article, set like "ver comentarios". */
+.gh-share-label {
+    margin-right: 0.8rem;
+    color: var(--color-base);
+    opacity: 0.63;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
 /* 3.9rem is a 44px tap target at the 71% root. */

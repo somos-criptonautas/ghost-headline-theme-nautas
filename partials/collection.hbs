@@ -31,7 +31,7 @@
     {{!-- The hub's image, for the step back to it from the first chapter. --}}
     {{#get "pages" filter="slug:{{tag}}" limit="1"}}
     {{#foreach pages}}
-    {{#if feature_image}}<img class="gh-collection-hub-image" src="{{img_url feature_image size="s"}}" alt="" hidden>{{/if}}
+    {{#if feature_image}}<template class="gh-collection-hub-image"><img src="{{img_url feature_image size="s"}}" alt=""></template>{{/if}}
     {{/foreach}}
     {{/get}}
     {{/match}}

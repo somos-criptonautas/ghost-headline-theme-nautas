@@ -4,8 +4,9 @@
     end of the article (end=true), where the column is not a sidebar.
     comments=true adds a jump to the forum thread for templates that have one. --}}
 <div class="gh-share{{#if end}} gh-share-end{{/if}}">
-    {{!-- No visible "Share" label: the icons say it; screen readers get it here. --}}
+    {{!-- Screen readers get "Share" from the group; the end copy also shows it. --}}
     <div class="gh-share-links" role="group" aria-label="{{t "Share"}}">
+        {{#if end}}<span class="gh-share-label" aria-hidden="true">{{t "Share"}}</span>{{/if}}
         <a class="gh-share-link" href="https://wa.me/?text={{encode title}}%20{{encode (url absolute="true")}}" target="_blank" rel="noopener" aria-label="{{t "Share on WhatsApp"}}">{{> "icons/phosphor/whatsapp"}}</a>
         <a class="gh-share-link" href="https://www.reddit.com/submit?url={{encode (url absolute="true")}}&amp;title={{encode title}}" target="_blank" rel="noopener" aria-label="{{t "Share on Reddit"}}">{{> "icons/phosphor/reddit"}}</a>
         <a class="gh-share-link" href="https://twitter.com/intent/tweet?text={{encode title}}&amp;url={{encode (url absolute="true")}}" target="_blank" rel="noopener" aria-label="{{t "Share on Twitter"}}">{{> "icons/phosphor/twitter"}}</a>

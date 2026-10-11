@@ -58,7 +58,8 @@
         var inSeries = index >= 0 && index < links.length;
         a.href = inSeries ? links[index].href : hub;
 
-        var image = inSeries ? links[index].querySelector('.gh-collection-image') : top.querySelector('.gh-collection-hub-image');
+        var hubImage = top.querySelector('.gh-collection-hub-image');
+        var image = inSeries ? links[index].querySelector('.gh-collection-image') : hubImage && hubImage.content.querySelector('img');
         if (image) {
             var thumb = document.createElement('img');
             thumb.className = 'gh-collection-pager-image';
