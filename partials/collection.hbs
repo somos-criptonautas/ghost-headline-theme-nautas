@@ -2,7 +2,7 @@
     primary tag: its hub is the page whose slug is the tag's slug, its
     chapters the other pages with that tag, ordered by slug (name-1, name-2,
     ...). Rendered as a plain list of chapters; assets/js/collection.js shows
-    it as cards on the hub, keeps it hidden on a chapter, and fills
+    it as cards on every page of the series, and fills
     place="bottom" with previous / next.
     shortcut: slug order is text order, so name-10 would sort before name-2;
     switch to a custom order field if a series passes nine. --}}
@@ -28,5 +28,11 @@
         {{/foreach}}
         {{/get}}
     </ol>
+    {{!-- The hub's image, for the step back to it from the first chapter. --}}
+    {{#get "pages" filter="slug:{{tag}}" limit="1"}}
+    {{#foreach pages}}
+    {{#if feature_image}}<img class="gh-collection-hub-image" src="{{img_url feature_image size="s"}}" alt="" hidden>{{/if}}
+    {{/foreach}}
+    {{/get}}
     {{/match}}
 </nav>
