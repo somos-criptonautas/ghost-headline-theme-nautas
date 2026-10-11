@@ -28,6 +28,7 @@
     var ICON_SEARCH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>';
     var ICON_POST = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h9l5 5v13H5z"></path><path d="M14 3v5h5"></path><path d="M8 13h8M8 17h5"></path></svg>';
     var ICON_TOPIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"></path></svg>';
+    var ICON_OUT = '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M184,80V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H176A8,8,0,0,1,184,80Z" opacity="0.2"/><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"/></svg>';
     var ICON_LINK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"></path><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"></path></svg>';
 
     var t = function (es) {
@@ -287,11 +288,84 @@
     };
 
     /* Reader: a community result opens here, inside the modal, rather than
-     * sending the visitor to the forum. Leaving the site is a separate,
-     * announced step - the link at the end opens a new tab and says so. The
-     * text is the post as indexed (plain text), not the live thread. */
+     * sending the visitor to the forum. Leaving the site is a separate step -
+     * the link at the end, marked as external. The indexed text comes first
+     * (plain, one line); the forum's own HTML of the post replaces it when it
+     * arrives, for paragraphs, lists and emoji. */
     var reader = null;
     var readerScroll = 0;
+    var FORUM = 'https://comunidad.criptonautas.co';
+
+    /* A forum post is user input: only these tags are rebuilt, with no
+     * attributes but a link's href and an emoji's src/alt. Anything else is
+     * dropped (DROP) or replaced by its children. DOMParser never runs what it parses. */
+    var KEEP = /^(P|BR|HR|UL|OL|LI|BLOCKQUOTE|STRONG|B|EM|I|S|CODE|PRE|H[1-6]|TABLE|THEAD|TBODY|TR|TH|TD|DETAILS|SUMMARY)$/;
+    var DROP = /^(SCRIPT|STYLE|SVG|IFRAME|VIDEO|AUDIO|INPUT|BUTTON|FORM|NOSCRIPT)$/;
+    var clean = function (from, to) {
+        Array.prototype.forEach.call(from.childNodes, function (node) {
+            if (node.nodeType === 3) {
+                to.appendChild(document.createTextNode(node.nodeValue));
+                return;
+            }
+            if (node.nodeType !== 1 || DROP.test(node.tagName)) {
+                return;
+            }
+            var url = function (value) {
+                try {
+                    var u = new URL(value, FORUM);
+                    return /^https?:$/.test(u.protocol) ? u.href : '';
+                } catch (e) {
+                    return '';
+                }
+            };
+            var out = null;
+            if (node.tagName === 'IMG') {
+                // Emoji only: uploads and avatars would need their own layout.
+                if (node.classList.contains('emoji') && url(node.getAttribute('src'))) {
+                    out = document.createElement('img');
+                    out.className = 'ns__emoji';
+                    out.src = url(node.getAttribute('src'));
+                    out.alt = node.getAttribute('alt') || '';
+                    to.appendChild(out);
+                }
+                return;
+            }
+            // A link preview becomes its link.
+            if (node.tagName === 'ASIDE') {
+                var src = url(node.getAttribute('data-onebox-src') || '');
+                if (src) {
+                    var p = document.createElement('p');
+                    var a = document.createElement('a');
+                    a.href = a.textContent = src;
+                    a.target = '_blank';
+                    a.rel = 'noopener';
+                    p.appendChild(a);
+                    to.appendChild(p);
+                }
+                return;
+            }
+            if (node.tagName === 'A') {
+                // Heading anchors are empty; image lightboxes carry only a file name.
+                if (node.classList.contains('anchor') || node.classList.contains('lightbox')) {
+                    return;
+                }
+                out = document.createElement('a');
+                var href = url(node.getAttribute('href') || '');
+                if (href) {
+                    out.href = href;
+                    out.target = '_blank';
+                    out.rel = 'noopener';
+                }
+            } else if (KEEP.test(node.tagName)) {
+                out = document.createElement(node.tagName);
+            }
+            clean(node, out || to);
+            if (out) {
+                to.appendChild(out);
+            }
+        });
+        return to;
+    };
 
     var openReader = function (hit, row) {
         closeReader();
@@ -325,17 +399,45 @@
         text.textContent = String(hit.text || '');
         reader.appendChild(text);
 
+        // The forum sends CORS headers for the site; any failure keeps the indexed text.
+        var shown = reader;
+        if (/^\d+$/.test(String(hit.id)) && window.fetch && window.DOMParser) {
+            fetch(FORUM + '/posts/' + hit.id + '.json', { credentials: 'omit', headers: { Accept: 'application/json' } })
+                .then(function (response) {
+                    return response.ok ? response.json() : null;
+                })
+                .then(function (post) {
+                    if (!post || !post.cooked || reader !== shown) {
+                        return;
+                    }
+                    var rich = clean(new DOMParser().parseFromString(post.cooked, 'text/html').body, document.createElement('div'));
+                    if (rich.textContent.trim()) {
+                        rich.className = 'ns__reader-text is-rich';
+                        text.replaceWith(rich);
+                    }
+                })
+                .catch(function () {});
+        }
+
+        // The end of the post: back to the list, or on to the forum.
+        var foot = document.createElement('div');
+        foot.className = 'ns__reader-foot';
+        var again = back.cloneNode(true);
+        again.addEventListener('click', function () {
+            closeReader(row);
+        });
+        foot.appendChild(again);
+
         var out = document.createElement('a');
         out.className = 'ns__reader-out';
         out.href = hit.url;
         out.target = '_blank';
         out.rel = 'noopener';
-        out.textContent = t(['ver en la comunidad ↗', 'view in the community ↗']);
-        var note = document.createElement('span');
-        note.className = 'ns__reader-note';
-        note.textContent = t(['se abre en una pestaña nueva', 'opens in a new tab']);
-        out.appendChild(note);
-        reader.appendChild(out);
+        out.textContent = t(['ver en la comunidad', 'view in the community']);
+        out.insertAdjacentHTML('beforeend', ICON_OUT);
+        out.setAttribute('aria-label', t(['ver en la comunidad (se abre en una pestaña nueva)', 'view in the community (opens in a new tab)']));
+        foot.appendChild(out);
+        reader.appendChild(foot);
 
         panes.list.hidden = true;
         panes.state.hidden = true;
