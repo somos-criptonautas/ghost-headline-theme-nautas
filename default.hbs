@@ -151,6 +151,16 @@
                             </div>
                         </div>
                     </div>
+                    {{!-- The footer's links, in the open menu below 992px, so they
+                        are reachable without scrolling to the end. Hidden above. --}}
+                    <div class="gh-head-more">
+                        {{navigation type="secondary"}}
+                        <div class="it-foot-social">
+                            <a href="https://comunidad.criptonautas.co" class="discourse" target="_blank" rel="noopener" aria-label="{{t "Community"}}">{{> "icons/discourse"}}</a>
+                            <a href="{{@site.url}}/rss/" class="rss" target="_blank" rel="noopener" aria-label="{{t "RSS"}}">{{> "icons/rss"}}</a>
+                            <a href="https://github.com/somos-criptonautas/" class="github" target="_blank" rel="noopener" aria-label="{{t "Github"}}">{{> "icons/github"}}</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>
