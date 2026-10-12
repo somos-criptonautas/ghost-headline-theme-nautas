@@ -458,6 +458,13 @@
     margin: 0 0 1.2rem;
 }
 
+/* The post's own headings sit under the dialog title, not over it. */
+.gh-community-dialog-body :is(h1, h2, h3, h4, h5, h6) {
+    margin: 2rem 0 0.8rem;
+    font-size: 1.7rem;
+    line-height: 1.3;
+}
+
 .gh-community-dialog-body blockquote {
     padding-left: 1.2rem;
     border-left: 2px solid var(--color-border);
