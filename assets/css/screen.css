@@ -1,4 +1,23 @@
-@import "@tryghost/shared-theme-assets/assets/css/v1/screen.css";
+/* The shared assets' screen.css, file by file, without its last import:
+   vendor/pswp.css is PhotoSwipe 4, replaced by PhotoSwipe 5 (lightbox.js). */
+@import "@tryghost/shared-theme-assets/assets/css/v1/vars.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/reset.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/global.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/layout.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/header.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/cover.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/loop.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/post-card.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/article.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/content.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/comments.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/cta.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/card.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/pagination.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/navigation.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/button.css";
+@import "@tryghost/shared-theme-assets/assets/css/v1/components/footer.css";
+@import "vendor/photoswipe.css";
 @import "fonts.css";
 @import "brand.css";
 @import "vars.css";

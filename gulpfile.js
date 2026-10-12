@@ -118,7 +118,16 @@ function js(done) {
         // order across patterns - it emitted main.js first and the bundle threw
         // "reframe is not defined", aborting every script after it.
         order([
-            src(`${sharedThemeAssetsPath}/assets/js/v1/lib/**/*.js`, {sourcemaps: true}).pipe(navBreakpointJs()),
+            // The shared lightbox is PhotoSwipe 4; assets/js/lightbox.js
+            // replaces it on PhotoSwipe 5 and must come before the shared
+            // main.js, which calls lightbox() right away.
+            src([
+                `${sharedThemeAssetsPath}/assets/js/v1/lib/**/*.js`,
+                `!${sharedThemeAssetsPath}/assets/js/v1/lib/lightbox.js`,
+                `!${sharedThemeAssetsPath}/assets/js/v1/lib/vendor/photoswipe*.js`,
+            ], {sourcemaps: true}).pipe(navBreakpointJs()),
+            src('assets/js/vendor/photoswipe.umd.min.js', {sourcemaps: true}),
+            src('assets/js/lightbox.js', {sourcemaps: true}),
             src(`${sharedThemeAssetsPath}/assets/js/v1/main.js`, {sourcemaps: true}).pipe(navBreakpointJs()),
             // theme.js is loaded on its own in <head> before first paint;
             // bundling it too would register the toggle handler twice and
@@ -141,6 +150,7 @@ function js(done) {
             src([
                 'assets/js/*.js',
                 '!assets/js/theme.js',
+                '!assets/js/lightbox.js',
                 '!assets/js/instantsearch.min.js',
                 '!assets/js/typesense-instantsearch-adapter.min.js',
                 '!assets/js/search-config.js',

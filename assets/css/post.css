@@ -362,3 +362,23 @@
     outline: 2px solid var(--ghost-accent-color);
     outline-offset: 2px;
 }
+
+/* Lightbox caption (assets/js/lightbox.js): the figure's caption under the image. */
+
+.pswp__caption {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1.2rem max(1.6rem, env(safe-area-inset-left)) max(1.6rem, env(safe-area-inset-bottom));
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 1.4rem;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.pswp__caption a {
+    color: inherit;
+    text-decoration: underline;
+}
