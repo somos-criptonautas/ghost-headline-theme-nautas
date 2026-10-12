@@ -20,3 +20,9 @@
         <form method="dialog"><button class="gh-reactions-close">{{t "Close"}}</button></form>
     </dialog>
 </div>
+
+{{!-- Monero tip pill; revealed by assets/js/monero-tip.js. --}}
+<div class="gh-monero-tip" data-monero-tip hidden>
+    <button class="gh-reaction gh-monero-tip-open" type="button">{{> "icons/phosphor/xmr"}}<span>{{t "Monero Tips"}}</span></button>
+</div>
+{{> "monero-tip-dialog"}}

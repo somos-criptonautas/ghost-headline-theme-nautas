@@ -7,7 +7,6 @@
     <h1 class="archive-title global-title">{{name}}</h1>
     {{!-- Phosphor duotone icons (MIT, partials/icons/phosphor/LICENSE).
         Phosphor has no Bluesky mark; its butterfly stands in. --}}
-    {{#has any="website,twitter,facebook,linkedin,bluesky,threads,mastodon,tiktok,youtube,instagram"}}
     <div class="gh-author-social">
         {{#if twitter}}
         <a class="gh-author-social-link" href="{{social_url type="twitter"}}" target="_blank" rel="me noopener" aria-label="Twitter">{{> "icons/phosphor/twitter"}}</a>
@@ -39,8 +38,9 @@
         {{#if website}}
         <a class="gh-author-social-link" href="{{website}}" target="_blank" rel="me noopener" aria-label="{{t "Website"}}">{{> "icons/phosphor/website"}}</a>
         {{/if}}
+        <button class="gh-author-social-link gh-monero-tip-open" type="button" data-monero-tip hidden aria-label="{{t "Monero Tips"}}">{{> "icons/phosphor/xmr"}}</button>
     </div>
-    {{/has}}
+    {{> "monero-tip-dialog"}}
     {{#if bio}}
     <p class="archive-excerpt global-excerpt">{{bio}}</p>
     {{/if}}

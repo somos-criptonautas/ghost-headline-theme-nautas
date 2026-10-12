@@ -279,3 +279,69 @@
         transition: none;
     }
 }
+
+/* Monero tip: a reaction-style pill under the reactions, opening the
+   reactions' dialog with the QR and address. */
+
+.gh-content > .gh-monero-tip {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.6rem;
+}
+
+.gh-monero-tip[hidden] {
+    display: none;
+}
+
+.gh-monero-tip-open {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.gh-monero-tip-open svg {
+    width: 2rem;
+    height: 2rem;
+}
+
+.gh-monero-tip-qr {
+    display: block;
+    margin: 0 auto 1.6rem;
+    background: #fff;
+}
+
+.gh-monero-tip-address {
+    width: 100%;
+    margin-bottom: 1.6rem;
+    padding: 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.6rem;
+    background: transparent;
+    color: inherit;
+    font-family: var(--font-mono, monospace);
+    font-size: 1.2rem;
+}
+
+.gh-monero-tip-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+}
+
+.gh-monero-tip-wallet {
+    text-decoration: none;
+}
+
+.gh-monero-tip-dismiss {
+    border: 0;
+    background: none;
+    color: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+:is(.gh-monero-tip-wallet, .gh-monero-tip-copy, .gh-monero-tip-dismiss):focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}

@@ -5660,3 +5660,17 @@ html.js .gh-loadmore {
     padding: 0.8rem;
   }
 }
+
+/* The Monero tip icon is a button, revealed by assets/js/monero-tip.js. It renders even
+   for an author with no social links, so the bar hides itself when all of them are. */
+button.gh-author-social-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.gh-author-social-link[hidden],
+.gh-author-social:not(:has(> :not([hidden]))) {
+  display: none;
+}
