@@ -1,6 +1,6 @@
 {{!< default}}
 {{!-- Collection: a page in a series (pick "Collection" in the page's
-    settings). The series is the page's primary tag - see
+    settings). The series is the page's first internal tag (#journey) - see
     partials/collection.hbs for the hub and chapter conventions. Full-width
     cover, the series cards, the TOC column posts have (not on the hub), and
     previous / next at the end of the text. --}}
@@ -26,10 +26,10 @@
 <main class="gh-main">
     <div class="gh-inner">
         <article class="gh-article {{post_class}}">
-            {{#if primary_tag}}{{> "collection" place="top" tag=primary_tag.slug label=primary_tag.name}}{{/if}}
+            {{#foreach tags visibility="internal" limit="1"}}{{> "collection" place="top" tag=slug label=name}}{{/foreach}}
             <div class="gh-full-content">
-                {{!-- The hub (slug = the tag's slug) is a contents page: no TOC there. --}}
-                {{#match slug "!=" primary_tag.slug}}
+                {{!-- The hub (slug = the tag's slug) is a contents page: collection.js
+                    drops this TOC there. --}}
                 <aside class="gh-sidebar" id="sidebar-toc">
                     {{#if reading_time}}
                     <h3>
@@ -39,11 +39,10 @@
                     <div class="toc">
                     </div>
                 </aside>
-                {{/match}}
                 <section class="gh-content gh-canvas">
                     {{content}}
                     {{!-- Inside the article column, so previous / next line up with the text. --}}
-                    {{#if primary_tag}}{{> "collection" place="bottom" tag=primary_tag.slug label=primary_tag.name}}{{/if}}
+                    {{#foreach tags visibility="internal" limit="1"}}{{> "collection" place="bottom" tag=slug label=name}}{{/foreach}}
                 </section>
             </div>
         </article>

@@ -19,9 +19,15 @@
         return;
     }
 
+    // The series is an internal tag: its name starts with "#", which readers do not see.
     var label = function (name) {
-        return top.getAttribute('data-label-' + name) || '';
+        return (top.getAttribute('data-label-' + name) || '').replace(/^#/, '');
     };
+    [top, bottom].forEach(function (nav) {
+        if (nav) {
+            nav.setAttribute('aria-label', label('hub'));
+        }
+    });
     var path = function (href) {
         return new URL(href, window.location.href).pathname.replace(/\/?$/, '/');
     };
@@ -97,6 +103,11 @@
 
     if (current < 0) {
         // The hub reads as chapter 0: only a "next" into the first chapter.
+        // It is a contents page, so no TOC column either.
+        var toc = document.getElementById('sidebar-toc');
+        if (toc) {
+            toc.parentNode.removeChild(toc);
+        }
         if (bottom) {
             bottom.appendChild(step(0, 'next'));
             bottom.hidden = false;
