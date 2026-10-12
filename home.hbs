@@ -24,10 +24,14 @@
                 {{/match}}
             </h2>
 
+            {{!-- The posts starred as featured in Ghost; the tag sections
+                below leave them out (topic-grid.hbs), so none shows twice. --}}
             <div class="gh-topic-content">
-                {{#foreach posts limit="4"}}
+                {{#get "posts" include="tags,authors" filter="featured:true" limit="4"}}
+                {{#foreach posts}}
                 {{> "loop-grid"}}
                 {{/foreach}}
+                {{/get}}
             </div>
 
         </section>
