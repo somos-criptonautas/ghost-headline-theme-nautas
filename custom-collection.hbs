@@ -15,7 +15,7 @@
         sizes="100vw" src="{{img_url feature_image size="xl" format="webp"}}" alt="{{title}}">
     {{/if}}
     <div class="gh-cover-content">
-        {{> "breadcrumb" series=true}}
+        {{> "breadcrumb"}}
         <h1 class="gh-cover-title">{{title}}</h1>
         {{#if custom_excerpt}}
         <p class="gh-article-excerpt">{{custom_excerpt}}</p>
@@ -26,7 +26,7 @@
 <main class="gh-main">
     <div class="gh-inner">
         <article class="gh-article {{post_class}}">
-            {{#foreach tags visibility="internal" limit="1"}}{{> "collection" place="top" tag=slug label=slug}}{{/foreach}}
+            {{#foreach tags visibility="internal" limit="1"}}{{> "collection" place="top" tag=slug label=name}}{{/foreach}}
             <div class="gh-full-content">
                 {{!-- The hub (slug = the tag's slug) is a contents page: collection.js
                     drops this TOC there. --}}
@@ -42,7 +42,7 @@
                 <section class="gh-content gh-canvas">
                     {{content}}
                     {{!-- Inside the article column, so previous / next line up with the text. --}}
-                    {{#foreach tags visibility="internal" limit="1"}}{{> "collection" place="bottom" tag=slug label=slug}}{{/foreach}}
+                    {{#foreach tags visibility="internal" limit="1"}}{{> "collection" place="bottom" tag=slug label=name}}{{/foreach}}
                 </section>
             </div>
         </article>

@@ -19,9 +19,15 @@
         return;
     }
 
+    // The series is an internal tag: its name starts with "#", which readers do not see.
     var label = function (name) {
-        return top.getAttribute('data-label-' + name) || '';
+        return (top.getAttribute('data-label-' + name) || '').replace(/^#/, '');
     };
+    [top, bottom].forEach(function (nav) {
+        if (nav) {
+            nav.setAttribute('aria-label', label('hub'));
+        }
+    });
     var path = function (href) {
         return new URL(href, window.location.href).pathname.replace(/\/?$/, '/');
     };

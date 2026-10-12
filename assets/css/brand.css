@@ -25,9 +25,8 @@
     --cn-ui-line: #DEDBD6;
     --cn-ui-text: #1A1A1A;
     --cn-ui-muted: #5C5852;
-    /* Hover: the kit's "selected" in light (its "hover", #F1EEF4, barely
-       shows on these greys), its "hover" in dark (discourse.json). */
-    --cn-ui-hover: #EBE6F1;
+    /* The forum's "hover" colour (brand kit, discourse.json). */
+    --cn-ui-hover: #F1EEF4;
 
     /* Buttons and other violet fills, and the text set on them. */
     --cn-violeta-fill: #5814EA;
