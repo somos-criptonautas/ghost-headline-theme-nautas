@@ -4,9 +4,13 @@
     Filled by assets/js/community-sidebar.js from the forum's public JSON
     (same CORS setup as the sidebar); it stays hidden until there is something
     to show, so a tag with no matching category, or a forum that does not
-    answer, leaves no trace. --}}
+    answer, leaves no trace.
+
+    strip=true (home.hbs, below 1200px): six cards in one sideways row,
+    shown from the start with a card's height kept while they load, so the
+    page does not jump when they arrive. --}}
 {{#if @custom.discourse_url}}
-<section class="gh-community-related" aria-labelledby="gh-community-related-title" hidden
+<section class="gh-community-related{{#if strip}} gh-community-strip{{/if}}" aria-labelledby="gh-community-related-title"{{#if strip}} aria-busy="true" data-count="6"{{else}} hidden{{/if}}
     data-category="{{category}}"
     data-label-reply="{{t "reply"}}"
     data-label-replies="{{t "replies"}}">
@@ -15,7 +19,7 @@
         {{t "Community"}}
         {{#if label}}<span class="gh-community-related-tag">#{{label}}</span>{{/if}}
     </h2>
-    <ol class="gh-community-cards"></ol>
+    <ol class="gh-community-cards{{#if strip}} gh-carousel{{/if}}"></ol>
     <a class="gh-community-more" target="_blank" rel="noopener">{{t "Go to the community"}} {{> "icons/phosphor/arrow-square-out"}}</a>
     {{!-- A card opens its topic here (community-sidebar.js). --}}
     <dialog class="gh-community-dialog" aria-labelledby="gh-community-dialog-title">

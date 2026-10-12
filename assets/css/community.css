@@ -522,3 +522,38 @@
     font-size: 1.4rem;
     cursor: pointer;
 }
+
+/* Home strip (home.hbs, community-related.hbs strip=true): below 1200px, in
+   place of the aside, which is the column from 1200px up. */
+
+@media screen and (min-width: 1200px) {
+    .gh-community-strip {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 1199px) {
+    .home-template .gh-community {
+        display: none;
+    }
+}
+
+.gh-community-strip {
+    max-width: none;
+    margin: 4.8rem 0 0;
+}
+
+.gh-community-strip .gh-community-cards {
+    grid-template-columns: none;
+}
+
+/* A card's height while the topics load. */
+.gh-community-strip[aria-busy="true"] .gh-community-cards {
+    min-height: 12rem;
+}
+
+@media screen and (max-width: 767px) {
+    .gh-community-strip .gh-community-cards {
+        grid-auto-columns: 85%;
+    }
+}

@@ -32,6 +32,10 @@
 
         </section>
 
+        {{!-- Below 1200px the community is this strip, right after the
+            featured posts; from 1200px it is the aside (community.css). --}}
+        {{> "community-related" strip=true}}
+
         {{!-- Tag sections. The first three show; up to nine more are
             rendered hidden and assets/js/home-topics.js reveals three per
             click of "+ More articles". Without JS, or once all are out, the

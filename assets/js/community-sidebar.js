@@ -447,6 +447,11 @@
     // the whole forum's latest. No topics or no answer: it keeps `hidden`.
     if (related) {
         var category = related.getAttribute('data-category') || '';
+        var count = parseInt(related.getAttribute('data-count'), 10) || RELATED;
+        // The home strip shows from the start: without topics it goes.
+        var none = function () {
+            related.hidden = true;
+        };
         if (SLUG.test(category)) {
             var path = category ? '/c/' + category : '/latest';
             getJSON(category ? path + '/l/latest.json' : '/latest.json').then(function (body) {
@@ -456,8 +461,9 @@
                     .filter(function (entry) {
                         return entry.url && entry.title;
                     })
-                    .slice(0, RELATED);
+                    .slice(0, count);
                 if (!entries.length) {
+                    none();
                     return;
                 }
                 var cards = related.querySelector('.gh-community-cards');
@@ -466,7 +472,9 @@
                 });
                 related.querySelector('.gh-community-more').href = ORIGIN + path;
                 related.hidden = false;
-            }, function () {});
+            }, none).then(function () {
+                related.removeAttribute('aria-busy');
+            });
         }
     }
 
