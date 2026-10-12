@@ -1,21 +1,12 @@
 {{!-- Home / primary tag, above the post title, plus the matching
     BreadcrumbList for search engines (Ghost's {{ghost_head}} emits Article
-    but no breadcrumbs). ld+json is data, not script, so the CSP allows it. --}}
+    but no breadcrumbs). ld+json is data, not script, so the CSP allows it.
+    series=true (custom-collection.hbs): a page series has an internal tag
+    instead, shown by its slug and linked to the series hub (/slug/). --}}
 {{#if primary_tag}}
-<nav class="gh-article-tag" aria-label="{{t "Breadcrumb"}}">
-    <a href="{{@site.url}}/">{{t "Blog"}}</a>
-    <span aria-hidden="true">→</span>
-    <a href="{{primary_tag.url}}">{{primary_tag.name}}</a>
-</nav>
-<script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-        {"@type": "ListItem", "position": 1, "name": "{{t "Blog"}}", "item": "{{@site.url}}/"},
-        {"@type": "ListItem", "position": 2, "name": "{{primary_tag.name}}", "item": "{{#primary_tag}}{{url absolute="true"}}{{/primary_tag}}"},
-        {"@type": "ListItem", "position": 3, "name": "{{title}}", "item": "{{url absolute="true"}}"}
-    ]
-}
-</script>
+{{> "breadcrumb-trail" name=primary_tag.name link=primary_tag.url page_title=title page_url=(url absolute="true")}}
+{{else if series}}
+{{#foreach tags visibility="internal" limit="1"}}
+{{> "breadcrumb-trail" name=slug link=(concat @site.url "/" slug "/") page_title=../title page_url=(concat @site.url "/" ../slug "/")}}
+{{/foreach}}
 {{/if}}
