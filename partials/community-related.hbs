@@ -5,6 +5,7 @@
     (same CORS setup as the sidebar); it stays hidden until there is something
     to show, so a tag with no matching category, or a forum that does not
     answer, leaves no trace. --}}
+{{#if @custom.discourse_url}}
 <section class="gh-community-related" aria-labelledby="gh-community-related-title" hidden
     data-category="{{category}}"
     data-label-reply="{{t "reply"}}"
@@ -17,3 +18,4 @@
     <ol class="gh-community-cards"></ol>
     <a class="gh-community-more" target="_blank" rel="noopener">{{t "Go to the community"}} {{> "icons/phosphor/arrow-square-out"}}</a>
 </section>
+{{/if}}

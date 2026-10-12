@@ -44,7 +44,49 @@
         "custom": {
             "dark_logo": {
                 "type": "image",
-                "description": "Logo for dark mode. Empty: the brand kit's dark logo."
+                "description": "Logo for dark mode. Empty: the publication logo."
+            },
+            "discourse_url": {
+                "type": "text",
+                "default": "https://comunidad.criptonautas.co",
+                "description": "Discourse forum URL for comments, reactions, the community lists and tips. Empty turns them all off."
+            },
+            "search_host": {
+                "type": "text",
+                "default": "typesense.criptonautas.co",
+                "description": "Typesense host for the search modal. Empty: Ghost's own search."
+            },
+            "search_key": {
+                "type": "text",
+                "default": "8hPtZRIeBeU4MM7c6Fy9viwynvG1F2F4",
+                "description": "Typesense search-only key. Never an admin key: it is public."
+            },
+            "github_url": {
+                "type": "text",
+                "default": "https://github.com/somos-criptonautas/",
+                "description": "GitHub link in the footer. Empty hides it."
+            },
+            "footer_note": {
+                "type": "text",
+                "default": "(no estamos en Discord)",
+                "description": "Short line under the footer icons."
+            },
+            "discourse_comments": {
+                "type": "boolean",
+                "default": true,
+                "group": "post"
+            },
+            "discourse_reactions": {
+                "type": "boolean",
+                "default": true,
+                "group": "post",
+                "description": "Emoji reactions from the post's forum topic."
+            },
+            "monero_tips_username": {
+                "type": "text",
+                "default": "anonist",
+                "group": "post",
+                "description": "Forum account that receives Monero tips (discourse-monero-tips plugin). Empty hides them."
             },
             "enter_tag_slugs_for_primary_sections": {
                 "type": "text",

@@ -3,8 +3,9 @@
  * carries sha256 hashes, so an inline block stops running the moment anyone
  * edits it, and the search then boots with no nodes and no key.
  *
- * Both API keys below are search-only and public by design - never put an
- * admin key here. The key must be scoped to every collection below:
+ * Host and key come from the "Search host" and "Search key" theme settings,
+ * on this script's tag (site-scripts.hbs). The key is search-only and public
+ * by design - never an admin key. It must be scoped to every collection below:
  *
  *   curl -X POST https://typesense.criptonautas.co/keys \
  *     -H "X-TYPESENSE-API-KEY: <master>" -H 'Content-Type: application/json' \
@@ -14,10 +15,10 @@
  */
 window.__NAUTAS_SEARCH_CONFIG__ = {
     typesenseNodes: [{
-        host: 'typesense.criptonautas.co',
+        host: document.currentScript.getAttribute('data-host'),
         protocol: 'https'
     }],
-    typesenseApiKey: '8hPtZRIeBeU4MM7c6Fy9viwynvG1F2F4',
+    typesenseApiKey: document.currentScript.getAttribute('data-key'),
 
     // Ghost posts, filled by @magicpages/ghost-typesense (indexer only - its
     // own search UI is not used).

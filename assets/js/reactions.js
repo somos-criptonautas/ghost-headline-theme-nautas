@@ -14,7 +14,7 @@
  */
 (function () {
     // Same forum as the comments embed (discourse-embed.js).
-    var ORIGIN = 'https://comunidad.criptonautas.co';
+    var ORIGIN = (document.documentElement.getAttribute('data-discourse') || '').replace(/\/+$/, '');
 
     var root = document.querySelector('.gh-reactions');
 

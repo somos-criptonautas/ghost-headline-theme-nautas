@@ -9,26 +9,10 @@
 
 {{! External links: assets/js/external-links.js, inside main.min.js. }}
 {{! flying-pages.min.js ships inside main.min.js, same as tocbot }}
-{{!--
-<script type="module">
-  import Typebot from 'https://cdn.jsdelivr.net/gh/somos-criptonautas/js/typebot-web.js'
-
-  Typebot.initBubble({
-    typebot: "hello-anon",
-    apiHost: "https://bot.criptonautas.co",
-    theme: {
-      button: {
-        backgroundColor: "#111",
-        customIconSrc:
-          "https://cdn-blog.criptonautas.co/content/images/2024/07/notsato.png",
-        size: "large",
-      },
-      chatWindow: { backgroundColor: "#fff" },
-    },
-  });
-</script> --}}
-<script src="{{asset "js/search-config.js"}}"></script>
+{{#if @custom.search_host}}
+<script src="{{asset "js/search-config.js"}}" data-host="{{@custom.search_host}}" data-key="{{@custom.search_key}}"></script>
 {{! Search modal: InstantSearch.js over Typesense, one query across the blog
+    (only with the "Search host" setting; without it, Ghost's own search)
     and the forum collections. The two vendor bundles are served from the theme
     rather than a CDN and refreshed by .github/workflows/update-search-vendor.yml;
     all three files stay out of main.min.js - see the js task in gulpfile.js.
@@ -40,6 +24,7 @@
 <script defer src="{{asset "js/instantsearch.min.js"}}"></script>
 <script defer src="{{asset "js/typesense-instantsearch-adapter.min.js"}}"></script>
 <script defer src="{{asset "js/search-modal.js"}}"></script>
+{{/if}}
 <script defer async data-domain="criptonautas.co"
   src="https://stats.criptonautas.co/js/plausible.outbound-links.js"></script>
 <script>window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>

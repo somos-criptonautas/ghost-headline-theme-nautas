@@ -11,7 +11,7 @@
         <a class="gh-share-link" href="https://www.reddit.com/submit?url={{encode (url absolute="true")}}&amp;title={{encode title}}" target="_blank" rel="noopener" aria-label="{{t "Share on Reddit"}}">{{> "icons/phosphor/reddit"}}</a>
         <a class="gh-share-link" href="https://twitter.com/intent/tweet?text={{encode title}}&amp;url={{encode (url absolute="true")}}" target="_blank" rel="noopener" aria-label="{{t "Share on Twitter"}}">{{> "icons/phosphor/twitter"}}</a>
     </div>
-    {{#if comments}}
+    {{#if comments}}{{#if @custom.discourse_url}}
     <a class="gh-share-comments" href="#comments">{{t "Go to comments"}} {{> "icons/phosphor/arrow-down"}}</a>
-    {{/if}}
+    {{/if}}{{/if}}
 </div>

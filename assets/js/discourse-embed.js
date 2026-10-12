@@ -11,12 +11,13 @@
  * the {theme} messages sent from here.
  */
 (function () {
-    var DISCOURSE_ORIGIN = 'https://comunidad.criptonautas.co';
+    // The "Discourse URL" theme setting, on <html> (default.hbs).
+    var DISCOURSE_ORIGIN = (document.documentElement.getAttribute('data-discourse') || '').replace(/\/+$/, '');
     var container = document.getElementById('discourse-comments');
     var embedWindow = null;
 
     // Loader. Only post templates render the container.
-    if (container && container.dataset.embedUrl) {
+    if (DISCOURSE_ORIGIN && container && container.dataset.embedUrl) {
         window.DiscourseEmbed = {
             discourseUrl: DISCOURSE_ORIGIN + '/',
             discourseEmbedUrl: container.dataset.embedUrl,

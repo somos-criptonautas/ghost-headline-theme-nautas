@@ -300,7 +300,7 @@
      * arrives, for paragraphs, lists and emoji. */
     var reader = null;
     var readerScroll = 0;
-    var FORUM = 'https://comunidad.criptonautas.co';
+    var FORUM = (document.documentElement.getAttribute('data-discourse') || '').replace(/\/+$/, '');
 
     /* A forum post is user input: only these tags are rebuilt, with no
      * attributes but a link's href and an emoji's src/alt. Anything else is
@@ -407,7 +407,7 @@
 
         // The forum sends CORS headers for the site; any failure keeps the indexed text.
         var shown = reader;
-        if (/^\d+$/.test(String(hit.id)) && window.fetch && window.DOMParser) {
+        if (FORUM && /^\d+$/.test(String(hit.id)) && window.fetch && window.DOMParser) {
             fetch(FORUM + '/posts/' + hit.id + '.json', { credentials: 'omit', headers: { Accept: 'application/json' } })
                 .then(function (response) {
                     return response.ok ? response.json() : null;

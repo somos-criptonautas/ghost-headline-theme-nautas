@@ -4,7 +4,9 @@
     Members signed in to the forum react from here; anyone else gets the
     dialog. Same order as the forum's reactions; 🍄 (mushroom) is left out
     on purpose, it stays forum-only. --}}
-<div class="gh-reactions" hidden data-embed-url="https://criptonautas.co{{url}}">
+{{#if @custom.discourse_url}}
+{{#if @custom.discourse_reactions}}
+<div class="gh-reactions" hidden data-embed-url="{{url absolute="true"}}">
     <div class="gh-reactions-list" role="group" aria-label="{{t "Reactions"}}">
         <button class="gh-reaction" type="button" data-reaction="heart" aria-pressed="false"><span>❤️</span><span class="gh-reaction-count"></span></button>
         <button class="gh-reaction" type="button" data-reaction="ok_hand" aria-pressed="false"><span>👌</span><span class="gh-reaction-count"></span></button>
@@ -20,9 +22,13 @@
         <form method="dialog"><button class="gh-reactions-close">{{t "Close"}}</button></form>
     </dialog>
 </div>
+{{/if}}
 
 {{!-- Monero tip pill; revealed by assets/js/monero-tip.js. --}}
+{{#if @custom.monero_tips_username}}
 <div class="gh-monero-tip" data-monero-tip hidden>
     <button class="gh-reaction gh-monero-tip-open" type="button">{{> "icons/phosphor/xmr"}}<span>{{t "Monero Tips"}}</span></button>
 </div>
 {{> "monero-tip-dialog"}}
+{{/if}}
+{{/if}}

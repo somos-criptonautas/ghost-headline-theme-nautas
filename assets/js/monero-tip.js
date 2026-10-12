@@ -9,13 +9,19 @@
  * when the account has verified tips on (same CORS setup as reactions.js).
  */
 (function () {
-    var ORIGIN = 'https://comunidad.criptonautas.co';
-    // The forum account every article's tips go to.
-    var USERNAME = 'anonist';
+    // Same forum as the comments embed (discourse-embed.js).
+    var ORIGIN = (document.documentElement.getAttribute('data-discourse') || '').replace(/\/+$/, '');
 
     var dialog = document.querySelector('.gh-monero-tip-dialog');
 
-    if (!dialog || !window.fetch) {
+    if (!ORIGIN || !dialog || !window.fetch) {
+        return;
+    }
+
+    // The "Monero tips username" setting: the forum account every tip goes to.
+    var USERNAME = encodeURIComponent(dialog.getAttribute('data-username') || '');
+
+    if (!USERNAME) {
         return;
     }
 

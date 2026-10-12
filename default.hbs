@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{@site.locale}}">
+<html lang="{{@site.locale}}"{{#if @custom.discourse_url}} data-discourse="{{@custom.discourse_url}}"{{/if}}>
 
 <head>
     <meta charset="utf-8">
@@ -11,13 +11,15 @@
     <!-- prettier-ignore-end -->
     <link href="{{@site.url}}/continue" rel="prefetch">
     <link href="{{@site.url}}/start" rel="prefetch">
-    <link rel="preconnect" href="https://comunidad.criptonautas.co">
-    {{#is "post"}}
+    {{#if @custom.discourse_url}}
+    <link rel="preconnect" href="{{@custom.discourse_url}}">
+    {{#is "post"}}{{#if @custom.discourse_comments}}
     {{! Comments: start fetching embed.js with the page instead of waiting for
         main.min.js to inject it at the end of <body>. Same URL and no
         crossorigin attribute, so the injected <script> reuses this response. }}
-    <link rel="preload" href="https://comunidad.criptonautas.co/javascripts/embed.js" as="script">
-    {{/is}}
+    <link rel="preload" href="{{@custom.discourse_url}}/javascripts/embed.js" as="script">
+    {{/if}}{{/is}}
+    {{/if}}
     <script
         src='https://pay.criptonautas.co/plugins/Ftaic9XyP8AYSuMKrU2bxw7PrAn9DZjyJKGY62BXThy1/ghost/public/paywall/btcpay-ghost-paywall.js'></script>
     <!-- Blocking on purpose: sets the theme before first paint. External
@@ -51,7 +53,7 @@
         loading a file that 404s since the MagicPages build was dropped. The
         exclude list is Ghost's supported switch; it splits on "," with no
         trimming, so do not put a space after the comma. }}
-    {{ghost_head exclude="portal,search"}}
+    {{#if @custom.search_host}}{{ghost_head exclude="portal,search"}}{{else}}{{ghost_head exclude="portal"}}{{/if}}
     {{!-- Site icons. After {{ghost_head}} on purpose: it emits its own
         <link rel="icon"> from the publication icon, and browsers use the last
         one declared. Ghost only serves theme files under assets/, hence
@@ -83,10 +85,14 @@
                                 {{!-- The logos uploaded in Ghost win: the publication logo, and
                                     the dark one from Design -> Site-wide -> Dark logo (a theme
                                     setting, so it empties whenever the active theme id changes).
-                                    Without them, the brand kit's (assets/images/brand, copied
-                                    from criptonautas-marca). --}}
-                                <img class="logo-nav logo-light" src="{{#if @site.logo}}{{@site.logo}}{{else}}{{asset "images/brand/criptonautas-horizontal-color.svg"}}{{/if}}" alt="{{@site.title}}">
-                                <img class="logo-nav logo-dark" src="{{#if @custom.dark_logo}}{{@custom.dark_logo}}{{else}}{{asset "images/brand/criptonautas-horizontal-oscuro.svg"}}{{/if}}" alt="{{@site.title}}">
+                                    Without a dark one, the publication logo; without either, the
+                                    site title. --}}
+                                {{#if @site.logo}}
+                                <img class="logo-nav logo-light" src="{{@site.logo}}" alt="{{@site.title}}">
+                                <img class="logo-nav logo-dark" src="{{#if @custom.dark_logo}}{{@custom.dark_logo}}{{else}}{{@site.logo}}{{/if}}" alt="{{@site.title}}">
+                                {{else}}
+                                {{@site.title}}
+                                {{/if}}
                                 {{^is "home"}}</a>{{else}}</span>{{/is}}
                     </div>
                     {{!-- Tablet bar only: the site icon as the way back to the blog. --}}
@@ -148,9 +154,13 @@
                     <div class="gh-head-more">
                         {{navigation type="secondary"}}
                         <div class="it-foot-social">
-                            <a href="https://comunidad.criptonautas.co" class="discourse" target="_blank" rel="noopener" aria-label="{{t "Community"}}">{{> "icons/discourse"}}</a>
+                            {{#if @custom.discourse_url}}
+                            <a href="{{@custom.discourse_url}}" class="discourse" target="_blank" rel="noopener" aria-label="{{t "Community"}}">{{> "icons/discourse"}}</a>
+                            {{/if}}
                             <a href="{{@site.url}}/rss/" class="rss" target="_blank" rel="noopener" aria-label="{{t "RSS"}}">{{> "icons/rss"}}</a>
-                            <a href="https://github.com/somos-criptonautas/" class="github" target="_blank" rel="noopener" aria-label="{{t "Github"}}">{{> "icons/github"}}</a>
+                            {{#if @custom.github_url}}
+                            <a href="{{@custom.github_url}}" class="github" target="_blank" rel="noopener" aria-label="{{t "Github"}}">{{> "icons/github"}}</a>
+                            {{/if}}
                         </div>
                     </div>
                 </div>
@@ -183,16 +193,20 @@
             {{navigation type="secondary"}}
         </nav>
         <div class="it-foot-social">
-            <a href="https://comunidad.criptonautas.co" class="discourse" title="{{t "Community"}}" target="_blank"
+            {{#if @custom.discourse_url}}
+            <a href="{{@custom.discourse_url}}" class="discourse" title="{{t "Community"}}" target="_blank"
                 rel="noopener" aria-label="{{t "Community"}}">{{> "icons/discourse"}}</a>
+            {{/if}}
             <a href="{{@site.url}}/rss/" class="rss" title="{{t "RSS"}}" target="_blank" rel="noopener"
                 aria-label="{{t "RSS"}}">{{> "icons/rss"}}</a>
-            <a href="https://github.com/somos-criptonautas/" class="github" title="{{t "Github"}}" target="_blank"
+            {{#if @custom.github_url}}
+            <a href="{{@custom.github_url}}" class="github" title="{{t "Github"}}" target="_blank"
                 rel="noopener" aria-label="{{t "Github"}}">{{> "icons/github"}}</a>
+            {{/if}}
         </div>
-        <span class="no-estamos">(no estamos en Discord)</span>
+        {{#if @custom.footer_note}}<span class="no-estamos">{{@custom.footer_note}}</span>{{/if}}
         <div class="gh-copyright">
-            <p>Criptonautas&nbsp;{{ t "is licensed under" }}<br>{{ t "from 🪐" }} <a href="https://satonotdead.co"
+            <p>{{@site.title}}&nbsp;{{ t "is licensed under" }}<br>{{ t "from 🪐" }} <a href="https://satonotdead.co"
                     title="satonotdead's lab" target="_blank" rel="noopener">satonotdead</a></p>
         </div>
     </div>

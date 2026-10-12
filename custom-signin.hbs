@@ -45,8 +45,10 @@
             <div class="cus-sign-box">
                     <header class="mainhead">
                     <a class="home-link" href="{{@site.url}}">
-        <img class="logo-nav logo-light lazy" src="{{#if @site.logo}}{{@site.logo}}{{else}}{{asset "images/brand/criptonautas-horizontal-color.svg"}}{{/if}}" alt="{{@site.title}}">
-        <img class="logo-nav logo-dark lazy" src="{{#if @custom.dark_logo}}{{@custom.dark_logo}}{{else}}{{asset "images/brand/criptonautas-horizontal-oscuro.svg"}}{{/if}}" alt="{{@site.title}}">
+        {{#if @site.logo}}
+        <img class="logo-nav logo-light lazy" src="{{@site.logo}}" alt="{{@site.title}}">
+        <img class="logo-nav logo-dark lazy" src="{{#if @custom.dark_logo}}{{@custom.dark_logo}}{{else}}{{@site.logo}}{{/if}}" alt="{{@site.title}}">
+        {{else}}{{@site.title}}{{/if}}
                     </a>
                 </header>
                 <div class="form-inner-content">

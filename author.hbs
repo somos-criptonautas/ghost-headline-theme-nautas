@@ -38,9 +38,11 @@
         {{#if website}}
         <a class="gh-author-social-link" href="{{website}}" target="_blank" rel="me noopener" aria-label="{{t "Website"}}">{{> "icons/phosphor/website"}}</a>
         {{/if}}
+        {{#if @custom.discourse_url}}{{#if @custom.monero_tips_username}}
         <button class="gh-author-social-link gh-monero-tip-open" type="button" data-monero-tip hidden aria-label="{{t "Monero Tips"}}">{{> "icons/phosphor/xmr"}}</button>
+        {{/if}}{{/if}}
     </div>
-    {{> "monero-tip-dialog"}}
+    {{#if @custom.discourse_url}}{{#if @custom.monero_tips_username}}{{> "monero-tip-dialog"}}{{/if}}{{/if}}
     {{#if bio}}
     <p class="archive-excerpt global-excerpt">{{bio}}</p>
     {{/if}}
