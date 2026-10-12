@@ -220,11 +220,11 @@
     width: 4.4rem;
     height: 4.4rem;
     padding: 0;
-    border: 2px solid var(--color-base);
+    border: 0;
     border-radius: 50%;
     background-color: var(--color-bg);
     color: var(--color-base);
-    box-shadow: var(--cn-shadow-sm);
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.12);
     cursor: pointer;
     opacity: 0;
     visibility: hidden;
