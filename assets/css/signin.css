@@ -131,7 +131,7 @@ width: 0.66rem;
 .single-input .form-control {
     font-size: 2rem;
     color: var(--color-base);
-    font-family: var(--font-body);
+    font-family: var(--font-sans);
     font-weight: normal;
     height: 6rem;
     width: 100%;
@@ -145,7 +145,7 @@ width: 0.66rem;
 
 .single-input .form-control:focus {
     border-color: var(--color-secondary);
-    box-shadow: 0 0 0 3px rgba(81,7,237,.15);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
     outline: 0;
 }
 html[data-theme="dark"].single-input .form-control:focus {

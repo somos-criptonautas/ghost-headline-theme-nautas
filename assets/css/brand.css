@@ -1,0 +1,36 @@
+/* Brand tokens
+/* ----------------------------------------------------------
+   The palette from the brand kit (criptonautas-marca, dist/color/paleta.css),
+   the only place a brand colour is written as a hex value. Every other
+   stylesheet reads these through the theme variables in vars.css. The kit
+   switches on prefers-color-scheme; this theme switches on html[data-theme]
+   (assets/js/theme.js), so the dark values hang off that instead.
+   ---------------------------------------------------------- */
+
+:root {
+    --cn-violeta-tinta: #5814EA;
+    --cn-rojo-oxido: #E6211E;
+    --cn-error: #9E1B27;
+    --cn-exito: #1F7A5C;
+    --cn-ink: #14110F;
+    --cn-paper: #E8E6E1;
+    --cn-halftone: #7E7973;
+
+    /* Fills keep the light violet in both modes: white text on it reads at
+       7.8:1, on the pale dark-mode violet it would not. */
+    --cn-violeta-fill: #5814EA;
+    /* Hover darkens it toward Ink rather than inventing a hue. */
+    --cn-violeta-fill-hover: color-mix(in srgb, #5814EA 80%, #14110F);
+
+    /* The kit's hard ink shadow, as on the series cards: no blur, no glow. */
+    --cn-shadow: 4px 4px 0 var(--color-base);
+    --cn-shadow-raised: 6px 8px 0 var(--color-base);
+    --cn-shadow-sm: 3px 3px 0 var(--color-base);
+}
+
+html[data-theme="dark"] {
+    --cn-violeta-tinta: #C89DFF;
+    --cn-rojo-oxido: #F98E76;
+    --cn-error: #FF8DA5;
+    --cn-exito: #6DC08F;
+}

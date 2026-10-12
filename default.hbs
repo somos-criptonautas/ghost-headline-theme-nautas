@@ -9,8 +9,6 @@
     <!-- prettier-ignore-start -->
     <link rel="stylesheet" href="{{asset "built/screen.css"}}">
     <!-- prettier-ignore-end -->
-    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
-    <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
     <link href="{{@site.url}}/continue" rel="prefetch">
     <link href="{{@site.url}}/start" rel="prefetch">
     <link rel="preconnect" href="https://comunidad.criptonautas.co">
@@ -82,19 +80,13 @@
                     <div class="gh-head-brand-wrapper">
                         {{^is "home"}}<a class="gh-head-logo" href="{{@site.url}}">{{else}}<span
                                 class="gh-head-logo">{{/is}}
-                                {{#if @site.logo}}
-                                <img class="logo-nav logo-light" src="{{@site.logo}}" alt="{{@site.title}}">
-                                {{! Alternate logo: dark mode and the transparent
-                                    header over a cover image. Its image comes
-                                    from Design -> Site-wide settings, not from
-                                    this repo, so it resets to empty whenever the
-                                    active theme id changes. }}
-                                <img class="logo-nav logo-dark"
-                                    src="{{@custom.white_publication_logo_for_transparent_header}}"
-                                    alt="{{@site.title}}">
-                                {{else}}
-                                {{@site.title}}
-                                {{/if}}
+                                {{!-- The logos uploaded in Ghost win: the publication logo, and
+                                    the dark one from Design -> Site-wide -> Dark logo (a theme
+                                    setting, so it empties whenever the active theme id changes).
+                                    Without them, the brand kit's (assets/images/brand, copied
+                                    from criptonautas-marca). --}}
+                                <img class="logo-nav logo-light" src="{{#if @site.logo}}{{@site.logo}}{{else}}{{asset "images/brand/criptonautas-horizontal-color.svg"}}{{/if}}" alt="{{@site.title}}">
+                                <img class="logo-nav logo-dark" src="{{#if @custom.dark_logo}}{{@custom.dark_logo}}{{else}}{{asset "images/brand/criptonautas-horizontal-oscuro.svg"}}{{/if}}" alt="{{@site.title}}">
                                 {{^is "home"}}</a>{{else}}</span>{{/is}}
                     </div>
                     {{!-- Tablet bar only: the site icon as the way back to the blog. --}}

@@ -501,7 +501,7 @@
 }
 
 .gh-video-badge.is-live {
-    background-color: #d32f2f;
+    background-color: var(--cn-rojo-oxido);
     text-transform: uppercase;
 }
 

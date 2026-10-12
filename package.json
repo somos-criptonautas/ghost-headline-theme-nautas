@@ -42,8 +42,9 @@
         },
         "card_assets": true,
         "custom": {
-            "white_publication_logo_for_transparent_header": {
-                "type": "image"
+            "dark_logo": {
+                "type": "image",
+                "description": "Logo for dark mode. Empty: the brand kit's dark logo."
             },
             "enter_tag_slugs_for_primary_sections": {
                 "type": "text",

@@ -1,5 +1,6 @@
 @import "@tryghost/shared-theme-assets/assets/css/v1/screen.css";
 @import "fonts.css";
+@import "brand.css";
 @import "vars.css";
 @import "signin.css";
 @import "members.css";
@@ -98,10 +99,6 @@ html[data-theme="dark"] .gh-btn {
 
 .nav {
   letter-spacing: -0.006em;
-}
-
-body:is(.is-head-transparent, .is-head-brand, .is-head-dark) .gh-head-logo img+img {
-  opacity: 1;
 }
 
 /* Styles specific to grid style sections */
@@ -320,7 +317,7 @@ a.gh-card-link:hover {
 }
 
 .gh-topic-grid .gh-card-title {
-  font-family: var(--font-sans-serif);
+  font-family: var(--gh-font-heading);
   font-weight: 700;
   line-height: 1.11;
   letter-spacing: -0.015em;
@@ -840,7 +837,7 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
 }
 
 .tag-template .gh-cover-title {
-  font-family: var(--font-sans);
+  font-family: var(--gh-font-heading);
   letter-spacing: -0.01em;
 }
 
@@ -1062,8 +1059,7 @@ html[data-theme="dark"].gh-pagehead-title {
 
 .membership-card:hover {
   border: 3px solid var(--color-primary-hover);
-  box-shadow: 0 6px 24px 0 rgba(154, 39, 250, 0.05),
-    0 0 0 1px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--cn-shadow);
   opacity: 1;
   cursor: help;
 }
@@ -1088,7 +1084,7 @@ html[data-theme="dark"].gh-pagehead-title {
 }
 
 .membership-card-price span {
-  font-family: var(--font-family-three);
+  font-family: var(--gh-font-heading);
   font-size: 2rem;
   font-weight: var(--font-weight-three-regular);
 }
@@ -1116,7 +1112,7 @@ html[data-theme="dark"].gh-pagehead-title {
 }
 
 .membership-card-list li::before {
-  font-family: var(--font-family-system);
+  font-family: var(--font-sans);
   font-size: 2rem;
   font-weight: bold;
   margin-right: 7px;
@@ -1181,7 +1177,7 @@ html[data-theme="dark"].gh-pagehead-title {
 }
 
 .faq-content .kg-toggle-card .kg-toggle-heading-text {
-  font-family: var(--font-family-three);
+  font-family: var(--gh-font-heading);
   font-size: 2.6rem;
   font-weight: var(--font-weight-three-medium);
   line-height: 1.3;
@@ -1446,8 +1442,8 @@ html[data-theme="dark"].custom-no-feature-sign p a {
   margin-top: 5rem;
   letter-spacing: -0.011em;
   padding: 2rem 7.5rem;
-  font-family: var(--font-sans-serif);
-  box-shadow: 0 10px 20px -10px var(--color-secondary);
+  font-family: var(--font-sans);
+  box-shadow: var(--cn-shadow-sm);
   border-radius: 999px;
   opacity: 1;
 }
@@ -1492,7 +1488,7 @@ html[data-theme="dark"].custom-no-feature-sign p a {
 }
 
 .global-tags a {
-  font-family: var(--font-family-three);
+  font-family: var(--font-sans);
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1;
@@ -1777,7 +1773,7 @@ html[data-theme="dark"].custom-no-feature-sign p a {
   z-index: 0;
   margin-right: 2rem;
   border-radius: 999px;
-  box-shadow: 0 10px 20px -10px var(--color-secondary);
+  box-shadow: var(--cn-shadow-sm);
 }
 
 .gh-head-menu {
@@ -2008,10 +2004,6 @@ a.toc-link {
   display: block;
 }
 
-html[data-theme="dark"] img.logo-dark {
-  display: block;
-}
-
 @media screen and (max-width: 991px) {
   .it-dark-light:hover .icon-light svg {
     fill: #f1f1f1;
@@ -2021,24 +2013,12 @@ html[data-theme="dark"] img.logo-dark {
     max-width: 70vh;
     margin: auto;
   }
-
-  html:not([data-theme="dark"]).is-head-open img.logo-nav.logo-light,
-  html[data-theme="dark"] .is-head-open .logo-nav.logo-dark {
-    display: block !important;
-  }
 }
 
-.logo-nav.logo-dark,
-html[data-theme="dark"] img.logo-nav.logo-light {
+/* One logo at a time: the dark one in dark mode (default.hbs). */
+html[data-theme="dark"] .logo-nav.logo-light,
+html:not([data-theme="dark"]) .logo-nav.logo-dark {
   display: none;
-}
-
-.is-head-transparent:not(.is-head-open) img.logo-nav.logo-light {
-  display: none !important;
-}
-
-.is-head-transparent:not(.is-head-open) img.logo-nav.logo-dark {
-  display: block !important;
 }
 
 .it-dark-light:hover .icon-dark svg {
@@ -2068,7 +2048,7 @@ html[data-theme="dark"] .it-button.it-button-primary {
 
 html[data-theme="dark"] .it-button.it-button-primary:hover {
   color: #f1f1f1 !important;
-  background: #ed5107 !important;
+  background: var(--color-primary-hover) !important;
 }
 
 html[data-intro="hide"] {
@@ -2149,7 +2129,7 @@ body,
 }
 
 .faq-content .kg-toggle-card .kg-toggle-heading-text {
-  font-family: var(--font-family-three);
+  font-family: var(--gh-font-heading);
   font-size: 2.6rem;
   font-weight: var(--font-weight-three-medium);
   line-height: 1.3;
@@ -2633,7 +2613,7 @@ body,
 }
 
 .archive-title.is-tag span {
-  font-family: var(--font-family-three);
+  font-family: var(--gh-font-heading);
   font-size: 1.8rem;
   font-weight: var(--font-weight-three-bold);
   margin-left: 6px;
@@ -2691,7 +2671,7 @@ body,
 }
 
 .account-details-title {
-  font-family: var(--font-family-three);
+  font-family: var(--gh-font-heading);
   font-size: 1.8rem;
   font-weight: var(--font-weight-three-bold);
   box-sizing: border-box;
@@ -2871,15 +2851,6 @@ body,
 .page-working typebot-bubble:nth-of-type(2),
 .page-profile typebot-bubble:nth-of-type(2) {
   display: none;
-}
-
-.is-head-transparent .gh-head-description,
-.is-head-transparent .gh-head-link,
-.is-head-transparent .gh-head-logo,
-.is-head-transparent .gh-head-logo a,
-.is-head-transparent .gh-social,
-.is-head-transparent .nav-more-toggle {
-  color: var(--color-base) !important;
 }
 
 .page-working .gh-btn.center {
@@ -3559,8 +3530,8 @@ html[data-theme="dark"] .gh-post-upgrade-cta a.gh-btn html[data-theme="dark"] .g
 .gh-select:focus,
 select:focus,
 textarea:focus {
-  border-color: #ed5107;
-  box-shadow: 0 0 0 3px rgba(237, 81, 7, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 15%, transparent);
   outline: 0;
 }
 
@@ -3590,7 +3561,7 @@ blockquote.kg-blockquote-alt {
 }
 
 .kg-card .kg-bookmark-card {
-  box-shadow: 0 2px 7px 0 rgba(20, 20, 43, 0.06);
+  box-shadow: var(--cn-shadow);
   padding-top: 1.8rem;
   margin-bottom: 1.8rem;
 }
@@ -3609,7 +3580,7 @@ blockquote.kg-blockquote-alt {
 
 .kg-bookmark-container:hover {
   opacity: 1;
-  box-shadow: 0 4px 14px 0 rgba(20, 20, 43, 0.1);
+  box-shadow: var(--cn-shadow-raised);
 }
 
 .kg-toggle-heading-text {
@@ -3871,7 +3842,7 @@ h4,
 h5,
 h6 {
   color: var(--color-base);
-  font-family: var(--font-sans);
+  font-family: var(--gh-font-heading);
   letter-spacing: 0.01em;
 }
 
@@ -4153,7 +4124,7 @@ h5 {
   border: 0;
   border-radius: var(--radius);
   cursor: pointer;
-  font-family: var(--font-sans-serif);
+  font-family: var(--font-sans);
   font-size: 1.4rem;
   font-weight: var(--font-normal);
   line-height: var(--height);
@@ -4740,7 +4711,7 @@ html.no-infinite-scroll .pagination {
 
 /* Title */
 .item-title {
-  font-family: var(--font-sans);
+  font-family: var(--gh-font-heading);
   font-size: 3rem;
   line-height: 1.13s;
   max-width: 490px;

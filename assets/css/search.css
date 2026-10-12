@@ -54,7 +54,7 @@ html.ns-open {
     background: var(--ns-bg);
     border: 1px solid var(--ns-border);
     border-radius: 1.2rem;
-    box-shadow: 0 2.4rem 6rem rgb(0 0 0 / 22%);
+    box-shadow: 6px 6px 0 var(--color-base);
     overflow: hidden;
 }
 

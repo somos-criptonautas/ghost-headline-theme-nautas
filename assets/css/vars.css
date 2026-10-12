@@ -27,8 +27,8 @@ html {
 }
 
 html[data-theme="dark"] {
-    --color-primary: #5107ed;
-    --color-primary-hover: #9a5cfd;
+    --color-primary: var(--cn-violeta-fill);
+    --color-primary-hover: var(--cn-violeta-fill-hover);
     --color-secondary-text: #e7e7e7;
     --color-base: #e7e7e7;
     --color-bg: #1C2128;
@@ -39,7 +39,13 @@ html[data-theme="dark"] {
     --color-svg: #e7e7e7;
     --border-form-control: #444c56;
     --bg-icon-mail: #539bf5;
-    --ghost-accent-color: #9a5cfd;
+    --ghost-accent-color: var(--cn-violeta-tinta);
+}
+
+/* The brand's violet over the accent set in Ghost admin, which Ghost writes
+   on :root; theme.js always sets data-theme, so this wins in both modes. */
+html[data-theme="light"] {
+    --ghost-accent-color: var(--cn-violeta-tinta);
 }
 
 html[data-theme="dark"] h1,
@@ -62,12 +68,12 @@ text-align: left;
 :root {
     /* Colours */
     --color-secondary-text: #939393;
-    --color-primary: #ed5107;
-    --color-primary-hover: #f67b22;
-    --color-secondary: #5107ed;
-    --color-secondary-hover: #5107ed;
-    --color-success: #07815c;
-    --color-danger: #ca203f;
+    --color-primary: var(--cn-violeta-fill);
+    --color-primary-hover: var(--cn-violeta-fill-hover);
+    --color-secondary: var(--cn-violeta-fill);
+    --color-secondary-hover: var(--cn-violeta-fill-hover);
+    --color-success: var(--cn-exito);
+    --color-danger: var(--cn-error);
     --color-base: #111;
     --color-gray: #636363;
     --color-border: #f1f1f1;
@@ -156,13 +162,4 @@ text-align: left;
         --gap: 1.39em;
         --margin-wrap-left-right: 6.25vw;
     }
-}
-
-.shadow {
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-}
-.shadow-newsletter {
-    --tw-shadow: 0 20px 25px -5pxrgba(0,0,0,.33),0 8px 10px -6pxrgba(0,0,0,.33);
-    --tw-shadow-colored: 0 20px 25px -5pxvar(--tw-shadow-color),0 8px 10px -6px var(--tw-shadow-color);
-    box-shadow: var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow);
 }
