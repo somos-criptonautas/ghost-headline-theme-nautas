@@ -8,7 +8,7 @@
 		</p></div>
         <section class="gh-topic gh-topic-grid">
             <div class="gh-topic-content">
-                {{#get "posts" include="authors" limit="7"}}
+                {{#get "posts" include="tags,authors" limit="7"}}
                     {{#foreach posts}}
                         {{> "loop-grid"}}
                     {{/foreach}}

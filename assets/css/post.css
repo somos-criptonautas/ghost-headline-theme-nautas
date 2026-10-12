@@ -382,3 +382,9 @@
     color: inherit;
     text-decoration: underline;
 }
+
+/* Difficulty dots (partials/level.hbs), after the date on cards and posts. */
+.gh-level {
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+}

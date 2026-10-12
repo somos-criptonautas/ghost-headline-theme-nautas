@@ -9,17 +9,17 @@
     search index's embeddings, instead of at random. --}}
 {{#is "post"}}
     {{#if post.primary_tag}}
-        {{#get "posts" include="authors" filter="tag:{{post.primary_tag.slug}}+id:-{{post.id}}" limit="16" as |next|}}
+        {{#get "posts" include="tags,authors" filter="tag:{{post.primary_tag.slug}}+id:-{{post.id}}" limit="16" as |next|}}
             {{!-- @root: inside {{#get}} the context is the result, so a bare
                 post.primary_tag was undefined - the title and link came out empty. --}}
             {{> "read-next" posts=next tag=@root.post.primary_tag more_url=@root.post.primary_tag.url}}
         {{/get}}
 
-        {{#get "posts" include="authors" filter="tag:-{{post.primary_tag.slug}}+id:-{{post.id}}" limit="16" as |next|}}
+        {{#get "posts" include="tags,authors" filter="tag:-{{post.primary_tag.slug}}+id:-{{post.id}}" limit="16" as |next|}}
             {{> "read-next" posts=next title=(t "More articles") view_all=true similar_to=@root.post.id}}
         {{/get}}
     {{else}}
-        {{#get "posts" include="authors" filter="id:-{{post.id}}" limit="16" as |next|}}
+        {{#get "posts" include="tags,authors" filter="id:-{{post.id}}" limit="16" as |next|}}
             {{> "read-next" posts=next title=(t "Read next") view_all=true similar_to=@root.post.id}}
         {{/get}}
     {{/if}}
