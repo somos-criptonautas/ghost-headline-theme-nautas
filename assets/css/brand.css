@@ -25,6 +25,8 @@
     --cn-ui-line: #DEDBD6;
     --cn-ui-text: #1A1A1A;
     --cn-ui-muted: #5C5852;
+    /* The forum's "hover" colour (brand kit, discourse.json). */
+    --cn-ui-hover: #F1EEF4;
 
     /* Buttons and other violet fills, and the text set on them. */
     --cn-violeta-fill: #5814EA;
@@ -47,6 +49,7 @@ html[data-theme="dark"] {
     --cn-ui-line: #3B393E;
     --cn-ui-text: #F1F1F1;
     --cn-ui-muted: #B5B0AA;
+    --cn-ui-hover: #353338;
 
     /* As the kit's page: the pale violet, with the ground's colour on it. */
     --cn-violeta-fill: #C89DFF;

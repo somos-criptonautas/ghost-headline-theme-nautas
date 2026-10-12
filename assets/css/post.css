@@ -142,11 +142,28 @@
     font-size: 1.8rem;
     line-height: 1;
     cursor: pointer;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    transition: border-color 0.2s ease, background-color 0.15s ease;
+}
+
+/* As on the forum: the pill takes the hover colour and the emoji grows; the
+   pill itself stays put. */
+.gh-reaction > :first-child {
+    display: inline-block;
+    transition: transform 0.15s ease;
 }
 
 .gh-reaction:hover {
-    transform: translateY(-1px);
+    background-color: var(--cn-ui-hover);
+}
+
+.gh-reaction:hover > :first-child {
+    transform: scale(1.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gh-reaction:hover > :first-child {
+        transform: none;
+    }
 }
 
 .gh-reaction[aria-pressed="true"] {

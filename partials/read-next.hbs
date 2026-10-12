@@ -1,6 +1,7 @@
-{{!-- More articles block. Params: posts, tag (optional), title, more_url. --}}
+{{!-- More articles block. Params: posts, tag (optional), title, more_url,
+    similar_to (optional: a post id, to order the cards by meaning). --}}
 {{#if posts}}
-<div class="gh-read-next gh-canvas">
+<div class="gh-read-next gh-canvas"{{#if similar_to}} data-similar-to="{{similar_to}}"{{/if}}>
     <section class="gh-pagehead">
         <h2 class="gh-pagehead-title">{{#if tag}}{{t "More on"}} {{tag.name}}{{else}}{{title}}{{/if}}</h2>
     </section>
