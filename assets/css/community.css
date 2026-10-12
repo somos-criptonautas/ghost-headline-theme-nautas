@@ -523,7 +523,7 @@
     cursor: pointer;
 }
 
-/* Home strip (home.hbs, community-related.hbs strip=true): below 1200px, in
+/* Community strip (home.hbs, index.hbs; community-related.hbs strip=true): below 1200px, in
    place of the aside, which is the column from 1200px up. */
 
 @media screen and (min-width: 1200px) {
@@ -533,7 +533,7 @@
 }
 
 @media screen and (max-width: 1199px) {
-    .home-template .gh-community {
+    .gh-with-sidebar:has(.gh-community-strip) .gh-community {
         display: none;
     }
 }

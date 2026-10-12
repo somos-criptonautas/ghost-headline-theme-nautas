@@ -1,5 +1,5 @@
-{{!-- Destacado: the posts starred as featured in Ghost, up to four. On the
-    landing (home.hbs) and at the top of /blog/ (index.hbs). --}}
+{{!-- Destacado: the posts starred as featured in Ghost, up to four, on the
+    landing (home.hbs). --}}
 {{#get "posts" include="tags,authors" filter="featured:true" limit="4"}}
 {{#if posts}}
 <section class="gh-topic gh-topic-grid gh-featured">

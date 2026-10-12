@@ -1,12 +1,12 @@
 {{!< default}}
-
+{{!-- /blog/ (and /page/2/ on): every post, newest first, loading on as the
+    reader scrolls. The community sits where scrolling never pushes it away:
+    the aside column from 1200px, the strip above the posts below that. --}}
 <main class="gh-main gh-outer">
     <div class="gh-inner">
-
-
-        {{!-- /blog/: Destacado on the first page, then every post, newest
-            first, loading on as the reader scrolls. --}}
-        {{^if pagination.prev}}{{> "featured"}}{{/if}}
+    <div class="gh-with-sidebar">
+        <div class="gh-with-sidebar-main">
+        {{^if pagination.prev}}{{> "community-related" strip=true}}{{/if}}
 
         <div class="gh-topic gh-topic-grid gh-topic-grid-item gh-listing">
             <div class="gh-topic-content gh-feed">
@@ -24,7 +24,8 @@
             </footer>
             {{/if}}
         </div>
-
-        {{> "community-related"}}
+        </div>
+        {{> "community-sidebar"}}
+    </div>
     </div>
 </main>
