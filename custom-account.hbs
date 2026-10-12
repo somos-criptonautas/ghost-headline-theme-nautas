@@ -4,13 +4,9 @@
 			<div class="account-header archive-section">
 				<h1 class="archive-title global-title">{{t "hi"}} {{#if @member.name}}{{@member.name}} 👋{{else}}{{t
 					"Your account"}}{{/if}}</h1>
-				<p class="archive-excerpt global-excerpt">
-					{{#if custom_excerpt}}
-					{{custom_excerpt}}
-					{{else}}
-					{{t "You're a Cryptonaut"}}
-					{{/if}}
-				</p>
+				{{#if custom_excerpt}}
+				<p class="archive-excerpt global-excerpt">{{custom_excerpt}}</p>
+				{{/if}}
 				{{#foreach @member.subscriptions}}
 				<div class="account-details">
 					<div class="account-details-wrap global-radius">
