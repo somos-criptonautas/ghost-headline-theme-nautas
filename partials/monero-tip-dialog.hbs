@@ -1,0 +1,14 @@
+{{!-- Monero tips (discourse-monero-tips) to the forum account named in
+    assets/js/monero-tip.js. Any .gh-monero-tip-open on the page opens this;
+    triggers carry data-monero-tip and stay hidden until the forum returns
+    an address. Styled as the reactions dialog. --}}
+<dialog class="gh-reactions-dialog gh-monero-tip-dialog" aria-labelledby="gh-monero-tip-text">
+    <p id="gh-monero-tip-text">{{t "The tip goes straight to the wallet: the site never touches it or can confirm it arrived."}}</p>
+    <img class="gh-monero-tip-qr" alt="{{t "Scan it with your wallet"}}" width="240" height="240">
+    <input class="gh-monero-tip-address" type="text" readonly aria-label="{{t "Monero address"}}">
+    <div class="gh-monero-tip-actions">
+        <button class="gh-reactions-close gh-monero-tip-copy" type="button" data-copied="{{t "Copied"}}">{{t "Copy address"}}</button>
+        <a class="gh-reactions-close gh-monero-tip-wallet">{{t "Open in wallet"}}</a>
+    </div>
+    <form method="dialog"><button class="gh-monero-tip-dismiss">{{t "Close"}}</button></form>
+</dialog>
