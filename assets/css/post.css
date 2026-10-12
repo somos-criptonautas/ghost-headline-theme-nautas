@@ -383,23 +383,49 @@
     text-decoration: underline;
 }
 
-/* Difficulty dots (partials/level.hbs): on cards at the right of the row
-   under the image, on posts right under the feature image. */
+/* Difficulty (partials/level.hbs): at the right of the band or the row. */
 .gh-level {
     margin-left: auto;
-    letter-spacing: 0.1em;
     white-space: nowrap;
 }
 
-.gh-article-level {
-    display: flex;
-    justify-content: flex-end;
-    color: var(--color-secondary-text);
-    font-size: 1.4rem;
+/* Band across the bottom of a feature image (partials/image-band.hbs): the
+   inverse of the theme - dark on light, light on dark - and see-through. */
+.gh-card-image,
+.gh-banded,
+.gh-cover {
+    position: relative;
 }
 
-.gh-article-level:not(:has(*)) {
+.gh-image-band {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 0.6rem 1.2rem;
+    background-color: rgba(24, 23, 25, 0.62);
+    color: #F1F1F1;
+    font-size: 1.4rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+html[data-theme="dark"] .gh-image-band {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #1A1A1A;
+}
+
+.gh-image-band:not(:has(*)) {
     display: none;
+}
+
+.gh-banded img {
+    display: block;
 }
 
 /* Channel (partials/channel.hbs, channel-icon.hbs): the forum category's icon,

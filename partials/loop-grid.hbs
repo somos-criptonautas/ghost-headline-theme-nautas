@@ -7,12 +7,13 @@
                 feature_image size="xl" format="webp" }} 1200w, {{img_url feature_image size="xxl" format="webp" }}
                 2000w" sizes="(max-width: 1200px) 100vw, 1200px" src="{{img_url feature_image size="m" format="webp"
                 }}" alt="{{#if feature_image_alt}}{{feature_image_alt}}{{else}}{{title}}{{/if}}">
+            {{> "image-band"}}
         </figure>
         {{/if}}
 
         <div class="gh-card-wrapper">
-            {{!-- Channel left, difficulty right: under the image on stacked cards. --}}
-            <div class="gh-card-marks">{{> "channel"}}{{> "level"}}</div>
+            {{!-- Without an image, channel and difficulty sit above the title. --}}
+            {{^if feature_image}}<div class="gh-card-marks">{{> "channel"}}{{> "level"}}</div>{{/if}}
             <header class="gh-card-header">
                 <h1 class="gh-card-title">{{title}}</h1>
             </header>

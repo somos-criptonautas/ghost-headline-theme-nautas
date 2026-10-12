@@ -1,6 +1,6 @@
 {{!-- Difficulty, from the internal tags #nivel-1, #nivel-2 and #nivel-3 set in
-    the editor: dots only (●○○ ●●○ ●●●), "Nivel 2/3" for screen readers.
-    Nothing without one of them. Needs the post's tags (include="tags"). --}}
-{{#has tag="#nivel-1"}}<span class="gh-level" role="img" aria-label="{{t "Level"}} 1/3" title="{{t "Level"}} 1/3">●○○</span>{{/has}}
-{{#has tag="#nivel-2"}}<span class="gh-level" role="img" aria-label="{{t "Level"}} 2/3" title="{{t "Level"}} 2/3">●●○</span>{{/has}}
-{{#has tag="#nivel-3"}}<span class="gh-level" role="img" aria-label="{{t "Level"}} 3/3" title="{{t "Level"}} 3/3">●●●</span>{{/has}}
+    the editor: "Nivel 2". Nothing without one of them. Needs the post's
+    tags (include="tags"). --}}
+{{#has tag="#nivel-1"}}<span class="gh-level">{{t "Level"}} 1</span>{{/has}}
+{{#has tag="#nivel-2"}}<span class="gh-level">{{t "Level"}} 2</span>{{/has}}
+{{#has tag="#nivel-3"}}<span class="gh-level">{{t "Level"}} 3</span>{{/has}}
