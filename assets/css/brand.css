@@ -16,12 +16,12 @@
     --cn-paper: #E8E6E1;
     --cn-halftone: #7E7973;
 
-    /* The interface, the same as the forum's (src/kit.py UI, src/pagina.py,
-       discourse.json): ground, header, raised surface, rules, text and
-       secondary text. */
-    --cn-ui-bg: #F8F8F8;
+    /* The interface: ground, header, raised surface, rules, text and
+       secondary text. Light: ground and header are the forum's header grey
+       (discourse.json), surfaces white; dark: the forum's (src/kit.py UI). */
+    --cn-ui-bg: #F1F1F1;
     --cn-ui-header: #F1F1F1;
-    --cn-ui-surface: #F1F1F1;
+    --cn-ui-surface: #FFFFFF;
     --cn-ui-line: #DEDBD6;
     --cn-ui-text: #1A1A1A;
     --cn-ui-muted: #5C5852;

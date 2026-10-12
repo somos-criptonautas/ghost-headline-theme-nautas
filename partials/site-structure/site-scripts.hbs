@@ -8,7 +8,14 @@
 {{/is}}
 
 {{! External links: assets/js/external-links.js, inside main.min.js. }}
-{{! flying-pages.min.js ships inside main.min.js, same as tocbot }}
+{{! Prefetch of internal links on hover or touch (the browser's own Speculation
+    Rules; flying-pages.min.js before). Prefetch only - prerendering would run
+    the page's scripts, analytics included, for pages never visited. Members,
+    admin, redirect and query links are left alone. Browsers without support
+    ignore the block. The CSP allows inline scripts ('unsafe-inline'). }}
+<script type="speculationrules">
+{"prefetch": [{"where": {"and": [{"href_matches": "/*"}, {"not": {"href_matches": ["/ghost/*", "/members/*", "/r/*", "/*\\?*"]}}, {"not": {"selector_matches": "[target=_blank], [data-portal], [rel~=nofollow]"}}]}, "eagerness": "moderate"}]}
+</script>
 {{#if @custom.search_host}}
 <script src="{{asset "js/search-config.js"}}" data-host="{{@custom.search_host}}" data-key="{{@custom.search_key}}"></script>
 {{! Search modal: InstantSearch.js over Typesense, one query across the blog

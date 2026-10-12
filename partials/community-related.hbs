@@ -17,5 +17,17 @@
     </h2>
     <ol class="gh-community-cards"></ol>
     <a class="gh-community-more" target="_blank" rel="noopener">{{t "Go to the community"}} {{> "icons/phosphor/arrow-square-out"}}</a>
+    {{!-- A card opens its topic here (community-sidebar.js). --}}
+    <dialog class="gh-community-dialog" aria-labelledby="gh-community-dialog-title">
+        <header class="gh-community-dialog-head">
+            <h3 class="gh-community-dialog-title" id="gh-community-dialog-title"></h3>
+            <p class="gh-community-dialog-meta"></p>
+        </header>
+        <div class="gh-community-dialog-body"></div>
+        <footer class="gh-community-dialog-foot">
+            <a class="gh-community-dialog-out" target="_blank" rel="noopener">{{t "view in the community"}} {{> "icons/phosphor/arrow-square-out"}}</a>
+            <button class="gh-community-dialog-close" type="button">{{t "Close"}}</button>
+        </footer>
+    </dialog>
 </section>
 {{/if}}

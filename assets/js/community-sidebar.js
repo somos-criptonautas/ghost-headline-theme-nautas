@@ -142,6 +142,7 @@
                 var poster = (topic.posters || [])[0];
                 var user = poster && users[poster.user_id];
                 return {
+                    id: parseInt(topic.id, 10) || 0,
                     url: topicUrl(topic.slug, topic.id),
                     image: image(topic.image_url),
                     title: String(topic.title || ''),
@@ -317,6 +318,46 @@
         });
     };
 
+    /* Topic dialog (community-related.hbs): a card opens the topic's first
+     * post here, as the search reader does, so reading it does not leave the
+     * article; going on to the forum is the link at its foot, in a new tab.
+     * Modified clicks (new tab, new window) and browsers without <dialog>
+     * keep the plain link. The post is the forum's HTML rebuilt with safe
+     * tags only (forum-html.js); if it does not load, the dialog keeps the
+     * title and the way to the forum. */
+    var dialog = document.querySelector('.gh-community-dialog');
+    var openTopic = function (entry, meta) {
+        var body = dialog.querySelector('.gh-community-dialog-body');
+        dialog.querySelector('.gh-community-dialog-title').textContent = entry.title;
+        dialog.querySelector('.gh-community-dialog-meta').replaceChildren(meta.cloneNode(true));
+        dialog.querySelector('.gh-community-dialog-out').href = entry.url;
+        body.replaceChildren();
+        body.setAttribute('aria-busy', 'true');
+        dialog.showModal();
+
+        getJSON('/t/' + entry.id + '.json').then(function (topic) {
+            var first = topic && topic.post_stream && topic.post_stream.posts && topic.post_stream.posts[0];
+            // A later card may have been opened meanwhile.
+            if (first && first.cooked && dialog.open && dialog.querySelector('.gh-community-dialog-out').href === entry.url) {
+                body.replaceChildren(window.NautasForumHTML.render(first.cooked, ORIGIN, 'gh-community-emoji'));
+            }
+        }).then(null, function () {}).then(function () {
+            body.removeAttribute('aria-busy');
+        });
+    };
+
+    if (dialog) {
+        dialog.querySelector('.gh-community-dialog-close').addEventListener('click', function () {
+            dialog.close();
+        });
+        // A click on the backdrop lands on the <dialog> itself.
+        dialog.addEventListener('click', function (event) {
+            if (event.target === dialog) {
+                dialog.close();
+            }
+        });
+    }
+
     // Post pages: a horizontal card per topic, the thumbnail (or the poster's
     // avatar) beside the title, then who, when and how many replies.
     var card = function (entry) {
@@ -360,6 +401,16 @@
         body.appendChild(meta);
         link.appendChild(body);
         item.appendChild(link);
+
+        if (dialog && dialog.showModal && entry.id && window.NautasForumHTML) {
+            link.addEventListener('click', function (event) {
+                if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                    return;
+                }
+                event.preventDefault();
+                openTopic(entry, meta);
+            });
+        }
         return item;
     };
 
