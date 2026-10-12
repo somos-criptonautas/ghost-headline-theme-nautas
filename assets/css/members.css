@@ -139,7 +139,7 @@ form[data-members-form].loading .it-button-loader {
     display: inline-block;
     padding: .1rem 1rem;
     border-radius: 4px;
-    color: #fff;
+    color: var(--cn-on-violeta);
     font-size: 1.3rem;
 }
 

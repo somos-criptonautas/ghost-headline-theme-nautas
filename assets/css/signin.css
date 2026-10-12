@@ -247,7 +247,7 @@ color: var(--color-white);
     -webkit-font-smoothing: subpixel-antialiased;
     background: var(--color-secondary);
     border-radius: var(--radius);
-    color: #fff;
+    color: var(--cn-on-violeta);
     display: inline-block;
     font-size: 2rem;
     line-height: 1em;

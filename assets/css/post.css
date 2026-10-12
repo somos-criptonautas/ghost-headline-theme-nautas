@@ -193,7 +193,7 @@
     border: 0;
     border-radius: 999px;
     background: var(--color-primary);
-    color: #fff;
+    color: var(--cn-on-violeta);
     font-weight: 700;
     cursor: pointer;
 }

@@ -16,11 +16,21 @@
     --cn-paper: #E8E6E1;
     --cn-halftone: #7E7973;
 
-    /* Fills keep the light violet in both modes: white text on it reads at
-       7.8:1, on the pale dark-mode violet it would not. */
+    /* The interface, the same as the forum's (src/kit.py UI, src/pagina.py,
+       discourse.json): ground, header, raised surface, rules, text and
+       secondary text. */
+    --cn-ui-bg: #F8F8F8;
+    --cn-ui-header: #F1F1F1;
+    --cn-ui-surface: #F1F1F1;
+    --cn-ui-line: #DEDBD6;
+    --cn-ui-text: #1A1A1A;
+    --cn-ui-muted: #5C5852;
+
+    /* Buttons and other violet fills, and the text set on them. */
     --cn-violeta-fill: #5814EA;
-    /* Hover darkens it toward Ink rather than inventing a hue. */
-    --cn-violeta-fill-hover: color-mix(in srgb, #5814EA 80%, #14110F);
+    --cn-on-violeta: #FFFFFF;
+    /* Hover moves toward the text colour rather than inventing a hue. */
+    --cn-violeta-fill-hover: color-mix(in srgb, var(--cn-violeta-fill) 80%, var(--cn-ui-text));
 
     /* The kit's hard ink shadow, as on the series cards: no blur, no glow. */
     --cn-shadow: 4px 4px 0 var(--color-base);
@@ -32,9 +42,16 @@ html[data-theme="dark"] {
     /* The kit's dark interface (src/kit.py UI, src/pagina.py): ground,
        raised surface, rules and text. */
     --cn-ui-bg: #181719;
+    --cn-ui-header: #181719;
     --cn-ui-surface: #222024;
     --cn-ui-line: #3B393E;
     --cn-ui-text: #F1F1F1;
+    --cn-ui-muted: #B5B0AA;
+
+    /* As the kit's page: the pale violet, with the ground's colour on it. */
+    --cn-violeta-fill: #C89DFF;
+    --cn-on-violeta: #181719;
+    --cn-violeta-fill-hover: color-mix(in srgb, var(--cn-violeta-fill) 80%, var(--cn-ui-text));
 
     --cn-violeta-tinta: #C89DFF;
     --cn-rojo-oxido: #F98E76;

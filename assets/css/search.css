@@ -155,9 +155,8 @@ html.ns-open {
     clip-path: var(--ns-src-shape);
 }
 
-/* A row's source, filled with its colour; marker and text are knocked out of
-   it - white on the dark light-theme colours, the page background on the
-   pale dark-theme ones. */
+/* A row's source: outlined, its colour only in the marker - the kit keeps
+   Rojo Óxido off small text. */
 .ns__pill {
     display: inline-flex;
     align-items: center;
@@ -166,19 +165,14 @@ html.ns-open {
     padding: 0.1rem 0.8rem;
     font-weight: 600;
     line-height: 1.5;
-    color: #fff;
-    background: var(--ns-src);
+    color: var(--ns-text);
+    border: 1px solid var(--ns-border);
     border-radius: 999px;
-}
-
-html[data-theme="dark"] .ns__pill {
-    color: var(--ns-bg);
 }
 
 .ns__pill::before {
     width: 0.8rem;
     height: 0.8rem;
-    background: currentColor;
 }
 
 .ns__sources {

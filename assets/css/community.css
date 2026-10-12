@@ -265,7 +265,7 @@
     text-overflow: ellipsis;
 }
 
-/* Drawn dot rather than a "·" glyph, which Outfit sets near the baseline. */
+/* Drawn dot rather than a "·" glyph, which the heading font can set near the baseline. */
 .gh-community-meta > * + *::before {
     content: "";
     display: inline-block;

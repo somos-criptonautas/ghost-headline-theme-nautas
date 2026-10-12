@@ -29,7 +29,7 @@ html {
 html[data-theme="dark"] {
     --color-primary: var(--cn-violeta-fill);
     --color-primary-hover: var(--cn-violeta-fill-hover);
-    --color-secondary-text: var(--cn-ui-text);
+    --color-secondary-text: var(--cn-ui-muted);
     --color-base: var(--cn-ui-text);
     --color-bg: var(--cn-ui-bg);
     --color-bg-alt: var(--cn-ui-surface);
@@ -67,18 +67,18 @@ text-align: left;
 
 :root {
     /* Colours */
-    --color-secondary-text: #939393;
+    --color-secondary-text: var(--cn-ui-muted);
     --color-primary: var(--cn-violeta-fill);
     --color-primary-hover: var(--cn-violeta-fill-hover);
     --color-secondary: var(--cn-violeta-fill);
     --color-secondary-hover: var(--cn-violeta-fill-hover);
     --color-success: var(--cn-exito);
     --color-danger: var(--cn-error);
-    --color-base: #111;
+    --color-base: var(--cn-ui-text);
     --color-gray: #636363;
-    --color-border: #f1f1f1;
-    --color-bg: #fff;
-    --color-bg-alt: #f1f1f1;
+    --color-border: var(--cn-ui-line);
+    --color-bg: var(--cn-ui-bg);
+    --color-bg-alt: var(--cn-ui-surface);
     --color-link: #fff;
     --color-shadow: rgba(37,115,247,.05);
     --color-white:#fff;

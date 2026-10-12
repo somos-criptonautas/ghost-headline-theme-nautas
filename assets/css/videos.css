@@ -87,7 +87,7 @@
     text-overflow: ellipsis;
 }
 
-/* Drawn dot rather than a "·" glyph, which Outfit sets near the baseline. */
+/* Drawn dot rather than a "·" glyph, which the heading font can set near the baseline. */
 .gh-videos-category-value::before {
     content: "";
     display: inline-block;
@@ -421,6 +421,7 @@
 
 .gh-video.is-playing .gh-video-icon {
     background-color: var(--ghost-accent-color);
+    color: var(--cn-on-violeta);
 }
 
 /* Card */
@@ -484,6 +485,7 @@
 .gh-video-play:is(:hover, :focus-visible) .gh-video-icon {
     transform: scale(1.08);
     background-color: var(--ghost-accent-color);
+    color: var(--cn-on-violeta);
 }
 
 .gh-video-badge {
@@ -538,7 +540,7 @@
     text-transform: uppercase;
 }
 
-/* Drawn dot rather than a "·" glyph, which Outfit sets near the baseline. */
+/* Drawn dot rather than a "·" glyph, which the heading font can set near the baseline. */
 .gh-video-meta > * + *::before {
     content: "";
     display: inline-block;
