@@ -242,5 +242,18 @@
 	"view in the community (opens in a new tab)": "ver en la comunidad (se abre en una pestaña nueva)",
 	"Common searches": "Búsquedas frecuentes",
 	"search failed; try again in a moment": "no se pudo buscar ahora; probá de nuevo en un momento",
-	"no results for": "sin resultados para"
+	"no results for": "sin resultados para",
+	"updated": "actualizado",
+	"month-1": "ene",
+	"month-2": "feb",
+	"month-3": "mar",
+	"month-4": "abr",
+	"month-5": "may",
+	"month-6": "jun",
+	"month-7": "jul",
+	"month-8": "ago",
+	"month-9": "sep",
+	"month-10": "oct",
+	"month-11": "nov",
+	"month-12": "dic"
 }
