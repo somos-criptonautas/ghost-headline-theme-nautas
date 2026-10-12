@@ -4,7 +4,7 @@
     series=true (custom-collection.hbs): a page series has an internal tag
     instead, shown by its slug and linked to the series hub (/slug/). --}}
 {{#if primary_tag}}
-{{> "breadcrumb-trail" crumb_name=primary_tag.name crumb_url=primary_tag.url crumb_page_title=title crumb_page_url=(url absolute="true")}}
+{{> "breadcrumb-trail" crumb_icon=primary_tag.slug crumb_name=primary_tag.name crumb_url=primary_tag.url crumb_page_title=title crumb_page_url=(url absolute="true")}}
 {{else if series}}
 {{#foreach tags visibility="internal" limit="1"}}
 {{> "breadcrumb-trail" crumb_name=slug crumb_url=(concat @site.url "/" slug "/") crumb_page_title=../title crumb_page_url=(concat @site.url "/" ../slug "/")}}

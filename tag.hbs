@@ -7,7 +7,7 @@
 		{{>images/other_image other_image=feature_image alt=name}}
 	</div>
 	{{/if}}
-	<h1 class="archive-title global-title is-tag gh-topic-link"># {{ name }}<span>{{../pagination.total}}</span></h1>
+	<h1 class="archive-title global-title is-tag gh-topic-link">{{> "channel-icon" slug=slug}}{{ name }}<span>{{../pagination.total}}</span></h1>
 	{{#if description}}
 	<p class="archive-excerpt global-excerpt">{{description}}</p>
 	{{/if}}

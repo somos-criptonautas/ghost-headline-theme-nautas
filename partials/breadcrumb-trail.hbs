@@ -1,11 +1,11 @@
 {{!-- The breadcrumb itself (partials/breadcrumb.hbs). Params: crumb_name and crumb_url
-    (the middle step), crumb_page_title and crumb_page_url (the last). The
+    (the middle step; crumb_icon: a tag slug for its channel icon), crumb_page_title and crumb_page_url (the last). The
     crumb_ prefix is needed: a param named like a Ghost helper (link, url,
     page_url) is shadowed by the helper. --}}
 <nav class="gh-article-tag" aria-label="{{t "Breadcrumb"}}">
     <a href="{{@site.url}}/">{{t "Blog"}}</a>
     <span aria-hidden="true">→</span>
-    <a href="{{crumb_url}}">{{crumb_name}}</a>
+    <a href="{{crumb_url}}">{{#if crumb_icon}}{{> "channel-icon" slug=crumb_icon}}{{/if}}{{crumb_name}}</a>
 </nav>
 <script type="application/ld+json">
 {

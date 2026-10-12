@@ -383,8 +383,61 @@
     text-decoration: underline;
 }
 
-/* Difficulty dots (partials/level.hbs), after the date on cards and posts. */
+/* Difficulty dots (partials/level.hbs): on cards at the right of the row
+   under the image, on posts right under the feature image. */
 .gh-level {
+    margin-left: auto;
     letter-spacing: 0.1em;
     white-space: nowrap;
+}
+
+.gh-article-level {
+    display: flex;
+    justify-content: flex-end;
+    color: var(--color-secondary-text);
+    font-size: 1.4rem;
+}
+
+.gh-article-level:not(:has(*)) {
+    display: none;
+}
+
+/* Channel (partials/channel.hbs, channel-icon.hbs): the forum category's icon,
+   in the text colour, before the tag name. */
+.gh-channel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.gh-channel-icon {
+    display: inline-flex;
+    flex: none;
+    margin-right: 0.4em;
+}
+
+.gh-channel .gh-channel-icon {
+    margin-right: 0;
+}
+
+.gh-channel-icon svg {
+    width: 1.1em;
+    height: 1.1em;
+}
+
+/* Cards: channel left, difficulty right, the row under the image - set as
+   the card footer (weight, colour, capitals), a step smaller. */
+.gh-card-marks {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin: 0.8rem 0 0.4rem;
+    color: var(--color-secondary-text);
+    font-size: 1.6rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.gh-card-marks:not(:has(*)) {
+    display: none;
 }

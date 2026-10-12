@@ -13,6 +13,8 @@
         {{/if}}
         {{/foreach}}
     </figure>
+    {{!-- Difficulty, right under the feature image, on the right. --}}
+    <div class="gh-article-level">{{> "level"}}</div>
     <div class="gh-article-meta">
         <div class="gh-article-meta-inner">
             {{!-- "13 sep 24 (actualizado 10 oct 26)". The update shows only when it
@@ -21,14 +23,13 @@
                 August/September 2026 bulk touch that was not a rewrite. The
                 YYYY-MM-DD strings compare correctly as text. --}}
             <span class="gh-article-date">
-                <time datetime="{{date published_at format="YYYY-MM-DD"}}">{{> "short-date" value=published_at}}</time>
+                {{t "published"}} <time datetime="{{date published_at format="YYYY-MM-DD"}}">{{> "short-date" value=published_at}}</time>
                 {{#match (date updated_at format="YYYY-MM-DD") ">" "2026-10-01"}}
                 {{#match (date updated_at format="YYYY-MM-DD") "!=" (date published_at format="YYYY-MM-DD")}}
                 ({{t "updated"}} <time datetime="{{date updated_at format="YYYY-MM-DD"}}">{{> "short-date" value=updated_at}}</time>)
                 {{/match}}
                 {{/match}}
             </span>
-            {{> "level"}}
         </div>
         <h4 class="gh-author-name-list">
             {{ t "by" }}

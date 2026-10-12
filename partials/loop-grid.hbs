@@ -11,6 +11,8 @@
         {{/if}}
 
         <div class="gh-card-wrapper">
+            {{!-- Channel left, difficulty right: under the image on stacked cards. --}}
+            <div class="gh-card-marks">{{> "channel"}}{{> "level"}}</div>
             <header class="gh-card-header">
                 <h1 class="gh-card-title">{{title}}</h1>
             </header>
@@ -29,7 +31,6 @@
                 <span class="gh-card-author">por {{#foreach authors}}{{#if @first}}{{name}}{{else}},
                     {{name}}{{/if}}{{/foreach}}</span>
                 <time class="gh-card-date" datetime="{{date published_at format="YYYY-MM-DD"}}">{{date published_at timeago="true"}}</time>
-                {{> "level"}}
                 {{comment_count class="gh-card-comments"}}
             </footer>
         </div>
