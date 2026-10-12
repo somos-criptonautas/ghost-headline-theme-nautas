@@ -5672,6 +5672,22 @@ html.js .gh-loadmore {
     height: 4.4rem;
     padding: 0.8rem;
   }
+
+  /* The page footer's links, set as the open menu's: one smaller row in the
+     secondary text colour. Its icons keep their own spacing (footer.css). */
+  .footer-criptonauta .gh-foot-menu .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem 1.6rem;
+    width: min(32rem, 100%);
+    margin-inline: auto;
+  }
+
+  .footer-criptonauta .gh-foot-menu .nav a {
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: var(--color-secondary-text);
+  }
 }
 
 /* The Monero tip icon is a button, revealed by assets/js/monero-tip.js. It renders even

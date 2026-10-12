@@ -50,14 +50,15 @@
         where: labelled.getAttribute('data-label-in') || 'in'
     };
 
-    var getJSON = function (path) {
+    // withCookie: sent with the forum session, for what a signed-in member may see.
+    var getJSON = function (path, withCookie) {
         var controller = window.AbortController ? new AbortController() : null;
         var timer = controller && setTimeout(function () {
             controller.abort();
         }, TIMEOUT);
 
         return fetch(ORIGIN + path, {
-            credentials: 'omit',
+            credentials: withCookie ? 'include' : 'omit',
             headers: {Accept: 'application/json'},
             signal: controller ? controller.signal : undefined
         }).then(function (response) {
@@ -69,6 +70,29 @@
         }, function (error) {
             clearTimeout(timer);
             throw error;
+        });
+    };
+
+    /* Members-only topics (is_locked_down in the forum's lists) answer 402
+     * to anyone without access, so they are listed only for a visitor signed
+     * in to the forum; /session/current.json answers 404 to everyone else.
+     * Asked once, and only when there is a list of topics to filter. */
+    var session = null;
+    var signedIn = function () {
+        if (!session) {
+            session = getJSON('/session/current.json', true).then(function () {
+                return true;
+            }, function () {
+                return false;
+            });
+        }
+        return session;
+    };
+    var readable = function (entries) {
+        return signedIn().then(function (member) {
+            return entries.filter(function (entry) {
+                return member || !entry.locked;
+            });
         });
     };
 
@@ -143,6 +167,7 @@
                 var user = poster && users[poster.user_id];
                 return {
                     id: parseInt(topic.id, 10) || 0,
+                    locked: topic.is_locked_down === true,
                     url: topicUrl(topic.slug, topic.id),
                     image: image(topic.image_url),
                     title: String(topic.title || ''),
@@ -266,7 +291,9 @@
     var load = function (which) {
         if (!cache[which]) {
             cache[which] = getJSON(MODES[which]).then(function (body) {
-                return (which === 'posts' ? posts(body) : topics(body))
+                return which === 'posts' ? posts(body) : readable(topics(body));
+            }).then(function (entries) {
+                return entries
                     .filter(function (entry) {
                         return entry.url && entry.title;
                     })
@@ -335,7 +362,7 @@
         body.setAttribute('aria-busy', 'true');
         dialog.showModal();
 
-        getJSON('/t/' + entry.id + '.json').then(function (topic) {
+        getJSON('/t/' + entry.id + '.json', entry.locked).then(function (topic) {
             var first = topic && topic.post_stream && topic.post_stream.posts && topic.post_stream.posts[0];
             // A later card may have been opened meanwhile.
             if (first && first.cooked && dialog.open && dialog.querySelector('.gh-community-dialog-out').href === entry.url) {
@@ -423,7 +450,9 @@
         if (SLUG.test(category)) {
             var path = category ? '/c/' + category : '/latest';
             getJSON(category ? path + '/l/latest.json' : '/latest.json').then(function (body) {
-                var entries = topics(body)
+                return readable(topics(body));
+            }).then(function (entries) {
+                entries = entries
                     .filter(function (entry) {
                         return entry.url && entry.title;
                     })

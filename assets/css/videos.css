@@ -180,6 +180,12 @@
         margin-bottom: 2.4rem;
     }
 
+    /* The picker as wide as its choice, not the whole row, and a 44px tap target. */
+    .gh-videos-category {
+        align-self: flex-start;
+        min-height: 4.4rem;
+    }
+
     .gh-videos-tab {
         flex: 1 1 0;
         justify-content: center;
