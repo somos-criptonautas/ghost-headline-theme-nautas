@@ -81,41 +81,52 @@
         }
     }
 
-    /* 3. Hide-on-scroll for the fixed bar, via headroom.js. Only up to 991px:
-     *    that is where #gh-head is position: fixed, so there is something to
-     *    hide. On desktop the header is static and scrolls away by itself.
+    /* 3. Hide-on-scroll for the fixed bar. Only up to 991px: that is where
+     *    #gh-head is position: fixed, so there is something to hide. On
+     *    desktop the header is static and scrolls away by itself.
      *
-     *    headroom.js is vendored in assets/js/main.js, which the bundle
-     *    concatenates AFTER this file, so window.Headroom does not exist yet -
-     *    hence the DOMContentLoaded wrapper, by which time the whole bundle has
-     *    run. The transform pairs with the --head-top offset above rather than
-     *    fighting it: one sets top, the other translates.
+     *    Down past the first 64px hides it (.is-unpinned, screen.css); up by
+     *    more than 5px, or back near the top, shows it again - the small
+     *    tolerance keeps a stray pixel from flapping it. Overscroll (iOS
+     *    bounce, past either end) is ignored. headroom.js did this before.
      */
-    document.addEventListener('DOMContentLoaded', function () {
-        var head = document.getElementById('gh-head');
-        var bar = window.matchMedia('(max-width: 991px)');
-        var headroom = null;
+    var head = document.getElementById('gh-head');
+    var bar = window.matchMedia('(max-width: 991px)');
 
-        if (!head || !window.Headroom || !window.Headroom.cutsTheMustard) {
-            return;
-        }
+    if (head) {
+        var OFFSET = 64;
+        var TOLERANCE_UP = 5;
+        var lastY = window.scrollY;
+        var ticking = false;
 
-        var apply = function () {
-            if (bar.matches && !headroom) {
-                // A little tolerance upwards so a stray pixel does not flap it.
-                headroom = new window.Headroom(head, {
-                    tolerance: {up: 5, down: 0},
-                    offset: 64
-                });
-                headroom.init();
-            } else if (!bar.matches && headroom) {
-                headroom.destroy();
-                headroom = null;
+        var update = function () {
+            ticking = false;
+            var y = Math.round(window.scrollY);
+            var max = document.documentElement.scrollHeight - window.innerHeight;
+            if (!bar.matches || y < 0 || y > max) {
+                lastY = y;
+                return;
             }
+            if (y <= OFFSET || lastY - y > TOLERANCE_UP) {
+                head.classList.remove('is-unpinned');
+            } else if (y > lastY) {
+                head.classList.add('is-unpinned');
+            }
+            lastY = y;
         };
 
-        apply();
-        bar.addEventListener('change', apply);
-    });
+        window.addEventListener('scroll', function () {
+            if (!ticking) {
+                ticking = true;
+                window.requestAnimationFrame(update);
+            }
+        }, {passive: true});
+
+        // Back to desktop: nothing to hide.
+        bar.addEventListener('change', function () {
+            head.classList.remove('is-unpinned');
+            lastY = window.scrollY;
+        });
+    }
 
 })();

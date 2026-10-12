@@ -5280,13 +5280,13 @@ html.js .gh-loadmore {
     background-color: transparent;
   }
 
-  /* Hide-on-scroll, driven by headroom.js (assets/js/head.js). The open menu
+  /* Hide-on-scroll, driven by assets/js/head.js. The open menu
      is the full-screen sheet, which must never slide away. */
   body:not(.is-head-open) #gh-head {
     transition: transform 0.33s var(--animation-base, ease);
   }
 
-  body:not(.is-head-open) #gh-head.headroom--unpinned {
+  body:not(.is-head-open) #gh-head.is-unpinned {
     transform: translateY(-100%);
   }
 
