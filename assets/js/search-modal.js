@@ -31,17 +31,26 @@
     var ICON_OUT = '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M184,80V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H176A8,8,0,0,1,184,80Z" opacity="0.2"/><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"/></svg>';
     var ICON_LINK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"></path><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"></path></svg>';
 
-    var t = function (es) {
-        return (document.documentElement.lang || 'es').indexOf('es') === 0 ? es[0] : es[1];
+    /* Strings from the theme's locales: site-scripts.hbs renders each one,
+     * through {{t}}, into <template id="ns-i18n">. A missing one shows its key. */
+    var strings = {};
+    var i18n = document.getElementById('ns-i18n');
+    if (i18n) {
+        Array.prototype.forEach.call(i18n.content.querySelectorAll('[data-k]'), function (el) {
+            strings[el.getAttribute('data-k')] = el.textContent;
+        });
+    }
+    var t = function (key) {
+        return strings[key] || key;
     };
 
     /* Sources in the order the merged list takes them. Mushin stays off until
      * the visitor turns them on - they are the only results that leave the
      * site - and a source without a collection configured is not offered. */
     var SOURCES = [
-        { key: 'posts', collection: cfg.postsCollection, label: ['blog', 'blog'], hint: ['busca en los artículos publicados', 'searches published articles'], on: true, perPage: 8 },
-        { key: 'topics', collection: cfg.topicsCollection, label: ['comunidad', 'community'], hint: ['busca en nuestra comunidad', 'searches our community'], on: true, perPage: 10 },
-        { key: 'mushin', collection: cfg.mushinCollection, label: ['mushin', 'mushin'], hint: ['busca en enlaces seleccionados, fuera del sitio', 'searches curated links, off the site'], on: false, perPage: 8 }
+        { key: 'posts', collection: cfg.postsCollection, label: 'blog', hint: 'searches published articles', on: true, perPage: 8 },
+        { key: 'topics', collection: cfg.topicsCollection, label: 'community', hint: 'searches our community', on: true, perPage: 10 },
+        { key: 'mushin', collection: cfg.mushinCollection, label: 'mushin', hint: 'searches curated links, off the site', on: false, perPage: 8 }
     ].filter(function (source) {
         return source.collection;
     });
@@ -94,15 +103,15 @@
         root.hidden = true;
         root.innerHTML =
             '<div class="ns__backdrop" data-ns-close></div>' +
-            '<div class="ns__modal" role="dialog" aria-modal="true" aria-label="' + t(['Buscar', 'Search']) + '">' +
+            '<div class="ns__modal" role="dialog" aria-modal="true" aria-label="' + t('Search') + '">' +
             '<form class="ns__head" role="search">' +
             '<span class="ns__head-icon">' + ICON_SEARCH + '</span>' +
             '<input class="ns__input" type="search" autocomplete="off" autocorrect="off" ' +
-            'spellcheck="false" aria-label="' + t(['Buscar en el sitio', 'Search this site']) + '" ' +
-            'placeholder="' + t(['buscar artículos e historias…', 'search posts and stories…']) + '">' +
+            'spellcheck="false" aria-label="' + t('Search this site') + '" ' +
+            'placeholder="' + t('search posts and stories…') + '">' +
             '<button type="button" class="ns__esc" data-ns-close>esc</button>' +
             '</form>' +
-            '<div class="ns__sources" role="group" aria-label="' + t(['Fuentes', 'Sources']) + '" data-ns-pane="sources"></div>' +
+            '<div class="ns__sources" role="group" aria-label="' + t('Sources') + '" data-ns-pane="sources"></div>' +
             '<div class="ns__body" data-ns-pane="body">' +
             '<div class="ns__list" data-ns-pane="list"></div>' +
             '<div class="ns__state" data-ns-pane="state"></div>' +
@@ -382,7 +391,7 @@
         var back = document.createElement('button');
         back.type = 'button';
         back.className = 'ns__reader-back';
-        back.textContent = t(['← volver a los resultados', '← back to results']);
+        back.textContent = t('← back to results');
         back.addEventListener('click', function () {
             closeReader(row);
         });
@@ -397,7 +406,7 @@
             hit.username ? '@' + hit.username : '',
             hit.category,
             date(hit.created_at),
-            hit.reply_count ? hit.reply_count + ' ' + t(['respuestas', 'replies']) : ''
+            hit.reply_count ? hit.reply_count + ' ' + t('replies') : ''
         ]));
 
         var text = document.createElement('div');
@@ -439,9 +448,9 @@
         out.href = hit.url;
         out.target = '_blank';
         out.rel = 'noopener';
-        out.textContent = t(['ver en la comunidad', 'view in the community']);
+        out.textContent = t('view in the community');
         out.insertAdjacentHTML('beforeend', ICON_OUT);
-        out.setAttribute('aria-label', t(['ver en la comunidad (se abre en una pestaña nueva)', 'view in the community (opens in a new tab)']));
+        out.setAttribute('aria-label', t('view in the community (opens in a new tab)'));
         foot.appendChild(out);
         reader.appendChild(foot);
 
@@ -486,9 +495,9 @@
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 { hit: hit, attribute: 'text', fallback: hit.text, prefix: hit.username ? '@' + hit.username + ': ' : '' },
                 [
-                    t(['comunidad', 'community']),
+                    t('community'),
                     hit.category,
-                    hit.reply_count ? hit.reply_count + ' ' + t(['respuestas', 'replies']) : '',
+                    hit.reply_count ? hit.reply_count + ' ' + t('replies') : '',
                     hit.like_count ? hit.like_count + ' ♥' : ''
                 ],
                 // The topic's own thumbnail, else its category's logo; both
@@ -622,7 +631,7 @@
             wrap.className = 'ns__suggestions';
             var label = document.createElement('div');
             label.className = 'ns__section-label';
-            label.textContent = t(['Búsquedas frecuentes', 'Common searches']);
+            label.textContent = t('Common searches');
             wrap.appendChild(label);
             suggestions.forEach(function (text) {
                 var a = document.createElement('a');
@@ -648,7 +657,7 @@
             panes.list.textContent = '';
             var failed = document.createElement('p');
             failed.className = 'ns__none';
-            failed.textContent = t(['no se pudo buscar ahora; probá de nuevo en un momento', 'search failed; try again in a moment']);
+            failed.textContent = t('search failed; try again in a moment');
             state.appendChild(failed);
             return;
         }
@@ -666,7 +675,7 @@
         if (answered) {
             var none = document.createElement('p');
             none.className = 'ns__none';
-            none.textContent = t(['sin resultados para ', 'no results for ']) + '“' + lastQuery + '”';
+            none.textContent = t('no results for') + ' ' + '“' + lastQuery + '”';
             state.appendChild(none);
         }
     };

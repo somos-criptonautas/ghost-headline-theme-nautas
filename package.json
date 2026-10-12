@@ -1,6 +1,6 @@
 {
     "name": "ghost-headline-theme-nautas",
-    "description": "A Ghost theme",
+    "description": "Ghost theme for communities: a blog that works as the front page of a Discourse forum",
     "version": "1.0.0",
     "private": true,
     "engines": {
@@ -9,9 +9,8 @@
     },
     "license": "MIT",
     "author": {
-        "name": "Ghost Foundation",
-        "email": "hello@ghost.org",
-        "url": "https://ghost.org"
+        "name": "satonotdead",
+        "url": "https://satonotdead.co"
     },
     "keywords": [
         "ghost",

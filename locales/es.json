@@ -235,5 +235,20 @@
 	"Reactions": "Reacciones",
 	"Enter our community and login to react": "Entra a nuestra comunidad e inicia sesión para reaccionar",
 	"Close": "Cerrar",
-	"Start your journey in": "Empieza tu camino en"
+	"Start your journey in": "Empieza tu camino en",
+	"Search this site": "Buscar en el sitio",
+	"search posts and stories…": "buscar artículos e historias…",
+	"Sources": "Fuentes",
+	"blog": "blog",
+	"community": "comunidad",
+	"mushin": "mushin",
+	"searches published articles": "busca en los artículos publicados",
+	"searches our community": "busca en nuestra comunidad",
+	"searches curated links, off the site": "busca en enlaces seleccionados, fuera del sitio",
+	"← back to results": "← volver a los resultados",
+	"view in the community": "ver en la comunidad",
+	"view in the community (opens in a new tab)": "ver en la comunidad (se abre en una pestaña nueva)",
+	"Common searches": "Búsquedas frecuentes",
+	"search failed; try again in a moment": "no se pudo buscar ahora; probá de nuevo en un momento",
+	"no results for": "sin resultados para"
 }
