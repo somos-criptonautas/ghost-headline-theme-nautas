@@ -29,16 +29,16 @@ html {
 html[data-theme="dark"] {
     --color-primary: var(--cn-violeta-fill);
     --color-primary-hover: var(--cn-violeta-fill-hover);
-    --color-secondary-text: #e7e7e7;
-    --color-base: #e7e7e7;
-    --color-bg: #1C2128;
-    --color-bg-alt: #22272e;
-    --color-link: #e7e7e7;
-    --color-bg-white: #1C2128;
-    --color-border: #444c56;
-    --color-svg: #e7e7e7;
-    --border-form-control: #444c56;
-    --bg-icon-mail: #539bf5;
+    --color-secondary-text: var(--cn-ui-text);
+    --color-base: var(--cn-ui-text);
+    --color-bg: var(--cn-ui-bg);
+    --color-bg-alt: var(--cn-ui-surface);
+    --color-link: var(--cn-ui-text);
+    --color-bg-white: var(--cn-ui-bg);
+    --color-border: var(--cn-ui-line);
+    --color-svg: var(--cn-ui-text);
+    --border-form-control: var(--cn-ui-line);
+    --bg-icon-mail: var(--cn-violeta-tinta);
     --ghost-accent-color: var(--cn-violeta-tinta);
 }
 

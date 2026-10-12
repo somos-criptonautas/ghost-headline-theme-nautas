@@ -29,6 +29,13 @@
 }
 
 html[data-theme="dark"] {
+    /* The kit's dark interface (src/kit.py UI, src/pagina.py): ground,
+       raised surface, rules and text. */
+    --cn-ui-bg: #181719;
+    --cn-ui-surface: #222024;
+    --cn-ui-line: #3B393E;
+    --cn-ui-text: #F1F1F1;
+
     --cn-violeta-tinta: #C89DFF;
     --cn-rojo-oxido: #F98E76;
     --cn-error: #FF8DA5;

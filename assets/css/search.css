@@ -130,20 +130,14 @@ html.ns-open {
 }
 
 /* Sources: one toggle per collection, under the box. Each source has a
-   colour from the Nautas palette (v0.3: tertiary, quaternary, success) and
+   colour from the brand kit (brand.css: Violeta Tinta, Rojo Óxido, Éxito) and
    a shape - square, triangle, diamond - so the toggle and its rows match at
    a glance without relying on colour. The marker never sets text. */
 
 .ns {
-    --ns-src-posts: #462c6d;
-    --ns-src-topics: #b24b38;
-    --ns-src-mushin: #1f7a5c;
-}
-
-html[data-theme="dark"] .ns {
-    --ns-src-posts: #9771d0;
-    --ns-src-topics: #db9284;
-    --ns-src-mushin: #4fb894;
+    --ns-src-posts: var(--cn-violeta-tinta);
+    --ns-src-topics: var(--cn-rojo-oxido);
+    --ns-src-mushin: var(--cn-exito);
 }
 
 [data-source="posts"] { --ns-src: var(--ns-src-posts); --ns-src-shape: none; }

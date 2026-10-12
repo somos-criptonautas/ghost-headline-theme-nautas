@@ -2006,7 +2006,7 @@ a.toc-link {
 
 @media screen and (max-width: 991px) {
   .it-dark-light:hover .icon-light svg {
-    fill: #f1f1f1;
+    fill: var(--color-base);
   }
 
   .is-head-open img.logo-nav {
@@ -2047,7 +2047,7 @@ html[data-theme="dark"] .it-button.it-button-primary {
 }
 
 html[data-theme="dark"] .it-button.it-button-primary:hover {
-  color: #f1f1f1 !important;
+  color: var(--color-white) !important;
   background: var(--color-primary-hover) !important;
 }
 
@@ -3715,14 +3715,10 @@ body.page-template {
   background: var(--color-bg);
 }
 
+/* The kit allows no gradients: the raised surface, in either mode. */
 body.page-template.page-comienza,
 body.page-template.page-ingresa {
-  background: linear-gradient(315deg, #f1f1f1, #fff);
-}
-
-html[data-theme="dark"] body.page-template.page-comienza,
-html[data-theme="dark"] body.page-template.page-ingresa {
-  background: linear-gradient(315deg, #1c2128, #22272e) !important;
+  background: var(--color-bg-alt);
 }
 
 .is-head-open .page-template {
@@ -3829,10 +3825,6 @@ img {
 ul.nav li:hover,
 .nav-current {
   box-shadow: 0 -3px 0 0 var(--color-base) inset;
-}
-
-.is-head-transparent ul.nav li:hover {
-  box-shadow: 0 -3px 0 0 #e7e7e7 inset;
 }
 
 h1,
