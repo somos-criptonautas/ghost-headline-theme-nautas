@@ -1,0 +1,19 @@
+{{!-- The landing at the top of the home: the Ghost page "inicio" - what we do
+    and the frequent questions, answered in plain view, edited in the Ghost
+    editor - then the three ways in. Without that page, just the ways in.
+    One .gh-content block, so the title and the buttons line up with the text. --}}
+<section class="gh-landing gh-canvas">
+    <div class="gh-content gh-landing-text">
+        {{#get "pages" filter="slug:inicio" limit="1"}}
+        {{#foreach pages}}
+        <h1 class="gh-landing-title">{{title}}</h1>
+        {{content}}
+        {{/foreach}}
+        {{/get}}
+        <nav class="gh-landing-paths" aria-label="{{t "Choose your path"}}">
+            <a class="gh-landing-path" href="{{@site.url}}/blog/">{{t "Blog"}}</a>
+            <a class="gh-landing-path" href="{{@site.url}}/curso/">{{t "Course"}}</a>
+            <a class="gh-landing-path" href="{{@site.url}}/comunidad/">{{t "Community"}}</a>
+        </nav>
+    </div>
+</section>

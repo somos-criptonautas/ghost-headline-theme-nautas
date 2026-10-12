@@ -4,8 +4,9 @@
     <div class="gh-inner">
 
 
-        <section class="gh-pagehead">
-        </section>
+        {{!-- /blog/: Destacado on the first page, then every post, newest
+            first, loading on as the reader scrolls. --}}
+        {{^if pagination.prev}}{{> "featured"}}{{/if}}
 
         <div class="gh-topic gh-topic-grid gh-topic-grid-item gh-listing">
             <div class="gh-topic-content gh-feed">
@@ -19,7 +20,7 @@
                 hidden-when-scripting treatment as home.hbs. --}}
             {{#if pagination.next}}
             <footer class="gh-topic-footer">
-                <a class="gh-topic-link gh-loadmore" href="{{@site.url}}/page/{{pagination.next}}/">{{t "Show more"}} {{> "icons/arrow"}}</a>
+                <a class="gh-topic-link gh-loadmore" href="{{page_url pagination.next}}">{{t "Show more"}} {{> "icons/arrow"}}</a>
             </footer>
             {{/if}}
         </div>

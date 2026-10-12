@@ -31,6 +31,7 @@
 @import "carousel.css";
 @import "collection.css";
 @import "post.css";
+@import "landing.css";
 
 :root {
   --head-nav-gap: 32px;
@@ -128,48 +129,15 @@ html[data-theme="dark"] .gh-btn {
   margin-top: 80px;
 }
 
-/* Homepage tag sections (home.hbs): the block, and each section revealed by
-   "+ More topics", get the same 80px as two adjacent sections - their
-   wrappers break the adjacent-sibling rule above. */
-.gh-topics,
-.gh-topics-more {
-  margin-top: 7rem;
-}
-
-/* Phones: tighter steps between the homepage blocks - Trending and each
-   tag section - and less air above each section's footer link. */
+/* Phones: tighter steps between the homepage blocks. */
 @media screen and (max-width: 767px) {
-  .home-template .gh-topic-grid + .gh-topic-grid,
-  .gh-topics,
-  .gh-topics-more {
+  .home-template .gh-topic-grid + .gh-topic-grid {
     margin-top: 3.5rem;
   }
 
   .home-template .gh-topic-footer {
     padding-top: 2.4rem;
   }
-}
-
-/* The script swaps the button and the link with `hidden`, which the
-   display: inline-flex on .gh-topic-link would otherwise override. */
-.gh-topics-footer [hidden] {
-  display: none;
-}
-
-.gh-topics-button {
-  gap: 0.6rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--color-base);
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.gh-topics-button:focus-visible {
-  outline: 2px solid var(--ghost-accent-color);
-  outline-offset: 4px;
-  border-radius: 0.4rem;
 }
 
 .gh-topic-grid .gh-topic-name {
