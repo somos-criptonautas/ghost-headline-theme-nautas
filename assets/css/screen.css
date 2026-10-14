@@ -5381,12 +5381,13 @@ html.js .gh-loadmore {
 }
 
 /* External link marker, set by assets/js/external-links.js on the last
-   word of links that leave the site (.gh-ext), so it never wraps alone. */
-.gh-content a.is-external .gh-ext {
+   word of links that leave the site or open a new tab (.gh-ext), so it
+   never wraps alone. */
+a.is-external .gh-ext {
   white-space: nowrap;
 }
 
-.gh-content a.is-external .gh-ext::after {
+a.is-external .gh-ext::after {
   display: inline-block;
   width: 0.8em;
   height: 0.8em;

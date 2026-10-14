@@ -546,3 +546,42 @@
         grid-auto-columns: 85%;
     }
 }
+
+/* Forum callouts (forum-html.js: "> [!type] Title"), in the community dialog
+   and the search reader: a tinted box with a coloured edge, as on GitHub.
+   Blue for notes, green for tips, orange for warnings, red for dangers;
+   any other type in the grey of a quote. */
+.forum-callout {
+    --callout: var(--color-secondary-text);
+    margin: 0 0 1.2rem;
+    padding: 1rem 1.4rem;
+    border-left: 3px solid var(--callout);
+    border-radius: 0 0.6rem 0.6rem 0;
+    background-color: color-mix(in srgb, var(--callout) 10%, transparent);
+}
+
+.forum-callout > :last-child {
+    margin-bottom: 0;
+}
+
+.forum-callout-title {
+    color: var(--callout);
+    font-family: var(--font-sans);
+    font-weight: 700;
+}
+
+.forum-callout:is([data-callout="note"], [data-callout="info"], [data-callout="tldr"], [data-callout="abstract"], [data-callout="summary"]) {
+    --callout: #3B82F6;
+}
+
+.forum-callout:is([data-callout="tip"], [data-callout="success"], [data-callout="check"], [data-callout="done"]) {
+    --callout: #22A06B;
+}
+
+.forum-callout:is([data-callout="warning"], [data-callout="caution"], [data-callout="attention"], [data-callout="important"]) {
+    --callout: #E8890C;
+}
+
+.forum-callout:is([data-callout="danger"], [data-callout="error"], [data-callout="bug"], [data-callout="failure"]) {
+    --callout: #E5484D;
+}
