@@ -24,7 +24,7 @@
     border-radius: 0 0.8rem 0.8rem 0;
     background: var(--color-bg);
     color: var(--color-base);
-    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.12);
+    box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
     font-size: 1.3rem;
     letter-spacing: 0.04em;
     cursor: pointer;
@@ -40,7 +40,7 @@
 
 .cn-feedback-tab:hover,
 .cn-feedback-tab[aria-expanded="true"] {
-    box-shadow: 0 0.3rem 1.4rem color-mix(in srgb, var(--color-base) 22%, transparent);
+    box-shadow: 0 0.2rem 0.9rem color-mix(in srgb, var(--color-base) 14%, transparent);
 }
 
 .cn-feedback-tab:focus-visible {
@@ -60,7 +60,7 @@
     border-radius: 1.2rem;
     background: var(--color-bg);
     color: var(--cn-ui-text);
-    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.12);
+    box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
     font-size: 1.5rem;
     transform: translateY(-50%);
 }

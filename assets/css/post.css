@@ -248,7 +248,7 @@
     border-radius: 50%;
     background-color: var(--color-bg);
     color: var(--color-base);
-    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.12);
+    box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
     cursor: pointer;
     opacity: 0;
     visibility: hidden;
@@ -275,7 +275,7 @@
 
     /* In the text colour, so it shows on the dark theme too. */
     .gh-to-top:hover {
-        box-shadow: 0 0.3rem 1.4rem color-mix(in srgb, var(--color-base) 22%, transparent);
+        box-shadow: 0 0.2rem 0.9rem color-mix(in srgb, var(--color-base) 14%, transparent);
     }
 }
 
