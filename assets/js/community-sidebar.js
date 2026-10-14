@@ -307,6 +307,7 @@
     };
 
     var request = 0;
+    var shown = false;
 
     var show = function (which) {
         var ticket = ++request;
@@ -329,13 +330,17 @@
             list.hidden = false;
             message.hidden = true;
             more.href = ORIGIN + (which === 'posts' ? '/posts' : '/latest');
-            aside.hidden = false;
+            shown = true;
         }).then(null, function () {
             if (ticket !== request) {
                 return;
             }
-            // Before the aside was ever shown this keeps it hidden (forum
-            // down, no CORS). After that, say so in place of the list.
+            // Never loaded (forum down, no CORS): the placeholder goes and
+            // the aside with it. After that, say so in place of the list.
+            if (!shown) {
+                aside.hidden = true;
+                return;
+            }
             list.hidden = true;
             message.hidden = false;
         }).then(function () {
@@ -481,6 +486,12 @@
     if (!aside) {
         return;
     }
+
+    // Shown from the first paint (this bundle runs before it), as rows of
+    // placeholders while aria-busy (community.css), so the column does not
+    // open and push the posts when the forum answers. Without the script it
+    // stays hidden.
+    aside.hidden = false;
 
     picker.value = mode;
     picker.addEventListener('change', function () {

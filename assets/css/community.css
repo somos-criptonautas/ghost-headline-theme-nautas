@@ -585,3 +585,24 @@
 .forum-callout:is([data-callout="danger"], [data-callout="error"], [data-callout="bug"], [data-callout="failure"]) {
     --callout: #E5484D;
 }
+
+/* The aside while it loads (community-sidebar.js): eight rows of
+   placeholders, the 12.3rem of the real ones, so nothing moves when they
+   arrive. */
+.gh-community[aria-busy="true"] .gh-community-list:empty {
+    height: 98.4rem;
+    background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--color-base) 7%, transparent) 0 10.7rem, transparent 10.7rem 12.3rem);
+    border-radius: 0.6rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .gh-community[aria-busy="true"] .gh-community-list:empty {
+        animation: gh-community-wait 1.2s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes gh-community-wait {
+    to {
+        opacity: 0.5;
+    }
+}
