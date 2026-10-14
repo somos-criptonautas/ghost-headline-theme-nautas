@@ -14,10 +14,10 @@
     {{#if @custom.discourse_url}}
     <link rel="preconnect" href="{{@custom.discourse_url}}">
     {{#is "post"}}{{#if @custom.discourse_comments}}
-    {{! Comments: start fetching embed.js with the page instead of waiting for
-        main.min.js to inject it at the end of <body>. Same URL and no
-        crossorigin attribute, so the injected <script> reuses this response. }}
-    <link rel="preload" href="{{@custom.discourse_url}}/javascripts/embed.js" as="script">
+    {{! Comments: embed.js is injected at 70% scroll (assets/js/discourse-embed.js);
+        fetch it early at idle priority so that moment costs nothing. A preload
+        would warn as unused. Same URL, so the injected <script> reuses it. }}
+    <link rel="prefetch" href="{{@custom.discourse_url}}/javascripts/embed.js" as="script">
     {{/if}}{{/is}}
     {{/if}}
     {{!-- This site's own integrations, all in one file: see the partial. --}}

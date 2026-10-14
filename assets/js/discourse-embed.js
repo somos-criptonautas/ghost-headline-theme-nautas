@@ -25,15 +25,39 @@
             // Starting height only - replaced by the first height report, so
             // the whole thread shows without an inner scrollbar.
             embedHeight: '600px',
+            // embed.js makes fullApp iframes loading="lazy", so the app only
+            // began booting once the comments were nearly on screen. We pick
+            // the moment instead (below).
+            lazyLoad: false,
             discourseReferrerPolicy: 'no-referrer-when-downgrade'
         };
 
-        // URL must stay identical to the <link rel="preload"> in default.hbs,
-        // or the browser downloads embed.js twice.
-        var script = document.createElement('script');
-        script.async = true;
-        script.src = window.DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
-        document.head.appendChild(script);
+        var started = false;
+        var start = function () {
+            if (started) {
+                return;
+            }
+            started = true;
+            window.removeEventListener('scroll', check);
+            // Same URL as the <link rel="prefetch"> in default.hbs, so this
+            // comes from the cache.
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = window.DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+            document.head.appendChild(script);
+        };
+        // From 70% of the page on, so the forum app is up by the time the
+        // reader reaches the comments. Short posts, and links to #comments,
+        // start at once.
+        var check = function () {
+            var root = document.documentElement;
+            if (window.scrollY + window.innerHeight >= root.scrollHeight * 0.7 || location.hash === '#comments') {
+                start();
+            }
+        };
+        window.addEventListener('scroll', check, {passive: true});
+        window.addEventListener('hashchange', check);
+        check();
     }
 
     function notifyEmbed() {
