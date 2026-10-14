@@ -579,3 +579,55 @@ html[data-theme="dark"] .gh-featured .gh-card-excerpt {
     border: 1px solid var(--color-border);
     border-radius: 0.8rem;
 }
+
+/* Figures in a frame (/manifiesto: an HTML card with .cn-datos), set like
+   the survey on /curso: each figure with the accent as an edge on its left,
+   the first row's figures a step larger than the second's. */
+.gh-content .cn-datos {
+    margin: 1.75em 0;
+    padding: 3.2rem 3.2rem 2rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.8rem;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    font-size: 1.05em;
+}
+
+.cn-datos-fila {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 2rem;
+}
+
+.cn-datos-fila + .cn-datos-fila {
+    margin-top: 2.4rem;
+    padding-top: 2.4rem;
+    border-top: 1px solid var(--cn-ui-line, var(--color-border));
+}
+
+.cn-dato {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding-left: 1.2rem;
+    border-left: 3px solid var(--cn-violeta-fill, var(--ghost-accent-color));
+}
+
+.cn-dato-cifra {
+    font-size: 2.25em;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.cn-datos-fila + .cn-datos-fila .cn-dato-cifra {
+    font-size: 1.5em;
+}
+
+.cn-dato-texto {
+    line-height: 1.4;
+}
+
+.cn-datos-fila + .cn-datos-fila .cn-dato-texto {
+    color: var(--cn-ui-muted, var(--color-secondary-text));
+    font-size: 0.875em;
+}
