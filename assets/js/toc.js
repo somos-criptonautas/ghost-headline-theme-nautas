@@ -4,6 +4,8 @@
  * Moved out of an inline <script> in site-scripts.hbs: the site's CSP pins
  * inline scripts by hash, so editing one silently stops it running.
  *
+ * The TOC lists h1/h2; a text with fewer than 3 of those but subheadings
+ * under them (the journey's epilogue: one h2, then h3s) lists h3 too.
  * With fewer than 3 headings there is nothing to navigate, so the whole
  * column goes at every width, and the share links show at the end of the
  * article instead (.is-toc-empty / .has-no-toc in post.css).
@@ -16,9 +18,14 @@
         return;
     }
 
-    var headings = document.querySelectorAll('.gh-content.gh-canvas h1, .gh-content.gh-canvas h2');
+    var count = function (levels) {
+        return document.querySelectorAll(levels.split(',').map(function (h) {
+            return '.gh-content.gh-canvas ' + h;
+        }).join(',')).length;
+    };
+    var levels = count('h1,h2') < 3 ? 'h1,h2,h3' : 'h1,h2';
 
-    if (headings.length < 3) {
+    if (count(levels) < 3) {
         sidebar.classList.add('is-toc-empty');
         document.body.classList.add('has-no-toc');
         return;
@@ -33,7 +40,7 @@
         window.tocbot.init({
             tocSelector: '.toc',
             contentSelector: '.gh-content.gh-canvas',
-            headingSelector: 'h1,h2',
+            headingSelector: levels,
             hasInnerContainers: true,
             scrollSmooth: true,
             scrollSmoothDuration: 420,

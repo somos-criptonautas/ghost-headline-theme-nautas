@@ -1,59 +1,17 @@
-{{!-- More articles block. Params: posts, tag (optional), title, more_url,
-    similar_to (optional: a post id, to order the cards by meaning). --}}
+{{!-- More articles (partials/related-posts.hbs). Params: posts, similar_to
+    (the post's id: read-next.js orders the cards by meaning). --}}
 {{#if posts}}
-<div class="gh-read-next gh-canvas"{{#if similar_to}} data-similar-to="{{similar_to}}"{{/if}}>
+<div class="gh-read-next gh-canvas" data-similar-to="{{similar_to}}">
     <section class="gh-pagehead">
-        <h2 class="gh-pagehead-title">{{#if tag}}{{t "More on"}} {{tag.name}}{{else}}{{title}}{{/if}}</h2>
+        <h2 class="gh-pagehead-title">{{t "More articles"}}</h2>
     </section>
 
     <div class="gh-topic gh-topic-grid">
-        <div class="gh-topic-content">
-            {{#foreach posts limit="4"}}
+        <div class="gh-topic-content gh-carousel" tabindex="0" role="region" aria-label="{{t "More articles"}}">
+            {{#foreach posts}}
                 {{> "loop-grid" has_large_post=false}}
             {{/foreach}}
-
-            {{!-- Posts 5-8, plus the footer link, revealed by
-                assets/js/read-next.js when the block scrolls into view. They
-                are rendered up front rather than fetched: it is four more
-                cards of markup, against a Content API key in the theme and a
-                second round trip. --}}
-            {{#match posts.length ">" 4}}
-            <div class="gh-read-next-rest" hidden>
-                {{#foreach posts from="5" to="8"}}
-                    {{> "loop-grid" has_large_post=false}}
-                {{/foreach}}
-            </div>
-            {{/match}}
-
-            {{!-- Spares. read-next.js shuffles these together with the 8 above
-                and keeps 8, so the suggestions differ per visit; without JS
-                they stay hidden and the block behaves as if they were never
-                fetched. --}}
-            {{#match posts.length ">" 8}}
-            <div class="gh-read-next-pool" hidden>
-                {{#foreach posts from="9" to="16"}}
-                    {{> "loop-grid" has_large_post=false}}
-                {{/foreach}}
-            </div>
-            {{/match}}
         </div>
     </div>
-
-    {{!-- The last block on the page always ends in a way on - "Ver todo"
-        to every post - so a reader who reaches it is not left with only the
-        site footer; it shows from the start, without waiting for the reveal.
-        The tag block keeps its link to the tag, with more than 8 posts,
-        hidden until read-next.js reveals the block's rest. --}}
-    {{#if view_all}}
-    <footer class="gh-topic-footer gh-read-next-all">
-        <a class="gh-topic-link" href="{{@site.url}}/blog/">{{t "View all"}} {{> "icons/arrow"}}</a>
-    </footer>
-    {{else}}
-    {{#match posts.length ">" 8}}
-    <footer class="gh-topic-footer" hidden>
-        <a class="gh-topic-link" href="{{more_url}}">{{t "Show more"}} {{> "icons/arrow"}}</a>
-    </footer>
-    {{/match}}
-    {{/if}}
 </div>
 {{/if}}

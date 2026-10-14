@@ -1,8 +1,8 @@
 /* Landing (partials/landing.hbs): the page "inicio" arrives as one run of
  * paragraphs and h3 questions. Each question and its answer become one item,
  * two across from 992px (landing.css), read left to right; the last question -
- * how to go on - steps out of the grid, full width, to lead into the three
- * cards. The opening line goes up into the first screen. Without this
+ * how to go on - steps out of the grid, full width and one heading level up
+ * (h2), to lead into the three cards. The opening line goes up into the first screen. Without this
  * script the text reads as one column, opening line first. Ships inside
  * main.min.js.
  */
@@ -43,4 +43,11 @@
     }
     box.appendChild(grid);
     box.appendChild(next);
+
+    var heading = document.createElement('h2');
+    heading.id = last.id;
+    while (last.firstChild) {
+        heading.appendChild(last.firstChild);
+    }
+    last.replaceWith(heading);
 })();

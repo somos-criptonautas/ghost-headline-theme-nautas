@@ -31,7 +31,8 @@
             <footer class="gh-card-footer">
                 <span class="gh-card-author">por {{#foreach authors}}{{#if @first}}{{name}}{{else}},
                     {{name}}{{/if}}{{/foreach}}</span>
-                <time class="gh-card-date" datetime="{{date published_at format="YYYY-MM-DD"}}">{{date published_at timeago="true"}}</time>
+                {{!-- The last update, not the first publication. --}}
+                <time class="gh-card-date" datetime="{{date updated_at format="YYYY-MM-DD"}}">{{date updated_at timeago="true"}}</time>
                 {{comment_count class="gh-card-comments"}}
             </footer>
         </div>

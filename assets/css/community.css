@@ -95,11 +95,12 @@
 /* Picker: a native select styled as the heading text, with the Phosphor
    caret as its arrow. Native so keyboards, screen readers and phone pickers
    work without any script of ours. */
+/* flex: none - "Respuestas" is wider than the space the title leaves it. */
 .gh-community-picker {
     position: relative;
     display: inline-flex;
+    flex: none;
     align-items: center;
-    min-width: 0;
 }
 
 .gh-community-select {
@@ -320,11 +321,6 @@
     height: 2.2rem;
 }
 
-.gh-community-related-tag {
-    color: var(--color-secondary-text);
-    text-transform: none;
-}
-
 .gh-community-cards {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -361,13 +357,6 @@
 
 .gh-community-card-link:hover {
     border-color: var(--color-base);
-}
-
-.gh-community-card-link:hover .gh-community-name,
-.gh-community-card-link:focus-visible .gh-community-name {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 2px;
 }
 
 .gh-community-card-link:focus-visible {

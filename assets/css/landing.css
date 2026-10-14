@@ -115,6 +115,13 @@ html:has(.gh-landing) {
     height: 2rem;
 }
 
+/* The forum's way in leaves the site: the external mark, at text size. */
+.gh-landing-chip span svg {
+    width: 0.9em;
+    height: 0.9em;
+    vertical-align: -0.1em;
+}
+
 .gh-landing-intro {
     max-width: 64rem;
     margin: 4rem auto 0;
@@ -215,8 +222,9 @@ html:has(.gh-landing) {
     text-align: center;
 }
 
-.gh-landing-next h3 {
-    font-size: clamp(2.8rem, 2rem + 1.6vw, 4rem);
+/* The size of the other section heading (Nautas dicen). */
+.gh-landing-next h2 {
+    font-size: clamp(3.2rem, 2.4rem + 2vw, 4.8rem);
 }
 
 /* The three ways in: cards on the kit's flat ink shadow, lifting off it. */
@@ -261,6 +269,12 @@ html:has(.gh-landing) {
     letter-spacing: -0.02em;
 }
 
+.gh-landing-path-name svg {
+    align-self: center;
+    width: 0.9em;
+    height: 0.9em;
+}
+
 .gh-landing-path-text {
     color: var(--color-secondary-text);
     font-size: 1.6rem;
@@ -278,9 +292,9 @@ html:has(.gh-landing) {
     font-size: clamp(3.2rem, 2.4rem + 2vw, 4.8rem);
 }
 
-/* Twelve in a row that scrolls sideways (carousel.css). The row starts at the
-   text's edge and runs out to the right edge of the screen, so the cards
-   past it show there is more; the section clips the overflow. */
+/* Twelve in a row that scrolls sideways (carousel.css), edge to edge of the
+   screen. The first card starts at the text's edge (padding), and cards
+   scrolled past leave by the left edge; the section clips the overflow. */
 .gh-landing-voices {
     overflow-x: clip;
 }
@@ -288,7 +302,12 @@ html:has(.gh-landing) {
 .gh-landing-voices-list.gh-carousel {
     grid-auto-columns: min(36rem, 80vw);
     gap: 2.4rem;
-    margin-right: calc(50% - 50vw);
+    /* The space beside .gh-landing-inner, from its own width rule: written
+       without % because scroll-padding would read % against the row itself. */
+    --bleed: max(var(--gap, 2rem), (100vw - 76rem) / 2);
+    margin-inline: calc(-1 * var(--bleed));
+    padding-inline: var(--bleed);
+    scroll-padding-inline: var(--bleed);
     padding-bottom: 1.6rem;
 }
 

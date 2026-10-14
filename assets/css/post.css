@@ -424,6 +424,46 @@ html[data-theme="dark"] .gh-image-band {
     display: none;
 }
 
+/* An article's image: no band - the channel is in the breadcrumb - only the
+   level, top right, in the band's colours. */
+:is(.gh-banded, .gh-cover) > .gh-level {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    z-index: 2;
+    padding: 0.4rem 1rem;
+    background-color: rgba(24, 23, 25, 0.72);
+    color: #F1F1F1;
+    font-size: 1.4rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+html[data-theme="dark"] :is(.gh-banded, .gh-cover) > .gh-level {
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #1A1A1A;
+}
+
+/* Full-width cover (custom-full-feature-image.hbs): its caption small, in
+   the bottom right corner. */
+.gh-cover-caption {
+    position: absolute;
+    right: 1.6rem;
+    bottom: 1.2rem;
+    z-index: 2;
+    max-width: min(40rem, 60%);
+    color: color-mix(in srgb, var(--color-link) 70%, transparent);
+    font-size: 1.2rem;
+    line-height: 1.4;
+    text-align: right;
+}
+
+.gh-cover-caption a {
+    color: inherit;
+    text-decoration: underline;
+}
+
 .gh-banded img {
     display: block;
 }
@@ -475,4 +515,16 @@ html[data-theme="dark"] .gh-image-band {
     border: 2px solid var(--color-base);
     border-radius: 0.6rem;
     box-shadow: var(--cn-shadow);
+}
+
+/* /blog/ (index.hbs): the page "blog"'s feature image above the posts. */
+.gh-blog-image {
+    margin: 0 0 4rem;
+}
+
+.gh-blog-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
 }

@@ -169,17 +169,44 @@
 
         value.split(MARK_OPEN).forEach(function (chunk, i) {
             if (i === 0) {
-                node.appendChild(document.createTextNode(chunk));
+                emojify(node, chunk);
                 return;
             }
             var parts = chunk.split(MARK_CLOSE);
             var mark = document.createElement('mark');
             mark.textContent = parts.shift();
             node.appendChild(mark);
-            node.appendChild(document.createTextNode(parts.join(MARK_CLOSE)));
+            emojify(node, parts.join(MARK_CLOSE));
         });
 
         return node;
+    };
+
+    /* The index keeps a forum post's emoji as :name: - text -> text nodes plus
+     * the forum's emoji images; a name the forum does not know falls back to
+     * its text. shortcut: the "noto" set is the forum's today; read it from
+     * the forum if that setting ever changes. */
+    var emojify = function (node, text) {
+        if (!FORUM) {
+            node.appendChild(document.createTextNode(text));
+            return;
+        }
+        text.split(/:([a-z][a-z0-9_+-]*):/).forEach(function (part, i) {
+            if (i % 2 === 0) {
+                if (part) {
+                    node.appendChild(document.createTextNode(part));
+                }
+                return;
+            }
+            var img = document.createElement('img');
+            img.className = 'ns__emoji';
+            img.alt = ':' + part + ':';
+            img.addEventListener('error', function () {
+                img.replaceWith(document.createTextNode(img.alt));
+            });
+            img.src = FORUM + '/images/emoji/noto/' + part + '.png';
+            node.appendChild(img);
+        });
     };
 
     var meta = function (parts) {
@@ -340,7 +367,7 @@
 
         var text = document.createElement('div');
         text.className = 'ns__reader-text';
-        text.textContent = String(hit.text || '');
+        emojify(text, String(hit.text || ''));
         reader.appendChild(text);
 
         // The forum sends CORS headers for the site; any failure keeps the indexed text.

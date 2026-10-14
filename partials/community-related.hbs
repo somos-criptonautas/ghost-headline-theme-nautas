@@ -1,5 +1,5 @@
 {{!-- Latest forum topics as horizontal cards. Post templates pass the primary
-    tag (category=, label=): the forum category with that slug, after the
+    tag (category=): the forum category with that slug, after the
     comments. Without them - /blog - the latest topics from the whole forum.
     Filled by assets/js/community-sidebar.js from the forum's public JSON
     (same CORS setup as the sidebar); it stays hidden until there is something
@@ -17,7 +17,6 @@
     <h2 class="gh-community-related-title" id="gh-community-related-title">
         {{> "icons/discourse"}}
         {{t "Community"}}
-        {{#if label}}<span class="gh-community-related-tag">#{{label}}</span>{{/if}}
     </h2>
     <ol class="gh-community-cards{{#if strip}} gh-carousel{{/if}}"></ol>
     <a class="gh-community-more" target="_blank" rel="noopener">{{t "Go to the community"}} {{> "icons/phosphor/arrow-square-out"}}</a>

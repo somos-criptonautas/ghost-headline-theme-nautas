@@ -91,10 +91,10 @@
 }
 
 /* The art in its own thin frame, as on a printed card. */
+/* At its own proportions: the art is a whole card (tarot), never cropped. */
 .gh-collection-image {
     width: 100%;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
+    height: auto;
     border: 1px solid var(--color-base);
     border-radius: 0.3rem;
 }
@@ -175,10 +175,11 @@
 
 .gh-collection .gh-collection-pager-image {
     flex: none;
-    width: 9.6rem;
+    width: auto;
+    max-width: 9.6rem;
+    height: 9.6rem;
     margin: 0;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 0.5rem;
 }
 

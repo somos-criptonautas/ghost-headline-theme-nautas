@@ -367,8 +367,9 @@ a.gh-card-link:hover {
 .gh-card-footer {
   gap: 0.5rem;
   align-items: center;
-  font-size: 2rem;
+  font-size: 1.4rem;
   font-weight: 500;
+  line-height: 1.3;
   color: var(--color-secondary-text);
   text-transform: uppercase;
   margin-top: 0.53rem;
@@ -470,6 +471,8 @@ nav.gh-article-tag {
 }
 
 .gh-article-tag a {
+  display: inline-flex;
+  align-items: center;
   color: inherit;
 }
 
@@ -634,16 +637,6 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   min-width: 0;
 }
 
-.gh-read-next-rest {
-  display: contents;
-}
-
-.gh-read-next-rest[hidden],
-.gh-read-next .gh-topic-footer[hidden],
-.gh-read-next-pool {
-  display: none;
-}
-
 /* Every card the same height: the box is 3:2 and the image covers it, so
    no other image rule can stretch one. Posts without a feature image get a
    placeholder of the same size, so a row never steps. */
@@ -699,46 +692,30 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   display: none;
 }
 
-.gh-read-next .gh-card-footer {
-  font-size: var(--content-font-size);
+/* One sideways row (.gh-carousel): a card and a bit on phones, two and a
+   bit on tablets, three and a bit from 992px - the cut card says "scroll". */
+body:not(.home-template) .gh-read-next .gh-topic-content {
+  grid-template-columns: none;
+  grid-auto-columns: 80%;
+  column-gap: var(--grid-gap);
+  justify-items: stretch;
+  align-items: start;
+  max-width: 100%;
 }
 
-/* Phone grid override */
-@media screen and (max-width: 767px) {
-  body:not(.home-template) .gh-read-next .gh-topic-content {
-    display: grid;
-    grid-template-columns: 1fr;
-    row-gap: 2.66rem; /* --grid-gap × 2, matching grid list gaps */
-    column-gap: var(--grid-gap);
-    justify-items: stretch;
-    max-width: 100%;
-  }
-
-  .gh-read-next .gh-card.post {
-    padding-block: 0;
-  }
-
+.gh-read-next .gh-card.post {
+  padding-block: 0;
 }
 
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 768px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: 4rem;
-    column-gap: var(--grid-gap);
-    justify-items: stretch;
-    max-width: 100%;
+    grid-auto-columns: 42%;
   }
 }
 
 @media screen and (min-width: 992px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    row-gap: 4rem;
-    column-gap: var(--grid-gap);
-    justify-items: stretch;
-    max-width: 100%;
+    grid-auto-columns: 29%;
   }
 
   /* Full-width grid, reset 1700px offset */
@@ -828,6 +805,7 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   color: var(--color-link);
   text-transform: uppercase;
   word-break: break-word;
+  text-wrap: balance;
 }
 
 .tag-template .gh-cover-title {
@@ -1759,10 +1737,6 @@ html[data-theme="dark"].custom-no-feature-sign p a {
   }
 }
 
-.is-head-b--a_n .gh-head-logo {
-  font-size: 3rem;
-}
-
 .gh-head-btn.gh-btn {
   font-size: 2.11rem;
   padding: 1rem 2rem;
@@ -1975,8 +1949,10 @@ a.toc-link {
     fill: var(--color-base);
   }
 
+  /* The open phone menu: the logo across the top. */
   .is-head-open img.logo-nav {
     max-width: 70vh;
+    max-height: 6.33rem;
     margin: auto;
   }
 }
@@ -2986,13 +2962,6 @@ body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {
   margin: 0 auto 3rem;
 }
 
-.gh-head-logo img:nth-child(2) {
-  left: unset;
-  top: unset;
-  opacity: unset;
-  position: unset;
-}
-
 .discourse .button {
   color: var(--color-base);
 }
@@ -3589,11 +3558,6 @@ blockquote.kg-blockquote-alt {
   blockquote.kg-blockquote-alt {
     line-height: 1.63;
   }
-}
-
-.gh-head-logo img {
-  max-height: 6.33rem;
-  transition: ease 0.23s;
 }
 
 .kg-toggle-card,
@@ -5531,18 +5495,19 @@ html.js .gh-loadmore {
    column never goes narrower than its links (max-content): when space runs short
    the search gives way - down to 20rem - instead of sliding under the first link. */
 @media screen and (min-width: 1440px) {
+  /* The logo's column takes half again the links' share: the logo is five
+     times as wide as it is tall, so its width is what limits it. */
   #gh-head .gh-head-inner {
-    grid-template-columns: minmax(0, 1fr) minmax(20rem, 30rem) minmax(max-content, 1fr);
+    grid-template-columns: minmax(0, 1.5fr) minmax(20rem, 30rem) minmax(max-content, 1fr);
   }
 
-  /* A third bigger than the theme's 6.33rem. The 100px header would cut it,
-     so the header grows to the logo plus the padding above. */
+  /* The header grows to the logo plus the padding around it. */
   #gh-head {
     height: auto;
   }
 
   #gh-head .gh-head-logo img {
-    max-height: 10.1rem;
+    max-height: 13rem;
   }
 
   #gh-head .gh-head-brand {
