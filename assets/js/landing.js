@@ -2,7 +2,8 @@
  * paragraphs and h3 questions. Each question and its answer become one item,
  * two across from 992px (landing.css), read left to right; the last question -
  * how to go on - steps out of the grid, full width, to lead into the three
- * cards. Without this script the text reads as one column. Ships inside
+ * cards. The opening line goes up into the first screen. Without this
+ * script the text reads as one column, opening line first. Ships inside
  * main.min.js.
  */
 (function () {
@@ -34,7 +35,12 @@
         });
     });
 
-    // What came before the first question stays first; the groups follow it.
+    // What came before the first question - the opening line - moves up into
+    // the first screen, under the compact ways in; the groups follow.
+    var intro = document.querySelector('.gh-landing-intro');
+    while (intro && box.firstElementChild && box.firstElementChild !== questions[0]) {
+        intro.appendChild(box.firstElementChild);
+    }
     box.appendChild(grid);
     box.appendChild(next);
 })();

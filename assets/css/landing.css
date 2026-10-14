@@ -1,19 +1,15 @@
-/* Landing (home.hbs, partials/landing.hbs): the first screen, the page
-   "inicio" read in place and closing on the three ways in, what members say,
-   and well below them Destacado and the community. The top bar keeps the
-   logo, search and theme toggle; the menu links go, and with them the burger
-   on tablets, whose place the theme toggle takes. */
-
-.home-template #gh-head .gh-head-menu {
-    display: none;
-}
+/* Landing (home.hbs, partials/landing.hbs): the logo, the three ways in and
+   the opening line; the page "inicio" read in place, closing on the three
+   ways in at full size; what members say; and well below them Destacado and
+   the community. The top bar keeps the icon and the theme toggle, with a
+   link to the blog in place of the menu and the search (default.hbs); on
+   tablets the burger goes too and the toggle takes its place. */
 
 @media screen and (max-width: 991px) {
     .home-template #gh-head .gh-burger {
         display: none;
     }
 
-    /* At the end of the bar, where the burger was. */
     .home-template #gh-head .gh-head-bar-toggle {
         display: inline-flex;
         grid-row: 1;
@@ -22,6 +18,22 @@
         width: 2.2rem;
         height: 2.2rem;
         margin: 0;
+    }
+
+    .gh-head-bar-blog {
+        grid-row: 1;
+        grid-column: 2;
+        justify-self: end;
+        color: var(--color-base);
+        font-size: 1.6rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .gh-head-bar-blog {
+        display: none;
     }
 }
 
@@ -43,53 +55,106 @@ html:has(.gh-landing) {
     scroll-snap-align: start;
 }
 
-/* First screen */
+/* First screen: the logo, the three ways in as one compact row, and the
+   opening line, all centred; the questions start right after it. */
 
 .gh-landing-hero {
-    position: relative;
+    padding: 6.4rem 0 2.4rem;
+    text-align: center;
+}
+
+.gh-landing-logo {
+    display: block;
+    font-size: 4.8rem;
+    font-weight: 800;
+}
+
+.gh-landing-logo img {
+    width: auto;
+    max-width: min(48rem, 80vw);
+    height: auto;
+    max-height: 12rem;
+    margin-inline: auto;
+}
+
+.gh-landing-chips {
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    margin-top: 4rem;
+}
+
+.gh-landing .gh-landing-chip {
+    display: inline-flex;
     align-items: center;
-    /* The first screen, under the bar: 100px on desktop, the fixed bar's
-       height on tablets. */
-    min-height: calc(100svh - 10rem);
-    padding: 8rem 0;
+    gap: 0.8rem;
+    min-height: 4.4rem;
+    padding: 0.8rem 1.8rem;
+    border: 2px solid var(--color-base);
+    border-radius: 999px;
+    background-color: var(--color-bg);
+    color: var(--color-base);
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: var(--cn-shadow-sm);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-@media screen and (max-width: 991px) {
-    .gh-landing-hero {
-        min-height: calc(100svh - var(--head-bar-height, 6.4rem));
-    }
+.gh-landing .gh-landing-chip:hover,
+.gh-landing .gh-landing-chip:focus-visible {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 var(--color-base);
 }
 
-.gh-landing-title {
-    margin: 0;
-    font-size: clamp(4.4rem, 3rem + 4vw, 8.8rem);
-    line-height: 1;
+.gh-landing-chip svg {
+    flex: none;
+    width: 2rem;
+    height: 2rem;
 }
 
-.gh-landing-lead {
-    max-width: 56rem;
-    margin: 2.4rem 0 0;
-    color: var(--color-secondary-text);
+.gh-landing-intro {
+    max-width: 64rem;
+    margin: 4rem auto 0;
+    font-family: var(--font-serif);
     font-size: 2.2rem;
-    line-height: 1.4;
+    line-height: 1.5;
 }
 
-.gh-landing-cue {
-    position: absolute;
-    bottom: 3.2rem;
-    left: 50%;
-    display: grid;
-    place-items: center;
-    width: 4.4rem;
-    height: 4.4rem;
-    color: var(--color-secondary-text);
-    transform: translateX(-50%);
+.gh-landing-intro > * {
+    margin: 0;
 }
 
-.gh-landing-cue svg {
-    width: 2.4rem;
-    height: 2.4rem;
+.gh-landing-intro:empty {
+    display: none;
+}
+
+/* Phones: the three in one row, the icon over the name. */
+@media screen and (max-width: 767px) {
+    .gh-landing-hero {
+        padding-top: 4rem;
+    }
+
+    .gh-landing-chips {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+        margin-top: 3.2rem;
+    }
+
+    .gh-landing .gh-landing-chip {
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.4rem;
+        padding: 0.8rem 0.4rem;
+        border-radius: 1rem;
+        font-size: 1.3rem;
+    }
+
+    .gh-landing-intro {
+        font-size: 1.9rem;
+    }
 }
 
 /* The page text: questions answered in plain view. landing.js groups each
@@ -98,7 +163,7 @@ html:has(.gh-landing) {
    the three cards. */
 
 .gh-landing-text {
-    padding: 8rem 0;
+    padding: 2.4rem 0 8rem;
 }
 
 .gh-landing-text .gh-content {
@@ -312,11 +377,10 @@ html:has(.gh-landing) {
 }
 
 @media screen and (max-width: 767px) {
-    .gh-landing-hero {
-        padding: 6.4rem 0;
+    .gh-landing-text {
+        padding: 1.6rem 0 5.6rem;
     }
 
-    .gh-landing-text,
     .gh-landing-voices {
         padding: 5.6rem 0;
     }

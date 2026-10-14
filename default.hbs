@@ -94,10 +94,15 @@
 
                         A real input: assets/js/head.js hands what is typed to
                         the search modal, so there is still one search UI. --}}
+                    {{!-- The landing (home.hbs) has no search: a way to the blog instead. --}}
+                    {{#is "home"}}
+                    <a class="gh-head-bar-blog" href="{{@site.url}}/blog/">{{t "Blog"}}</a>
+                    {{else}}
                     <form class="gh-head-search-field" role="search">
                         {{> "icons/search"}}
                         <input type="search" name="s" placeholder="{{t "Search"}}" aria-label="{{t "Search this site"}}" autocomplete="off">
                     </form>
+                    {{/is}}
                     <button type="button" class="it-dark-light gh-icon-btn gh-head-bar-toggle" aria-label="{{t "Toggle theme"}}">
                         <div class="icon-dark">{{> icons/light}}</div>
                         <div class="icon-light">{{> icons/dark}}</div>
@@ -107,6 +112,7 @@
                 {{!-- Desktop: a bar, like Discourse Horizon's, that opens the search
                     modal; centred from 1440px, where the logo shows (search.css). The
                     shortcut hint is set by assets/js/head.js. --}}
+                {{^is "home"}}
                 <div class="gh-head-search">
                     <button type="button" class="gh-search gh-search-bar" data-ghost-search aria-label="{{t "Search this site"}}">
                         {{> "icons/search"}}
@@ -114,11 +120,16 @@
                         <kbd class="gh-search-bar-key" hidden></kbd>
                     </button>
                 </div>
+                {{/is}}
                 {{!-- Menu and theme toggle share the right-hand column on desktop; below
                     992px this wrapper steps aside (display: contents) for the mobile sheet. --}}
                 <div class="gh-head-end">
                     <nav class="gh-head-menu">
+                        {{#is "home"}}
+                        <ul class="nav"><li><a href="{{@site.url}}/blog/">{{t "Blog"}}</a></li></ul>
+                        {{else}}
                         {{navigation}}
+                        {{/is}}
                     </nav>
                     <div class="gh-head-actions">
                         <div class="actions-container">

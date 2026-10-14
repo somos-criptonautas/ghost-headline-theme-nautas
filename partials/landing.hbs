@@ -1,15 +1,30 @@
-{{!-- The landing (home.hbs), from the Ghost page "inicio": its title and
-    excerpt fill the first screen; its text - the questions, answered in plain
-    view - comes next and closes on the three ways in. Then what members say.
-    Each block is a snap point (landing.css). --}}
+{{!-- The landing (home.hbs), from the Ghost page "inicio". First screen: the
+    logo (the page title stays for search engines and screen readers), the
+    three ways in as one compact row, then the page's opening line, which
+    landing.js moves up from the text - it ends in "preguntas:", so the
+    questions follow it. Then the questions, answered in plain view, closing
+    on the three ways in at full size; then what members say. Each block is a
+    snap point (landing.css). --}}
 {{#get "pages" filter="slug:inicio" limit="1"}}
 {{#foreach pages}}
 <section class="gh-landing-hero gh-landing-snap">
     <div class="gh-landing-inner">
-        <h1 class="gh-landing-title">{{title}}</h1>
-        {{#if custom_excerpt}}<p class="gh-landing-lead">{{custom_excerpt}}</p>{{/if}}
+        <h1 class="gh-visually-hidden">{{title}}</h1>
+        <span class="gh-landing-logo" aria-hidden="true">
+            {{#if @site.logo}}
+            <img class="logo-nav logo-light" src="{{@site.logo}}" alt="">
+            <img class="logo-nav logo-dark" src="{{#if @custom.dark_logo}}{{@custom.dark_logo}}{{else}}{{@site.logo}}{{/if}}" alt="">
+            {{else}}
+            {{@site.title}}
+            {{/if}}
+        </span>
+        <nav class="gh-landing-chips" aria-label="{{t "Choose your path"}}">
+            <a class="gh-landing-chip" href="{{@site.url}}/blog/">{{> "icons/phosphor/notebook"}}<span>{{t "Blog"}}</span></a>
+            <a class="gh-landing-chip" href="{{@site.url}}/curso/">{{> "icons/phosphor/student"}}<span>{{t "Course"}}</span></a>
+            <a class="gh-landing-chip" href="{{@site.url}}/comunidad/">{{> "icons/phosphor/globe-hemisphere-west"}}<span>{{t "Community"}}</span></a>
+        </nav>
+        <div class="gh-landing-intro"></div>
     </div>
-    <a class="gh-landing-cue" href="#gh-landing-text" aria-label="{{t "Continue reading"}}">{{> "icons/phosphor/arrow-down"}}</a>
 </section>
 
 <section class="gh-landing-text gh-landing-snap" id="gh-landing-text">
