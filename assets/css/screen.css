@@ -5515,7 +5515,7 @@ a.is-external .gh-ext::after {
   /* Between the search's text (1.5rem) and the old 2.11rem: the links sit
      level with the bar instead of outweighing it. */
   #gh-head .gh-head-menu .nav a {
-    font-size: 1.8rem;
+    font-size: 1.95rem;
   }
 
   /* The theme toggle closes the row: icon-sized, after a hairline. */

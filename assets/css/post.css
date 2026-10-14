@@ -574,7 +574,7 @@ html[data-theme="dark"] .gh-featured .gh-card-excerpt {
    in a subtle frame, with room around it and its text a touch smaller than
    the card's own 1.15em. */
 .gh-content .cn-curso {
-    padding: 3.2rem 3.2rem 2rem;
+    padding: 4.4rem 4.4rem 2.8rem;
     font-size: 1.05em;
     border: 1px solid var(--color-border);
     border-radius: 0.8rem;
@@ -630,4 +630,23 @@ html[data-theme="dark"] .gh-featured .gh-card-excerpt {
 .cn-datos-fila + .cn-datos-fila .cn-dato-texto {
     color: var(--cn-ui-muted, var(--color-secondary-text));
     font-size: 0.875em;
+}
+
+@media (max-width: 600px) {
+    .gh-content .cn-curso {
+        padding: 2.8rem 2.4rem 2rem;
+    }
+}
+
+/* Ghost's signup card (shown by signup-form.js) in the kit's ink frame: the
+   rounded corners and hard shadow of the landing's ways in. */
+.gh-content .kg-signup-card {
+    overflow: hidden;
+    border: 2px solid var(--color-base);
+    border-radius: 1.2rem;
+    box-shadow: 4px 4px 0 var(--color-base);
+}
+
+.kg-signup-card .kg-signup-card-fields {
+    border-radius: 0.8rem;
 }
