@@ -9,7 +9,9 @@
     gap: 1.6rem;
     overflow-x: auto;
     overscroll-behavior-x: contain;
-    scroll-snap-type: x mandatory;
+    /* Proximity, not mandatory: a quick swipe carries on past several cards
+       and only settles at the end, instead of being held to one per swipe. */
+    scroll-snap-type: x proximity;
     scrollbar-width: none;
     /* Room for the cards' hard shadow, which overflow would clip. */
     padding: 0 0.8rem 1.2rem 0;

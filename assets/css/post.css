@@ -577,17 +577,22 @@ html[data-theme="dark"] .gh-cover-caption {
    the first row's figures a step larger than the second's. */
 .gh-content .cn-datos {
     margin: 1.75em 0;
-    padding: 4rem 3.2rem 2.8rem;
+    padding: 4rem 5.2rem 2.8rem;
     border: 1px solid var(--color-border);
     border-radius: 0.8rem;
     font-family: "Inter Tight", system-ui, sans-serif;
-    font-size: 1.05em;
+    font-size: 0.98em;
 }
 
 .cn-datos-fila {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
     gap: 2rem;
+}
+
+/* The first row (8 years, 2 cycles) always two across. */
+.cn-datos-fila:first-child {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .cn-datos-fila + .cn-datos-fila {
@@ -627,6 +632,18 @@ html[data-theme="dark"] .gh-cover-caption {
 @media (max-width: 600px) {
     .gh-content .cn-curso {
         padding: 3.4rem 2.4rem 2.6rem;
+    }
+
+    .gh-content .cn-datos {
+        padding: 3.4rem 2.8rem 2.6rem;
+    }
+}
+
+/* Phones: the survey a touch smaller, so its lines and the source note keep
+   to fewer lines (Pixel-wide screens). */
+@media (max-width: 480px) {
+    .gh-content .cn-curso {
+        font-size: 0.94em;
     }
 }
 

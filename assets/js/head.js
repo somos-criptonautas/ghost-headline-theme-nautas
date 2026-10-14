@@ -146,6 +146,20 @@
             }
         }, {passive: true});
 
+        // Closing the phone menu puts the page back with scrollTo, which read
+        // as a scroll down and hid the bar. Shown instead, with search and the
+        // blog link at hand, until the reader scrolls again. The observer runs
+        // after that scrollTo, so lastY is already the restored position.
+        var menuOpen = document.body.classList.contains('is-head-open');
+        new MutationObserver(function () {
+            var open = document.body.classList.contains('is-head-open');
+            if (menuOpen && !open) {
+                head.classList.remove('is-unpinned');
+                lastY = Math.round(window.scrollY);
+            }
+            menuOpen = open;
+        }).observe(document.body, {attributes: true, attributeFilter: ['class']});
+
         // Back to desktop: nothing to hide.
         bar.addEventListener('change', function () {
             dock(false);

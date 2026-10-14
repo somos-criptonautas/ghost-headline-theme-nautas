@@ -113,6 +113,13 @@
 
     links[current].setAttribute('aria-current', 'page');
 
+    // In the sideways row (phones) the current card starts the row. Set on
+    // the row itself: scrollIntoView would move the page too.
+    var list = top.querySelector('.gh-collection-list');
+    if (list && list.scrollWidth > list.clientWidth) {
+        list.scrollLeft += links[current].getBoundingClientRect().left - list.getBoundingClientRect().left;
+    }
+
     // The last chapter closes the series: its page carries the survey and
     // comments as embeds, so no previous / next there.
     if (bottom && current < links.length - 1) {

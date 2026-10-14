@@ -545,6 +545,11 @@
     .gh-community-strip .gh-community-cards {
         grid-auto-columns: 85%;
     }
+
+    /* /blog: less air above the forum row, more between it and the posts. */
+    .gh-with-sidebar-main > .gh-community-strip {
+        margin: 1.6rem 0 4.8rem;
+    }
 }
 
 /* Forum callouts (forum-html.js: "> [!type] Title"), in the community dialog

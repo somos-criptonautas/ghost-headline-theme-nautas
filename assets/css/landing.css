@@ -48,6 +48,13 @@ html:has(.gh-landing) {
     scroll-snap-type: y proximity;
 }
 
+/* Phones and tablets scroll freely: snapping fought the swipe. */
+@media screen and (max-width: 991px) {
+    html:has(.gh-landing) {
+        scroll-snap-type: none;
+    }
+}
+
 /* Phones and tablets: on the landing the bar is not fixed - it scrolls away
    with the page and stays out of the way of the snapping and the sideways
    rows. */

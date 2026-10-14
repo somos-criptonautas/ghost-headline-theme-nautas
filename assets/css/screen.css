@@ -473,8 +473,11 @@ a.gh-card-link:hover {
   text-align: center;
 }
 
+/* Flex, so the arrow between the links centres on them like their icons. */
 nav.gh-article-tag {
-  display: block;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   font-size: 1.7rem;
 }
 

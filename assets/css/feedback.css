@@ -108,7 +108,10 @@
 }
 
 .cn-feedback-types span {
-    display: block;
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    justify-content: center;
     padding: 0.6rem 0;
     border: 1px solid var(--cn-ui-line);
     border-radius: 99rem;
@@ -116,6 +119,12 @@
     font-size: 1.3rem;
     text-align: center;
     cursor: pointer;
+}
+
+.cn-feedback-types svg {
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .cn-feedback-types input:checked + span {

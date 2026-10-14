@@ -11,9 +11,9 @@
             <button class="cn-feedback-close" type="button" aria-label="{{t "Close"}}">&times;</button>
         </div>
         <fieldset class="cn-feedback-types" aria-labelledby="cn-feedback-title">
-            <label><input type="radio" name="type" value="idea" checked><span>{{t "idea"}}</span></label>
-            <label><input type="radio" name="type" value="error"><span>{{t "error"}}</span></label>
-            <label><input type="radio" name="type" value="soporte"><span>{{t "support"}}</span></label>
+            <label><input type="radio" name="type" value="idea" checked><span>{{> "icons/phosphor/lightbulb"}}{{t "idea"}}</span></label>
+            <label><input type="radio" name="type" value="error"><span>{{> "icons/phosphor/bug"}}{{t "error"}}</span></label>
+            <label><input type="radio" name="type" value="soporte"><span>{{> "icons/phosphor/lifebuoy"}}{{t "support"}}</span></label>
         </fieldset>
         <textarea name="message" rows="4" required minlength="3" maxlength="3000" aria-label="{{t "Message"}}" placeholder="{{t "Tell us in as much detail as you can"}}"></textarea>
         <input type="email" name="email" maxlength="200" aria-label="{{t "Email"}}" placeholder="{{t "email (optional, so we can reply)"}}">
