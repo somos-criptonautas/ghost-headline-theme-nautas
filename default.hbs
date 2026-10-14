@@ -96,7 +96,7 @@
                         the search modal, so there is still one search UI. --}}
                     {{!-- The landing (home.hbs) has no search: a way to the blog instead. --}}
                     {{#is "home"}}
-                    <a class="gh-head-bar-blog" href="{{@site.url}}/blog/">{{t "Blog"}}</a>
+                    <a class="gh-head-bar-blog" href="{{@site.url}}/blog/">{{t "Go to the blog"}}</a>
                     {{else}}
                     <form class="gh-head-search-field" role="search">
                         {{> "icons/search"}}
@@ -126,7 +126,7 @@
                 <div class="gh-head-end">
                     <nav class="gh-head-menu">
                         {{#is "home"}}
-                        <ul class="nav"><li><a href="{{@site.url}}/blog/">{{t "Blog"}}</a></li></ul>
+                        <ul class="nav"><li><a href="{{@site.url}}/blog/">{{t "Go to the blog"}}</a></li></ul>
                         {{else}}
                         {{navigation}}
                         {{/is}}

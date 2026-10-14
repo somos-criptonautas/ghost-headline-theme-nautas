@@ -97,6 +97,7 @@ html:has(.gh-landing) {
     color: var(--color-base);
     font-size: 1.6rem;
     font-weight: 700;
+    text-transform: uppercase;
     text-decoration: none;
     box-shadow: var(--cn-shadow-sm);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
