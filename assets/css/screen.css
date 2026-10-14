@@ -32,6 +32,7 @@
 @import "collection.css";
 @import "post.css";
 @import "landing.css";
+@import "feedback.css";
 
 :root {
   --head-nav-gap: 32px;

@@ -266,5 +266,18 @@
 	"The path, step by step": "Trading en cripto desde cero, paso a paso",
 	"Where we trade and keep each other going": "Donde operamos y nos acompañamos",
 	"What our community says": "Nautas dicen...",
-	"Go to the blog": "ir al blog"
+	"Go to the blog": "ir al blog",
+	"feedback": "feedback",
+	"Sending…": "enviando…",
+	"Thanks, we got it.": "Gracias, lo recibimos.",
+	"Could not send it. Try again in a moment.": "No se pudo enviar. Probá de nuevo en un momento.",
+	"What do you want to tell us?": "¿Qué nos querés contar?",
+	"idea": "idea",
+	"error": "error",
+	"support": "soporte",
+	"Message": "Mensaje",
+	"Tell us in as much detail as you can": "Contanos con el mayor detalle posible",
+	"email (optional, so we can reply)": "email (opcional, para responderte)",
+	"attach a screenshot of this page": "adjuntar captura de esta página",
+	"send": "enviar"
 }

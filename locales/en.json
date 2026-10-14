@@ -252,5 +252,18 @@
 	"The path, step by step": "Crypto trading from scratch, step by step",
 	"Where we trade and keep each other going": "Where we trade and keep each other going",
 	"What our community says": "Nautas say...",
-	"Go to the blog": "go to the blog"
+	"Go to the blog": "go to the blog",
+	"feedback": "feedback",
+	"Sending…": "Sending…",
+	"Thanks, we got it.": "Thanks, we got it.",
+	"Could not send it. Try again in a moment.": "Could not send it. Try again in a moment.",
+	"What do you want to tell us?": "What do you want to tell us?",
+	"idea": "idea",
+	"error": "error",
+	"support": "support",
+	"Message": "Message",
+	"Tell us in as much detail as you can": "Tell us in as much detail as you can",
+	"email (optional, so we can reply)": "email (optional, so we can reply)",
+	"attach a screenshot of this page": "attach a screenshot of this page",
+	"send": "send"
 }

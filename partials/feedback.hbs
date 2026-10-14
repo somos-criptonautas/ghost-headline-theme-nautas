@@ -1,0 +1,27 @@
+{{!-- Feedback tab, desktop only (assets/css/feedback.css). assets/js/feedback.js
+    posts it to the n8n webhook in the "Feedback webhook" setting, which hands
+    it to Chatwoot; the screenshot library loads only when the box is ticked. --}}
+{{#if @custom.feedback_webhook}}
+<div class="cn-feedback" data-webhook="{{@custom.feedback_webhook}}" data-shot-lib="{{asset "js/vendor/html-to-image.min.js"}}">
+    <button class="cn-feedback-tab" type="button" aria-expanded="false" aria-controls="cn-feedback-panel">{{t "feedback"}}</button>
+    <form class="cn-feedback-panel" id="cn-feedback-panel" hidden
+        data-sending="{{t "Sending…"}}" data-thanks="{{t "Thanks, we got it."}}" data-error="{{t "Could not send it. Try again in a moment."}}">
+        <div class="cn-feedback-head">
+            <p class="cn-feedback-title" id="cn-feedback-title">{{t "What do you want to tell us?"}}</p>
+            <button class="cn-feedback-close" type="button" aria-label="{{t "Close"}}">&times;</button>
+        </div>
+        <fieldset class="cn-feedback-types" aria-labelledby="cn-feedback-title">
+            <label><input type="radio" name="type" value="idea" checked><span>{{t "idea"}}</span></label>
+            <label><input type="radio" name="type" value="error"><span>{{t "error"}}</span></label>
+            <label><input type="radio" name="type" value="soporte"><span>{{t "support"}}</span></label>
+        </fieldset>
+        <textarea name="message" rows="4" required minlength="3" maxlength="3000" aria-label="{{t "Message"}}" placeholder="{{t "Tell us in as much detail as you can"}}"></textarea>
+        <input type="email" name="email" maxlength="200" aria-label="{{t "Email"}}" placeholder="{{t "email (optional, so we can reply)"}}">
+        {{!-- Honeypot: hidden from people, filled in by bots, dropped by n8n. --}}
+        <input class="cn-feedback-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="cn-feedback-shot"><input type="checkbox" name="shot"> {{t "attach a screenshot of this page"}}</label>
+        <button class="cn-feedback-send" type="submit">{{t "send"}}</button>
+        <p class="cn-feedback-status" role="status"></p>
+    </form>
+</div>
+{{/if}}

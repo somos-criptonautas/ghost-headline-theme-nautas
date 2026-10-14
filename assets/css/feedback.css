@@ -1,0 +1,169 @@
+/* Feedback tab (partials/feedback.hbs). Desktop only; quiet greys from the
+   brand kit's interface tokens, so it follows light and dark. */
+.cn-feedback {
+    display: none;
+}
+
+@media (min-width: 992px) {
+    .cn-feedback {
+        position: fixed;
+        top: 50%;
+        right: 0;
+        z-index: 90;
+        display: block;
+        transform: translateY(-50%);
+    }
+}
+
+/* Rotated half a turn so it reads bottom to top; the element's left edge is
+   the one against the screen, hence no left border and right-side radius. */
+.cn-feedback-tab {
+    padding: 1.4rem 0.7rem;
+    border: 1px solid var(--cn-ui-line);
+    border-left: 0;
+    border-radius: 0 0.8rem 0.8rem 0;
+    background: var(--cn-ui-surface);
+    color: var(--cn-ui-muted);
+    font-size: 1.3rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    writing-mode: vertical-rl;
+    rotate: 180deg;
+}
+
+.cn-feedback-tab:hover,
+.cn-feedback-tab[aria-expanded="true"] {
+    color: var(--cn-ui-text);
+}
+
+.cn-feedback-panel {
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 1.2rem);
+    display: grid;
+    gap: 1rem;
+    width: 32rem;
+    padding: 2rem;
+    border: 1px solid var(--cn-ui-line);
+    border-radius: 1.2rem;
+    background: var(--cn-ui-bg);
+    color: var(--cn-ui-text);
+    font-size: 1.5rem;
+    transform: translateY(-50%);
+}
+
+.cn-feedback-panel[hidden] {
+    display: none;
+}
+
+.cn-feedback-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cn-feedback-title {
+    margin: 0;
+    font-weight: 600;
+}
+
+.cn-feedback-close {
+    padding: 0 0.4rem;
+    border: 0;
+    background: none;
+    color: var(--cn-ui-muted);
+    font-size: 2.2rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cn-feedback-types {
+    display: flex;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.cn-feedback-types label {
+    flex: 1;
+}
+
+.cn-feedback-types input {
+    position: absolute;
+    opacity: 0;
+}
+
+.cn-feedback-types span {
+    display: block;
+    padding: 0.6rem 0;
+    border: 1px solid var(--cn-ui-line);
+    border-radius: 99rem;
+    color: var(--cn-ui-muted);
+    font-size: 1.3rem;
+    text-align: center;
+    cursor: pointer;
+}
+
+.cn-feedback-types input:checked + span {
+    border-color: var(--cn-ui-text);
+    background: var(--cn-ui-text);
+    color: var(--cn-ui-bg);
+}
+
+.cn-feedback-types input:focus-visible + span {
+    outline: 2px solid var(--cn-ui-text);
+    outline-offset: 2px;
+}
+
+.cn-feedback-panel textarea,
+.cn-feedback-panel input[type="email"] {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--cn-ui-line);
+    border-radius: 0.8rem;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 1.4rem;
+    resize: none;
+}
+
+.cn-feedback-hp {
+    position: absolute;
+    left: -9999px;
+}
+
+.cn-feedback-shot {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+    color: var(--cn-ui-muted);
+    font-size: 1.3rem;
+}
+
+.cn-feedback-send {
+    padding: 1rem;
+    border: 0;
+    border-radius: 0.8rem;
+    background: var(--cn-ui-text);
+    color: var(--cn-ui-bg);
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.cn-feedback-panel.is-sending .cn-feedback-send {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.cn-feedback-status {
+    min-height: 1.4em;
+    margin: 0;
+    color: var(--cn-ui-muted);
+    font-size: 1.3rem;
+}
+
+.cn-feedback-status:empty {
+    display: none;
+}
