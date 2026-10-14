@@ -44,6 +44,53 @@
     box.appendChild(grid);
     box.appendChild(next);
 
+    // Below 992px, one column: each question opens its answer, or the six
+    // answers ran three screens of text. From 992px every answer shows and the
+    // buttons step out of the way.
+    var wide = window.matchMedia('(min-width: 992px)');
+    var toggles = [];
+    Array.prototype.forEach.call(grid.children, function (item, index) {
+        var question = item.firstElementChild;
+        var answer = document.createElement('div');
+        answer.className = 'gh-landing-faq-answer';
+        answer.id = 'gh-landing-faq-' + index;
+        while (question.nextSibling) {
+            answer.appendChild(question.nextSibling);
+        }
+        item.appendChild(answer);
+
+        var toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'gh-landing-faq-toggle';
+        while (question.firstChild) {
+            toggle.appendChild(question.firstChild);
+        }
+        question.appendChild(toggle);
+        toggle.addEventListener('click', function () {
+            if (!wide.matches) {
+                item.classList.toggle('is-open');
+                sync();
+            }
+        });
+        toggles.push(toggle);
+    });
+
+    function sync() {
+        toggles.forEach(function (toggle) {
+            if (wide.matches) {
+                toggle.removeAttribute('aria-expanded');
+                toggle.removeAttribute('aria-controls');
+                toggle.tabIndex = -1;
+            } else {
+                toggle.setAttribute('aria-expanded', String(toggle.closest('.gh-landing-faq-item').classList.contains('is-open')));
+                toggle.setAttribute('aria-controls', toggle.parentNode.nextElementSibling.id);
+                toggle.tabIndex = 0;
+            }
+        });
+    }
+    sync();
+    wide.addEventListener('change', sync);
+
     var heading = document.createElement('h2');
     heading.id = last.id;
     while (last.firstChild) {

@@ -26,6 +26,8 @@
         }
         // Ours now: nothing of Ghost's should pick this form up.
         form.removeAttribute('data-members-form');
+        // The editor's card always says jamie@example.com.
+        input.placeholder = root.getAttribute('data-newsletter-placeholder') || input.placeholder;
         card.style.display = '';
 
         form.addEventListener('submit', function (event) {

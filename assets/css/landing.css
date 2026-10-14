@@ -224,6 +224,54 @@ html:has(.gh-landing) {
     }
 }
 
+/* Each question is a button (assets/js/landing.js) that reads as the heading
+   it sits in; below 992px it opens its answer, with + and − at the end. */
+.gh-landing-faq-toggle {
+    all: unset;
+    display: flex;
+    gap: 1.6rem;
+    align-items: baseline;
+    justify-content: space-between;
+    width: 100%;
+}
+
+@media screen and (max-width: 991px) {
+    .gh-landing-faq {
+        gap: 0;
+    }
+
+    .gh-landing-faq-item {
+        padding-block: 2rem;
+    }
+
+    .gh-landing-faq-item:last-child {
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .gh-landing-faq-toggle {
+        cursor: pointer;
+    }
+
+    .gh-landing-faq-toggle::after {
+        content: "+";
+        flex: none;
+        font-weight: 400;
+    }
+
+    .gh-landing-faq-item.is-open .gh-landing-faq-toggle::after {
+        content: "\2212";
+    }
+
+    .gh-landing-faq-item:not(.is-open) .gh-landing-faq-answer {
+        display: none;
+    }
+
+    .gh-landing-faq-toggle:focus-visible {
+        outline: 2px solid var(--ghost-accent-color);
+        outline-offset: 4px;
+    }
+}
+
 .gh-landing-next {
     margin-top: 6.4rem;
     text-align: center;
