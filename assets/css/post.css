@@ -528,3 +528,26 @@ html[data-theme="dark"] :is(.gh-banded, .gh-cover) > .gh-level {
     height: auto;
     border-radius: var(--border-radius);
 }
+
+/* Destacado (partials/featured.hbs): the excerpt under the title on the
+   band's colours - dark on light, light on dark - with rounded corners. */
+.gh-featured .gh-card-excerpt {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 0.6rem;
+    background-color: rgba(24, 23, 25, 0.72);
+    color: #F1F1F1;
+}
+
+html[data-theme="dark"] .gh-featured .gh-card-excerpt {
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #1A1A1A;
+}
+
+/* /curso: the survey chart (.cn-curso, styled in the page's own HTML card)
+   in a subtle frame, with room above its first figure. */
+.gh-content .cn-curso {
+    padding: 2.4rem 2rem 1.2rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.8rem;
+}

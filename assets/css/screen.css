@@ -5503,10 +5503,11 @@ a.is-external .gh-ext::after {
    column never goes narrower than its links (max-content): when space runs short
    the search gives way - down to 20rem - instead of sliding under the first link. */
 @media screen and (min-width: 1440px) {
-  /* The logo's column takes half again the links' share: the logo is five
-     times as wide as it is tall, so its width is what limits it. */
+  /* The logo is five times as wide as it is tall, so its column's width is
+     what sizes it: half again the links' share, and the search capped at
+     24rem, since the links' column never goes below its own width. */
   #gh-head .gh-head-inner {
-    grid-template-columns: minmax(0, 1.5fr) minmax(20rem, 30rem) minmax(max-content, 1fr);
+    grid-template-columns: minmax(0, 1.5fr) minmax(20rem, 24rem) minmax(max-content, 1fr);
   }
 
   /* The header grows to the logo plus the padding around it. */

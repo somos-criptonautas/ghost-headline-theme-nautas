@@ -115,13 +115,6 @@ html:has(.gh-landing) {
     height: 2rem;
 }
 
-/* The forum's way in leaves the site: the external mark, at text size. */
-.gh-landing-chip span svg {
-    width: 0.9em;
-    height: 0.9em;
-    vertical-align: -0.1em;
-}
-
 .gh-landing-intro {
     max-width: 64rem;
     margin: 4rem auto 0;
@@ -267,12 +260,6 @@ html:has(.gh-landing) {
     font-size: 2.4rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-}
-
-.gh-landing-path-name svg {
-    align-self: center;
-    width: 0.9em;
-    height: 0.9em;
 }
 
 .gh-landing-path-text {
