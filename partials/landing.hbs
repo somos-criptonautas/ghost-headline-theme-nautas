@@ -1,10 +1,10 @@
 {{!-- The landing (home.hbs), from the Ghost page "inicio". First screen: the
     logo (the page title stays for search engines and screen readers), the
-    three ways in as one compact row, then the page's opening line, which
+    site description as headline, then the page's opening line, which
     landing.js moves up from the text - it ends in "preguntas:", so the
-    questions follow it. Then the questions, answered in plain view, closing
-    on the three ways in at full size; then what members say. Each block is a
-    snap point (landing.css). --}}
+    questions follow it. Then the questions, what members say, and last the
+    three ways in on a grey band (landing.js moves it after the voices). Each
+    block is a snap point (landing.css). --}}
 {{#get "pages" filter="slug:inicio" limit="1"}}
 {{#foreach pages}}
 <section class="gh-landing-hero gh-landing-snap">
@@ -18,11 +18,7 @@
             {{@site.title}}
             {{/if}}
         </span>
-        <nav class="gh-landing-chips" aria-label="{{t "Choose your path"}}">
-            <a class="gh-landing-chip" href="{{@site.url}}/blog/">{{> "icons/phosphor/notebook"}}<span>{{t "Blog"}}</span></a>
-            <a class="gh-landing-chip" href="{{@site.url}}/curso/">{{> "icons/phosphor/student"}}<span>{{t "Course"}}</span></a>
-            <a class="gh-landing-chip" href="{{@site.url}}/comunidad/">{{> "icons/phosphor/globe-hemisphere-west"}}<span>{{t "Community"}}</span></a>
-        </nav>
+        {{#if @site.description}}<p class="gh-landing-tagline">{{@site.description}}</p>{{/if}}
         <div class="gh-landing-intro"></div>
     </div>
 </section>

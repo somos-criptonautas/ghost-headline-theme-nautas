@@ -43,6 +43,21 @@
     }
     box.appendChild(grid);
     box.appendChild(next);
+    // The three cards join the heading that leads into them, so one grey band
+    // (landing.css) holds both; the band closes the page after what members
+    // say, in a section of its own that keeps the text setting (.gh-content).
+    var paths = document.querySelector('.gh-landing-paths');
+    if (paths) {
+        next.appendChild(paths);
+    }
+    var voices = document.querySelector('.gh-landing-voices');
+    if (voices) {
+        var way = document.createElement('section');
+        way.className = 'gh-landing-way gh-landing-snap';
+        way.innerHTML = '<div class="gh-content gh-landing-inner"></div>';
+        way.firstChild.appendChild(next);
+        voices.after(way);
+    }
 
     // Below 992px, one column: each question opens its answer, or the six
     // answers ran three screens of text. From 992px every answer shows and the
