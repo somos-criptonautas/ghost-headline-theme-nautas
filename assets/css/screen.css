@@ -74,8 +74,10 @@ figcaption p {
   font-size: 1.32rem;
 }
 
+/* Headings on a 1.25 scale from the article text (1.7rem): h3 one step up,
+   h2 two, so a section and its subsection read as different levels. */
 .gh-content h2 {
-  font-size: 1.73em;
+  font-size: 2.66rem;
 }
 
 html[data-theme="dark"] .figcaption {
@@ -334,12 +336,17 @@ a.gh-card-link:hover {
   color: var(--color-white);
 }
 
+/* The card excerpt takes the article text's size (1.7rem, the rule further
+   down), never larger than the text it leads to. */
 .gh-topic-grid .gh-card-excerpt,
 .gh-author-bio .gh-pagehead-description {
   font-family: var(--font-serif);
-  font-size: 2rem !important;
   line-height: 1.63;
   margin-bottom: 1.7rem;
+}
+
+.gh-author-bio .gh-pagehead-description {
+  font-size: 2rem !important;
 }
 
 .gh-topic-grid .gh-card-excerpt {
@@ -3177,7 +3184,28 @@ html[data-theme="dark"] .kg-toggle-card {
 
 .gh-content h3 {
   font-weight: 700;
-  font-size: 2.53rem;
+  font-size: 2.13rem;
+}
+
+/* Tablets set the text at 2rem: the same two steps from there. */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .gh-content h2 {
+    font-size: 3.13rem;
+  }
+
+  .gh-content h3 {
+    font-size: 2.5rem;
+  }
+}
+
+/* The reading measure: text, lists, quotes and headings in a column of about
+   36em of the text (61rem, ~70 characters), centred in the 800px one; images,
+   galleries, tables and HTML cards keep the full 800px. rem, not em: a
+   heading's own em is larger and would widen its column. */
+.gh-content.gh-canvas > :is(p, ul, ol, dl, blockquote, h2, h3, h4, h5, h6, .kg-callout-card, .kg-toggle-card) {
+  width: 100%;
+  max-width: 61rem;
+  margin-inline: auto;
 }
 
 @media screen and (max-width: 767px) {
@@ -5016,12 +5044,12 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
 
 /* Comments heading */
 /* "Comentarios": a subheading over the forum thread - the size of an h2
-   inside an article (.gh-content h2, 1.73em of the content text), centered,
+   inside an article (.gh-content h2), centered,
    with room above it and little between it and the thread. */
 .comunidad-comments .gh-pagehead-title,
 .gh-content .comunidad-comments .gh-pagehead-title {
   margin: 0;
-  font-size: calc(var(--content-font-size) * 1.73);
+  font-size: 2.66rem;
   text-align: center;
 }
 
