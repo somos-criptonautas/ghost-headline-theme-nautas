@@ -437,6 +437,12 @@
     text-transform: uppercase;
 }
 
+/* "More articles": smaller cards, so a band a fifth lower, in proportion. */
+.gh-read-next .gh-image-band {
+    padding: 0.45rem 1rem;
+    font-size: 1.2rem;
+}
+
 html[data-theme="dark"] .gh-image-band {
     background-color: rgba(255, 255, 255, 0.85);
     color: #1A1A1A;
