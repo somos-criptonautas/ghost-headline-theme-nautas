@@ -61,6 +61,8 @@
 <body class="{{body_class}}{{{block "body_class"}}} {{#if
     @site.description}}is-head-b--a_n{{else}}is-head-b--n--a{{/if}}{{#is "tag" }}{{/is}}">
     <div class="gh-site">
+        {{!-- The landing (home.hbs) goes without the top bar. --}}
+        {{^is "home"}}
         <header id="gh-head" class="gh-head gh-outer">
             <div class="gh-head-inner gh-inner">
                 <div class="gh-head-brand">
@@ -151,6 +153,7 @@
                 </div>
             </div>
         </header>
+        {{/is}}
     </div>
     {{{body}}}
     {{^is "page"}}

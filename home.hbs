@@ -1,16 +1,20 @@
 {{!< default}}
-{{!-- The home (/): the landing, then Destacado and the community - the strip
-    after the featured posts below 1200px, the aside beside them from 1200px.
-    Every post, newest first and scrolling on, is /blog/ (index.hbs). --}}
-<main class="gh-main gh-outer">
-    <div class="gh-inner">
+{{!-- The home (/): a landing without the top bar (default.hbs) - the page
+    "inicio", the three ways in and what members say (partials/landing.hbs) -
+    and, well below, Destacado and the community: the strip after the featured
+    posts below 1200px, the aside beside them from 1200px. Every post, newest
+    first, is /blog/ (index.hbs). --}}
+<main class="gh-landing">
     {{> "landing"}}
+    <div class="gh-landing-more gh-outer">
+    <div class="gh-inner">
     <div class="gh-with-sidebar">
         <div class="gh-with-sidebar-main">
         {{> "featured"}}
         {{> "community-related" strip=true}}
         </div>
         {{> "community-sidebar"}}
+    </div>
     </div>
     </div>
 </main>

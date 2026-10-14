@@ -1,54 +1,274 @@
-/* Landing (partials/landing.hbs): the Ghost page "inicio" read in place -
-   intro and questions answered in plain view - then the three ways in. */
+/* Landing (home.hbs, partials/landing.hbs): the first screen, the page
+   "inicio" read in place and closing on the three ways in, what members say,
+   and well below them Destacado and the community. No top bar here
+   (default.hbs), so the room the fixed bar keeps on tablets goes too. */
 
-.gh-landing {
-    margin: 4rem auto 8rem;
+@media screen and (max-width: 991px) {
+    .home-template .gh-site {
+        padding-top: 0;
+    }
+}
+
+.gh-landing-inner {
+    width: min(76rem, 100% - 2 * var(--gap, 2rem));
+    margin-inline: auto;
+}
+
+/* Each block settles at the top of the screen when the scroll ends near it -
+   proximity, so a long block still reads freely. */
+html:has(.gh-landing) {
+    scroll-snap-type: y proximity;
+}
+
+.gh-landing-snap {
+    scroll-snap-align: start;
+}
+
+/* First screen */
+
+.gh-landing-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 100svh;
+    padding: 8rem 0;
+}
+
+.gh-landing-logo {
+    display: block;
+    margin-bottom: 4rem;
+}
+
+.gh-landing-logo img {
+    width: auto;
+    max-width: min(32rem, 70vw);
+    height: auto;
+    max-height: 8rem;
 }
 
 .gh-landing-title {
-    margin: 0 0 2.4rem;
-    font-size: var(--h1-size, 4.4rem);
-    line-height: 1.1;
+    margin: 0;
+    font-size: clamp(4.4rem, 3rem + 4vw, 8.8rem);
+    line-height: 1;
 }
 
-.gh-landing-text > :first-child {
-    margin-top: 0;
+.gh-landing-lead {
+    max-width: 56rem;
+    margin: 2.4rem 0 0;
+    color: var(--color-secondary-text);
+    font-size: 2.2rem;
+    line-height: 1.4;
 }
+
+.gh-landing-cue {
+    position: absolute;
+    bottom: 3.2rem;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 4.4rem;
+    height: 4.4rem;
+    color: var(--color-secondary-text);
+    transform: translateX(-50%);
+}
+
+.gh-landing-cue svg {
+    width: 2.4rem;
+    height: 2.4rem;
+}
+
+/* The page text: questions answered in plain view, two columns from 992px,
+   a question never split from its answer's first lines. */
+
+.gh-landing-text {
+    padding: 8rem 0;
+}
+
+.gh-landing-text .gh-content {
+    display: block;
+}
+
+.gh-landing-text .gh-content > * {
+    max-width: none;
+}
+
+.gh-landing-text .gh-content h3 {
+    break-after: avoid;
+}
+
+.gh-landing-text .gh-content p {
+    break-inside: avoid;
+}
+
+@media screen and (min-width: 992px) {
+    .gh-landing-text .gh-content {
+        column-count: 2;
+        column-gap: 6.4rem;
+    }
+
+    .gh-landing-text .gh-content > :first-child {
+        margin-top: 0;
+    }
+}
+
+/* The three ways in: cards on the kit's flat ink shadow, lifting off it. */
 
 .gh-landing-paths {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.2rem;
-    margin-top: 4rem;
+    gap: 2.4rem;
+    margin-top: 4.8rem;
 }
 
 .gh-landing .gh-landing-path {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 5.6rem;
-    padding: 1.2rem 2rem;
-    border: 1px solid var(--color-base);
-    border-radius: 999px;
+    display: grid;
+    gap: 0.8rem;
+    align-content: start;
+    padding: 2.4rem;
+    border: 2px solid var(--color-base);
+    border-radius: 1rem;
+    background-color: var(--color-bg);
     color: var(--color-base);
-    font-size: 1.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
     text-decoration: none;
+    box-shadow: var(--cn-shadow);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .gh-landing .gh-landing-path:hover,
 .gh-landing .gh-landing-path:focus-visible {
-    background-color: var(--color-base);
-    color: var(--color-bg);
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--color-base);
+}
+
+.gh-landing-path svg {
+    width: 3.2rem;
+    height: 3.2rem;
+}
+
+.gh-landing-path-name {
+    display: flex;
+    justify-content: space-between;
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.gh-landing-path-text {
+    color: var(--color-secondary-text);
+    font-size: 1.6rem;
+    line-height: 1.4;
+}
+
+/* What members say */
+
+.gh-landing-voices {
+    padding: 8rem 0;
+}
+
+.gh-landing-voices-title {
+    margin: 0 0 3.2rem;
+    font-size: clamp(3.2rem, 2.4rem + 2vw, 4.8rem);
+}
+
+.gh-landing-voices-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.4rem;
+}
+
+.gh-landing-voice {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2.4rem;
+    margin: 0;
+    padding: 2.4rem;
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+}
+
+.gh-landing-voice blockquote {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 1.8rem;
+    line-height: 1.5;
+}
+
+.gh-landing-voice figcaption {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    color: var(--color-secondary-text);
+    font-size: 1.4rem;
+}
+
+.gh-landing-voice strong {
+    display: block;
+    color: var(--color-base);
+}
+
+.gh-landing-voice-avatar {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background-color: var(--color-bg-alt);
+    font-weight: 700;
+}
+
+/* Destacado and the community, well below: reached on purpose, not landed on. */
+.gh-landing-more {
+    margin-top: 16rem;
+    scroll-snap-align: start;
+}
+
+/* Each block fades in as it enters the screen (scroll-driven, no script). */
+@media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+        .gh-landing-snap > .gh-landing-inner,
+        .gh-landing-paths {
+            animation: gh-landing-in linear both;
+            animation-timeline: view();
+            animation-range: entry 0% entry 40%;
+        }
+    }
+}
+
+@keyframes gh-landing-in {
+    from {
+        opacity: 0;
+        transform: translateY(2.4rem);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html:has(.gh-landing) {
+        scroll-snap-type: none;
+    }
+
+    .gh-landing .gh-landing-path {
+        transition: none;
+    }
 }
 
 @media screen and (max-width: 767px) {
-    .gh-landing {
-        margin: 2.4rem auto 5.6rem;
+    .gh-landing-hero {
+        padding: 6.4rem 0;
     }
 
-    .gh-landing-paths {
+    .gh-landing-text,
+    .gh-landing-voices {
+        padding: 5.6rem 0;
+    }
+
+    .gh-landing-paths,
+    .gh-landing-voices-list {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    .gh-landing-more {
+        margin-top: 9.6rem;
     }
 }

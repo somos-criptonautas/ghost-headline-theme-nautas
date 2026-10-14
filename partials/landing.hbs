@@ -1,19 +1,57 @@
-{{!-- The landing at the top of the home: the Ghost page "inicio" - what we do
-    and the frequent questions, answered in plain view, edited in the Ghost
-    editor - then the three ways in. Without that page, just the ways in.
-    One .gh-content block, so the title and the buttons line up with the text. --}}
-<section class="gh-landing gh-canvas">
-    <div class="gh-content gh-landing-text">
-        {{#get "pages" filter="slug:inicio" limit="1"}}
-        {{#foreach pages}}
+{{!-- The landing (home.hbs), from the Ghost page "inicio": its title and
+    excerpt fill the first screen; its text - the questions, answered in plain
+    view - comes next and closes on the three ways in. Then what members say.
+    Each block is a snap point (landing.css). --}}
+{{#get "pages" filter="slug:inicio" limit="1"}}
+{{#foreach pages}}
+<section class="gh-landing-hero gh-landing-snap">
+    <div class="gh-landing-inner">
+        {{#if @site.logo}}
+        <span class="gh-landing-logo">
+            <img class="logo-nav logo-light" src="{{@site.logo}}" alt="{{@site.title}}">
+            <img class="logo-nav logo-dark" src="{{#if @custom.dark_logo}}{{@custom.dark_logo}}{{else}}{{@site.logo}}{{/if}}" alt="{{@site.title}}">
+        </span>
+        {{/if}}
         <h1 class="gh-landing-title">{{title}}</h1>
+        {{#if custom_excerpt}}<p class="gh-landing-lead">{{custom_excerpt}}</p>{{/if}}
+    </div>
+    <a class="gh-landing-cue" href="#gh-landing-text" aria-label="{{t "Continue reading"}}">{{> "icons/phosphor/arrow-down"}}</a>
+</section>
+
+<section class="gh-landing-text gh-landing-snap" id="gh-landing-text">
+    <div class="gh-content gh-landing-inner">
         {{content}}
-        {{/foreach}}
-        {{/get}}
-        <nav class="gh-landing-paths" aria-label="{{t "Choose your path"}}">
-            <a class="gh-landing-path" href="{{@site.url}}/blog/">{{t "Blog"}}</a>
-            <a class="gh-landing-path" href="{{@site.url}}/curso/">{{t "Course"}}</a>
-            <a class="gh-landing-path" href="{{@site.url}}/comunidad/">{{t "Community"}}</a>
-        </nav>
+    </div>
+    <nav class="gh-landing-paths gh-landing-inner" aria-label="{{t "Choose your path"}}">
+        <a class="gh-landing-path" href="{{@site.url}}/blog/">
+            {{> "icons/phosphor/notebook"}}
+            <span class="gh-landing-path-name">{{t "Blog"}} <span aria-hidden="true">→</span></span>
+            <span class="gh-landing-path-text">{{t "Articles to understand crypto and trading"}}</span>
+        </a>
+        <a class="gh-landing-path" href="{{@site.url}}/curso/">
+            {{> "icons/phosphor/student"}}
+            <span class="gh-landing-path-name">{{t "Course"}} <span aria-hidden="true">→</span></span>
+            <span class="gh-landing-path-text">{{t "The path, step by step"}}</span>
+        </a>
+        <a class="gh-landing-path" href="{{@site.url}}/comunidad/">
+            {{> "icons/phosphor/globe-hemisphere-west"}}
+            <span class="gh-landing-path-name">{{t "Community"}} <span aria-hidden="true">→</span></span>
+            <span class="gh-landing-path-text">{{t "Where we trade and keep each other going"}}</span>
+        </a>
+    </nav>
+</section>
+{{/foreach}}
+{{/get}}
+
+{{!-- What members say. shortcut: placeholders written here until the quotes
+    are chosen; then they move to an editable source. --}}
+<section class="gh-landing-voices gh-landing-snap" aria-labelledby="gh-landing-voices-title">
+    <div class="gh-landing-inner">
+        <h2 class="gh-landing-voices-title" id="gh-landing-voices-title">{{t "What our community says"}}</h2>
+        <div class="gh-landing-voices-list">
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> trader</span></figcaption></figure>
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> nauta</span></figcaption></figure>
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> nuevo</span></figcaption></figure>
+        </div>
     </div>
 </section>
