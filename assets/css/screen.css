@@ -1957,6 +1957,13 @@ a.toc-link {
   }
 }
 
+/* The shared header.css stacks a second logo image invisibly over the first
+   (absolute, opacity 0); here the second is the dark logo, shown on its own. */
+.gh-head-logo img:nth-child(2) {
+  position: static;
+  opacity: 1;
+}
+
 /* One logo at a time: the dark one in dark mode (default.hbs). */
 html[data-theme="dark"] .logo-nav.logo-light,
 html:not([data-theme="dark"]) .logo-nav.logo-dark {
