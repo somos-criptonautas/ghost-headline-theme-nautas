@@ -6,12 +6,6 @@
 {{#foreach pages}}
 <section class="gh-landing-hero gh-landing-snap">
     <div class="gh-landing-inner">
-        {{#if @site.logo}}
-        <span class="gh-landing-logo">
-            <img class="logo-nav logo-light" src="{{@site.logo}}" alt="{{@site.title}}">
-            <img class="logo-nav logo-dark" src="{{#if @custom.dark_logo}}{{@custom.dark_logo}}{{else}}{{@site.logo}}{{/if}}" alt="{{@site.title}}">
-        </span>
-        {{/if}}
         <h1 class="gh-landing-title">{{title}}</h1>
         {{#if custom_excerpt}}<p class="gh-landing-lead">{{custom_excerpt}}</p>{{/if}}
     </div>
@@ -43,12 +37,22 @@
 {{/foreach}}
 {{/get}}
 
-{{!-- What members say. shortcut: placeholders written here until the quotes
-    are chosen; then they move to an editable source. --}}
+{{!-- What members say: a row that scrolls sideways, three in view on
+    desktop. shortcut: twelve placeholders written here until the quotes are
+    chosen; then they move to an editable source. --}}
 <section class="gh-landing-voices gh-landing-snap" aria-labelledby="gh-landing-voices-title">
     <div class="gh-landing-inner">
         <h2 class="gh-landing-voices-title" id="gh-landing-voices-title">{{t "What our community says"}}</h2>
-        <div class="gh-landing-voices-list">
+        <div class="gh-landing-voices-list gh-carousel" tabindex="0" role="region" aria-labelledby="gh-landing-voices-title">
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> trader</span></figcaption></figure>
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> nauta</span></figcaption></figure>
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> nuevo</span></figcaption></figure>
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> trader</span></figcaption></figure>
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> nauta</span></figcaption></figure>
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> nuevo</span></figcaption></figure>
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> trader</span></figcaption></figure>
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> nauta</span></figcaption></figure>
+            <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> nuevo</span></figcaption></figure>
             <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> trader</span></figcaption></figure>
             <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> nauta</span></figcaption></figure>
             <figure class="gh-landing-voice"><blockquote>“…”</blockquote><figcaption><span class="gh-landing-voice-avatar" aria-hidden="true">?</span><span><strong>Nombre</strong> nuevo</span></figcaption></figure>

@@ -1,11 +1,27 @@
 /* Landing (home.hbs, partials/landing.hbs): the first screen, the page
    "inicio" read in place and closing on the three ways in, what members say,
-   and well below them Destacado and the community. No top bar here
-   (default.hbs), so the room the fixed bar keeps on tablets goes too. */
+   and well below them Destacado and the community. The top bar keeps the
+   logo, search and theme toggle; the menu links go, and with them the burger
+   on tablets, whose place the theme toggle takes. */
+
+.home-template #gh-head .gh-head-menu {
+    display: none;
+}
 
 @media screen and (max-width: 991px) {
-    .home-template .gh-site {
-        padding-top: 0;
+    .home-template #gh-head .gh-burger {
+        display: none;
+    }
+
+    /* At the end of the bar, where the burger was. */
+    .home-template #gh-head .gh-head-bar-toggle {
+        display: inline-flex;
+        grid-row: 1;
+        grid-column: 3;
+        justify-self: end;
+        width: 2.2rem;
+        height: 2.2rem;
+        margin: 0;
     }
 }
 
@@ -20,7 +36,10 @@ html:has(.gh-landing) {
     scroll-snap-type: y proximity;
 }
 
-.gh-landing-snap {
+/* The top of the page (bar included) is the first point, so the bar is
+   never snapped out of view. */
+.gh-landing-snap,
+.home-template #gh-head {
     scroll-snap-align: start;
 }
 
@@ -30,20 +49,16 @@ html:has(.gh-landing) {
     position: relative;
     display: flex;
     align-items: center;
-    min-height: 100svh;
+    /* The first screen, under the bar: 100px on desktop, the fixed bar's
+       height on tablets. */
+    min-height: calc(100svh - 10rem);
     padding: 8rem 0;
 }
 
-.gh-landing-logo {
-    display: block;
-    margin-bottom: 4rem;
-}
-
-.gh-landing-logo img {
-    width: auto;
-    max-width: min(32rem, 70vw);
-    height: auto;
-    max-height: 8rem;
+@media screen and (max-width: 991px) {
+    .gh-landing-hero {
+        min-height: calc(100svh - var(--head-bar-height, 6.4rem));
+    }
 }
 
 .gh-landing-title {
@@ -77,8 +92,10 @@ html:has(.gh-landing) {
     height: 2.4rem;
 }
 
-/* The page text: questions answered in plain view, two columns from 992px,
-   a question never split from its answer's first lines. */
+/* The page text: questions answered in plain view. landing.js groups each
+   question with its answer; two across from 992px, read left to right. The
+   last question, how to go on, sits under them at full width and leads into
+   the three cards. */
 
 .gh-landing-text {
     padding: 8rem 0;
@@ -88,27 +105,52 @@ html:has(.gh-landing) {
     display: block;
 }
 
-.gh-landing-text .gh-content > * {
+.gh-landing-text .gh-content > *,
+.gh-landing-faq-item > *,
+.gh-landing-next > * {
     max-width: none;
 }
 
-.gh-landing-text .gh-content h3 {
-    break-after: avoid;
+.gh-landing-faq {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3.2rem 6.4rem;
+    margin-top: 4rem;
 }
 
-.gh-landing-text .gh-content p {
-    break-inside: avoid;
+.gh-landing-faq-item {
+    padding-top: 2.4rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.gh-landing-faq-item > :first-child,
+.gh-landing-next > :first-child {
+    margin-top: 0;
+}
+
+/* Grouped, the answers are no longer direct children of .gh-content, so they
+   take its text setting here: the serif, size and rhythm of the intro. */
+.gh-landing-faq-item p,
+.gh-landing-next p {
+    margin: 1.2rem 0 0;
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    line-height: 1.6;
 }
 
 @media screen and (min-width: 992px) {
-    .gh-landing-text .gh-content {
-        column-count: 2;
-        column-gap: 6.4rem;
+    .gh-landing-faq {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+}
 
-    .gh-landing-text .gh-content > :first-child {
-        margin-top: 0;
-    }
+.gh-landing-next {
+    margin-top: 6.4rem;
+    text-align: center;
+}
+
+.gh-landing-next h3 {
+    font-size: clamp(2.8rem, 2rem + 1.6vw, 4rem);
 }
 
 /* The three ways in: cards on the kit's flat ink shadow, lifting off it. */
@@ -170,10 +212,23 @@ html:has(.gh-landing) {
     font-size: clamp(3.2rem, 2.4rem + 2vw, 4.8rem);
 }
 
-.gh-landing-voices-list {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+/* Twelve in a row that scrolls sideways (carousel.css). The row starts at the
+   text's edge and runs out to the right edge of the screen, so the cards
+   past it show there is more; the section clips the overflow. */
+.gh-landing-voices {
+    overflow-x: clip;
+}
+
+.gh-landing-voices-list.gh-carousel {
+    grid-auto-columns: min(36rem, 80vw);
     gap: 2.4rem;
+    margin-right: calc(50% - 50vw);
+    padding-bottom: 1.6rem;
+}
+
+.gh-landing-voices-list:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 4px;
 }
 
 .gh-landing-voice {
@@ -187,8 +242,11 @@ html:has(.gh-landing) {
     border-radius: 1rem;
 }
 
+/* Not the article quote style: no bar, no indent. */
 .gh-landing-voice blockquote {
     margin: 0;
+    padding: 0;
+    border: 0;
     font-family: var(--font-serif);
     font-size: 1.8rem;
     line-height: 1.5;
@@ -263,9 +321,12 @@ html:has(.gh-landing) {
         padding: 5.6rem 0;
     }
 
-    .gh-landing-paths,
-    .gh-landing-voices-list {
+    .gh-landing-paths {
         grid-template-columns: minmax(0, 1fr);
+    }
+
+    .gh-landing-voices-list.gh-carousel {
+        grid-auto-columns: 80vw;
     }
 
     .gh-landing-more {
