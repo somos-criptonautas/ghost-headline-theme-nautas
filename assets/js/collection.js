@@ -77,7 +77,9 @@
         kicker.textContent = direction === 'prev' ? '← ' + label('previous') : label('next') + ' →';
         var title = document.createElement('span');
         title.className = 'gh-collection-pager-title';
-        title.textContent = inSeries ? roman(index + 1) + ' - ' + titles[index] : label('hub');
+        // The hub is chapter 0, by the series' name: "0 - Journey".
+        var hubName = label('hub');
+        title.textContent = inSeries ? roman(index + 1) + ' - ' + titles[index] : '0 - ' + hubName.charAt(0).toUpperCase() + hubName.slice(1);
         text.appendChild(kicker);
         text.appendChild(title);
         a.appendChild(text);
