@@ -1,5 +1,6 @@
-/* Feedback tab (partials/feedback.hbs). Desktop only; quiet greys from the
-   brand kit's interface tokens, so it follows light and dark. */
+/* Feedback tab (partials/feedback.hbs). Desktop only, dressed like back to
+   top (post.css): the page background, no border, the same soft shadow, and
+   on hover that shadow in the text colour. */
 .cn-feedback {
     display: none;
 }
@@ -19,11 +20,11 @@
    the one against the screen, hence no left border and right-side radius. */
 .cn-feedback-tab {
     padding: 1.4rem 0.7rem;
-    border: 1px solid var(--cn-ui-line);
-    border-left: 0;
+    border: 0;
     border-radius: 0 0.8rem 0.8rem 0;
-    background: var(--cn-ui-surface);
-    color: var(--cn-ui-muted);
+    background: var(--color-bg);
+    color: var(--color-base);
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.12);
     font-size: 1.3rem;
     letter-spacing: 0.04em;
     cursor: pointer;
@@ -31,9 +32,20 @@
     rotate: 180deg;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+    .cn-feedback-tab {
+        transition: box-shadow 0.15s ease;
+    }
+}
+
 .cn-feedback-tab:hover,
 .cn-feedback-tab[aria-expanded="true"] {
-    color: var(--cn-ui-text);
+    box-shadow: 0 0.3rem 1.4rem color-mix(in srgb, var(--color-base) 22%, transparent);
+}
+
+.cn-feedback-tab:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
 }
 
 .cn-feedback-panel {
@@ -46,8 +58,9 @@
     padding: 2rem;
     border: 1px solid var(--cn-ui-line);
     border-radius: 1.2rem;
-    background: var(--cn-ui-bg);
+    background: var(--color-bg);
     color: var(--cn-ui-text);
+    box-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.12);
     font-size: 1.5rem;
     transform: translateY(-50%);
 }
