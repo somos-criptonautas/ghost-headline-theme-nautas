@@ -97,6 +97,10 @@
             "peertube_source": {
                 "type": "text",
                 "description": "Videos page: PeerTube URL, optionally | category ids, e.g. https://host | 15, 13 Educación"
+            },
+            "newsletter_form": {
+                "type": "text",
+                "description": "Keila form address (https://…/forms/nfrm_…): the editor's signup cards show and send their e-mail there, without Portal."
             }
         }
     },
