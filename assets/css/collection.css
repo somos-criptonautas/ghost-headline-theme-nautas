@@ -92,13 +92,13 @@
     letter-spacing: 0.12em;
 }
 
-/* The art in its own thin frame, as on a printed card. */
-/* At its own proportions: the art is a whole card (tarot), never cropped. */
+/* At its own proportions: the art is a whole card (tarot), never cropped,
+   in a thin frame a shade of the text colour rather than the ink itself. */
 .gh-collection-image {
     width: 100%;
     height: auto;
-    border: 1px solid var(--color-base);
-    border-radius: 0.3rem;
+    border: 1px solid color-mix(in srgb, var(--color-base) 22%, transparent);
+    border-radius: 0.4rem;
 }
 
 .gh-collection-title {
@@ -165,13 +165,15 @@
     text-align: right;
 }
 
+/* One fixed 3:2 crop whatever the art, so both cards keep the same low
+   height. */
 .gh-collection .gh-collection-pager-image {
     flex: none;
-    width: auto;
-    max-width: 9.6rem;
-    height: 9.6rem;
+    width: 9.6rem;
+    height: auto;
     margin: 0;
-    object-fit: contain;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
     border-radius: 0.5rem;
 }
 

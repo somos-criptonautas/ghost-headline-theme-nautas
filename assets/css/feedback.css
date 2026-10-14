@@ -139,7 +139,12 @@
     gap: 0.8rem;
     align-items: center;
     color: var(--cn-ui-muted);
-    font-size: 1.3rem;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.cn-feedback-shot input {
+    cursor: pointer;
 }
 
 .cn-feedback-send {
