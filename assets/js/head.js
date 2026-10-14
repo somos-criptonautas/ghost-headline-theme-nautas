@@ -89,9 +89,27 @@
      *    more than 5px, or back near the top, shows it again - the small
      *    tolerance keeps a stray pixel from flapping it. Overscroll (iOS
      *    bounce, past either end) is ignored. headroom.js did this before.
+     *
+     * 4. Past the end of a post - its comments and the forum cards - the
+     *    header comes back and stays (.is-docked), with the search and the
+     *    menu at hand to go on. On desktop, where it is static, it is fixed
+     *    to the top then; .gh-site takes its height as padding, so nothing
+     *    under the reader moves.
      */
     var head = document.getElementById('gh-head');
     var bar = window.matchMedia('(max-width: 991px)');
+
+    var article = document.querySelector('.post-template .gh-article');
+
+    var dock = function (on) {
+        if (on === head.classList.contains('is-docked')) {
+            return;
+        }
+        if (site && !bar.matches) {
+            site.style.paddingTop = on ? head.offsetHeight + 'px' : '';
+        }
+        head.classList.toggle('is-docked', on);
+    };
 
     if (head) {
         var OFFSET = 64;
@@ -103,11 +121,17 @@
             ticking = false;
             var y = Math.round(window.scrollY);
             var max = document.documentElement.scrollHeight - window.innerHeight;
-            if (!bar.matches || y < 0 || y > max) {
+            if (y < 0 || y > max) {
                 lastY = y;
                 return;
             }
-            if (y <= OFFSET || lastY - y > TOLERANCE_UP) {
+            var docked = !!article && article.getBoundingClientRect().bottom < window.innerHeight;
+            dock(docked);
+            if (!bar.matches) {
+                lastY = y;
+                return;
+            }
+            if (docked || y <= OFFSET || lastY - y > TOLERANCE_UP) {
                 head.classList.remove('is-unpinned');
             } else if (y > lastY) {
                 head.classList.add('is-unpinned');
@@ -124,6 +148,7 @@
 
         // Back to desktop: nothing to hide.
         bar.addEventListener('change', function () {
+            dock(false);
             head.classList.remove('is-unpinned');
             lastY = window.scrollY;
         });

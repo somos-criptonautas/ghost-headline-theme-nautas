@@ -5521,8 +5521,10 @@ a.is-external .gh-ext::after {
     height: auto;
   }
 
+  /* 92%: the column's full width read a little too big. */
   #gh-head .gh-head-logo img {
-    max-height: 13rem;
+    max-width: 92%;
+    max-height: 12rem;
   }
 
   #gh-head .gh-head-brand {
@@ -5646,4 +5648,29 @@ button.gh-author-social-link {
 .gh-author-social-link[hidden],
 .gh-author-social:not(:has(> :not([hidden]))) {
   display: none;
+}
+
+/* Desktop: the header back at the end of a post (head.js, .is-docked),
+   fixed to the top and sliding in. */
+@media screen and (min-width: 992px) {
+  #gh-head.is-docked {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 90;
+    animation: gh-head-dock 0.3s ease;
+  }
+}
+
+@keyframes gh-head-dock {
+  from {
+    transform: translateY(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #gh-head.is-docked {
+    animation: none;
+  }
 }

@@ -454,6 +454,7 @@ html[data-theme="dark"] .gh-image-band {
     right: 1.2rem;
     z-index: 2;
     padding: 0.4rem 1rem;
+    border-radius: 0.6rem;
     background-color: rgba(24, 23, 25, 0.72);
     color: #F1F1F1;
     font-size: 1.4rem;
