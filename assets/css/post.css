@@ -107,6 +107,13 @@
     .gh-share-end .gh-share-links {
         justify-content: center;
     }
+
+    /* "Compartir" on its own line, the icons under it: it never breaks
+       between them. */
+    .gh-share-end .gh-share-label {
+        flex-basis: 100%;
+        margin: 0 0 0.8rem;
+    }
 }
 
 /* Reactions (partials/reactions.hbs): the last thing in the article column,
@@ -553,21 +560,6 @@ html[data-theme="dark"] .gh-cover-caption {
     width: 100%;
     height: auto;
     border-radius: var(--border-radius);
-}
-
-/* Destacado (partials/featured.hbs): the excerpt under the title on the
-   band's colours - dark on light, light on dark - with rounded corners. */
-.gh-featured .gh-card-excerpt {
-    display: inline-block;
-    padding: 0.4rem 1rem;
-    border-radius: 0.6rem;
-    background-color: rgba(24, 23, 25, 0.72);
-    color: #F1F1F1;
-}
-
-html[data-theme="dark"] .gh-featured .gh-card-excerpt {
-    background-color: rgba(255, 255, 255, 0.85);
-    color: #1A1A1A;
 }
 
 /* /curso: the survey chart (.cn-curso, styled in the page's own HTML card)

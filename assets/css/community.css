@@ -606,3 +606,12 @@
         opacity: 0.5;
     }
 }
+
+/* Phones: a forum card as a post card - the picture across the top, the
+   text under it (under articles and on the landing). */
+@media screen and (max-width: 767px) {
+    .gh-community-card-link {
+        grid-template-columns: minmax(0, 1fr);
+        align-items: start;
+    }
+}

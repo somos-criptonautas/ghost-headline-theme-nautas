@@ -564,3 +564,35 @@
     font-size: 1.8rem;
 }
 
+
+/* First load (peertube-videos.js): placeholder cards, a 16:9 frame and two
+   lines, in the grid's own columns. */
+.gh-video.is-placeholder::before,
+.gh-video.is-placeholder::after {
+    content: "";
+    display: block;
+    border-radius: 0.6rem;
+    background-color: color-mix(in srgb, var(--color-base) 7%, transparent);
+}
+
+.gh-video.is-placeholder::before {
+    aspect-ratio: 16 / 9;
+}
+
+.gh-video.is-placeholder::after {
+    width: 80%;
+    height: 3.2rem;
+    margin-top: 1.2rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .gh-video.is-placeholder {
+        animation: gh-videos-wait 1.2s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes gh-videos-wait {
+    to {
+        opacity: 0.5;
+    }
+}

@@ -48,6 +48,20 @@ html:has(.gh-landing) {
     scroll-snap-type: y proximity;
 }
 
+/* Phones and tablets: on the landing the bar is not fixed - it scrolls away
+   with the page and stays out of the way of the snapping and the sideways
+   rows. */
+@media screen and (max-width: 991px) {
+    body.home-template:not(.is-head-open) #gh-head {
+        position: static;
+        transform: none;
+    }
+
+    .home-template .gh-site {
+        padding-top: 0;
+    }
+}
+
 /* The top of the page (bar included) is the first point, so the bar is
    never snapped out of view. */
 .gh-landing-snap,
@@ -213,11 +227,6 @@ html:has(.gh-landing) {
 .gh-landing-next {
     margin-top: 6.4rem;
     text-align: center;
-}
-
-/* The size of the other section heading (Nautas dicen). */
-.gh-landing-next h2 {
-    font-size: clamp(3.2rem, 2.4rem + 2vw, 4.8rem);
 }
 
 /* The three ways in: cards on the kit's flat ink shadow, lifting off it. */
@@ -402,5 +411,28 @@ html:has(.gh-landing) {
 
     .gh-landing-more {
         margin-top: 9.6rem;
+    }
+}
+
+/* The questions a step above their answers (2rem here, larger than the
+   article text, so not the article's h3), and how to go on as large as the
+   other section heading - both over .gh-content's own heading sizes. */
+.gh-landing .gh-landing-faq-item h3 {
+    font-size: 2.5rem;
+}
+
+.gh-landing .gh-landing-next h2 {
+    font-size: clamp(3.2rem, 2.4rem + 2vw, 4.8rem);
+}
+
+/* Phones: the forum topics as whole cards one under another, like the posts,
+   not a sideways row. */
+@media screen and (max-width: 767px) {
+    .home-template .gh-community-strip .gh-community-cards.gh-carousel {
+        grid-auto-flow: row;
+        grid-auto-columns: auto;
+        overflow: visible;
+        scroll-snap-type: none;
+        padding: 0;
     }
 }

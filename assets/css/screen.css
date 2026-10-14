@@ -1958,8 +1958,8 @@ a.toc-link {
 
   /* The open phone menu: the logo across the top. */
   .is-head-open img.logo-nav {
-    max-width: 70vh;
-    max-height: 6.33rem;
+    max-width: min(100%, 28rem);
+    max-height: 4.4rem;
     margin: auto;
   }
 }

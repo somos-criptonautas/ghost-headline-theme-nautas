@@ -39,7 +39,7 @@
     .gh-collection.is-cards .gh-collection-list {
         /* .gh-carousel (carousel.css) is on the list; it only runs here. */
         display: grid;
-        grid-auto-columns: 31%;
+        grid-auto-columns: 44%;
         padding: 0.4rem var(--gap) 1.2rem;
         scroll-padding-inline: var(--gap);
     }
@@ -206,5 +206,20 @@
 
     .gh-collection-pager--next:only-child {
         grid-column: auto;
+    }
+}
+
+/* Phones: the card titles a step down so they fit the narrow cards, and the
+   art in the text (custom-collection.hbs, .is-collection) not edge to edge. */
+@media screen and (max-width: 767px) {
+    .gh-collection-title {
+        font-size: 1.4rem;
+        overflow-wrap: anywhere;
+        hyphens: auto;
+    }
+
+    .is-collection .gh-content .kg-image-card img {
+        max-width: 72%;
+        margin-inline: auto;
     }
 }

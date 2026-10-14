@@ -537,6 +537,10 @@
             if (ticket !== request) {
                 return;
             }
+            if (!shown) {
+                // The placeholders out, the real cards in their place.
+                grid.textContent = '';
+            }
             batches++;
             var offset = grid.children.length;
             batch.forEach(function (video, i) {
@@ -547,7 +551,8 @@
             var empty = !grid.children.length;
             message.hidden = !empty;
             if (empty && !shown && feed.failed) {
-                // The first request failed outright: keep the page as it was.
+                // The first request failed outright: the page as it was.
+                section.hidden = true;
                 return;
             }
             if (!shown) {
@@ -561,6 +566,10 @@
         }, function () {
             settle();
             if (ticket === request) {
+                if (!shown) {
+                    section.hidden = true;
+                    return;
+                }
                 message.hidden = false;
             }
         });
@@ -595,6 +604,17 @@
             message.hidden = true;
             sync(feed);
             return Promise.resolve();
+        }
+        // First view: the section from the first paint with a row of
+        // placeholder cards (videos.css), so the text is not read alone
+        // before the videos pop in. A failure hides it again.
+        if (!shown) {
+            section.hidden = false;
+            for (var p = 0; p < 8; p++) {
+                var placeholder = el('li', 'gh-video is-placeholder');
+                placeholder.setAttribute('aria-hidden', 'true');
+                grid.appendChild(placeholder);
+            }
         }
         return load(feed, ticket);
     };
