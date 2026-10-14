@@ -260,6 +260,23 @@
     outline-offset: 2px;
 }
 
+/* Hover, with a mouse: the arrow rises a little and the ring's track takes
+   the text colour. */
+@media (hover: hover) and (pointer: fine) {
+    .gh-to-top > svg:not(.gh-to-top-ring),
+    .gh-to-top-track {
+        transition: transform 0.15s ease, stroke 0.15s ease;
+    }
+
+    .gh-to-top:hover > svg:not(.gh-to-top-ring) {
+        transform: translateY(-0.2rem);
+    }
+
+    .gh-to-top:hover .gh-to-top-track {
+        stroke: var(--color-base);
+    }
+}
+
 .gh-to-top > svg:not(.gh-to-top-ring) {
     width: 1.8rem;
     height: 1.8rem;
@@ -376,6 +393,11 @@
     font-size: 1.4rem;
     line-height: 1.4;
     text-align: center;
+}
+
+/* lightbox.js: only images with more to see open, and show it. */
+.is-zoomable {
+    cursor: zoom-in;
 }
 
 .pswp__caption a {

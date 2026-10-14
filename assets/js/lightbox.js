@@ -8,6 +8,10 @@
  * Over the defaults: the device's back button closes the lightbox instead of
  * leaving the article, the figure's caption shows under the image, and the
  * image opened is the largest one in its srcset, so zooming stays sharp.
+ * An image already shown at (about) its full size has nothing to enlarge: it
+ * opens nothing and gets no zoom cursor (.is-zoomable, post.css). Judged at
+ * the current width, so an image can be zoomable on a phone and not on a
+ * desktop.
  */
 function lightbox(trigger) {
     var isImageCard = function (el) {
@@ -102,8 +106,34 @@ function lightbox(trigger) {
         pswp.init();
     };
 
-    document.querySelectorAll(trigger).forEach(function (image) {
+    // Wider than shown by a quarter at least, counting the srcset's largest.
+    var zoomable = function (image) {
+        var full = Math.max(image.naturalWidth, parseInt(image.getAttribute('width'), 10) || 0);
+        (image.getAttribute('srcset') || '').split(',').forEach(function (candidate) {
+            full = Math.max(full, parseInt(candidate.trim().split(/\s+/)[1], 10) || 0);
+        });
+        return full > image.clientWidth * 1.25;
+    };
+
+    var images = document.querySelectorAll(trigger);
+    var mark = function () {
+        images.forEach(function (image) {
+            image.classList.toggle('is-zoomable', zoomable(image));
+        });
+    };
+    images.forEach(function (image) {
+        if (!image.complete) {
+            image.addEventListener('load', mark, {once: true});
+        }
+    });
+    window.addEventListener('resize', mark);
+    mark();
+
+    images.forEach(function (image) {
         image.addEventListener('click', function (event) {
+            if (!zoomable(image)) {
+                return;
+            }
             event.preventDefault();
             var images = group(image);
             open(images, Math.max(0, images.indexOf(image)));

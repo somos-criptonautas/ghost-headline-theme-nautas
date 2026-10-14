@@ -62,5 +62,8 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
     semanticPosts: true,
     semanticTopics: true,
     semanticMushin: true,
-    commonSearches: ['cómo empezar', 'cómo usar Monero', 'hacer trading']
+    // By the page's language: en.criptonautas.co gets its own.
+    commonSearches: /^en/i.test(document.documentElement.lang)
+        ? ['how to start', 'how to use Monero', 'crypto trading']
+        : ['cómo empezar', 'cómo usar Monero', 'hacer trading']
 };

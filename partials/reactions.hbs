@@ -3,7 +3,9 @@
     count. Filled by assets/js/reactions.js; hidden until the topic is found.
     Members signed in to the forum react from here; anyone else gets the
     dialog. Same order as the forum's reactions; 🍄 (mushroom) is left out
-    on purpose, it stays forum-only. --}}
+    on purpose, it stays forum-only. The internal tag #sin-reacciones hides
+    them on that post or page. --}}
+{{#has tag="#sin-reacciones"}}{{else}}
 {{#if @custom.discourse_url}}
 {{#if @custom.discourse_reactions}}
 <div class="gh-reactions" hidden data-embed-url="{{url absolute="true"}}">
@@ -32,3 +34,4 @@
 {{> "monero-tip-dialog"}}
 {{/if}}
 {{/if}}
+{{/has}}
