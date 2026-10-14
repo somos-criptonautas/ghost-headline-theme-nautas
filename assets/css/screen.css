@@ -196,6 +196,43 @@ body:not(.home-template) .gh-topic-grid .gh-card .gh-card-link:nth-child(even) {
   gap: 1.5rem;
 }
 
+/* The kit's ink frame and hard shadow on each card's image only;
+   the card itself stays unframed. */
+/* Same as the landing's ways in: 1rem corners (more articles at the end of
+   a post sets a smaller radius further down, hence body here), and the same
+   lift when pointed at. */
+.gh-topic-grid .gh-card-image,
+body .gh-read-next .gh-topic-grid .gh-card-image {
+  overflow: hidden;
+  border: 2px solid var(--color-base);
+  border-radius: 1rem;
+  box-shadow: var(--cn-shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.gh-topic-grid .gh-card-image img,
+body .gh-read-next .gh-topic-grid .gh-card-image img {
+  border-radius: calc(1rem - 2px);
+}
+
+.gh-topic-grid .gh-card-link:hover .gh-card-image,
+.gh-topic-grid .gh-card-link:focus-visible .gh-card-image {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-base);
+}
+
+/* Dark: the frame is light, and against a light picture it disappeared. A
+   rim of the page colour inside it keeps it reading as on the ways in, where
+   the card's dark face meets the frame. */
+html[data-theme="dark"] .gh-topic-grid .gh-card-image {
+  padding: 3px;
+  background-color: var(--color-bg);
+}
+
+html[data-theme="dark"] .gh-topic-grid .gh-card-image img {
+  border-radius: calc(1rem - 5px);
+}
+
 .gh-topic-grid:hover .gh-topic-grid-item:hover {
   opacity: 0.63;
 }
@@ -727,6 +764,7 @@ body:not(.home-template) .gh-read-next .gh-topic-content {
 @media screen and (min-width: 992px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 2.4rem;
   }
 
   /* Full-width grid, reset 1700px offset */

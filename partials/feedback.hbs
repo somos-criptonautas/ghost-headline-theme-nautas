@@ -3,7 +3,7 @@
     it to Chatwoot; the screenshot library loads only when the box is ticked. --}}
 {{#if @custom.feedback_webhook}}
 <div class="cn-feedback" data-webhook="{{@custom.feedback_webhook}}" data-shot-lib="{{asset "js/vendor/html-to-image.min.js"}}">
-    <button class="cn-feedback-tab" type="button" aria-expanded="false" aria-controls="cn-feedback-panel">{{t "feedback"}}</button>
+    <button class="cn-feedback-tab" type="button" aria-expanded="false" aria-controls="cn-feedback-panel">{{t "feedback"}}{{> "icons/phosphor/megaphone"}}</button>
     <form class="cn-feedback-panel" id="cn-feedback-panel" hidden
         data-sending="{{t "Sending…"}}" data-thanks="{{t "Thanks, we got it."}}" data-error="{{t "Could not send it. Try again in a moment."}}">
         <div class="cn-feedback-head">

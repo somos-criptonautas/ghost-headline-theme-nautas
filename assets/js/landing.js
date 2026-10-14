@@ -113,3 +113,38 @@
     }
     last.replaceWith(heading);
 })();
+
+/* What members say: two rows that drift in opposite directions
+ * (landing.css). Each row holds its half of the cards twice so the loop has no
+ * seam; the copies are hidden from screen readers. With reduced motion the
+ * original sideways row stays.
+ */
+(function () {
+    var list = document.querySelector('.gh-landing-voices-list');
+    if (!list || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+    var voices = Array.prototype.slice.call(list.children);
+    var half = Math.ceil(voices.length / 2);
+    var marquee = document.createElement('div');
+    marquee.className = 'gh-landing-marquee';
+    marquee.setAttribute('role', 'region');
+    marquee.setAttribute('aria-labelledby', list.getAttribute('aria-labelledby'));
+    [voices.slice(0, half), voices.slice(half)].forEach(function (group, i) {
+        var row = document.createElement('div');
+        row.className = 'gh-landing-marquee-row' + (i ? ' is-reverse' : '');
+        var track = document.createElement('div');
+        track.className = 'gh-landing-marquee-track';
+        group.forEach(function (voice) {
+            track.appendChild(voice);
+        });
+        group.forEach(function (voice) {
+            var copy = voice.cloneNode(true);
+            copy.setAttribute('aria-hidden', 'true');
+            track.appendChild(copy);
+        });
+        row.appendChild(track);
+        marquee.appendChild(row);
+    });
+    list.replaceWith(marquee);
+})();

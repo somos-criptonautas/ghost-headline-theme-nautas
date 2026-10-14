@@ -43,6 +43,17 @@
     box-shadow: 0 0.2rem 0.9rem color-mix(in srgb, var(--color-base) 14%, transparent);
 }
 
+/* Turned with the text, reading bottom to top (images stay upright in
+   vertical text and the tab adds half a turn, so a quarter turn more), and
+   mirrored so it calls out along the word: "feedback ->". */
+.cn-feedback-tab svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-top: 0.6rem;
+    rotate: 90deg;
+    scale: -1 1;
+}
+
 .cn-feedback-tab:focus-visible {
     outline: 2px solid var(--ghost-accent-color);
     outline-offset: 2px;
@@ -125,6 +136,25 @@
     flex: none;
     width: 1.5rem;
     height: 1.5rem;
+}
+
+.cn-feedback-types span,
+.cn-feedback-close,
+.cn-feedback-send {
+    transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.cn-feedback-types input:not(:checked) + span:hover {
+    border-color: color-mix(in srgb, var(--cn-ui-text) 45%, transparent);
+    color: var(--cn-ui-text);
+}
+
+.cn-feedback-close:hover {
+    color: var(--cn-ui-text);
+}
+
+.cn-feedback-send:hover {
+    background: color-mix(in srgb, var(--cn-ui-text) 85%, var(--cn-ui-bg));
 }
 
 .cn-feedback-types input:checked + span {

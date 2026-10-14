@@ -42,22 +42,8 @@
     margin-inline: auto;
 }
 
-/* Each block settles at the top of the screen when the scroll ends near it -
-   proximity, so a long block still reads freely. */
-html:has(.gh-landing) {
-    scroll-snap-type: y proximity;
-}
-
-/* Phones and tablets scroll freely: snapping fought the swipe. */
-@media screen and (max-width: 991px) {
-    html:has(.gh-landing) {
-        scroll-snap-type: none;
-    }
-}
-
 /* Phones and tablets: on the landing the bar is not fixed - it scrolls away
-   with the page and stays out of the way of the snapping and the sideways
-   rows. */
+   with the page and stays out of the way of the sideways rows. */
 @media screen and (max-width: 991px) {
     body.home-template:not(.is-head-open) #gh-head {
         position: static;
@@ -67,13 +53,6 @@ html:has(.gh-landing) {
     .home-template .gh-site {
         padding-top: 0;
     }
-}
-
-/* The top of the page (bar included) is the first point, so the bar is
-   never snapped out of view. */
-.gh-landing-snap,
-.home-template #gh-head {
-    scroll-snap-align: start;
 }
 
 /* First screen: the logo, the three ways in as one compact row, and the
@@ -98,16 +77,15 @@ html:has(.gh-landing) {
     margin-inline: auto;
 }
 
-/* The site's meta title as the first screen's headline, a step under the
-   logo so the logo still leads; the opening line (landing.js) under it. */
-.gh-landing-tagline {
-    max-width: 22ch;
-    margin: 3.2rem auto 0;
-    font-family: var(--gh-font-heading);
-    font-size: clamp(2.6rem, 2rem + 1.6vw, 3.6rem);
-    font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+/* The site's meta title as a small label above the logo, which leads. */
+.gh-landing-eyebrow {
+    display: inline-block;
+    margin: 0 0 2.4rem;
+    color: var(--color-secondary-text);
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 }
 
 .gh-landing-intro {
@@ -202,30 +180,54 @@ html:has(.gh-landing) {
 }
 
 @media screen and (max-width: 991px) {
+    /* Soft cards: the brand's light surface, no lines. */
     .gh-landing-faq {
-        gap: 0;
+        gap: 0.8rem;
     }
 
     .gh-landing-faq-item {
-        padding-block: 2rem;
-    }
-
-    .gh-landing-faq-item:last-child {
-        border-bottom: 1px solid var(--color-border);
+        padding: 1.8rem 2rem;
+        border-top: 0;
+        border-radius: 1.2rem;
+        background: color-mix(in srgb, var(--color-base) 3%, var(--color-bg));
     }
 
     .gh-landing-faq-toggle {
+        align-items: center;
         cursor: pointer;
     }
 
+    /* A thin chevron, down when closed and up when open. */
     .gh-landing-faq-toggle::after {
-        content: "+";
+        content: "";
         flex: none;
-        font-weight: 400;
+        width: 0.8rem;
+        height: 0.8rem;
+        margin: -0.4rem 0.4rem 0 0;
+        border-right: 2px solid currentColor;
+        border-bottom: 2px solid currentColor;
+        opacity: 0.6;
+        transform: rotate(45deg);
+        transition: transform 0.15s ease;
     }
 
     .gh-landing-faq-item.is-open .gh-landing-faq-toggle::after {
-        content: "\2212";
+        margin-top: 0.4rem;
+        transform: rotate(-135deg);
+    }
+
+    .gh-landing .gh-landing-faq .gh-landing-faq-item h3 {
+        margin: 0;
+        padding: 0;
+        font-size: 2rem;
+    }
+
+    .gh-landing-faq .gh-landing-faq-answer p {
+        font-size: 1.8rem;
+    }
+
+    .gh-landing-faq-answer > :first-child {
+        margin-top: 1.2rem;
     }
 
     .gh-landing-faq-item:not(.is-open) .gh-landing-faq-answer {
@@ -242,7 +244,7 @@ html:has(.gh-landing) {
    shadow in the same grey, clipped to the sides. */
 .gh-landing-next {
     margin-top: 6.4rem;
-    padding-block: 6.4rem;
+    padding-block: 11.2rem;
     background: var(--cn-ui-surface);
     box-shadow: 0 0 0 100vmax var(--cn-ui-surface);
     clip-path: inset(0 -100vmax);
@@ -328,6 +330,45 @@ html:has(.gh-landing) {
     padding-bottom: 1.6rem;
 }
 
+/* What members say: two rows drifting in opposite directions (landing.js), faded at
+   the screen's edges, paused under the pointer. Each track holds its cards
+   twice, so moving it by half its length (and half a gap) loops without a
+   seam. */
+.gh-landing-marquee {
+    --bleed: max(var(--gap, 2rem), (100vw - 76rem) / 2);
+    display: grid;
+    gap: 1.6rem;
+    margin-inline: calc(-1 * var(--bleed));
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.gh-landing-marquee-track {
+    display: flex;
+    gap: 1.6rem;
+    width: max-content;
+    animation: gh-landing-marquee 70s linear infinite;
+}
+
+.gh-landing-marquee-row.is-reverse .gh-landing-marquee-track {
+    animation-direction: reverse;
+}
+
+.gh-landing-marquee:hover .gh-landing-marquee-track {
+    animation-play-state: paused;
+}
+
+.gh-landing-marquee .gh-landing-voice {
+    flex: none;
+    width: min(32rem, 75vw);
+}
+
+@keyframes gh-landing-marquee {
+    to {
+        transform: translateX(calc(-50% - 0.8rem));
+    }
+}
+
 .gh-landing-voices-list:focus-visible {
     outline: 2px solid var(--ghost-accent-color);
     outline-offset: 4px;
@@ -381,7 +422,6 @@ html:has(.gh-landing) {
 /* Destacado and the community, well below: reached on purpose, not landed on. */
 .gh-landing-more {
     margin-top: 16rem;
-    scroll-snap-align: start;
 }
 
 /* Each block fades in as it enters the screen (scroll-driven, no script). */
@@ -404,10 +444,6 @@ html:has(.gh-landing) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    html:has(.gh-landing) {
-        scroll-snap-type: none;
-    }
-
     .gh-landing .gh-landing-path {
         transition: none;
     }
@@ -420,6 +456,10 @@ html:has(.gh-landing) {
 
     .gh-landing-voices {
         padding: 5.6rem 0;
+    }
+
+    .gh-landing-next {
+        padding-block: 7.2rem;
     }
 
     .gh-landing-paths {

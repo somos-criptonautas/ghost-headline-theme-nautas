@@ -3,13 +3,15 @@
     site's meta title as headline, then the page's opening line, which
     landing.js moves up from the text - it ends in "preguntas:", so the
     questions follow it. Then the questions, what members say, and last the
-    three ways in on a grey band (landing.js moves it after the voices). Each
-    block is a snap point (landing.css). --}}
+    three ways in on a grey band (landing.js moves it after the voices). --}}
 {{#get "pages" filter="slug:inicio" limit="1"}}
 {{#foreach pages}}
 <section class="gh-landing-hero gh-landing-snap">
     <div class="gh-landing-inner">
         <h1 class="gh-visually-hidden">{{title}}</h1>
+        {{!-- The site's meta title (Settings → General → Metadata), the line
+            search engines show; the description when there is none. --}}
+        {{#if @site.meta_title}}<p class="gh-landing-eyebrow">{{@site.meta_title}}</p>{{else}}{{#if @site.description}}<p class="gh-landing-eyebrow">{{@site.description}}</p>{{/if}}{{/if}}
         <span class="gh-landing-logo" aria-hidden="true">
             {{#if @site.logo}}
             <img class="logo-nav logo-light" src="{{@site.logo}}" alt="">
@@ -18,9 +20,6 @@
             {{@site.title}}
             {{/if}}
         </span>
-        {{!-- The site's meta title (Settings → General → Metadata), the line
-            search engines show; the description when there is none. --}}
-        {{#if @site.meta_title}}<p class="gh-landing-tagline">{{@site.meta_title}}</p>{{else}}{{#if @site.description}}<p class="gh-landing-tagline">{{@site.description}}</p>{{/if}}{{/if}}
         <div class="gh-landing-intro"></div>
     </div>
 </section>
