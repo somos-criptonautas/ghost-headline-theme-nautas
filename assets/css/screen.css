@@ -692,11 +692,10 @@ body:not(.home-template) .gh-read-next .gh-topic-grid .gh-card {
   display: none;
 }
 
-/* One sideways row (.gh-carousel): a card and a bit on phones, two and a
-   bit on tablets, three and a bit from 992px - the cut card says "scroll". */
+/* A grid: one card across on phones, two on tablets, three from 992px. */
 body:not(.home-template) .gh-read-next .gh-topic-content {
-  grid-template-columns: none;
-  grid-auto-columns: 80%;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 2.66rem;
   column-gap: var(--grid-gap);
   justify-items: stretch;
   align-items: start;
@@ -709,13 +708,14 @@ body:not(.home-template) .gh-read-next .gh-topic-content {
 
 @media screen and (min-width: 768px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
-    grid-auto-columns: 42%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 4rem;
   }
 }
 
 @media screen and (min-width: 992px) {
   body:not(.home-template) .gh-read-next .gh-topic-content {
-    grid-auto-columns: 29%;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   /* Full-width grid, reset 1700px offset */

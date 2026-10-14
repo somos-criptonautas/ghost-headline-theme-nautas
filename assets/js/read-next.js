@@ -62,7 +62,6 @@
             }).forEach(function (item) {
                 list.appendChild(item.card);
             });
-            list.scrollLeft = 0;
         }).catch(function () {});
     });
 })();

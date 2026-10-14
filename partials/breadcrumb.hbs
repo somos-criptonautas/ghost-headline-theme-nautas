@@ -7,6 +7,6 @@
 {{> "breadcrumb-trail" crumb_icon=primary_tag.slug crumb_name=primary_tag.name crumb_url=primary_tag.url crumb_page_title=title crumb_page_url=(url absolute="true")}}
 {{else if series}}
 {{#foreach tags visibility="internal" limit="1"}}
-{{> "breadcrumb-trail" crumb_name=slug crumb_url=(concat @site.url "/" slug "/") crumb_page_title=../title crumb_page_url=(concat @site.url "/" ../slug "/")}}
+{{> "breadcrumb-trail" crumb_icon=slug crumb_name=slug crumb_url=(concat @site.url "/" slug "/") crumb_page_title=../title crumb_page_url=(concat @site.url "/" ../slug "/")}}
 {{/foreach}}
 {{/if}}
