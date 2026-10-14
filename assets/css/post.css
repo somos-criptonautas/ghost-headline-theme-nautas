@@ -497,6 +497,20 @@ html[data-theme="dark"] .gh-cover-caption {
     text-decoration: underline;
 }
 
+/* Phones: under the image, small and plain, instead of over it - there the
+   chip cut into the picture. */
+@media (max-width: 767px) {
+    .gh-cover-caption,
+    html[data-theme="dark"] .gh-cover-caption {
+        top: calc(100% + 0.8rem);
+        bottom: auto;
+        max-width: calc(100% - 3.2rem);
+        padding: 0;
+        background: none;
+        color: var(--color-secondary-text);
+    }
+}
+
 .gh-banded img {
     display: block;
 }
