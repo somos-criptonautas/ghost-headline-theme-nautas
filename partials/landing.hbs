@@ -1,6 +1,6 @@
 {{!-- The landing (home.hbs), from the Ghost page "inicio". First screen: the
     logo (the page title stays for search engines and screen readers), the
-    site description as headline, then the page's opening line, which
+    site's meta title as headline, then the page's opening line, which
     landing.js moves up from the text - it ends in "preguntas:", so the
     questions follow it. Then the questions, what members say, and last the
     three ways in on a grey band (landing.js moves it after the voices). Each
@@ -18,7 +18,9 @@
             {{@site.title}}
             {{/if}}
         </span>
-        {{#if @site.description}}<p class="gh-landing-tagline">{{@site.description}}</p>{{/if}}
+        {{!-- The site's meta title (Settings → General → Metadata), the line
+            search engines show; the description when there is none. --}}
+        {{#if @site.meta_title}}<p class="gh-landing-tagline">{{@site.meta_title}}</p>{{else}}{{#if @site.description}}<p class="gh-landing-tagline">{{@site.description}}</p>{{/if}}{{/if}}
         <div class="gh-landing-intro"></div>
     </div>
 </section>

@@ -91,7 +91,7 @@ html:has(.gh-landing) {
     margin-inline: auto;
 }
 
-/* The site description as the first screen's headline, a step under the
+/* The site's meta title as the first screen's headline, a step under the
    logo so the logo still leads; the opening line (landing.js) under it. */
 .gh-landing-tagline {
     max-width: 22ch;
