@@ -642,3 +642,21 @@ html[data-theme="dark"] .gh-cover-caption {
 .kg-signup-card .kg-signup-card-fields {
     border-radius: 0.8rem;
 }
+
+/* The button sits inside the field (Ghost's layout), so it gets a tint of the
+   accent to read as a button, and corners concentric with the field's (its
+   0.8rem less the 3px padding). !important: the editor writes the button's
+   colours inline. */
+.kg-signup-card .kg-signup-card-button {
+    border-radius: calc(0.8rem - 3px);
+    background-color: color-mix(in srgb, var(--ghost-accent-color) 12%, #fff) !important;
+    color: color-mix(in srgb, var(--ghost-accent-color) 75%, #000) !important;
+}
+
+.kg-signup-card .kg-signup-card-button:hover {
+    background-color: color-mix(in srgb, var(--ghost-accent-color) 20%, #fff) !important;
+}
+
+.kg-signup-card .kg-signup-card-button-default::after {
+    content: " →";
+}
