@@ -14,7 +14,8 @@
    below. Four across from 768px; below, a carousel. */
 .gh-collection[data-place="top"] {
     /* 100%, not 100vw: with a classic scrollbar (Firefox desktop) 100vw is wider than the page. */
-    width: min(94rem, calc(100% - 2 * var(--gap)));
+    /* Narrow enough that the four portrait cards stay short, centred. */
+    width: min(70rem, calc(100% - 2 * var(--gap)));
     margin: 4rem auto;
 }
 
@@ -38,7 +39,7 @@
     .gh-collection.is-cards .gh-collection-list {
         /* .gh-carousel (carousel.css) is on the list; it only runs here. */
         display: grid;
-        grid-auto-columns: 41%;
+        grid-auto-columns: 31%;
         padding: 0.4rem var(--gap) 1.2rem;
         scroll-padding-inline: var(--gap);
     }
