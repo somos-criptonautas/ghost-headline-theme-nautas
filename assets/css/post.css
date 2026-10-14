@@ -266,8 +266,9 @@
         transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s, box-shadow 0.15s ease;
     }
 
+    /* In the text colour, so it shows on the dark theme too. */
     .gh-to-top:hover {
-        box-shadow: 0 0.4rem 1.6rem rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0.3rem 1.4rem color-mix(in srgb, var(--color-base) 22%, transparent);
     }
 }
 
@@ -422,19 +423,13 @@
     display: flex;
     align-items: center;
     gap: 1.2rem;
-    padding: 0.6rem 1.2rem;
+    padding: 0.45rem 1rem;
     background-color: rgba(24, 23, 25, 0.72);
     color: #F1F1F1;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 500;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-}
-
-/* "More articles": smaller cards, so a band a fifth lower, in proportion. */
-.gh-read-next .gh-image-band {
-    padding: 0.45rem 1rem;
-    font-size: 1.2rem;
 }
 
 html[data-theme="dark"] .gh-image-band {
@@ -469,17 +464,25 @@ html[data-theme="dark"] :is(.gh-banded, .gh-cover) > .gh-level {
 }
 
 /* Full-width cover (custom-full-feature-image.hbs): its caption small, in
-   the bottom right corner. */
+   the bottom right corner, on the band's colours so it reads over any image. */
 .gh-cover-caption {
     position: absolute;
     right: 1.6rem;
     bottom: 1.2rem;
     z-index: 2;
     max-width: min(40rem, 60%);
-    color: color-mix(in srgb, var(--color-link) 70%, transparent);
+    padding: 0.4rem 1rem;
+    border-radius: 0.6rem;
+    background-color: rgba(24, 23, 25, 0.72);
+    color: #F1F1F1;
     font-size: 1.2rem;
     line-height: 1.4;
     text-align: right;
+}
+
+html[data-theme="dark"] .gh-cover-caption {
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #1A1A1A;
 }
 
 .gh-cover-caption a {
@@ -568,9 +571,11 @@ html[data-theme="dark"] .gh-featured .gh-card-excerpt {
 }
 
 /* /curso: the survey chart (.cn-curso, styled in the page's own HTML card)
-   in a subtle frame, with room above its first figure. */
+   in a subtle frame, with room around it and its text a touch smaller than
+   the card's own 1.15em. */
 .gh-content .cn-curso {
-    padding: 2.4rem 2rem 1.2rem;
+    padding: 3.2rem 3.2rem 2rem;
+    font-size: 1.05em;
     border: 1px solid var(--color-border);
     border-radius: 0.8rem;
 }
