@@ -59,7 +59,9 @@
 
         return fetch(ORIGIN + path, {
             credentials: withCookie ? 'include' : 'omit',
-            headers: {Accept: 'application/json'},
+            // In the site's language, not the browser's: the forum serves its
+            // machine translation to readers whose browser asks for another.
+            headers: {Accept: 'application/json', 'Accept-Language': lang || 'es'},
             signal: controller ? controller.signal : undefined
         }).then(function (response) {
             clearTimeout(timer);

@@ -153,7 +153,12 @@
 
     var definition = function (id) {
         if (!cache[id]) {
-            cache[id] = fetch(ORIGIN + '/t/' + id + '.json', {credentials: 'omit', headers: {Accept: 'application/json'}})
+            // In the site's language: the forum answers in the browser's
+            // otherwise, and serves its machine translation to the rest.
+            cache[id] = fetch(ORIGIN + '/t/' + id + '.json', {
+                credentials: 'omit',
+                headers: {Accept: 'application/json', 'Accept-Language': document.documentElement.lang || 'es'}
+            })
                 .then(function (response) {
                     return response.ok ? response.json() : Promise.reject(new Error(response.status));
                 })
