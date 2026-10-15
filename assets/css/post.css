@@ -79,6 +79,15 @@
     display: none;
 }
 
+/* Without the column (no TOC, or a series hub, where collection.js removes
+   it) the text takes the whole row, so its centred grid centres it on the
+   page instead of shrinking to its content at the left. */
+.gh-full-content > .gh-content:only-child,
+.has-no-toc .gh-full-content > .gh-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
 /* The share links sit at the end of the article below 992px, and at every
    width when there is no column to hold them. */
 .has-no-toc .gh-share-end {
