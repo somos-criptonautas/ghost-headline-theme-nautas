@@ -103,6 +103,10 @@
     align-items: center;
 }
 
+.gh-community-picker[hidden] {
+    display: none;
+}
+
 .gh-community-select {
     appearance: none;
     -webkit-appearance: none;

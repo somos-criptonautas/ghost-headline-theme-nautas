@@ -3,7 +3,8 @@
     reader scrolls. The community sits where scrolling never pushes it away:
     the aside column from 1200px, the strip above the posts below that.
     Page 1 opens with the feature image of the Ghost page "blog", when there
-    is one (its own URL is taken by this route, so it shows only here). --}}
+    is one (its own URL is taken by this route, so it shows only here), then
+    the featured posts; the list below leaves those out. --}}
 <main class="gh-main gh-outer">
     <div class="gh-inner">
     <div class="gh-with-sidebar">
@@ -17,13 +18,24 @@
                 alt="{{#if feature_image_alt}}{{feature_image_alt}}{{else}}{{title}}{{/if}}">
         </figure>
         {{/if}}{{/foreach}}{{/get}}
+        {{!-- The posts starred as featured first, as plain cards (no
+            heading), then the forum, then every other post. --}}
+        {{#get "posts" include="tags,authors" filter="featured:true" limit="4"}}{{#if posts}}
+        <div class="gh-topic gh-topic-grid gh-topic-grid-item gh-listing gh-blog-featured">
+            <div class="gh-topic-content">
+                {{#foreach posts}}
+                    {{> "loop-grid" has_large_post=false}}
+                {{/foreach}}
+            </div>
+        </div>
+        {{/if}}{{/get}}
         {{> "community-related" strip=true}}
         {{/if}}
 
         <div class="gh-topic gh-topic-grid gh-topic-grid-item gh-listing">
             <div class="gh-topic-content gh-feed">
                 {{#foreach posts}}
-                    {{> "loop-grid" has_large_post=false}}
+                    {{^if featured}}{{> "loop-grid" has_large_post=false}}{{/if}}
                 {{/foreach}}
             </div>
 

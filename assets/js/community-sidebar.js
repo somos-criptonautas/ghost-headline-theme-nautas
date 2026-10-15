@@ -98,6 +98,18 @@
 
     var SLUG = /^[\w%-]*$/;
 
+    // Tag pages: the topics of the forum category with the tag's slug only
+    // (tags and categories are kept in step), so no replies picker. A tag
+    // without a category falls back to the whole forum, as on /blog.
+    var GLOBAL = {modes: MODES, mode: mode};
+    var scope = (aside && aside.getAttribute('data-category')) || '';
+    if (scope && SLUG.test(scope)) {
+        MODES = {topics: '/c/' + scope + '/l/latest.json'};
+        mode = 'topics';
+    } else {
+        scope = '';
+    }
+
     var topicUrl = function (slug, id, postNumber) {
         id = parseInt(id, 10);
         if (!(id > 0)) {
@@ -329,10 +341,21 @@
             });
             list.hidden = false;
             message.hidden = true;
-            more.href = ORIGIN + (which === 'posts' ? '/posts' : '/latest');
+            more.href = ORIGIN + (scope ? '/c/' + scope : which === 'posts' ? '/posts' : '/latest');
             shown = true;
         }).then(null, function () {
             if (ticket !== request) {
+                return;
+            }
+            // No category for this tag: the whole forum's list instead.
+            if (scope && !shown) {
+                scope = '';
+                MODES = GLOBAL.modes;
+                mode = GLOBAL.mode;
+                cache = {};
+                picker.closest('.gh-community-picker').hidden = false;
+                picker.value = mode;
+                show(mode);
                 return;
             }
             // Never loaded (forum down, no CORS): the placeholder goes and
@@ -493,6 +516,9 @@
     // stays hidden.
     aside.hidden = false;
 
+    if (scope) {
+        picker.closest('.gh-community-picker').hidden = true;
+    }
     picker.value = mode;
     picker.addEventListener('change', function () {
         if (!MODES[picker.value]) {

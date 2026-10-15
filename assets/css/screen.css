@@ -75,6 +75,11 @@ figcaption p {
   font-size: 1.32rem;
 }
 
+/* Under its image, not a paragraph away (the shared 1.6rem). */
+figcaption {
+  margin-top: 0.8rem;
+}
+
 /* Headings on a 1.25 scale from the article text (1.7rem): h3 one step up,
    h2 two, so a section and its subsection read as different levels. */
 .gh-content h2 {
@@ -230,6 +235,38 @@ html[data-theme="dark"] .gh-topic-grid .gh-card-image {
 }
 
 html[data-theme="dark"] .gh-topic-grid .gh-card-image img {
+  border-radius: calc(1rem - 5px);
+}
+
+/* Tag and author pages (partials/item.hbs): the same frame and lift on the
+   card image. Its picture is absolutely placed, so the dark rim is an inset
+   rather than padding. */
+.loop-wrap .item-image {
+  overflow: hidden;
+  border: 2px solid var(--color-base);
+  border-radius: 1rem;
+  box-shadow: var(--cn-shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.loop-wrap .item-image img {
+  border-radius: calc(1rem - 2px);
+}
+
+.loop-wrap .item:hover .item-image,
+.loop-wrap .item-image:has(.global-link:focus-visible) {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-base);
+}
+
+html[data-theme="dark"] .loop-wrap .item-image {
+  background-color: var(--color-bg);
+}
+
+html[data-theme="dark"] .loop-wrap .item-image > img {
+  inset: 3px;
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
   border-radius: calc(1rem - 5px);
 }
 
@@ -2912,6 +2949,31 @@ body:not(.home-template) .gh-listing .gh-card {
   grid-column: auto;
 }
 
+/* The space between cards: the same on /blog and on tag pages, from the tag
+   pages' own spacing, a little wider. Phones keep theirs. */
+@media screen and (min-width: 768px) {
+  body .loop-wrap,
+  body:not(.home-template) .gh-listing .gh-topic-content {
+    column-gap: 2rem;
+    row-gap: 7.2rem;
+  }
+
+  body .loop-wrap .item.is-loop {
+    margin-bottom: 0;
+  }
+}
+
+/* The featured posts above the rest: one row's space between them. */
+.gh-blog-featured {
+  margin-bottom: 3.33rem;
+}
+
+@media screen and (min-width: 768px) {
+  .gh-blog-featured {
+    margin-bottom: 7.2rem;
+  }
+}
+
 body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {
   flex-direction: inherit;
 }
@@ -3526,9 +3588,33 @@ html[data-theme="dark"] .gh-post-upgrade-cta a.gh-btn html[data-theme="dark"] .g
   padding-bottom: 0.7rem;
 }
 
-.kg-bookmark-thumbnail img {
-  width: 90%;
-  height: 90%;
+/* A link's preview image whole, never cropped: link images are mostly
+   1.91:1 social cards with a logo or a title in the middle, wider than the
+   box beside the text. What is left of the box is a soft band. */
+.kg-bookmark-thumbnail {
+  background-color: color-mix(in srgb, var(--color-base) 4%, var(--color-bg));
+}
+
+.gh-content .kg-bookmark-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Phones: beside the text the box is a narrow strip, and a whole wide image
+   in it is tiny. The image goes above the text, full width, at its own
+   1.91:1. */
+@media screen and (max-width: 767px) {
+  .gh-content .kg-bookmark-container {
+    flex-direction: column-reverse;
+  }
+
+  .gh-content .kg-bookmark-thumbnail {
+    flex-basis: auto;
+    width: 100%;
+    max-height: none;
+    aspect-ratio: 1.91;
+  }
 }
 
 .gh-input.focus,
