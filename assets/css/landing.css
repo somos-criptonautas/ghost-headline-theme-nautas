@@ -59,7 +59,7 @@
    opening line, all centred; the questions start right after it. */
 
 .gh-landing-hero {
-    padding: 6.4rem 0 2.4rem;
+    padding: 4rem 0 2.4rem;
     text-align: center;
 }
 
@@ -80,7 +80,7 @@
 /* The site's meta title as a small label above the logo, which leads. */
 .gh-landing-eyebrow {
     display: inline-block;
-    margin: 0 0 2.4rem;
+    margin: 0 0 0.8rem;
     color: var(--color-secondary-text);
     font-family: var(--font-mono);
     font-size: 1.2rem;
@@ -90,7 +90,7 @@
 
 .gh-landing-intro {
     max-width: 64rem;
-    margin: 2rem auto 0;
+    margin: 5.6rem auto 0;
     font-family: var(--font-serif);
     font-size: 2.2rem;
     line-height: 1.5;
@@ -107,10 +107,11 @@
 /* Phones: the first screen a little tighter. */
 @media screen and (max-width: 767px) {
     .gh-landing-hero {
-        padding-top: 4rem;
+        padding-top: 2.4rem;
     }
 
     .gh-landing-intro {
+        margin-top: 4rem;
         font-size: 1.9rem;
     }
 }
@@ -158,8 +159,16 @@
 .gh-landing-next p {
     margin: 1.2rem 0 0;
     font-family: var(--font-serif);
-    font-size: 2rem;
+    font-size: 1.7rem;
     line-height: 1.6;
+}
+
+/* The article's own sizes (screen.css): 2rem on tablets, 1.7 elsewhere. */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    .gh-landing-faq-item p,
+    .gh-landing-next p {
+        font-size: 2rem;
+    }
 }
 
 @media screen and (min-width: 992px) {
@@ -223,7 +232,7 @@
     }
 
     .gh-landing-faq .gh-landing-faq-answer p {
-        font-size: 1.8rem;
+        font-size: 1.73rem;
     }
 
     .gh-landing-faq-answer > :first-child {
@@ -331,7 +340,7 @@
 }
 
 /* What members say: two rows drifting in opposite directions (landing.js), faded at
-   the screen's edges, paused under the pointer. Each track holds its cards
+   the screen's edges. Each track holds its cards
    twice, so moving it by half its length (and half a gap) loops without a
    seam. */
 .gh-landing-marquee {
@@ -354,10 +363,6 @@
 
 .gh-landing-marquee-row.is-reverse .gh-landing-marquee-track {
     animation-direction: reverse;
-}
-
-.gh-landing-marquee:hover .gh-landing-marquee-track {
-    animation-play-state: paused;
 }
 
 .gh-landing-marquee .gh-landing-voice {
@@ -485,4 +490,19 @@
 
 .gh-landing .gh-landing-next h2 {
     font-size: clamp(3.2rem, 2.4rem + 2vw, 4.8rem);
+}
+
+/* The forum's latest at the foot of the landing: six, three across from
+   992px so each card is not a long strip with little in it; four on phones,
+   one under another. */
+@media screen and (min-width: 992px) {
+    .gh-landing-more .gh-community-cards {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .gh-landing-more .gh-community-card:nth-child(n + 5) {
+        display: none;
+    }
 }

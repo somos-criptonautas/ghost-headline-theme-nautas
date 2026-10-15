@@ -35,6 +35,12 @@
     /* Hover moves toward the text colour rather than inventing a hue. */
     --cn-violeta-fill-hover: color-mix(in srgb, var(--cn-violeta-fill) 80%, var(--cn-ui-text));
 
+    /* The highlighter behind card titles: the kit's pale violet (its dark
+       violet) in both modes; in light lifted a quarter toward the ground so
+       black text keeps about 10:1 over it. The deep violet, thinned until
+       black text read over it, went a dull grey lilac. */
+    --cn-marcador: #C89DFF;
+
     /* The kit's hard ink shadow, as on the series cards: no blur, no glow. */
     --cn-shadow: 4px 4px 0 var(--color-base);
     --cn-shadow-raised: 6px 8px 0 var(--color-base);

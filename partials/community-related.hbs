@@ -8,9 +8,11 @@
 
     strip=true (home.hbs, below 1200px): six cards in one sideways row,
     shown from the start with a card's height kept while they load, so the
-    page does not jump when they arrive. --}}
+    page does not jump when they arrive.
+
+    count= (home.hbs): how many cards instead of four. --}}
 {{#if @custom.discourse_url}}
-<section class="gh-community-related{{#if strip}} gh-community-strip{{/if}}" aria-labelledby="gh-community-related-title"{{#if strip}} aria-busy="true" data-count="6"{{else}} hidden{{/if}}
+<section class="gh-community-related{{#if strip}} gh-community-strip{{/if}}" aria-labelledby="gh-community-related-title"{{#if strip}} aria-busy="true" data-count="6"{{else}} hidden{{#if count}} data-count="{{count}}"{{/if}}{{/if}}
     data-category="{{category}}"
     data-label-reply="{{t "reply"}}"
     data-label-replies="{{t "replies"}}">

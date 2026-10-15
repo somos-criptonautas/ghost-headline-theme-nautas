@@ -6,11 +6,12 @@
 <h1>{{ t "Somebody turned off" }}</h1>
 <p>{{ t "Please check our last articles" }}
 		</p></div>
-        <section class="gh-topic gh-topic-grid">
+        {{!-- The latest posts as /blog lists them (index.hbs). --}}
+        <section class="gh-topic gh-topic-grid gh-topic-grid-item gh-listing">
             <div class="gh-topic-content">
-                {{#get "posts" include="tags,authors" limit="7"}}
+                {{#get "posts" include="tags,authors" limit="6"}}
                     {{#foreach posts}}
-                        {{> "loop-grid"}}
+                        {{> "loop-grid" has_large_post=false}}
                     {{/foreach}}
                 {{/get}}
             </div>
@@ -19,4 +20,4 @@
 </main>
 
 <script>plausible("404",{ props: { path: document.location.pathname } });</script>
-<style>.gh-card.post.large{display:none}</style> 
+ 

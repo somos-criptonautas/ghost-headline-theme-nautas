@@ -238,6 +238,38 @@ html[data-theme="dark"] .gh-topic-grid .gh-card-image img {
   border-radius: calc(1rem - 5px);
 }
 
+/* Card titles half-painted with the violet marker when the card is pointed
+   at: a band over the lower part of each line (box-decoration-break repeats
+   it per line); at rest nothing. --cn-mark is registered so it fades in. */
+@property --cn-mark {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: transparent;
+}
+
+.gh-card-mark,
+.loop-wrap .item-title a {
+  --cn-mark: transparent;
+  background-image: linear-gradient(var(--cn-mark), var(--cn-mark));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 100% 48%;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: --cn-mark 0.2s ease;
+}
+
+.gh-card-link:hover .gh-card-mark,
+.gh-card-link:focus-visible .gh-card-mark,
+.loop-wrap .item:hover .item-title a {
+  --cn-mark: color-mix(in srgb, var(--cn-marcador) 75%, var(--cn-ui-bg));
+}
+
+/* Dark: the violet is the light lavender, which reads at a lower mix. */
+html[data-theme="dark"] :is(.gh-card-link:hover .gh-card-mark, .gh-card-link:focus-visible .gh-card-mark, .loop-wrap .item:hover .item-title a) {
+  --cn-mark: color-mix(in srgb, var(--cn-marcador) 38%, transparent);
+}
+
 /* Tag and author pages (partials/item.hbs): the same frame and lift on the
    card image. Its picture is absolutely placed, so the dark rim is an inset
    rather than padding. */
@@ -4505,6 +4537,11 @@ h5 {
 @media screen and (min-width: 992px) {
   .item.is-loop {
     opacity: 0.63;
+  }
+
+  /* Dark: at 0.63 the cards sank into the page; a little more present. */
+  html[data-theme="dark"] .item.is-loop {
+    opacity: 0.8;
   }
 
   .item.is-loop:hover {
