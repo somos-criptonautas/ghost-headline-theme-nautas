@@ -100,42 +100,38 @@
 
     var SLUG = /^[\w%-]*$/;
 
-    /* A category's latest topics by slug. /c/<slug> finds top-level
-     * categories only; a subcategory (opsec, under tech-apps) answers 404
-     * there, so its id is looked up with the forum's category search (a
-     * small anonymous POST) and /c/<id> redirects to its full path.
-     * Resolves to the topics and the category's path on the forum. */
+    /* The forum category of each blog channel (tag slug: category id). By
+     * id, so a renamed forum slug or a subcategory (opsec, under tech-apps)
+     * still answers: /c/<id> redirects to the full path, CORS headers
+     * included. A tag not listed here has no category: the caller falls back
+     * to the whole forum or hides. Resolves to the topics and the category's
+     * path on the forum. */
+    var CATEGORY = {
+        comunidad: 2,
+        cripto: 9,
+        bitcoin: 23,
+        monero: 25,
+        altcoins: 21,
+        'tech-apps': 26,
+        opsec: 18,
+        filonauta: 22,
+        bienestar: 28,
+        taboo: 55
+    };
+
     var categoryLatest = function (slug) {
-        var path = '/c/' + slug;
+        var id = CATEGORY[slug];
+        if (!id) {
+            return Promise.reject(new Error('no category'));
+        }
+        var path = '/c/' + id;
         return getJSON(path + '/l/latest.json').then(function (body) {
             return {body: body, path: path};
-        }, function () {
-            var form = new URLSearchParams({term: slug, limit: '5'});
-            return fetch(ORIGIN + '/categories/search', {
-                method: 'POST',
-                credentials: 'omit',
-                headers: {Accept: 'application/json'},
-                body: form
-            }).then(function (response) {
-                return response.ok ? response.json() : Promise.reject(new Error(response.status));
-            }).then(function (found) {
-                var match = ((found && found.categories) || []).filter(function (category) {
-                    return category.slug === slug;
-                })[0];
-                var id = match && parseInt(match.id, 10);
-                if (!(id > 0)) {
-                    throw new Error('no category');
-                }
-                path = '/c/' + id;
-                return getJSON(path + '/l/latest.json');
-            }).then(function (body) {
-                return {body: body, path: path};
-            });
         });
     };
 
-    // Tag pages: the topics of the forum category with the tag's slug only
-    // (tags and categories are kept in step), so no replies picker. A tag
+    // Tag pages: the topics of the tag's forum category (CATEGORY) only, so
+    // no replies picker. A tag
     // without a category falls back to the whole forum, as on /blog.
     var GLOBAL = {modes: MODES, mode: mode};
     var scope = (aside && aside.getAttribute('data-category')) || '';
@@ -509,9 +505,7 @@
         return item;
     };
 
-    // Posts: the forum category with the primary tag's slug (tags and
-    // categories are kept in step); /c/<slug>/... redirects to the id-qualified
-    // path, and the redirect carries the CORS headers too. /blog passes none:
+    // Posts: the primary tag's forum category (CATEGORY). /blog passes none:
     // the whole forum's latest. No topics or no answer: it keeps `hidden`.
     if (related) {
         var category = related.getAttribute('data-category') || '';
@@ -522,9 +516,14 @@
         };
         if (SLUG.test(category)) {
             var path = '/latest';
+            // A tag page's strip stands in for its aside, so a tag with no
+            // forum category gets the whole forum's, as the aside does.
+            var strip = related.classList.contains('gh-community-strip');
             (category ? categoryLatest(category).then(function (found) {
                 path = found.path;
                 return found.body;
+            }, function (error) {
+                return strip ? getJSON('/latest.json') : Promise.reject(error);
             }) : getJSON('/latest.json')).then(function (body) {
                 return readable(topics(body));
             }).then(function (entries) {

@@ -77,6 +77,57 @@
     margin-inline: auto;
 }
 
+/* Phones: the logo stacked (partials/logo-stacked.hbs) and larger, the
+   symbol centred over the wordmark, in the brand kit's colours. */
+.cn-logo-symbol,
+.cn-logo-word {
+    display: none;
+}
+
+@media screen and (max-width: 767px) {
+    .gh-landing-logo img.logo-nav {
+        display: none;
+    }
+
+    .cn-logo-symbol,
+    .cn-logo-word {
+        display: block;
+        margin-inline: auto;
+    }
+
+    .cn-logo-symbol {
+        width: min(12rem, 32vw);
+        height: auto;
+    }
+
+    .cn-logo-word {
+        width: min(32rem, 82vw);
+        height: auto;
+        margin-top: 1.6rem;
+        fill: #14110F;
+    }
+
+    .cn-logo-a {
+        fill: #5814EA;
+    }
+
+    .cn-logo-b {
+        fill: #E5500A;
+    }
+
+    html[data-theme="dark"] .cn-logo-word {
+        fill: #E8E6E1;
+    }
+
+    html[data-theme="dark"] .cn-logo-a {
+        fill: #7C36FF;
+    }
+
+    html[data-theme="dark"] .cn-logo-b {
+        fill: #F3936A;
+    }
+}
+
 /* The site's meta title as a small label above the logo, which leads. */
 .gh-landing-eyebrow {
     display: inline-block;

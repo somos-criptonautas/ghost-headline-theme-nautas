@@ -1,7 +1,7 @@
 {{!< default}}
 {{!-- /blog/ (and /page/2/ on): every post, newest first, loading on as the
-    reader scrolls. The community sits where scrolling never pushes it away:
-    the aside column from 1200px, the strip above the posts below that.
+    reader scrolls. The community: the aside column from 1200px, below that
+    the strip after the third post, as the reader scrolls into the list.
     Page 1 opens with the feature image of the Ghost page "blog", when there
     is one (its own URL is taken by this route, so it shows only here), then
     the forum and the level pills over every post, newest first. Featured
@@ -19,7 +19,6 @@
                 alt="{{#if feature_image_alt}}{{feature_image_alt}}{{else}}{{title}}{{/if}}">
         </figure>
         {{/if}}{{/foreach}}{{/get}}
-        {{> "community-related" strip=true}}
         {{!-- Every post by level (the internal tags #nivel-1..3): one switch per
             level with posts, all on; turning one off takes its posts out of the
             list (assets/js/levels.js, which keeps the choice in this browser). --}}
@@ -34,6 +33,7 @@
             <div class="gh-topic-content gh-feed">
                 {{#foreach posts}}
                     {{> "loop-grid" has_large_post=false}}
+                    {{#has number="3"}}{{^if @root.pagination.prev}}{{> "community-related" strip=true}}{{/if}}{{/has}}
                 {{/foreach}}
             </div>
 

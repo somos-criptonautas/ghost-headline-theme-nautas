@@ -16,6 +16,7 @@
             {{#if @site.logo}}
             <img class="logo-nav logo-light" src="{{@site.logo}}" alt="">
             <img class="logo-nav logo-dark" src="{{#if @custom.dark_logo}}{{@custom.dark_logo}}{{else}}{{@site.logo}}{{/if}}" alt="">
+            {{> "logo-stacked"}}
             {{else}}
             {{@site.title}}
             {{/if}}

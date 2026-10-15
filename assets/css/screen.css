@@ -3009,13 +3009,6 @@ body:not(.home-template) .gh-listing .gh-card {
   display: none;
 }
 
-/* Below 1200px the forum strip sits right above them. */
-@media screen and (max-width: 1199px) {
-  .gh-community-strip + .gh-levels {
-    margin-top: 4.8rem;
-  }
-}
-
 .gh-level-switch {
   all: unset;
   display: inline-flex;
