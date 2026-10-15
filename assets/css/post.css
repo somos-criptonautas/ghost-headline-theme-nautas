@@ -439,10 +439,10 @@
     display: flex;
     align-items: center;
     gap: 1.2rem;
-    padding: 0.45rem 1rem;
+    padding: 0.7rem 1.2rem;
     background-color: rgba(24, 23, 25, 0.72);
     color: #F1F1F1;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 500;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -815,4 +815,52 @@ html[data-theme="dark"] .gh-cover-caption {
         -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M223.69,42.18l-58.22,192a8,8,0,0,1-14.92,1.25L108,148,20.58,105.45a8,8,0,0,1,1.25-14.92l192-58.22A8,8,0,0,1,223.69,42.18Z' opacity='0.2'/%3E%3Cpath d='M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z'/%3E%3C/svg%3E") center / contain no-repeat;
         mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M223.69,42.18l-58.22,192a8,8,0,0,1-14.92,1.25L108,148,20.58,105.45a8,8,0,0,1,1.25-14.92l192-58.22A8,8,0,0,1,223.69,42.18Z' opacity='0.2'/%3E%3Cpath d='M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z'/%3E%3C/svg%3E") center / contain no-repeat;
     }
+}
+
+/* Glossary terms in beginner posts (assets/js/glossary.js): a faint dotted
+   underline, nothing else, and the definition in a small card when tapped. */
+.cn-term {
+    all: unset;
+    border-bottom: 1px dotted color-mix(in srgb, var(--color-base) 45%, transparent);
+    cursor: help;
+}
+
+.cn-term:hover,
+.cn-term[aria-expanded="true"] {
+    border-bottom-color: var(--color-base);
+}
+
+.cn-term:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}
+
+.cn-term-card {
+    position: absolute;
+    z-index: 100;
+    padding: 1.4rem 1.6rem;
+    border: 2px solid var(--color-base);
+    border-radius: 1rem;
+    background-color: var(--color-bg);
+    box-shadow: var(--cn-shadow);
+    color: var(--color-base);
+    font-size: 1.5rem;
+    line-height: 1.5;
+}
+
+.cn-term-card strong {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-family: "Inter Tight", var(--font-sans);
+}
+
+.cn-term-card p {
+    margin: 0 0 0.8rem;
+    color: var(--color-secondary-text);
+}
+
+.cn-term-card a {
+    color: var(--color-base);
+    font-size: 1.3rem;
+    font-weight: 600;
 }

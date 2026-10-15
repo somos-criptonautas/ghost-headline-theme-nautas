@@ -65,14 +65,14 @@
     right: calc(100% + 1.2rem);
     display: grid;
     gap: 1rem;
-    width: 32rem;
+    width: 36rem;
     padding: 2rem;
     border: 1px solid var(--cn-ui-line);
     border-radius: 1.2rem;
     background: var(--color-bg);
     color: var(--cn-ui-text);
     box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     transform: translateY(-50%);
 }
 
@@ -127,15 +127,15 @@
     border: 1px solid var(--cn-ui-line);
     border-radius: 99rem;
     color: var(--cn-ui-muted);
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     text-align: center;
     cursor: pointer;
 }
 
 .cn-feedback-types svg {
     flex: none;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.7rem;
+    height: 1.7rem;
 }
 
 .cn-feedback-types span,
@@ -177,7 +177,8 @@
     background: transparent;
     color: inherit;
     font: inherit;
-    font-size: 1.4rem;
+    /* 16px at least: below that, iPhones zoom the page into the field. */
+    font-size: max(16px, 1.6rem);
     resize: none;
 }
 
@@ -191,7 +192,7 @@
     gap: 0.8rem;
     align-items: center;
     color: var(--cn-ui-muted);
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     cursor: pointer;
 }
 
@@ -205,7 +206,7 @@
     border-radius: 0.8rem;
     background: var(--cn-ui-text);
     color: var(--cn-ui-bg);
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     cursor: pointer;
 }
 
@@ -218,7 +219,7 @@
     min-height: 1.4em;
     margin: 0;
     color: var(--cn-ui-muted);
-    font-size: 1.3rem;
+    font-size: 1.4rem;
 }
 
 .cn-feedback-status:empty {

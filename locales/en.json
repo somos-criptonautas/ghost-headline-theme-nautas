@@ -266,5 +266,8 @@
 	"email (optional, so we can reply)": "email (optional, so we can reply)",
 	"attach a screenshot of this page": "attach a screenshot of this page",
 	"send": "send",
-	"yourbest@email.com": "yourbest@email.com"
+	"yourbest@email.com": "yourbest@email.com",
+	"all": "all",
+	"level": "level",
+	"Fediverse": "Fediverse"
 }

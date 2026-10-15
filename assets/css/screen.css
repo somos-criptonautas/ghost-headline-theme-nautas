@@ -2995,15 +2995,69 @@ body:not(.home-template) .gh-listing .gh-card {
   }
 }
 
-/* The featured posts above the rest: one row's space between them. */
-.gh-blog-featured {
-  margin-bottom: 3.33rem;
+/* /blog: the level switches (index.hbs, assets/js/levels.js) above the list,
+   a small track and knob before each label, in the ink of the page; the
+   cards of the levels switched off leave the list. */
+.gh-levels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem 2.4rem;
+  margin: 0 0 3.2rem;
 }
 
-@media screen and (min-width: 768px) {
-  .gh-blog-featured {
-    margin-bottom: 7.2rem;
+.gh-levels[hidden] {
+  display: none;
+}
+
+/* Below 1200px the forum strip sits right above them. */
+@media screen and (max-width: 1199px) {
+  .gh-community-strip + .gh-levels {
+    margin-top: 4.8rem;
   }
+}
+
+.gh-level-switch {
+  all: unset;
+  display: inline-flex;
+  gap: 1rem;
+  align-items: center;
+  color: var(--color-base);
+  font-size: 1.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.gh-level-switch::before {
+  content: "";
+  flex: none;
+  width: 4rem;
+  height: 2.2rem;
+  border: 2px solid var(--color-base);
+  border-radius: 99rem;
+  background: radial-gradient(circle at 0.9rem 50%, var(--color-base) 0.6rem, transparent 0.65rem);
+  box-sizing: border-box;
+  transition: background-position 0.15s ease, background-color 0.15s ease;
+}
+
+.gh-level-switch[aria-checked="true"]::before {
+  background: radial-gradient(circle at calc(100% - 0.9rem) 50%, var(--color-bg) 0.6rem, transparent 0.65rem), var(--color-base);
+}
+
+.gh-level-switch[aria-checked="false"] {
+  color: var(--color-secondary-text);
+}
+
+.gh-level-switch:focus-visible {
+  outline: 2px solid var(--ghost-accent-color);
+  outline-offset: 4px;
+}
+
+.gh-feed.is-hidden-hash-nivel-1 > .tag-hash-nivel-1,
+.gh-feed.is-hidden-hash-nivel-2 > .tag-hash-nivel-2,
+.gh-feed.is-hidden-hash-nivel-3 > .tag-hash-nivel-3,
+.gh-feed.is-filtered > .gh-card:not(.tag-hash-nivel-1, .tag-hash-nivel-2, .tag-hash-nivel-3) {
+  display: none;
 }
 
 body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {

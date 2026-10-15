@@ -118,7 +118,8 @@
     background: none;
     color: var(--color-secondary-text);
     font: inherit;
-    font-size: 1.4rem;
+    /* 16px at least: below that, iPhones zoom the page into the picker. */
+    font-size: max(16px, 1.5rem);
     font-weight: 600;
     text-transform: uppercase;
     cursor: pointer;
