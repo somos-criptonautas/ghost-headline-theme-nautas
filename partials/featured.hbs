@@ -1,14 +1,20 @@
-{{!-- Destacado: the posts starred as featured in Ghost, up to four, on the
-    landing (home.hbs). --}}
-{{#get "posts" include="tags,authors" filter="featured:true" limit="4"}}
+{{!-- Destacado: the posts starred as featured in Ghost, the newest three,
+    at the foot of the landing (home.hbs) as "More articles" sits under a post
+    (read-next.hbs). --}}
+{{#get "posts" include="tags,authors" filter="featured:true" limit="3"}}
 {{#if posts}}
-<section class="gh-topic gh-topic-grid gh-featured">
-    <h2 class="gh-topic-name">{{t "Featured"}}</h2>
-    <div class="gh-topic-content">
-        {{#foreach posts}}
-        {{> "loop-grid"}}
-        {{/foreach}}
+<div class="gh-read-next gh-canvas">
+    <section class="gh-pagehead">
+        <h2 class="gh-pagehead-title">{{t "Featured"}}</h2>
+    </section>
+
+    <div class="gh-topic gh-topic-grid">
+        <div class="gh-topic-content">
+            {{#foreach posts}}
+                {{> "loop-grid" has_large_post=false}}
+            {{/foreach}}
+        </div>
     </div>
-</section>
+</div>
 {{/if}}
 {{/get}}

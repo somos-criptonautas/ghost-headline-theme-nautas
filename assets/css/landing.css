@@ -343,8 +343,10 @@
     mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
 
+/* Each card as tall as its quote: no blank space under the short ones. */
 .gh-landing-marquee-track {
     display: flex;
+    align-items: flex-start;
     gap: 1.6rem;
     width: max-content;
     animation: gh-landing-marquee 70s linear infinite;
@@ -408,15 +410,14 @@
     color: var(--color-base);
 }
 
+/* The member's forum avatar. */
 .gh-landing-voice-avatar {
-    display: grid;
     flex: none;
-    place-items: center;
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
     background-color: var(--color-bg-alt);
-    font-weight: 700;
+    object-fit: cover;
 }
 
 /* Destacado and the community, well below: reached on purpose, not landed on. */
@@ -484,16 +485,4 @@
 
 .gh-landing .gh-landing-next h2 {
     font-size: clamp(3.2rem, 2.4rem + 2vw, 4.8rem);
-}
-
-/* Phones: the forum topics as whole cards one under another, like the posts,
-   not a sideways row. */
-@media screen and (max-width: 767px) {
-    .home-template .gh-community-strip .gh-community-cards.gh-carousel {
-        grid-auto-flow: row;
-        grid-auto-columns: auto;
-        overflow: visible;
-        scroll-snap-type: none;
-        padding: 0;
-    }
 }
