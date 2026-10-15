@@ -98,11 +98,46 @@
 
     var SLUG = /^[\w%-]*$/;
 
+    /* A category's latest topics by slug. /c/<slug> finds top-level
+     * categories only; a subcategory (opsec, under tech-apps) answers 404
+     * there, so its id is looked up with the forum's category search (a
+     * small anonymous POST) and /c/<id> redirects to its full path.
+     * Resolves to the topics and the category's path on the forum. */
+    var categoryLatest = function (slug) {
+        var path = '/c/' + slug;
+        return getJSON(path + '/l/latest.json').then(function (body) {
+            return {body: body, path: path};
+        }, function () {
+            var form = new URLSearchParams({term: slug, limit: '5'});
+            return fetch(ORIGIN + '/categories/search', {
+                method: 'POST',
+                credentials: 'omit',
+                headers: {Accept: 'application/json'},
+                body: form
+            }).then(function (response) {
+                return response.ok ? response.json() : Promise.reject(new Error(response.status));
+            }).then(function (found) {
+                var match = ((found && found.categories) || []).filter(function (category) {
+                    return category.slug === slug;
+                })[0];
+                var id = match && parseInt(match.id, 10);
+                if (!(id > 0)) {
+                    throw new Error('no category');
+                }
+                path = '/c/' + id;
+                return getJSON(path + '/l/latest.json');
+            }).then(function (body) {
+                return {body: body, path: path};
+            });
+        });
+    };
+
     // Tag pages: the topics of the forum category with the tag's slug only
     // (tags and categories are kept in step), so no replies picker. A tag
     // without a category falls back to the whole forum, as on /blog.
     var GLOBAL = {modes: MODES, mode: mode};
     var scope = (aside && aside.getAttribute('data-category')) || '';
+    var scopePath = '';
     if (scope && SLUG.test(scope)) {
         MODES = {topics: '/c/' + scope + '/l/latest.json'};
         mode = 'topics';
@@ -302,7 +337,10 @@
     // cached, so picking that list again retries.
     var load = function (which) {
         if (!cache[which]) {
-            cache[which] = getJSON(MODES[which]).then(function (body) {
+            cache[which] = (scope ? categoryLatest(scope).then(function (found) {
+                scopePath = found.path;
+                return found.body;
+            }) : getJSON(MODES[which])).then(function (body) {
                 return which === 'posts' ? posts(body) : readable(topics(body));
             }).then(function (entries) {
                 return entries
@@ -341,7 +379,7 @@
             });
             list.hidden = false;
             message.hidden = true;
-            more.href = ORIGIN + (scope ? '/c/' + scope : which === 'posts' ? '/posts' : '/latest');
+            more.href = ORIGIN + (scope ? scopePath : which === 'posts' ? '/posts' : '/latest');
             shown = true;
         }).then(null, function () {
             if (ticket !== request) {
@@ -481,8 +519,11 @@
             related.hidden = true;
         };
         if (SLUG.test(category)) {
-            var path = category ? '/c/' + category : '/latest';
-            getJSON(category ? path + '/l/latest.json' : '/latest.json').then(function (body) {
+            var path = '/latest';
+            (category ? categoryLatest(category).then(function (found) {
+                path = found.path;
+                return found.body;
+            }) : getJSON('/latest.json')).then(function (body) {
                 return readable(topics(body));
             }).then(function (entries) {
                 entries = entries

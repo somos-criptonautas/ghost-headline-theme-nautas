@@ -3,7 +3,9 @@
     URL - no third-party script, nothing loads until a reader clicks. Shown
     under the TOC from 992px (in the sticky column) and, below that, at the
     end of the article (end=true), where the column is not a sidebar.
-    comments=true adds a jump to the forum thread for templates that have one. --}}
+    comments_link=true adds a jump to the forum thread for templates that
+    have one (not "comments": a post has its own, Ghost's native comments
+    switch, which the end copy then picked up). --}}
 <div class="gh-share{{#if end}} gh-share-end{{/if}}">
     {{!-- Screen readers get "Share" from the group; the end copy also shows it. --}}
     <div class="gh-share-links" role="group" aria-label="{{t "Share"}}">
@@ -14,7 +16,7 @@
         <a class="gh-share-link" href="https://twitter.com/intent/tweet?text={{encode title}}&amp;url={{encode (url absolute="true")}}" target="_blank" rel="noopener" aria-label="{{t "Share on Twitter"}}">{{> "icons/phosphor/twitter"}}</a>
         <a class="gh-share-link" href="https://s2f.kytta.dev/?text={{encode title}}%20{{encode (url absolute="true")}}" target="_blank" rel="noopener" aria-label="{{t "Share on the Fediverse"}}">{{> "icons/phosphor/mastodon"}}</a>
     </div>
-    {{#if comments}}{{#if @custom.discourse_url}}
+    {{#if comments_link}}{{#if @custom.discourse_url}}
     <a class="gh-share-comments" href="#comments">{{t "Go to comments"}} {{> "icons/phosphor/arrow-down"}}</a>
     {{/if}}{{/if}}
 </div>
