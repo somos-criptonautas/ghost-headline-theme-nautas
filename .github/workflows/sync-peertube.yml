@@ -1,0 +1,28 @@
+name: Sync PeerTube
+
+on:
+  schedule:
+    - cron: '41 */3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-peertube
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    # Off until the videos collection and its key exist; see the script header.
+    if: vars.PEERTUBE_URL != ''
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Mirror PeerTube's public videos into Typesense
+        env:
+          PEERTUBE_URL: ${{ vars.PEERTUBE_URL }}
+          TYPESENSE_URL: https://typesense.criptonautas.co
+          TYPESENSE_VIDEOS_KEY: ${{ secrets.TYPESENSE_VIDEOS_KEY }}
+        run: python3 .github/scripts/peertube_sync.py
