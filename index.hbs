@@ -33,7 +33,7 @@
             <div class="gh-topic-content gh-feed">
                 {{#foreach posts}}
                     {{> "loop-grid" has_large_post=false}}
-                    {{#has number="3"}}{{^if @root.pagination.prev}}{{> "community-related" strip=true}}{{/if}}{{/has}}
+                    {{#has number="3"}}{{^is "paged"}}{{> "community-related" strip=true}}{{/is}}{{/has}}
                 {{/foreach}}
             </div>
 
