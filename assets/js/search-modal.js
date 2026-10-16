@@ -331,20 +331,36 @@
         return slot;
     };
 
-    /* Reader: a community result opens here, inside the modal, rather than
-     * sending the visitor to the forum. Leaving the site is a separate step -
-     * the link at the end, marked as external. The indexed text comes first
-     * (plain, one line); the forum's own HTML of the post replaces it when it
-     * arrives, for paragraphs, lists and emoji. */
+    /* Reader: a community or video result opens here, inside the modal, rather
+     * than sending the visitor away. Leaving the site is a separate step - the
+     * link at the end, marked as external. `fill` adds what goes between the
+     * meta line and that link; `alive()` turns false once this reader closes,
+     * so a late answer never lands in another one. */
     var reader = null;
     var readerScroll = 0;
     var FORUM = (document.documentElement.getAttribute('data-discourse') || '').replace(/\/+$/, '');
 
-    var openReader = function (hit, row) {
+    var outLink = function (href, label, className) {
+        var out = document.createElement('a');
+        out.className = className || 'ns__reader-out';
+        out.href = href;
+        out.target = '_blank';
+        out.rel = 'noopener';
+        out.textContent = label;
+        out.insertAdjacentHTML('beforeend', ICON_OUT);
+        out.setAttribute('aria-label', label + ' (' + t('opens in a new tab') + ')');
+        return out;
+    };
+
+    var openReader = function (hit, row, metaParts, fill, out) {
         closeReader();
         readerScroll = panes.body.scrollTop;
         reader = document.createElement('article');
         reader.className = 'ns__reader';
+        var shown = reader;
+        var alive = function () {
+            return reader === shown;
+        };
 
         var back = document.createElement('button');
         back.type = 'button';
@@ -359,41 +375,11 @@
         title.className = 'ns__reader-title';
         title.textContent = String(hit.title || '');
         reader.appendChild(title);
+        reader.appendChild(meta(metaParts));
 
-        reader.appendChild(meta([
-            hit.username ? '@' + hit.username : '',
-            hit.category,
-            date(hit.created_at),
-            hit.reply_count ? hit.reply_count + ' ' + t('replies') : ''
-        ]));
+        fill(reader, alive);
 
-        var text = document.createElement('div');
-        text.className = 'ns__reader-text';
-        emojify(text, String(hit.text || ''));
-        reader.appendChild(text);
-
-        // The forum sends CORS headers for the site; any failure keeps the indexed text.
-        var shown = reader;
-        if (FORUM && /^\d+$/.test(String(hit.id)) && window.fetch && window.NautasForumHTML) {
-            fetch(FORUM + '/posts/' + hit.id + '.json', { credentials: 'omit', headers: { Accept: 'application/json' } })
-                .then(function (response) {
-                    return response.ok ? response.json() : null;
-                })
-                .then(function (post) {
-                    if (!post || !post.cooked || reader !== shown) {
-                        return;
-                    }
-                    // Rebuilt with safe tags only (forum-html.js, in main.min.js).
-                    var rich = window.NautasForumHTML.render(post.cooked, FORUM, 'ns__emoji');
-                    if (rich.textContent.trim()) {
-                        rich.className = 'ns__reader-text is-rich';
-                        text.replaceWith(rich);
-                    }
-                })
-                .catch(function () {});
-        }
-
-        // The end of the post: back to the list, or on to the forum.
+        // The end: back to the list, or on to the source.
         var foot = document.createElement('div');
         foot.className = 'ns__reader-foot';
         var again = back.cloneNode(true);
@@ -401,15 +387,6 @@
             closeReader(row);
         });
         foot.appendChild(again);
-
-        var out = document.createElement('a');
-        out.className = 'ns__reader-out';
-        out.href = hit.url;
-        out.target = '_blank';
-        out.rel = 'noopener';
-        out.textContent = t('view in the community');
-        out.insertAdjacentHTML('beforeend', ICON_OUT);
-        out.setAttribute('aria-label', t('view in the community (opens in a new tab)'));
         foot.appendChild(out);
         reader.appendChild(foot);
 
@@ -418,6 +395,178 @@
         panes.body.insertBefore(reader, panes.body.firstChild);
         panes.body.scrollTop = 0;
         back.focus();
+    };
+
+    var forumJSON = function (path, lang) {
+        var headers = { Accept: 'application/json' };
+        if (lang) {
+            headers['Accept-Language'] = lang;
+        }
+        return fetch(FORUM + path, { credentials: 'omit', headers: headers }).then(function (response) {
+            return response.ok ? response.json() : null;
+        });
+    };
+
+    /* The forum's AI summary is markdown: paragraphs, [links](/t/-/id/n),
+     * **bold** and _italics_. Text nodes only; a link is kept only when it
+     * points into the forum or to an https page. */
+    var INLINE = /\[([^\]]+)\]\(([^)\s]+)\)|\*\*([^*]+)\*\*|_([^_]+)_/g;
+    var summaryText = function (markdown) {
+        var box = document.createElement('div');
+        box.className = 'ns__reader-text is-rich';
+        markdown.split(/\n{2,}/).forEach(function (paragraph) {
+            var p = document.createElement('p');
+            var last = 0;
+            var m;
+            INLINE.lastIndex = 0;
+            while ((m = INLINE.exec(paragraph))) {
+                p.appendChild(document.createTextNode(paragraph.slice(last, m.index)));
+                var node;
+                if (m[1]) {
+                    var href = m[2].charAt(0) === '/' && m[2].charAt(1) !== '/' ? FORUM + m[2] : m[2];
+                    if (/^https:\/\//.test(href)) {
+                        node = document.createElement('a');
+                        node.href = href;
+                        node.target = '_blank';
+                        node.rel = 'noopener';
+                    } else {
+                        node = document.createElement('span');
+                    }
+                    node.textContent = m[1];
+                } else {
+                    node = document.createElement(m[3] ? 'strong' : 'em');
+                    node.textContent = m[3] || m[4];
+                }
+                p.appendChild(node);
+                last = INLINE.lastIndex;
+            }
+            p.appendChild(document.createTextNode(paragraph.slice(last)));
+            if (p.textContent.trim()) {
+                box.appendChild(p);
+            }
+        });
+        return box;
+    };
+
+    /* A topic: the post the search found (indexed text first, the forum's own
+     * HTML when it arrives), the forum's AI summary of the discussion when one
+     * exists, and the replies one click away on the forum. The forum sends CORS
+     * headers for the site; any failure keeps what is already shown. */
+    var fillTopic = function (hit) {
+        return function (box, alive) {
+            var text = document.createElement('div');
+            text.className = 'ns__reader-text';
+            emojify(text, String(hit.text || ''));
+            box.appendChild(text);
+
+            var topic = /^\d+$/.test(String(hit.topic_id)) ? String(hit.topic_id) : '';
+            var summary = document.createElement('section');
+            summary.className = 'ns__reader-summary';
+            summary.hidden = true;
+            box.appendChild(summary);
+
+            if (FORUM && topic && hit.reply_count > 0) {
+                box.appendChild(outLink(FORUM + '/t/' + topic + '/2', t('see replies') + ' (' + hit.reply_count + ')', 'ns__reader-replies'));
+            }
+
+            if (!FORUM || !window.fetch) {
+                return;
+            }
+            if (/^\d+$/.test(String(hit.id)) && window.NautasForumHTML) {
+                forumJSON('/posts/' + hit.id + '.json')
+                    .then(function (post) {
+                        if (!post || !post.cooked || !alive()) {
+                            return;
+                        }
+                        // Rebuilt with safe tags only (forum-html.js, in main.min.js).
+                        var rich = window.NautasForumHTML.render(post.cooked, FORUM, 'ns__emoji');
+                        if (rich.textContent.trim()) {
+                            rich.className = 'ns__reader-text is-rich';
+                            text.replaceWith(rich);
+                        }
+                    })
+                    .catch(function () {});
+            }
+            /* Only topics someone already summarised have one; the rest answer
+             * 404. Summaries are kept per language and the forum picks one by
+             * Accept-Language, so ask in the topic's own, not the browser's. */
+            if (topic && hit.reply_count > 0) {
+                forumJSON('/discourse-ai/summarization/t/' + topic, String(hit.locale || document.documentElement.lang || 'es').slice(0, 2))
+                    .then(function (data) {
+                        var raw = data && data.ai_topic_summary && data.ai_topic_summary.summarized_text;
+                        if (!raw || !alive()) {
+                            return;
+                        }
+                        var markdown = String(raw);
+                        try {
+                            markdown = String(JSON.parse(raw).summary || '');
+                        } catch (e) {}
+                        var body = summaryText(markdown);
+                        if (!body.childNodes.length) {
+                            return;
+                        }
+                        var label = document.createElement('h3');
+                        label.className = 'ns__reader-summary-label';
+                        label.textContent = t('AI summary');
+                        summary.append(label, body);
+                        summary.hidden = false;
+                    })
+                    .catch(function () {});
+            }
+        };
+    };
+
+    /* A video: PeerTube's player in place (its own fullscreen button), what
+     * is said in it when that is what matched, then the description. */
+    var VIDEO_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+    var videoOrigin = function (hit) {
+        try {
+            var url = new URL(hit.url);
+            return url.protocol === 'https:' && VIDEO_ID.test(String(hit.id)) ? url.origin : '';
+        } catch (e) {
+            return '';
+        }
+    };
+
+    var fillVideo = function (hit, origin, inTranscript) {
+        return function (box) {
+            var media = document.createElement('div');
+            media.className = 'ns__reader-video';
+            var frame = document.createElement('iframe');
+            // Same player settings as /videos: no peer-to-peer, no extra chrome.
+            frame.src = origin + '/videos/embed/' + hit.id + '?autoplay=1&p2p=0&warningTitle=0&peertubeLink=0';
+            frame.title = String(hit.title || '');
+            frame.allow = 'autoplay; fullscreen; picture-in-picture';
+            frame.setAttribute('allowfullscreen', '');
+            frame.setAttribute('sandbox', 'allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox');
+            frame.referrerPolicy = 'strict-origin-when-cross-origin';
+            media.appendChild(frame);
+            box.appendChild(media);
+
+            if (inTranscript) {
+                var said = document.createElement('p');
+                said.className = 'ns__reader-said';
+                box.appendChild(marked(said, hit, 'transcript', ''));
+            }
+            if (hit.description) {
+                var text = document.createElement('div');
+                text.className = 'ns__reader-text';
+                text.textContent = String(hit.description);
+                box.appendChild(text);
+            }
+        };
+    };
+
+    // A modified click (new tab, new window) still goes straight to the source.
+    var readsHere = function (row, open) {
+        row.addEventListener('click', function (event) {
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+                return;
+            }
+            event.preventDefault();
+            open();
+        });
+        return row;
     };
 
     // Back to the list where it was left; true if a reader was open.
@@ -463,32 +612,36 @@
                 // indexed by discourse-typesense-index.
                 hit.image || hit.category_image
             );
-            // Read it here; a modified click (new tab, new window) still goes straight there.
-            row.addEventListener('click', function (event) {
-                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
-                    return;
-                }
-                event.preventDefault();
-                openReader(hit, row);
+            return readsHere(row, function () {
+                openReader(hit, row, [
+                    hit.username ? '@' + hit.username : '',
+                    hit.category,
+                    date(hit.created_at),
+                    hit.reply_count ? hit.reply_count + ' ' + t('replies') : ''
+                ], fillTopic(hit), outLink(hit.url, t('view in the community')));
             });
-            return row;
         },
         videos: function (hit) {
             // What is said in it when that matched, else its description.
             var said = hit._highlightResult && hit._highlightResult.transcript;
             var inTranscript = said && said.matchedWords && said.matchedWords.length;
             var minutes = Math.round((hit.duration || 0) / 60);
-            return hitRow(
+            var facts = [hit.category, minutes ? minutes + ' min' : '', date(hit.published)];
+            var row = hitRow(
                 hit.url,
                 ICON_PLAY,
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 inTranscript
                     ? { hit: hit, attribute: 'transcript', fallback: '' }
                     : { hit: hit, attribute: 'description', fallback: String(hit.description || '').slice(0, 300) },
-                [t('videos'), hit.category, minutes ? minutes + ' min' : '', date(hit.published)],
+                [t('videos')].concat(facts),
                 hit.image,
                 true
             );
+            var origin = videoOrigin(hit);
+            return origin ? readsHere(row, function () {
+                openReader(hit, row, facts, fillVideo(hit, origin, inTranscript), outLink(hit.url, t('view in videos')));
+            }) : row;
         },
         mushin: function (hit) {
             // The page's og:image when it has one, else its favicon.
