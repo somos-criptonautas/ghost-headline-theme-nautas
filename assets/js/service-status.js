@@ -26,6 +26,9 @@
         return Math.abs(minutes) < 60 ? format.format(minutes, 'minute') : format.format(Math.round(minutes / 60), 'hour');
     };
 
+    // Each row opens the service's site in a new tab; the icon says so.
+    var OUT = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M184,80V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H176A8,8,0,0,1,184,80Z" opacity="0.2"/><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"/></svg>';
+
     var row = function (service) {
         var item = document.createElement('li');
         item.className = 'gh-status-item' + (service.ok ? ' is-up' : ' is-down');
@@ -50,6 +53,10 @@
             code.textContent = service.code > 0 ? String(service.code) : labelDown;
             link.appendChild(code);
         }
+        var out = document.createElement('span');
+        out.className = 'gh-status-out';
+        out.innerHTML = OUT;
+        link.appendChild(out);
         item.appendChild(link);
         return item;
     };

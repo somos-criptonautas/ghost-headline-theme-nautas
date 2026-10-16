@@ -3106,9 +3106,9 @@ body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {
   }
 }
 
-/* From 1200px the list shares the row with the community column, so it stays
-   at two per row. Titles take the related-posts cards' size to fit. */
-@media screen and (min-width: 1200px) {
+/* Listing titles take the related-posts cards' size from 768px, so they
+   don't grow when the community column drops out below 1200px. */
+@media screen and (min-width: 768px) {
   body:not(.home-template) .gh-listing .gh-card .gh-card-title {
     font-size: 3rem;
     line-height: 1.15;

@@ -2,9 +2,14 @@
    chip per service, a dot green when it answers, red with the code when
    not; the external apps in a second, quieter list. */
 
-/* First on the page, above its text (page.hbs). */
+/* First on the page, above its text (page.hbs): a quiet panel of its own,
+   so it reads apart from the page's text and headings. */
 .gh-status {
     margin-bottom: 6.4rem;
+    padding: 2.4rem;
+    border: 1px solid var(--cn-ui-line);
+    border-radius: 1.2rem;
+    background-color: var(--cn-ui-surface);
 }
 
 .gh-status[hidden],
@@ -87,6 +92,25 @@
     font-weight: 500;
 }
 
+.gh-status-name {
+    margin-right: auto;
+}
+
+.gh-status-out {
+    flex: none;
+    display: flex;
+    color: var(--color-secondary-text);
+}
+
+.gh-status-out svg {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+.gh-status-link:hover .gh-status-out {
+    color: var(--color-base);
+}
+
 .gh-status-dot {
     flex: none;
     width: 1rem;
@@ -100,7 +124,6 @@
 }
 
 .gh-status-code {
-    margin-left: auto;
     color: var(--cn-error);
     font-family: var(--font-mono);
     font-size: 1.3rem;
