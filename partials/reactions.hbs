@@ -29,7 +29,7 @@
 {{!-- Monero tip pill; revealed by assets/js/monero-tip.js. --}}
 {{#if @custom.monero_tips_username}}
 <div class="gh-monero-tip" data-monero-tip hidden>
-    <button class="gh-reaction gh-monero-tip-open" type="button">{{> "icons/phosphor/xmr"}}<span>{{t "Monero Tips"}}</span></button>
+    <button class="gh-reaction gh-monero-tip-open" type="button">{{> "icons/phosphor/xmr"}}<span data-i18n="tips"></span></button>
 </div>
 {{> "monero-tip-dialog"}}
 {{/if}}

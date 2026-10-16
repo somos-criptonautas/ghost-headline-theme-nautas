@@ -7,6 +7,9 @@
  * account has no address, and the button stays hidden. Sent with the forum
  * cookie so a member signed in there gets their own attributed subaddress
  * when the account has verified tips on (same CORS setup as reactions.js).
+ *
+ * The words follow the browser's language (Spanish or English), not the
+ * site's, so they are filled here rather than with {{t}}.
  */
 (function () {
     // Same forum as the comments embed (discourse-embed.js).
@@ -24,6 +27,37 @@
     if (!USERNAME) {
         return;
     }
+
+    var WORDS = /^es\b/i.test(navigator.language || '') ? {
+        tips: 'tips en XMR',
+        intro: 'El tip va directo a la wallet del autor.',
+        scan: 'Escanear desde wallet',
+        address: 'Dirección de Monero',
+        copy: 'copiar dirección',
+        copied: 'copiada',
+        wallet: 'abrir en wallet',
+        close: 'cerrar'
+    } : {
+        tips: 'XMR tips',
+        intro: "The tip goes straight to the author's wallet.",
+        scan: 'Scan from wallet',
+        address: 'Monero address',
+        copy: 'copy address',
+        copied: 'copied',
+        wallet: 'open in wallet',
+        close: 'close'
+    };
+
+    [['data-i18n', null], ['data-i18n-aria', 'aria-label'], ['data-i18n-alt', 'alt']].forEach(function (pair) {
+        Array.prototype.forEach.call(document.querySelectorAll('[' + pair[0] + ']'), function (el) {
+            var text = WORDS[el.getAttribute(pair[0])];
+            if (pair[1]) {
+                el.setAttribute(pair[1], text);
+            } else {
+                el.textContent = text;
+            }
+        });
+    });
 
     var input = dialog.querySelector('.gh-monero-tip-address');
     var copy = dialog.querySelector('.gh-monero-tip-copy');
@@ -57,7 +91,7 @@
 
     copy.addEventListener('click', function () {
         var done = function () {
-            copy.textContent = copy.getAttribute('data-copied');
+            copy.textContent = WORDS.copied;
         };
         input.select();
         if (navigator.clipboard) {

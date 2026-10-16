@@ -374,7 +374,10 @@
     margin-bottom: 1.2rem;
 }
 
-.gh-monero-tip-wallet {
+/* Both actions: light text in light, dark in dark, over the violet fill.
+   Two classes to beat .gh-content a { color: inherit }. */
+.gh-monero-tip-dialog .gh-reactions-close {
+    color: var(--color-bg);
     text-decoration: none;
 }
 
@@ -382,7 +385,7 @@
     border: 0;
     background: none;
     color: inherit;
-    text-decoration: underline;
+    text-decoration: none;
     cursor: pointer;
 }
 
