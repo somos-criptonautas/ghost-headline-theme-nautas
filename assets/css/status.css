@@ -3,8 +3,9 @@
    not; the external apps in a second, quieter list. */
 
 /* First on the page, above its text (page.hbs): a quiet panel of its own,
-   so it reads apart from the page's text and headings. */
+   in the text's column, so it reads apart from the title and the text. */
 .gh-status {
+    margin-top: 3.2rem;
     margin-bottom: 6.4rem;
     padding: 2.4rem;
     border: 1px solid var(--cn-ui-line);

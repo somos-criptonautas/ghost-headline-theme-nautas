@@ -9,6 +9,12 @@ changed - each run otherwise costs one small JSON request per video.
 
 Env: PEERTUBE_URL, TYPESENSE_URL, TYPESENSE_VIDEOS_KEY (documents:* on the
 videos collection only), optional TYPESENSE_VIDEOS_COLLECTION.
+
+AI summaries, the search's snippet for a video: with LLM_URL (an
+OpenAI-compatible base such as LiteLLM's, ending in /v1), LLM_KEY and
+LLM_MODEL set, each video without a summary from that model gets one, written
+from its title, description and captions. Switching LLM_MODEL rewrites them
+all, LLM_MAX per run (default 60), newest first.
 """
 import json
 import os
@@ -30,12 +36,25 @@ MAX_TRANSCRIPT = 30000
 MAX_BODY_BYTES = 900_000
 # Cloudflare answers urllib's default User-Agent with 403.
 UA = "nautas-peertube-sync"
+LLM_URL = (os.environ.get("LLM_URL") or "").rstrip("/")
+LLM_KEY = os.environ.get("LLM_KEY") or ""
+LLM_MODEL = os.environ.get("LLM_MODEL") or ""
+LLM_MAX = int(os.environ.get("LLM_MAX") or 60)
+# Bumped when the prompt changes, so every summary is written again.
+PROMPT_VERSION = "1"
+SUMMARY_BY = f"{LLM_MODEL}#{PROMPT_VERSION}"
+PROMPT = (
+    "Escribí en español, en dos frases y menos de 280 caracteres, de qué trata "
+    "este video, para mostrarlo como resultado de búsqueda. Solo lo que dicen el "
+    "título, la descripción y la transcripción: nada inventado, sin enlaces, sin "
+    "emojis, sin \"este video\" al empezar. Respondé solo con el texto."
+)
 TIMING = re.compile(r"^\d{2}:\d{2}[:.\d]* --> ")
 TAG = re.compile(r"<[^>]+>")
 
 
-def request(method, url, body=None, typesense=False):
-    headers = {"User-Agent": UA, "Accept": "application/json"}
+def request(method, url, body=None, typesense=False, headers=None):
+    headers = {"User-Agent": UA, "Accept": "application/json", **(headers or {})}
     if typesense:
         headers["X-TYPESENSE-API-KEY"] = KEY
     req = urllib.request.Request(url, data=body, method=method, headers=headers)
@@ -124,12 +143,12 @@ def stamp(video, captions):
 
 def existing():
     base = f"{TYPESENSE}/collections/{COLLECTION}/documents"
-    body = request("GET", f"{base}/export?include_fields=id,updated", typesense=True)
-    return {row["id"]: row.get("updated") for row in map(json.loads, filter(None, body.splitlines()))}
+    body = request("GET", f"{base}/export?include_fields=id,updated,summary_by", typesense=True)
+    return {row["id"]: row for row in map(json.loads, filter(None, body.splitlines()))}
 
 
-def import_docs(docs):
-    url = f"{TYPESENSE}/collections/{COLLECTION}/documents/import?action=upsert"
+def import_docs(docs, action="upsert"):
+    url = f"{TYPESENSE}/collections/{COLLECTION}/documents/import?action={action}"
     lines = [json.dumps(d, ensure_ascii=False).encode() for d in docs]
     chunk, size = [], 0
     for line in lines + [None]:
@@ -154,14 +173,50 @@ def delete_docs(ids):
         request("DELETE", f"{base}?filter_by={filter_by}", typesense=True)
 
 
+def summarize(doc):
+    text = f"Título: {doc['title']}\n\nDescripción: {doc['description'][:3000]}\n\nTranscripción: {doc['transcript'][:12000]}"
+    body = json.dumps({
+        "model": LLM_MODEL,
+        "messages": [{"role": "system", "content": PROMPT}, {"role": "user", "content": text}],
+        "temperature": 0.3,
+        "max_tokens": 200,
+    }).encode()
+    out = json.loads(request("POST", f"{LLM_URL}/chat/completions", body, headers={
+        "Authorization": f"Bearer {LLM_KEY}", "Content-Type": "application/json"}))
+    return " ".join((out["choices"][0]["message"]["content"] or "").split())[:400]
+
+
+def summaries(order, have):
+    """Summaries for the videos without one from this model, newest first."""
+    todo = [id_ for id_ in order if have.get(id_, {}).get("summary_by") != SUMMARY_BY][:LLM_MAX]
+    base = f"{TYPESENSE}/collections/{COLLECTION}/documents"
+    done, failed = [], 0
+    for id_ in todo:
+        try:
+            doc = json.loads(request("GET", f"{base}/{id_}?exclude_fields=embedding", typesense=True))
+            text = summarize(doc)
+        except (urllib.error.URLError, KeyError, IndexError, ValueError) as error:
+            # Only the kind of error: the response could echo the captions into the public log.
+            failed += 1
+            print(f"summary failed: {type(error).__name__} {getattr(error, 'code', '')}")
+            continue
+        if text:
+            done.append({"id": id_, "summary": text, "summary_by": SUMMARY_BY})
+    import_docs(done, action="update")
+    print(f"{len(done)} summaries by {LLM_MODEL}, {failed} failed, {max(len(todo) - len(done) - failed, 0)} empty")
+
+
 def main():
     have = existing()
-    seen, changed = set(), []
+    seen, order, changed = set(), [], []
     for video in public_videos():
         seen.add(video["uuid"])
+        order.append(video["uuid"])
         captions = captions_of(video)
-        if have.get(video["uuid"]) == stamp(video, captions):
+        if have.get(video["uuid"], {}).get("updated") == stamp(video, captions):
             continue
+        # An upsert replaces the document, summary included: write it again.
+        have.pop(video["uuid"], None)
         language = (video.get("language") or {}).get("id") or ""
         changed.append(to_doc(video, captions, transcript(captions, language)))
 
@@ -174,6 +229,8 @@ def main():
     import_docs(changed)
     delete_docs(gone)
     print(f"{len(seen)} public videos, {len(changed)} upserted, {len(gone)} deleted")
+    if LLM_URL and LLM_KEY and LLM_MODEL:
+        summaries(order, have)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,8 @@
     this site only). Main services first, then the external apps (grupo
     "apps" in its table). Filled by assets/js/service-status.js; hidden until
     it loads, so without it the page shows only its own text. --}}
-<section class="gh-status gh-canvas" aria-labelledby="gh-status-title" hidden
+<div class="gh-canvas">
+<section class="gh-status" aria-labelledby="gh-status-title" hidden
     data-src="https://api.criptonautas.co/webhook/estado"
     data-label-checked="{{t "checked"}}"
     data-label-down="{{t "not answering"}}">
@@ -16,3 +17,4 @@
     <h3 class="gh-status-subtitle" hidden>{{t "External apps"}}</h3>
     <ul class="gh-status-list" data-group="apps" hidden></ul>
 </section>
+</div>

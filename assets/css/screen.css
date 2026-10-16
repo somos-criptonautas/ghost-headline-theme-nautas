@@ -377,11 +377,11 @@ html[data-theme="dark"] .loop-wrap .item-image > img {
   height: 100%;
 }
 
-/* Every listing image is 3:2. It was a vh range (17-33vh on phones, 43vh
+/* Every listing image is 16:10 (3:2 until it was asked a little shorter). It was a vh range (17-33vh on phones, 43vh
    above), so each image settled at its own height and the rows never lined
    up. The large featured hero fills its own box and keeps opting out. */
 .gh-topic-grid .gh-card:not(.featured.large) .gh-card-image img {
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 16 / 10;
   height: auto;
   min-height: 0;
   max-height: none;

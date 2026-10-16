@@ -63,6 +63,7 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
      */
     semanticPosts: true,
     semanticTopics: true,
+    semanticVideos: true,
     semanticMushin: true,
     // By the page's language: en.criptonautas.co gets its own.
     commonSearches: /^en/i.test(document.documentElement.lang)

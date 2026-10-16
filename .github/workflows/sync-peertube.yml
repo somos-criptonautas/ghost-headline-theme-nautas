@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: '41 */3 * * *'
   workflow_dispatch:
+    inputs:
+      model:
+        description: 'LiteLLM model for the AI summaries (empty: the LLM_MODEL variable)'
+        required: false
 
 permissions:
   contents: read
@@ -25,4 +29,9 @@ jobs:
           PEERTUBE_URL: ${{ vars.PEERTUBE_URL }}
           TYPESENSE_URL: https://typesense.criptonautas.co
           TYPESENSE_VIDEOS_KEY: ${{ secrets.TYPESENSE_VIDEOS_KEY }}
+          # AI summaries: off while LLM_URL is unset.
+          LLM_URL: ${{ vars.LLM_URL }}
+          LLM_KEY: ${{ secrets.LLM_KEY }}
+          LLM_MODEL: ${{ inputs.model || vars.LLM_MODEL }}
+          LLM_MAX: ${{ vars.LLM_MAX }}
         run: python3 .github/scripts/peertube_sync.py

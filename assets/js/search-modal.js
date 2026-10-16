@@ -51,7 +51,7 @@
     var SOURCES = [
         { key: 'posts', collection: cfg.postsCollection, label: 'blog', hint: 'searches published articles', on: true, perPage: 8 },
         { key: 'topics', collection: cfg.topicsCollection, label: 'community', hint: 'searches our community', on: true, perPage: 10 },
-        { key: 'videos', collection: cfg.videosCollection, label: 'videos', hint: 'searches our videos, what is said in them included', on: true, perPage: 6 },
+        { key: 'videos', collection: cfg.videosCollection, label: 'videos', hint: 'searches our videos, what is said in them included', on: false, perPage: 6 },
         { key: 'mushin', collection: cfg.mushinCollection, label: 'mushin', hint: 'searches curated links, off the site', on: false, perPage: 8 }
     ].filter(function (source) {
         return source.collection;
@@ -622,7 +622,7 @@
             });
         },
         videos: function (hit) {
-            // What is said in it when that matched, else its description.
+            // What is said in it when that matched, else its AI summary (peertube_sync.py), else its description.
             var said = hit._highlightResult && hit._highlightResult.transcript;
             var inTranscript = said && said.matchedWords && said.matchedWords.length;
             var minutes = Math.round((hit.duration || 0) / 60);
@@ -633,7 +633,9 @@
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 inTranscript
                     ? { hit: hit, attribute: 'transcript', fallback: '' }
-                    : { hit: hit, attribute: 'description', fallback: String(hit.description || '').slice(0, 300) },
+                    : hit.summary
+                        ? { hit: hit, attribute: 'summary', fallback: hit.summary }
+                        : { hit: hit, attribute: 'description', fallback: String(hit.description || '').slice(0, 300) },
                 [t('videos')].concat(facts),
                 hit.image,
                 true
@@ -904,7 +906,11 @@
                  * pull their weight in short titles, so meaning gets half. */
                 semantic(params[cfg.postsCollection], semanticOn && cfg.semanticPosts, 0.8, 0.65);
                 semantic(params[cfg.topicsCollection], semanticOn && cfg.semanticTopics, 0.5, 0.42);
-                // shortcut: not measured yet - tune like the two above once the collection has content.
+                // Videos embed title and description: related ones sat at 0.55-0.61, unrelated from 0.67.
+                if (cfg.videosCollection) {
+                    semantic(params[cfg.videosCollection], semanticOn && cfg.semanticVideos, 0.5, 0.62);
+                }
+                // shortcut: not measured yet - tune like the ones above once the collection has content.
                 if (cfg.mushinCollection) {
                     semantic(params[cfg.mushinCollection], semanticOn && cfg.semanticMushin, 0.5, 0.5);
                 }
@@ -924,7 +930,7 @@
          * get an empty result here, so InstantSearch still sees one answer per
          * index. */
         var keywordClient = makeClient(false);
-        var semanticClient = (cfg.semanticPosts || cfg.semanticTopics || cfg.semanticMushin) ? makeClient(true) : null;
+        var semanticClient = (cfg.semanticPosts || cfg.semanticTopics || cfg.semanticVideos || cfg.semanticMushin) ? makeClient(true) : null;
         var semanticResults = {};
         var latestKey = null;
         var wanted = function (request) {

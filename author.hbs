@@ -48,4 +48,20 @@
     {{/if}}
     </div>
     {{/author}}
-    {{>loop}}
+    {{!-- The same cards as /blog (loop-grid), not the theme's older item.hbs. --}}
+    <main class="gh-main gh-outer">
+    <div class="gh-inner">
+        <div class="gh-topic gh-topic-grid gh-topic-grid-item gh-listing">
+            <div class="gh-topic-content gh-feed">
+                {{#foreach posts}}
+                    {{> "loop-grid" has_large_post=false}}
+                {{/foreach}}
+            </div>
+            {{#if pagination.next}}
+            <footer class="gh-topic-footer">
+                <a class="gh-topic-link gh-loadmore" href="{{page_url pagination.next}}">{{t "Show more"}} {{> "icons/arrow"}}</a>
+            </footer>
+            {{/if}}
+        </div>
+    </div>
+    </main>
