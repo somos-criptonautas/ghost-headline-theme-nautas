@@ -15,6 +15,8 @@ import os
 from datetime import datetime
 import re
 import sys
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -37,8 +39,15 @@ def request(method, url, body=None, typesense=False):
     if typesense:
         headers["X-TYPESENSE-API-KEY"] = KEY
     req = urllib.request.Request(url, data=body, method=method, headers=headers)
-    with urllib.request.urlopen(req, timeout=120) as res:
-        return res.read().decode()
+    for attempt in range(6):
+        try:
+            with urllib.request.urlopen(req, timeout=120) as res:
+                return res.read().decode()
+        except urllib.error.HTTPError as error:
+            # PeerTube's API rate limit (429): wait as long as it asks.
+            if error.code != 429 or attempt == 5:
+                raise
+            time.sleep(int(error.headers.get("Retry-After") or 0) or 10)
 
 
 def get(path):
