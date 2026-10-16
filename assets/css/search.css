@@ -272,6 +272,11 @@ html.ns-open {
     }
 }
 
+.ns.is-touch .ns__source-hint {
+    opacity: 0;
+    visibility: hidden;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .ns__source-hint {
         transition: none;

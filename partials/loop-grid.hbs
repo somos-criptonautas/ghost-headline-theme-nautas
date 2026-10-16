@@ -1,7 +1,9 @@
 <article class="gh-card {{post_class}}">
     <a class="gh-card-link" href="{{url}}">
         {{#if feature_image}}
-        <figure class="gh-card-image">
+        {{!-- The automatic cover (criptonautas-featured-ghost-cover, 1200x630) keeps its
+            title and logo on the left: is-cover crops it from the right. --}}
+        <figure class="gh-card-image{{#match feature_image "~" "/portada"}} is-cover{{/match}}{{#match feature_image "~" "/cover."}} is-cover{{/match}}">
             <img loading="lazy" srcset="{{img_url feature_image size="s" format="webp" }} 300w, {{img_url feature_image
                 size="m" format="webp" }} 720w, {{img_url feature_image size="l" format="webp" }} 960w, {{img_url
                 feature_image size="xl" format="webp" }} 1200w, {{img_url feature_image size="xxl" format="webp" }}

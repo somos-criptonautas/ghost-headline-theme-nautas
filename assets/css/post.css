@@ -805,13 +805,15 @@ html[data-theme="dark"] .gh-content .kg-signup-card.kg-style-accent {
     background-color: var(--cn-violeta-boton) !important;
 }
 
+/* The button a violet tint, so it reads apart from the white field, as in
+   light; deeper when pointed at. */
 html[data-theme="dark"] .kg-signup-card .kg-signup-card-button {
-    background-color: #fff !important;
+    background-color: color-mix(in srgb, var(--cn-violeta-tinta-formas) 12%, #fff) !important;
     color: var(--cn-violeta-tinta-formas) !important;
 }
 
 html[data-theme="dark"] .kg-signup-card .kg-signup-card-button:hover {
-    background-color: color-mix(in srgb, var(--cn-violeta-tinta-formas) 10%, #fff) !important;
+    background-color: color-mix(in srgb, var(--cn-violeta-tinta-formas) 22%, #fff) !important;
 }
 
 /* Phones: the paper plane alone (Phosphor's paper-plane-tilt, duotone), so

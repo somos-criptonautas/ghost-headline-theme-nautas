@@ -160,6 +160,14 @@
             }
         });
         root.addEventListener('keydown', onKeydown);
+        // Some phones report hover, or keep focus on a tapped pill, and the hint
+        // stayed up after choosing a source: after a tap, no hints (search.css).
+        root.addEventListener('pointerdown', function (event) {
+            root.classList.toggle('is-touch', event.pointerType === 'touch' || event.pointerType === 'pen');
+        });
+        root.addEventListener('keydown', function () {
+            root.classList.remove('is-touch');
+        });
     };
 
     /* Match text -> text nodes plus <mark>, never innerHTML. Falls back to the

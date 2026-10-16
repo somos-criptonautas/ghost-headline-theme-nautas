@@ -393,6 +393,34 @@ html[data-theme="dark"] .loop-wrap .item-image > img {
   }
 }
 
+/* The automatic cover is 1200x630 with its title and logo on the left and
+   only the hatching on the right: cropped to 16:10 from the right, so the
+   left margin and the text stay whole (loop-grid.hbs). */
+.gh-topic-grid .gh-card-image.is-cover img {
+  object-position: left center;
+}
+
+/* Its band would sit on the cover's logo and repeat the channel the cover
+   already names: only the level, as a tag at the top right, over the
+   hatching; nothing without a level. */
+.gh-topic-grid .gh-card-image.is-cover .gh-image-band {
+  top: 0;
+  bottom: auto;
+  justify-content: flex-end;
+  background: none;
+}
+
+.gh-topic-grid .gh-card-image.is-cover .gh-level {
+  padding: 0.3rem 0.8rem;
+  border-radius: 0.6rem;
+  background-color: rgba(24, 23, 25, 0.72);
+}
+
+.gh-topic-grid .gh-card-image.is-cover .gh-channel,
+.gh-topic-grid .gh-card-image.is-cover .gh-image-band:not(:has(.gh-level)) {
+  display: none;
+}
+
 .gh-content figcaption a {
   color: default !important;
 }
@@ -3380,6 +3408,32 @@ a {
 
 .gh-content>blockquote {
   margin-bottom: 2rem;
+}
+
+/* Every quote in the text, plain or inside an HTML card (/curso's
+   .cn-voces brings its own sans): the text's serif, upright, at the text's
+   size, after the shape violet bar. Upright is the informative quote;
+   italics (set in the editor) and quotation marks make a literal one. The
+   pulled quote (kg-blockquote-alt) and embedded tweets keep theirs. */
+.gh-content blockquote:not(.kg-blockquote-alt, .twitter-tweet) {
+  padding: 0 0 0 2rem;
+  border-left: 4px solid var(--cn-violeta-tinta-formas);
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  font-style: normal;
+  line-height: 1.6;
+}
+
+@media screen and (max-width: 767px) {
+  .gh-content blockquote:not(.kg-blockquote-alt, .twitter-tweet) {
+    font-size: 1.73rem;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .gh-content blockquote:not(.kg-blockquote-alt, .twitter-tweet) {
+    font-size: 2rem;
+  }
 }
 
 .kg-toggle-content {
