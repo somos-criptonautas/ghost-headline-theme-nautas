@@ -3012,6 +3012,7 @@ body:not(.home-template) .gh-listing .gh-card {
 
 .gh-level-switch {
   all: unset;
+  position: relative;
   display: inline-flex;
   gap: 1rem;
   align-items: center;
@@ -3022,6 +3023,7 @@ body:not(.home-template) .gh-listing .gh-card {
   cursor: pointer;
 }
 
+/* The track (::before) and its knob (::after), which slides across. */
 .gh-level-switch::before {
   content: "";
   flex: none;
@@ -3029,13 +3031,53 @@ body:not(.home-template) .gh-listing .gh-card {
   height: 2.2rem;
   border: 2px solid var(--color-base);
   border-radius: 99rem;
-  background: radial-gradient(circle at 0.9rem 50%, var(--color-base) 0.6rem, transparent 0.65rem);
   box-sizing: border-box;
-  transition: background-position 0.15s ease, background-color 0.15s ease;
+  transition: background-color 0.2s ease;
+}
+
+.gh-level-switch::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.3rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background-color: var(--color-base);
+  transform: translateY(-50%);
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .gh-level-switch[aria-checked="true"]::before {
-  background: radial-gradient(circle at calc(100% - 0.9rem) 50%, var(--color-bg) 0.6rem, transparent 0.65rem), var(--color-base);
+  background-color: var(--color-base);
+}
+
+.gh-level-switch[aria-checked="true"]::after {
+  background-color: var(--color-bg);
+  transform: translate(2.2rem, -50%);
+}
+
+/* Cards a switch brings back come in, rather than popping (levels.js adds
+   is-switched on the first switch, so the first load does not animate). */
+@keyframes gh-level-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.8rem);
+  }
+}
+
+.gh-feed.is-switched > .gh-card {
+  animation: gh-level-in 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-feed.is-switched > .gh-card {
+    animation: none;
+  }
+
+  .gh-level-switch::after {
+    transition: none;
+  }
 }
 
 .gh-level-switch[aria-checked="false"] {

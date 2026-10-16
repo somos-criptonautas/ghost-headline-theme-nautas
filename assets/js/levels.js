@@ -68,6 +68,7 @@
             } else {
                 hidden.splice(at, 1);
             }
+            feed.classList.add('is-switched');
             apply();
         });
     });
