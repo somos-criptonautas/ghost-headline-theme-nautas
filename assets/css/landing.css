@@ -6,15 +6,23 @@
    tablets the burger goes too and the toggle takes its place. */
 
 @media screen and (max-width: 991px) {
-    .home-template #gh-head .gh-burger {
-        display: none;
+    /* The toggle where /blog's open menu has it (screen.css): the burger
+       keeps its column, unseen and out of reach, so the toggle lands on the
+       same spot; the link to the blog before it. */
+    .home-template:not(.is-head-open) #gh-head .gh-head-brand {
+        grid-template-columns: minmax(0, 1fr) auto auto auto;
+    }
+
+    body.home-template:not(.is-head-open) #gh-head .gh-burger {
+        grid-row: 1;
+        grid-column: 4;
+        visibility: hidden;
     }
 
     .home-template #gh-head .gh-head-bar-toggle {
         display: inline-flex;
         grid-row: 1;
         grid-column: 3;
-        justify-self: end;
         width: 2.2rem;
         height: 2.2rem;
         margin: 0;
@@ -104,27 +112,19 @@
         width: min(32rem, 82vw);
         height: auto;
         margin-top: 1.6rem;
-        fill: #14110F;
+        fill: var(--cn-ink);
     }
 
     .cn-logo-a {
-        fill: #5814EA;
+        fill: var(--cn-violeta-tinta-formas);
     }
 
     .cn-logo-b {
-        fill: #E5500A;
+        fill: var(--cn-rojo-oxido);
     }
 
     html[data-theme="dark"] .cn-logo-word {
-        fill: #E8E6E1;
-    }
-
-    html[data-theme="dark"] .cn-logo-a {
-        fill: #7C36FF;
-    }
-
-    html[data-theme="dark"] .cn-logo-b {
-        fill: #F3936A;
+        fill: var(--cn-paper);
     }
 }
 
@@ -137,6 +137,13 @@
     font-size: 1.2rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+}
+
+/* Phones: the logo alone leads; the label stays from 768px. */
+@media screen and (max-width: 767px) {
+    .gh-landing-eyebrow {
+        display: none;
+    }
 }
 
 .gh-landing-intro {
@@ -249,7 +256,7 @@
         padding: 1.8rem 2rem;
         border-top: 0;
         border-radius: 1.2rem;
-        background: color-mix(in srgb, var(--color-base) 3%, var(--color-bg));
+        background: var(--cn-ui-soft);
     }
 
     .gh-landing-faq-toggle {
@@ -403,10 +410,11 @@
     mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
 
-/* Each card as tall as its quote: no blank space under the short ones. */
+/* Every card in a row as tall as the row: the quote at the top, the member
+   at the foot, so the two rows read as even bands. */
 .gh-landing-marquee-track {
     display: flex;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 1.6rem;
     width: max-content;
     animation: gh-landing-marquee 70s linear infinite;

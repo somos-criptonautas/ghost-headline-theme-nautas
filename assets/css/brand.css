@@ -9,12 +9,14 @@
 
 :root {
     --cn-violeta-tinta: #5814EA;
-    --cn-rojo-oxido: #E6211E;
+    --cn-rojo-oxido: #E5500A;
     --cn-error: #9E1B27;
     --cn-exito: #1F7A5C;
     --cn-ink: #14110F;
     --cn-paper: #E8E6E1;
     --cn-halftone: #7E7973;
+    /* Violet in shapes: logos, marks, figures (deeper in dark than the text violet). */
+    --cn-violeta-tinta-formas: #5814EA;
 
     /* The interface: ground, header, raised surface, rules, text and
        secondary text. Light: the theme's own white ground and header, grey
@@ -45,6 +47,10 @@
     --cn-shadow: 4px 4px 0 var(--color-base);
     --cn-shadow-raised: 6px 8px 0 var(--color-base);
     --cn-shadow-sm: 3px 3px 0 var(--color-base);
+
+    /* A soft card: the ground with a breath of the text colour, no lines.
+       The landing's questions and Ghost's toggle cards. */
+    --cn-ui-soft: color-mix(in srgb, var(--color-base) 3%, var(--color-bg));
 }
 
 html[data-theme="dark"] {
@@ -64,7 +70,10 @@ html[data-theme="dark"] {
     --cn-violeta-fill-hover: color-mix(in srgb, var(--cn-violeta-fill) 80%, var(--cn-ui-text));
 
     --cn-violeta-tinta: #C89DFF;
-    --cn-rojo-oxido: #F98E76;
+    --cn-violeta-tinta-formas: #7C36FF;
+    /* The kit's dark button violet: a fill under white text, 4.54:1. */
+    --cn-violeta-boton: #8E4CFF;
+    --cn-rojo-oxido: #F3936A;
     --cn-error: #FF8DA5;
     --cn-exito: #6DC08F;
 }

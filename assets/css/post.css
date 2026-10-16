@@ -798,6 +798,22 @@ html[data-theme="dark"] .gh-cover-caption {
     content: " →";
 }
 
+/* Dark: the accent is the pale lavender, and the white text Ghost sets on it
+   read at under 2:1. The kit's dark button violet takes its place under that
+   white text, and the button's label goes the shape violet on its white. */
+html[data-theme="dark"] .gh-content .kg-signup-card.kg-style-accent {
+    background-color: var(--cn-violeta-boton) !important;
+}
+
+html[data-theme="dark"] .kg-signup-card .kg-signup-card-button {
+    background-color: #fff !important;
+    color: var(--cn-violeta-tinta-formas) !important;
+}
+
+html[data-theme="dark"] .kg-signup-card .kg-signup-card-button:hover {
+    background-color: color-mix(in srgb, var(--cn-violeta-tinta-formas) 10%, #fff) !important;
+}
+
 /* Phones: the paper plane alone (Phosphor's paper-plane-tilt, duotone), so
    the field keeps its width; the label stays for screen readers. */
 @media (max-width: 767px) {
@@ -805,8 +821,11 @@ html[data-theme="dark"] .gh-cover-caption {
         padding-inline: 1.4rem;
     }
 
+    /* line-height too: the hidden label's empty line sat over the plane
+       and pushed it off centre. */
     .kg-signup-card .kg-signup-card-button-default {
         font-size: 0;
+        line-height: 0;
     }
 
     .kg-signup-card .kg-signup-card-button-default::after {
@@ -867,3 +886,4 @@ html[data-theme="dark"] .gh-cover-caption {
     font-size: 1.3rem;
     font-weight: 600;
 }
+

@@ -3387,18 +3387,22 @@ a {
 }
 
 .kg-toggle-heading {
-  padding: 2.5rem 2rem 2.5rem 1.5rem;
+  padding: 2.5rem 2rem;
   justify-content: space-between !important;
   align-items: center !important;
 }
 
+/* Ghost's toggle cards as the landing's questions on phones (landing.css):
+   a soft card, no line, rounder corners; light and dark from --cn-ui-soft. */
 .kg-toggle-card {
   padding: 0 !important;
-  box-shadow: inset 0 0 0 2px rgba(33, 33, 33, 0.33) !important;
+  border-radius: 1.2rem !important;
+  background: var(--cn-ui-soft) !important;
+  box-shadow: none !important;
 }
 
-html[data-theme="dark"] .kg-toggle-card {
-  box-shadow: inset 0 0 0 2px rgba(99, 99, 99, 0.93) !important;
+.kg-toggle-card + .kg-toggle-card {
+  margin-top: 0.8rem;
 }
 
 .gh-content h3 {
@@ -3814,6 +3818,7 @@ blockquote.kg-blockquote-alt {
 
 .kg-toggle-heading svg {
   width: 1.5rem !important;
+  opacity: 0.6;
 }
 
 .kg-toggle-heading path {
