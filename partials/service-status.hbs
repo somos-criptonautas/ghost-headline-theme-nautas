@@ -1,0 +1,18 @@
+{{!-- Service status (page.hbs, the page "stack"): whether each service
+    answers, from the n8n workflow "Estado de servicios" that checks them
+    every five minutes and serves the result at the webhook below (CORS for
+    this site only). Main services first, then the external apps (grupo
+    "apps" in its table). Filled by assets/js/service-status.js; hidden until
+    it loads, so without it the page shows only its own text. --}}
+<section class="gh-status gh-canvas" aria-labelledby="gh-status-title" hidden
+    data-src="https://api.criptonautas.co/webhook/estado"
+    data-label-checked="{{t "checked"}}"
+    data-label-down="{{t "not answering"}}">
+    <div class="gh-status-head">
+        <h2 class="gh-status-title" id="gh-status-title">{{t "Status"}}</h2>
+        <p class="gh-status-checked"></p>
+    </div>
+    <ul class="gh-status-list" data-group=""></ul>
+    <h3 class="gh-status-subtitle" hidden>{{t "External apps"}}</h3>
+    <ul class="gh-status-list" data-group="apps" hidden></ul>
+</section>
