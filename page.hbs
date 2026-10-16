@@ -34,11 +34,11 @@
         </header>
         {{/match}}
         
+        {{#match slug "stack"}}{{> "service-status"}}{{/match}}
+
         <section class="gh-content gh-canvas">
             {{content}}
         </section>
-
-        {{#match slug "stack"}}{{> "service-status"}}{{/match}}
 
     </article>
 </main>

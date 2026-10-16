@@ -31,6 +31,8 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
      * keep it so until the collection exists and the key above covers it, or
      * Typesense rejects the request and every source comes back empty. */
     mushinCollection: '',
+    // PeerTube's public videos, mirrored by .github/workflows/sync-peertube.yml.
+    videosCollection: 'videos',
 
     /* Members-only posts: the indexer stores their whole plaintext, and the key
      * above is public, so a snippet would hand out the paywalled text. Empty

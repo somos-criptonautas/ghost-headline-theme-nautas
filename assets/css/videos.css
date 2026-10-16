@@ -596,3 +596,230 @@
         opacity: 0.5;
     }
 }
+
+/* A channel's videos (partials/channel-videos.hbs): in a tag page's list,
+   across it, after the sixth post (or the last, with fewer). A header with
+   the "see all" link at its end; the newest video large in the ink frame of
+   the post cards, its title at the size of theirs, and two more beside it
+   (from 768px) whose column is exactly as tall as the large picture. Below
+   768px the two sit side by side under it. */
+
+.gh-feed > .gh-channel-videos {
+    grid-column: 1 / -1;
+}
+
+.gh-channel-videos[hidden] {
+    display: none;
+}
+
+.gh-channel-videos-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin: 0 0 2.4rem;
+}
+
+.gh-channel-videos-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0;
+    color: var(--color-base);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+}
+
+.gh-channel-videos-title svg {
+    width: 2.4rem;
+    height: 2.4rem;
+}
+
+/* As the forum's "go to the community": a plain link, clearly one. */
+.gh-channel-videos-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-base);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.gh-channel-videos-more:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+
+.gh-channel-videos-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.6rem;
+}
+
+/* The frame and lift of the post cards' images. */
+.gh-channel-videos-main .gh-video-media,
+.gh-channel-videos-thumb {
+    border: 2px solid var(--color-base);
+    border-radius: 1rem;
+    box-shadow: var(--cn-shadow);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.gh-channel-videos-main:hover .gh-video-media,
+.gh-channel-videos-pick:is(:hover, :focus-visible) .gh-channel-videos-thumb {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--color-base);
+}
+
+.gh-channel-videos-caption {
+    max-width: none;
+    margin: 0.4rem 0 0;
+}
+
+.gh-channel-videos-caption a {
+    text-decoration: none;
+}
+
+/* The title marked on hover, as a post card's (screen.css). */
+.loop-wrap .gh-channel-videos-body:has(.gh-channel-videos-main:hover) .gh-channel-videos-caption a,
+.loop-wrap .gh-channel-videos-caption a:hover {
+    --cn-mark: color-mix(in srgb, var(--cn-marcador) 75%, var(--cn-ui-bg));
+}
+
+html[data-theme="dark"] .loop-wrap :is(.gh-channel-videos-body:has(.gh-channel-videos-main:hover) .gh-channel-videos-caption a, .gh-channel-videos-caption a:hover) {
+    --cn-mark: color-mix(in srgb, var(--cn-marcador) 38%, transparent);
+}
+
+.gh-channel-videos-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.gh-channel-videos-item {
+    min-width: 0;
+}
+
+.gh-channel-videos-pick {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #fff;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.gh-channel-videos-pick:focus-visible {
+    outline: none;
+}
+
+.gh-channel-videos-pick:focus-visible .gh-channel-videos-thumb {
+    outline: 3px solid var(--ghost-accent-color);
+    outline-offset: 3px;
+}
+
+.gh-channel-videos-thumb {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background-color: rgba(127, 127, 127, 0.15);
+}
+
+.gh-channel-videos-thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* The title over the foot of the picture, on a shade that keeps it legible
+   on any frame. */
+.gh-channel-videos-name {
+    display: -webkit-box;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    padding: 2.4rem 1.2rem 1rem;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.25;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* Duration top right, clear of the title; the play button smaller. */
+.gh-channel-videos-thumb .gh-video-badge {
+    top: 0.6rem;
+    right: 0.6rem;
+    bottom: auto;
+    font-size: 1.2rem;
+}
+
+.gh-channel-videos-thumb .gh-video-icon {
+    width: 4rem;
+    height: 4rem;
+    transform: translateY(-1.2rem);
+}
+
+.gh-channel-videos-thumb .gh-video-icon svg {
+    width: 1.8rem;
+    height: 1.8rem;
+}
+
+.gh-channel-videos-pick:is(:hover, :focus-visible) .gh-video-icon {
+    transform: translateY(-1.2rem) scale(1.08);
+    background-color: var(--ghost-accent-color);
+    color: var(--cn-on-violeta);
+}
+
+@media screen and (min-width: 768px) {
+    /* Large picture and its title on the left; the list beside the picture
+       only, stretched to its height, one item per half. */
+    .gh-channel-videos-body {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        column-gap: 2.4rem;
+        row-gap: 1.6rem;
+    }
+
+    .gh-channel-videos-main {
+        grid-area: 1 / 1;
+    }
+
+    .gh-channel-videos-caption {
+        grid-area: 2 / 1;
+    }
+
+    .gh-channel-videos-list {
+        grid-area: 1 / 2;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+        gap: 1.6rem;
+        margin: 0;
+    }
+
+    /* The cell sets the height, the picture fills it. */
+    .gh-channel-videos-thumb {
+        height: 100%;
+        aspect-ratio: auto;
+    }
+}

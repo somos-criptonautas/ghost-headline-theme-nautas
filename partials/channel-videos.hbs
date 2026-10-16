@@ -1,0 +1,25 @@
+{{!-- A channel's videos (partials/loop.hbs, tag pages): the newest three of
+    the PeerTube category named as the tag, the first large and played in
+    place, the other two under it. Filled by assets/js/channel-videos.js from
+    the instance in the "Peertube source" setting; it stays hidden when the
+    tag has no category there, or no videos, or the instance does not
+    answer. --}}
+{{#if @custom.peertube_source}}
+<section class="gh-channel-videos" aria-labelledby="gh-channel-videos-title" hidden
+    data-source="{{@custom.peertube_source}}"
+    data-category="{{category}}"
+    data-label-play="{{t "Play"}}">
+    <header class="gh-channel-videos-head">
+        <h2 class="gh-channel-videos-title" id="gh-channel-videos-title">
+            {{> "icons/phosphor/play-circle"}}
+            <span>{{t "Videos"}}</span>
+        </h2>
+        <a class="gh-channel-videos-more" href="{{@site.url}}/videos/">{{t "see all"}} →</a>
+    </header>
+    <div class="gh-channel-videos-body">
+        <div class="gh-video gh-channel-videos-main"></div>
+        <h3 class="item-title gh-channel-videos-caption"></h3>
+        <ol class="gh-channel-videos-list"></ol>
+    </div>
+</section>
+{{/if}}

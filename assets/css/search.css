@@ -80,7 +80,8 @@ html.ns-open {
 .ns__input:focus-visible {
     flex: 1;
     min-width: 0;
-    padding: 0.9rem 1.4rem;
+    /* Lower than it was; 16px text keeps iOS from zooming on focus. */
+    padding: 0.6rem 1.4rem;
     font-size: 1.6rem;
     font-family: inherit;
     color: var(--ns-text);
@@ -100,17 +101,26 @@ html.ns-open {
     display: none;
 }
 
+/* A key cap of the box's own height, border and fill. */
 .ns__esc {
-    padding: 0.4rem 0.8rem;
-    font-size: 1.1rem;
+    align-self: stretch;
+    padding: 0 1.2rem;
+    font-size: 1.2rem;
     font-family: inherit;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--ns-muted);
     background: var(--ns-bg-alt);
     border: 1px solid var(--ns-border);
-    border-radius: 0.5rem;
+    border-radius: 0.8rem;
     cursor: pointer;
+}
+
+.ns__esc:hover,
+.ns__esc:focus-visible {
+    color: var(--ns-text);
+    border-color: var(--ns-focus);
+    outline: none;
 }
 
 /* Body */
@@ -138,10 +148,12 @@ html.ns-open {
     --ns-src-posts: var(--cn-violeta-tinta);
     --ns-src-topics: var(--cn-rojo-oxido);
     --ns-src-mushin: var(--cn-exito);
+    --ns-src-videos: var(--cn-marcador);
 }
 
 [data-source="posts"] { --ns-src: var(--ns-src-posts); --ns-src-shape: none; }
 [data-source="topics"] { --ns-src: var(--ns-src-topics); --ns-src-shape: polygon(50% 0, 100% 100%, 0 100%); }
+[data-source="videos"] { --ns-src: var(--ns-src-videos); --ns-src-shape: circle(50%); }
 [data-source="mushin"] { --ns-src: var(--ns-src-mushin); --ns-src-shape: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
 
 .ns__source::before,
@@ -223,7 +235,8 @@ html.ns-open {
     display: none;
 }
 
-/* What a pill searches: below it, on hover or focus (a tap focuses it on touch). */
+/* What a pill searches: below it, on hover or keyboard focus. Not on any
+   focus: a clicked pill keeps focus, and its hint stayed over the list. */
 .ns__source {
     position: relative;
 }
@@ -245,7 +258,7 @@ html.ns-open {
     transition: opacity 0.15s ease, visibility 0.15s;
 }
 
-.ns__source:is(:hover, :focus) .ns__source-hint {
+.ns__source:is(:hover, :focus-visible) .ns__source-hint {
     opacity: 1;
     visibility: visible;
 }

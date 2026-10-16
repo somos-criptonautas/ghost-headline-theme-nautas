@@ -2,8 +2,9 @@
    chip per service, a dot green when it answers, red with the code when
    not; the external apps in a second, quieter list. */
 
+/* First on the page, above its text (page.hbs). */
 .gh-status {
-    margin-top: 6.4rem;
+    margin-bottom: 6.4rem;
 }
 
 .gh-status[hidden],

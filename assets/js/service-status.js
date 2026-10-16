@@ -37,9 +37,12 @@
         var dot = document.createElement('span');
         dot.className = 'gh-status-dot';
         dot.setAttribute('aria-hidden', 'true');
+        // The short name, lowercase ("btcpay"); the table's longer label
+        // ("BTCPay · abonos y donaciones") stays as the link's title.
         var name = document.createElement('span');
         name.className = 'gh-status-name';
-        name.textContent = service.name;
+        name.textContent = service.name.split(' · ')[0].toLowerCase();
+        link.title = service.name;
         link.append(dot, name);
         if (!service.ok) {
             var code = document.createElement('span');

@@ -31,6 +31,8 @@
 		{{>item is_loop=true show_excerpt=true}}
 		{{!-- Tag pages below 1200px: the tag's forum topics after the third post, in place of the aside. --}}
 		{{#is "tag"}}{{#has number="3"}}{{^is "paged"}}{{> "community-related" strip=true category=../tag.slug}}{{/is}}{{/has}}{{/is}}
+		{{!-- Tag pages: the channel's videos after the sixth post, or after the last with fewer. --}}
+		{{#is "tag"}}{{^is "paged"}}{{#has number="6"}}{{> "channel-videos" category=../tag.slug}}{{else}}{{#if @last}}{{#has number="1,2,3,4,5"}}{{> "channel-videos" category=../tag.slug}}{{/has}}{{/if}}{{/has}}{{/is}}{{/is}}
 		{{/foreach}}
 	</div>
 </div>

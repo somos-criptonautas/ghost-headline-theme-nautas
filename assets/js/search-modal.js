@@ -1,4 +1,4 @@
-/* Site search modal: blog posts, community discussions and mushin (curated links) in
+/* Site search modal: blog posts, community discussions, videos and mushin (curated links) in
  * one list, each source switched on or off by the visitor.
  *
  * InstantSearch.js talks to Typesense through typesense-instantsearch-adapter,
@@ -29,6 +29,7 @@
     var ICON_POST = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h9l5 5v13H5z"></path><path d="M14 3v5h5"></path><path d="M8 13h8M8 17h5"></path></svg>';
     var ICON_TOPIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"></path></svg>';
     var ICON_OUT = '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M184,80V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H176A8,8,0,0,1,184,80Z" opacity="0.2"/><path d="M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z"/></svg>';
+    var ICON_PLAY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m10 9 5 3-5 3z"></path></svg>';
     var ICON_LINK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"></path><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"></path></svg>';
 
     /* Strings from the theme's locales: site-scripts.hbs renders each one,
@@ -50,6 +51,7 @@
     var SOURCES = [
         { key: 'posts', collection: cfg.postsCollection, label: 'blog', hint: 'searches published articles', on: true, perPage: 8 },
         { key: 'topics', collection: cfg.topicsCollection, label: 'community', hint: 'searches our community', on: true, perPage: 10 },
+        { key: 'videos', collection: cfg.videosCollection, label: 'videos', hint: 'searches our videos, what is said in them included', on: true, perPage: 6 },
         { key: 'mushin', collection: cfg.mushinCollection, label: 'mushin', hint: 'searches curated links, off the site', on: false, perPage: 8 }
     ].filter(function (source) {
         return source.collection;
@@ -471,6 +473,23 @@
             });
             return row;
         },
+        videos: function (hit) {
+            // What is said in it when that matched, else its description.
+            var said = hit._highlightResult && hit._highlightResult.transcript;
+            var inTranscript = said && said.matchedWords && said.matchedWords.length;
+            var minutes = Math.round((hit.duration || 0) / 60);
+            return hitRow(
+                hit.url,
+                ICON_PLAY,
+                { hit: hit, attribute: 'title', fallback: hit.title },
+                inTranscript
+                    ? { hit: hit, attribute: 'transcript', fallback: '' }
+                    : { hit: hit, attribute: 'description', fallback: String(hit.description || '').slice(0, 300) },
+                [t('videos'), hit.category, minutes ? minutes + ' min' : '', date(hit.published)],
+                hit.image,
+                true
+            );
+        },
         mushin: function (hit) {
             // The page's og:image when it has one, else its favicon.
             return hitRow(
@@ -706,6 +725,14 @@
                 };
                 if (cfg.topicsByLocale) {
                     params[cfg.topicsCollection].filter_by = 'locale:=' + (document.documentElement.lang || 'es').slice(0, 2);
+                }
+                if (cfg.videosCollection) {
+                    params[cfg.videosCollection] = {
+                        query_by: 'title,description,transcript',
+                        // Title first: a word in a title says more than one in an hour of talk.
+                        query_by_weights: '4,2,1',
+                        highlight_fields: 'title,description,transcript'
+                    };
                 }
                 if (cfg.mushinCollection) {
                     params[cfg.mushinCollection] = {
