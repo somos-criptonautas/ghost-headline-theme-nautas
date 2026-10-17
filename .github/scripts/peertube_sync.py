@@ -46,13 +46,14 @@ LLM_KEY = os.environ.get("LLM_KEY") or ""
 LLM_MODEL = os.environ.get("LLM_MODEL") or ""
 LLM_MAX = int(os.environ.get("LLM_MAX") or 60)
 # Bumped when the prompt changes, so every summary is written again.
-PROMPT_VERSION = "2"
+PROMPT_VERSION = "3"
 SUMMARY_BY = f"{LLM_MODEL}#{PROMPT_VERSION}"
 PROMPT = (
-    "Escribí en español, en dos frases y menos de 280 caracteres, de qué trata "
-    "este video, para mostrarlo como resultado de búsqueda. Solo lo que dicen el "
-    "título, la descripción y la transcripción: nada inventado, sin enlaces, sin "
-    "emojis, sin \"este video\" al empezar. Respondé solo con el texto."
+    "Resumí en español de qué trata este video, para mostrarlo como resultado de "
+    "búsqueda: una o dos frases, hasta 280 caracteres. Empezá directo por el tema, "
+    "sin presentar el video (nada de \"Este video\", \"El video\", \"Explica\" ni "
+    "\"Se trata de\"). Solo lo que dicen el título, la descripción y la "
+    "transcripción: nada inventado, sin enlaces, sin emojis. Respondé solo con el texto."
 )
 # Less text than this in the description and captions together: no summary.
 MIN_MATERIAL = 80
