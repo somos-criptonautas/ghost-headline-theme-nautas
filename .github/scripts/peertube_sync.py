@@ -192,7 +192,8 @@ def summarize(doc, model=LLM_MODEL):
         "model": model,
         "messages": [{"role": "system", "content": PROMPT}, {"role": "user", "content": text}],
         "temperature": 0.3,
-        "max_tokens": 200,
+        # Room for models that reason before answering: at 200 some came back empty.
+        "max_tokens": 1000,
     }).encode()
     out = json.loads(request("POST", f"{LLM_URL}/chat/completions", body, headers={
         "Authorization": f"Bearer {LLM_KEY}", "Content-Type": "application/json"}))
@@ -208,13 +209,16 @@ def summaries(order, have):
         try:
             doc = json.loads(request("GET", f"{base}/{id_}?exclude_fields=embedding", typesense=True))
             text = summarize(doc) if material(doc) >= MIN_MATERIAL else ""
+            if material(doc) >= MIN_MATERIAL and not text:
+                raise ValueError("empty answer")
         except (urllib.error.URLError, KeyError, IndexError, ValueError) as error:
             # Only the kind of error: the response could echo the captions into the public log.
             failed += 1
             print(f"summary failed: {type(error).__name__} {getattr(error, 'code', '')}")
             continue
-        # Empty too (title only, or an empty answer): clears an old summary and
-        # marks the video as seen by this model, so it is not asked again.
+        # Empty for a title-only video: clears an old summary and marks it as
+        # seen by this model, so it is not asked again. An empty answer to a
+        # video with text is a failure above, retried on the next run.
         done.append({"id": id_, "summary": text, "summary_by": SUMMARY_BY})
     import_docs(done, action="update")
     written = sum(1 for d in done if d["summary"])
