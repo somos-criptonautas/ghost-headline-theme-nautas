@@ -22,8 +22,9 @@
     white-space: nowrap;
 }
 
-/* Controls: the channel picker on the left, the order picker on the right,
-   one row on phones too (they wrap only if a long channel name needs it). */
+/* Controls: both pickers on the right from 768px, where the eye goes to
+   change a view; on phones the channel picker left, the order picker right,
+   one row (they wrap only if a long channel name needs it). */
 
 .gh-videos-controls {
     display: flex;
@@ -36,6 +37,16 @@
 
 .gh-videos-order {
     margin-left: auto;
+}
+
+@media screen and (min-width: 768px) {
+    .gh-videos-controls {
+        justify-content: flex-end;
+    }
+
+    .gh-videos-order {
+        margin-left: 0;
+    }
 }
 
 /* Pickers: icon and value in one quiet box, as the forum list's picker - a
@@ -54,7 +65,6 @@
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.2;
-    text-transform: uppercase;
     cursor: pointer;
     transition: border-color 0.2s ease;
 }
