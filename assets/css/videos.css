@@ -22,28 +22,25 @@
     white-space: nowrap;
 }
 
-/* Controls: the category picker, then the order switches - one line from
-   768px, stacked below that. */
+/* Controls: the channel picker on the left, the order picker on the right,
+   one row on phones too (they wrap only if a long channel name needs it). */
 
 .gh-videos-controls {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 1.6rem 2.4rem;
+    gap: 1.2rem;
     margin-bottom: 3.2rem;
 }
 
-.gh-videos-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem 2.4rem;
+.gh-videos-order {
+    margin-left: auto;
 }
 
-/* Category picker: label and value in one quiet box, as the forum list's
-   picker - a thin rule, no fill, the label in grey. The select itself is
-   transparent and stretched over the whole box, so every part of it opens
-   the picker. */
+/* Pickers: icon and value in one quiet box, as the forum list's picker - a
+   thin rule, no fill, the icon in grey. The select itself is transparent
+   and stretched over the whole box, so every part of it opens the picker. */
 .gh-videos-category {
     position: relative;
     display: inline-flex;
@@ -75,11 +72,6 @@
     outline-offset: 2px;
 }
 
-.gh-videos-category-label {
-    flex: none;
-    color: var(--color-secondary-text);
-}
-
 .gh-videos-category-value {
     flex: 1 1 auto;
     overflow: hidden;
@@ -88,23 +80,17 @@
     text-overflow: ellipsis;
 }
 
-/* Drawn dot rather than a "·" glyph, which the heading font can set near the baseline. */
-.gh-videos-category-value::before {
-    content: "";
-    display: inline-block;
-    width: 0.3rem;
-    height: 0.3rem;
-    margin-right: 0.8rem;
-    border-radius: 50%;
-    background-color: var(--color-secondary-text);
-    vertical-align: middle;
-}
-
 .gh-videos-category svg {
     flex: none;
     width: 1.4rem;
     height: 1.4rem;
     color: var(--color-secondary-text);
+}
+
+/* The leading icon, which stands for the label. */
+.gh-videos-category svg:first-child {
+    width: 1.8rem;
+    height: 1.8rem;
 }
 
 /* 1.6rem keeps iOS from zooming the page when the picker opens. */
@@ -130,74 +116,9 @@
     color: var(--color-base);
 }
 
-/* Order: /blog's level switches (screen.css .gh-level-switch), one on at a
-   time - the track (::before) and its knob (::after), on for the order
-   showing. */
-.gh-videos-tab {
-    all: unset;
-    position: relative;
-    display: inline-flex;
-    gap: 1rem;
-    align-items: center;
-    color: var(--color-base);
-    font-size: 1.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    white-space: nowrap;
-    cursor: pointer;
-}
-
-.gh-videos-tab::before {
-    content: "";
-    flex: none;
-    width: 4rem;
-    height: 2.2rem;
-    border: 2px solid var(--color-base);
-    border-radius: 99rem;
-    box-sizing: border-box;
-    transition: background-color 0.2s ease;
-}
-
-.gh-videos-tab::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 0.3rem;
-    width: 1.2rem;
-    height: 1.2rem;
-    border-radius: 50%;
-    background-color: var(--color-base);
-    transform: translateY(-50%);
-    transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.gh-videos-tab[aria-pressed="true"]::before {
-    background-color: var(--color-base);
-}
-
-.gh-videos-tab[aria-pressed="true"]::after {
-    background-color: var(--color-bg);
-    transform: translate(2.2rem, -50%);
-}
-
-:is(.gh-videos-tab, .gh-videos-load):focus-visible {
+.gh-videos-load:focus-visible {
     outline: 2px solid var(--ghost-accent-color);
     outline-offset: 2px;
-}
-
-/* Phones: the picker on its own line, the switches under it. */
-@media screen and (max-width: 767px) {
-    .gh-videos-controls {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 1.4rem;
-        margin-bottom: 2.4rem;
-    }
-
-    /* The picker as wide as its choice, not the whole row. */
-    .gh-videos-category {
-        align-self: flex-start;
-    }
 }
 
 /* Grid: 4 per row from 992px, 2 from 768px, 1 below */

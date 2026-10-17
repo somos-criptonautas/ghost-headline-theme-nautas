@@ -836,6 +836,14 @@ body .gh-read-next .gh-topic-grid .gh-card {
   padding: 1.8rem 0 0;
 }
 
+/* Phones: one card across, as on /blog - the same room above the text and
+   the same small inset from the picture's edge. */
+@media screen and (max-width: 767px) {
+  .gh-read-next .gh-card-wrapper {
+    padding: 2.33rem 0 0 1rem;
+  }
+}
+
 /* Card titles: 3rem in rows of three - between the old 2.11rem and the
    full var(--h1-size) of the two-per-row listings. Phones, one per row,
    keep var(--h1-size) like every other card list there. */

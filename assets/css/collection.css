@@ -92,11 +92,15 @@
     letter-spacing: 0.12em;
 }
 
-/* At its own proportions: the art is a whole card (tarot), never cropped,
-   in a thin frame a shade of the text colour rather than the ink itself. */
+/* The art is a whole card (tarot), in a thin frame a shade of the text
+   colour rather than the ink itself. Every card at the tarot's proportions
+   (the Rider-Waite scans', 1200x1976), so one drawn a little wider - the
+   epilogue's - loses a sliver of its white edge instead of standing out. */
 .gh-collection-image {
     width: 100%;
     height: auto;
+    aspect-ratio: 1200 / 1976;
+    object-fit: cover;
     border: 1px solid color-mix(in srgb, var(--color-base) 22%, transparent);
     border-radius: 0.4rem;
 }

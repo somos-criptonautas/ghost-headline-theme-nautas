@@ -69,13 +69,15 @@
 
     var grid = section.querySelector('.gh-videos-grid');
     var message = section.querySelector('.gh-videos-message');
-    var categoryBox = section.querySelector('.gh-videos-category');
-    var picker = section.querySelector('.gh-videos-select');
-    var pickerValue = section.querySelector('.gh-videos-category-value');
+    var categoryBox = section.querySelector('.gh-videos-category:not(.gh-videos-order)');
+    var picker = categoryBox.querySelector('.gh-videos-select');
+    var pickerValue = categoryBox.querySelector('.gh-videos-category-value');
+    var orderBox = section.querySelector('.gh-videos-order');
+    var order = orderBox.querySelector('.gh-videos-select');
+    var orderValue = orderBox.querySelector('.gh-videos-category-value');
     var names = section.querySelector('.gh-videos-names');
     var loading = section.querySelector('.gh-videos-loading');
     var loadButton = section.querySelector('.gh-videos-load');
-    var tabs = Array.prototype.slice.call(section.querySelectorAll('.gh-videos-tab'));
     var labelPlay = section.getAttribute('data-label-play') || 'Play';
     var labelLive = section.getAttribute('data-label-live') || 'Live';
     var labelAll = section.getAttribute('data-label-all') || 'All';
@@ -663,22 +665,15 @@
         watcher.observe(loading);
     }
 
-    var press = function (buttons, active) {
-        buttons.forEach(function (button) {
-            button.setAttribute('aria-pressed', String(button === active));
-        });
-    };
-
-    tabs.forEach(function (tab) {
-        tab.addEventListener('click', function () {
-            var mode = tab.getAttribute('data-mode');
-            if (mode === state.mode) {
-                return;
-            }
-            state.mode = mode;
-            press(tabs, tab);
+    // A reload can restore the select's last choice: start from it.
+    state.mode = order.value;
+    orderValue.textContent = order.options[order.selectedIndex].textContent;
+    order.addEventListener('change', function () {
+        orderValue.textContent = order.options[order.selectedIndex].textContent;
+        if (order.value !== state.mode) {
+            state.mode = order.value;
             show();
-        });
+        }
     });
 
     /* Category picker: with two or more categories on offer. Built-in ones

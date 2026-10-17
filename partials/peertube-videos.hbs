@@ -20,22 +20,31 @@
     <h2 class="gh-visually-hidden" id="gh-videos-title">{{t "Videos"}}</h2>
 
     <div class="gh-videos-controls">
-        {{!-- Category picker: one box holding the label and the choice. A
-            transparent native select covers all of it, so a click or tap
-            anywhere opens the browser's own picker; the visible value is a
-            copy the script keeps in step. Built once there are two or more
-            categories. --}}
+        {{!-- Two pickers, each one box holding an icon and the choice: the
+            channel (a screen) and the order (a sort mark). The icon stands
+            for the label, which stays for screen readers. A transparent
+            native select covers each box, so a click or tap anywhere opens
+            the browser's own picker; the visible value is a copy the script
+            keeps in step. The channel picker is built once there are two or
+            more categories. --}}
         <label class="gh-videos-category" hidden>
-            <span class="gh-videos-category-label">{{t "Category"}}</span>
+            {{> "icons/phosphor/television"}}
+            <span class="gh-visually-hidden">{{t "Category"}}</span>
             <span class="gh-videos-category-value" aria-hidden="true"></span>
             {{> "icons/phosphor/caret-down"}}
             <select class="gh-videos-select"></select>
         </label>
-        <div class="gh-videos-tabs" role="group" aria-label="{{t "Video order"}}">
-            <button class="gh-videos-tab" type="button" data-mode="random" aria-pressed="true">{{t "Random videos"}}</button>
-            <button class="gh-videos-tab" type="button" data-mode="trending" aria-pressed="false">{{t "Trending videos"}}</button>
-            <button class="gh-videos-tab" type="button" data-mode="latest" aria-pressed="false">{{t "Latest videos"}}</button>
-        </div>
+        <label class="gh-videos-category gh-videos-order">
+            {{> "icons/phosphor/sort-ascending"}}
+            <span class="gh-visually-hidden">{{t "Video order"}}</span>
+            <span class="gh-videos-category-value" aria-hidden="true">{{t "Random videos"}}</span>
+            {{> "icons/phosphor/caret-down"}}
+            <select class="gh-videos-select">
+                <option value="random" selected>{{t "Random videos"}}</option>
+                <option value="trending">{{t "Trending videos"}}</option>
+                <option value="latest">{{t "Latest videos"}}</option>
+            </select>
+        </label>
     </div>
 
     {{!-- PeerTube's built-in categories (ids 1-18) in the site language. The

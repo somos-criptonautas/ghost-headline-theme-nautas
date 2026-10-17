@@ -698,8 +698,9 @@ html[data-theme="dark"] .gh-cover-caption {
     padding-bottom: 0;
 }
 
-/* The line from one step's number to the next. */
-.gh-content .cn-proceso > li:not(:last-child)::before {
+/* The line from one step's number to the next; from the last one, down to
+   the end of its outcomes. */
+.gh-content .cn-proceso > li::before {
     content: "";
     position: absolute;
     top: 3.2em;
@@ -737,46 +738,26 @@ html[data-theme="dark"] .gh-cover-caption {
     list-style: none;
 }
 
+/* Each outcome in its bar's colour, for a read at a glance. In light mode
+   the oxide red is a shade darker than the bar: as is it gives 3.7:1 on
+   white, under the 4.5:1 text needs. */
 .gh-content .cn-proceso ul li {
     margin: 0.3em 0 0;
-    padding-left: 1.2em;
+    /* padding-top 0: .gh-content li+li pads the second one, and its bar
+       came out taller. */
+    padding: 0 0 0 1.2em;
     border-left: 4px solid var(--cn-violeta-fill);
-    color: var(--color-base);
+    color: var(--cn-violeta-tinta);
+    font-weight: 600;
 }
 
 .gh-content .cn-proceso ul li.is-no {
     border-left-color: var(--cn-rojo-oxido);
+    color: color-mix(in srgb, var(--cn-rojo-oxido) 78%, #000);
 }
 
-/* The last step has no line down, so its outcomes take the full width of
-   the card, under the number too, side by side. */
-.gh-content .cn-proceso > li:last-child > div {
-    display: contents;
-}
-
-.gh-content .cn-proceso > li:last-child strong {
-    align-self: center;
-    margin-top: 0;
-}
-
-.gh-content .cn-proceso > li:last-child ul {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1em;
-    margin-top: 1em;
-}
-
-.gh-content .cn-proceso > li:last-child ul li {
-    margin: 0;
-    padding-top: 0;
-}
-
-@media (max-width: 480px) {
-    .gh-content .cn-proceso > li:last-child ul {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 0.6em;
-    }
+html[data-theme="dark"] .gh-content .cn-proceso ul li.is-no {
+    color: var(--cn-rojo-oxido);
 }
 
 @media (max-width: 600px) {
