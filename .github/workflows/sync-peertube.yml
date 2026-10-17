@@ -8,6 +8,9 @@ on:
       model:
         description: 'LiteLLM model for the AI summaries (empty: the LLM_MODEL variable)'
         required: false
+      compare:
+        description: 'Compare only, no sync: LiteLLM models, comma separated (the summaries go to the run summary)'
+        required: false
 
 permissions:
   contents: read
@@ -34,4 +37,5 @@ jobs:
           LLM_KEY: ${{ secrets.LLM_KEY }}
           LLM_MODEL: ${{ inputs.model || vars.LLM_MODEL }}
           LLM_MAX: ${{ vars.LLM_MAX }}
+          COMPARE_MODELS: ${{ inputs.compare }}
         run: python3 .github/scripts/peertube_sync.py

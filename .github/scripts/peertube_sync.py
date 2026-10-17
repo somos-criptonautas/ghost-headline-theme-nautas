@@ -16,6 +16,10 @@ LLM_MODEL set, each video without a summary from that model gets one, written
 from its title, description and captions. Switching LLM_MODEL rewrites them
 all, LLM_MAX per run (default 60), newest first. A video with only a title
 gets none (the model could only guess); new captions bring it back to the queue.
+
+COMPARE_MODELS (a comma list, from the workflow's "compare" input): no sync -
+the newest videos with enough text summed up by LLM_MODEL and each listed
+model, side by side in the run's summary. Nothing is written.
 """
 import json
 import os
@@ -52,6 +56,8 @@ PROMPT = (
 )
 # Less text than this in the description and captions together: no summary.
 MIN_MATERIAL = 80
+COMPARE = [m.strip() for m in (os.environ.get("COMPARE_MODELS") or "").split(",") if m.strip()]
+COMPARE_VIDEOS = 5
 TIMING = re.compile(r"^\d{2}:\d{2}[:.\d]* --> ")
 TAG = re.compile(r"<[^>]+>")
 
@@ -176,10 +182,14 @@ def delete_docs(ids):
         request("DELETE", f"{base}?filter_by={filter_by}", typesense=True)
 
 
-def summarize(doc):
+def material(doc):
+    return len((doc.get("description") or "").strip()) + len((doc.get("transcript") or "").strip())
+
+
+def summarize(doc, model=LLM_MODEL):
     text = f"Título: {doc['title']}\n\nDescripción: {doc['description'][:3000]}\n\nTranscripción: {doc['transcript'][:12000]}"
     body = json.dumps({
-        "model": LLM_MODEL,
+        "model": model,
         "messages": [{"role": "system", "content": PROMPT}, {"role": "user", "content": text}],
         "temperature": 0.3,
         "max_tokens": 200,
@@ -197,8 +207,7 @@ def summaries(order, have):
     for id_ in todo:
         try:
             doc = json.loads(request("GET", f"{base}/{id_}?exclude_fields=embedding", typesense=True))
-            material = len((doc.get("description") or "").strip()) + len((doc.get("transcript") or "").strip())
-            text = summarize(doc) if material >= MIN_MATERIAL else ""
+            text = summarize(doc) if material(doc) >= MIN_MATERIAL else ""
         except (urllib.error.URLError, KeyError, IndexError, ValueError) as error:
             # Only the kind of error: the response could echo the captions into the public log.
             failed += 1
@@ -212,7 +221,40 @@ def summaries(order, have):
     print(f"{written} summaries by {LLM_MODEL}, {failed} failed, {len(done) - written} without enough text")
 
 
+def compare():
+    """The newest videos with enough text, summed up by each model; writes nothing."""
+    models = ([LLM_MODEL] if LLM_MODEL and LLM_MODEL not in COMPARE else []) + COMPARE
+    base = f"{TYPESENSE}/collections/{COLLECTION}/documents"
+    report = [f"Modelos: {', '.join(models)}", ""]
+    picked = 0
+    for video in public_videos():
+        try:
+            doc = json.loads(request("GET", f"{base}/{video['uuid']}?exclude_fields=embedding", typesense=True))
+        except urllib.error.HTTPError:
+            continue  # not mirrored yet
+        if material(doc) < MIN_MATERIAL:
+            continue
+        report.append(f"### {doc['title']}")
+        for model in models:
+            try:
+                text = summarize(doc, model) or "(vacío)"
+            except (urllib.error.URLError, KeyError, IndexError, ValueError) as error:
+                text = f"(falló: {type(error).__name__} {getattr(error, 'code', '')})"
+            report.append(f"- **{model}** ({len(text)}): {text}")
+        report.append("")
+        picked += 1
+        if picked == COMPARE_VIDEOS:
+            break
+    text = "\n".join(report)
+    print(text)
+    if os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as out:
+            out.write(text + "\n")
+
+
 def main():
+    if COMPARE:
+        return compare()
     have = existing()
     seen, order, changed = set(), [], []
     for video in public_videos():
