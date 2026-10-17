@@ -14,7 +14,8 @@ AI summaries, the search's snippet for a video: with LLM_URL (an
 OpenAI-compatible base such as LiteLLM's, ending in /v1), LLM_KEY and
 LLM_MODEL set, each video without a summary from that model gets one, written
 from its title, description and captions. Switching LLM_MODEL rewrites them
-all, LLM_MAX per run (default 60), newest first.
+all, LLM_MAX per run (default 60), newest first. A video with only a title
+gets none (the model could only guess); new captions bring it back to the queue.
 """
 import json
 import os
@@ -41,7 +42,7 @@ LLM_KEY = os.environ.get("LLM_KEY") or ""
 LLM_MODEL = os.environ.get("LLM_MODEL") or ""
 LLM_MAX = int(os.environ.get("LLM_MAX") or 60)
 # Bumped when the prompt changes, so every summary is written again.
-PROMPT_VERSION = "1"
+PROMPT_VERSION = "2"
 SUMMARY_BY = f"{LLM_MODEL}#{PROMPT_VERSION}"
 PROMPT = (
     "Escribí en español, en dos frases y menos de 280 caracteres, de qué trata "
@@ -49,6 +50,8 @@ PROMPT = (
     "título, la descripción y la transcripción: nada inventado, sin enlaces, sin "
     "emojis, sin \"este video\" al empezar. Respondé solo con el texto."
 )
+# Less text than this in the description and captions together: no summary.
+MIN_MATERIAL = 80
 TIMING = re.compile(r"^\d{2}:\d{2}[:.\d]* --> ")
 TAG = re.compile(r"<[^>]+>")
 
@@ -194,16 +197,19 @@ def summaries(order, have):
     for id_ in todo:
         try:
             doc = json.loads(request("GET", f"{base}/{id_}?exclude_fields=embedding", typesense=True))
-            text = summarize(doc)
+            material = len((doc.get("description") or "").strip()) + len((doc.get("transcript") or "").strip())
+            text = summarize(doc) if material >= MIN_MATERIAL else ""
         except (urllib.error.URLError, KeyError, IndexError, ValueError) as error:
             # Only the kind of error: the response could echo the captions into the public log.
             failed += 1
             print(f"summary failed: {type(error).__name__} {getattr(error, 'code', '')}")
             continue
-        if text:
-            done.append({"id": id_, "summary": text, "summary_by": SUMMARY_BY})
+        # Empty too (title only, or an empty answer): clears an old summary and
+        # marks the video as seen by this model, so it is not asked again.
+        done.append({"id": id_, "summary": text, "summary_by": SUMMARY_BY})
     import_docs(done, action="update")
-    print(f"{len(done)} summaries by {LLM_MODEL}, {failed} failed, {max(len(todo) - len(done) - failed, 0)} empty")
+    written = sum(1 for d in done if d["summary"])
+    print(f"{written} summaries by {LLM_MODEL}, {failed} failed, {len(done) - written} without enough text")
 
 
 def main():
