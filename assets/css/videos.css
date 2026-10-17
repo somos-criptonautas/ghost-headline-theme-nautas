@@ -22,8 +22,8 @@
     white-space: nowrap;
 }
 
-/* Controls: the category picker, then the order pills - one line from
-   768px, stacked below that so there is only ever one row of pills. */
+/* Controls: the category picker, then the order switches - one line from
+   768px, stacked below that. */
 
 .gh-videos-controls {
     display: flex;
@@ -36,13 +36,14 @@
 
 .gh-videos-tabs {
     display: flex;
-    flex-wrap: nowrap;
-    gap: 0.8rem;
+    flex-wrap: wrap;
+    gap: 1.2rem 2.4rem;
 }
 
-/* Category picker: label and value share one light pill, the same height
-   and text size as the order pills. The select itself is transparent and
-   stretched over the whole box, so every part of it opens the picker. */
+/* Category picker: label and value in one quiet box, as the forum list's
+   picker - a thin rule, no fill, the label in grey. The select itself is
+   transparent and stretched over the whole box, so every part of it opens
+   the picker. */
 .gh-videos-category {
     position: relative;
     display: inline-flex;
@@ -50,13 +51,13 @@
     gap: 0.8rem;
     min-width: 0;
     min-height: 3.2rem;
-    padding: 0.6rem 1.2rem 0.6rem 1.4rem;
+    padding: 0.4rem 0.8rem 0.4rem 1rem;
     border: 1px solid var(--color-border, var(--color-light-gray));
-    border-radius: 10rem;
-    background-color: rgba(127, 127, 127, 0.08);
+    border-radius: 0.6rem;
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 1.2;
+    text-transform: uppercase;
     cursor: pointer;
     transition: border-color 0.2s ease;
 }
@@ -129,40 +130,54 @@
     color: var(--color-base);
 }
 
-/* Order pills: fully rounded, 3.2rem tall. */
+/* Order: /blog's level switches (screen.css .gh-level-switch), one on at a
+   time - the track (::before) and its knob (::after), on for the order
+   showing. */
 .gh-videos-tab {
+    all: unset;
+    position: relative;
     display: inline-flex;
+    gap: 1rem;
     align-items: center;
-    gap: 0.8rem;
-    min-height: 3.2rem;
-    padding: 0.6rem 1.4rem;
-    border: 1px solid var(--color-border, var(--color-light-gray));
-    border-radius: 10rem;
-    background: none;
-    color: var(--color-secondary-text);
-    font: inherit;
-    font-size: 1.5rem;
+    color: var(--color-base);
+    font-size: 1.7rem;
     font-weight: 600;
-    line-height: 1.2;
+    text-transform: uppercase;
     white-space: nowrap;
     cursor: pointer;
-    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
-.gh-videos-tab {
-    text-transform: uppercase;
-    letter-spacing: -0.01em;
+.gh-videos-tab::before {
+    content: "";
+    flex: none;
+    width: 4rem;
+    height: 2.2rem;
+    border: 2px solid var(--color-base);
+    border-radius: 99rem;
+    box-sizing: border-box;
+    transition: background-color 0.2s ease;
 }
 
-.gh-videos-tab:hover {
-    border-color: var(--color-base);
-    color: var(--color-base);
-}
-
-.gh-videos-tab[aria-pressed="true"] {
-    border-color: var(--color-base);
+.gh-videos-tab::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0.3rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
     background-color: var(--color-base);
-    color: var(--color-bg);
+    transform: translateY(-50%);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.gh-videos-tab[aria-pressed="true"]::before {
+    background-color: var(--color-base);
+}
+
+.gh-videos-tab[aria-pressed="true"]::after {
+    background-color: var(--color-bg);
+    transform: translate(2.2rem, -50%);
 }
 
 :is(.gh-videos-tab, .gh-videos-load):focus-visible {
@@ -170,8 +185,7 @@
     outline-offset: 2px;
 }
 
-/* Phones: the picker takes the full width on its own line, the pills one
-   row under it. */
+/* Phones: the picker on its own line, the switches under it. */
 @media screen and (max-width: 767px) {
     .gh-videos-controls {
         flex-direction: column;
@@ -180,16 +194,9 @@
         margin-bottom: 2.4rem;
     }
 
-    /* The picker as wide as its choice, not the whole row, and a 44px tap target. */
+    /* The picker as wide as its choice, not the whole row. */
     .gh-videos-category {
         align-self: flex-start;
-        min-height: 4.4rem;
-    }
-
-    .gh-videos-tab {
-        flex: 1 1 0;
-        justify-content: center;
-        padding-inline: 0.8rem;
     }
 }
 

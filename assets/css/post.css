@@ -748,6 +748,37 @@ html[data-theme="dark"] .gh-cover-caption {
     border-left-color: var(--cn-rojo-oxido);
 }
 
+/* The last step has no line down, so its outcomes take the full width of
+   the card, under the number too, side by side. */
+.gh-content .cn-proceso > li:last-child > div {
+    display: contents;
+}
+
+.gh-content .cn-proceso > li:last-child strong {
+    align-self: center;
+    margin-top: 0;
+}
+
+.gh-content .cn-proceso > li:last-child ul {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1em;
+    margin-top: 1em;
+}
+
+.gh-content .cn-proceso > li:last-child ul li {
+    margin: 0;
+    padding-top: 0;
+}
+
+@media (max-width: 480px) {
+    .gh-content .cn-proceso > li:last-child ul {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.6em;
+    }
+}
+
 @media (max-width: 600px) {
     .gh-content .cn-curso {
         padding: 3.4rem 2.4rem 2.6rem;

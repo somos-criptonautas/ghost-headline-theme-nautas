@@ -762,7 +762,24 @@ gh-author-name-list {
   margin: 3.33rem auto 1.33rem;
 }
 
+/* More articles / Destacado: the space above the heading wider than the
+   space under it, so it reads as the head of the cards, not the tail of
+   the block before. */
+.gh-read-next .gh-pagehead {
+  margin: 6.4rem auto 0;
+}
+
+.gh-community-related .gh-pagehead {
+  max-width: none;
+  margin: 0 auto;
+}
+
+.gh-community-related .gh-pagehead-title {
+  text-align: center;
+}
+
 .gh-read-next .gh-pagehead-title::after,
+.gh-community-related .gh-pagehead-title::after,
 .comunidad-comments .gh-pagehead-title::after {
   display: none;
 }
@@ -841,7 +858,7 @@ body .gh-read-next .gh-topic-grid .gh-card {
 /* A grid: one card across on phones, two on tablets, three from 992px. */
 body .gh-read-next .gh-topic-content {
   grid-template-columns: minmax(0, 1fr);
-  row-gap: 2.66rem;
+  row-gap: 3.33rem;
   column-gap: var(--grid-gap);
   justify-items: stretch;
   align-items: start;
@@ -855,14 +872,14 @@ body .gh-read-next .gh-topic-content {
 @media screen and (min-width: 768px) {
   body .gh-read-next .gh-topic-content {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: 4rem;
+    column-gap: 2rem;
+    row-gap: 7.2rem;
   }
 }
 
 @media screen and (min-width: 992px) {
   body .gh-read-next .gh-topic-content {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    column-gap: 2.4rem;
   }
 
   /* Full-width grid, reset 1700px offset */
@@ -3768,6 +3785,24 @@ html[data-theme="dark"] .gh-post-upgrade-cta a.gh-btn html[data-theme="dark"] .g
   padding-bottom: 0.7rem;
 }
 
+/* A link card leaves the site: the external-link mark in its top right
+   corner, over the text (the picture is above it on phones). */
+.gh-content .kg-bookmark-content {
+  position: relative;
+  padding-right: 4.4rem;
+}
+
+.gh-content .kg-bookmark-content::after {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  content: "";
+  background-color: var(--color-secondary-text);
+  mask: var(--gh-ext-icon) center / contain no-repeat;
+}
+
 /* A link's preview image whole, never cropped: link images are mostly
    1.91:1 social cards with a logo or a title in the middle, wider than the
    box beside the text. What is left of the box is a soft band. */
@@ -5725,6 +5760,10 @@ html.js .gh-loadmore {
 /* External link marker, set by assets/js/external-links.js on the last
    word of links that leave the site or open a new tab (.gh-ext), so it
    never wraps alone. */
+:root {
+  --gh-ext-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M184,80V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H176A8,8,0,0,1,184,80Z' opacity='0.2'/%3E%3Cpath d='M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z'/%3E%3C/svg%3E");
+}
+
 a.is-external .gh-ext {
   white-space: nowrap;
 }
@@ -5737,7 +5776,7 @@ a.is-external .gh-ext::after {
   vertical-align: -0.05em;
   content: "";
   background-color: currentColor;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M184,80V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V80a8,8,0,0,1,8-8H176A8,8,0,0,1,184,80Z' opacity='0.2'/%3E%3Cpath d='M224,104a8,8,0,0,1-16,0V59.32l-66.33,66.34a8,8,0,0,1-11.32-11.32L196.68,48H152a8,8,0,0,1,0-16h64a8,8,0,0,1,8,8Zm-40,24a8,8,0,0,0-8,8v72H48V80h72a8,8,0,0,0,0-16H48A16,16,0,0,0,32,80V208a16,16,0,0,0,16,16H176a16,16,0,0,0,16-16V136A8,8,0,0,0,184,128Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: var(--gh-ext-icon) center / contain no-repeat;
 }
 
 /* Cover height */

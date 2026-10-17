@@ -6,17 +6,14 @@
    tablets the burger goes too and the toggle takes its place. */
 
 @media screen and (max-width: 991px) {
-    /* The toggle where /blog's open menu has it (screen.css): the burger
-       keeps its column, unseen and out of reach, so the toggle lands on the
-       same spot; the link to the blog before it. */
+    /* No burger on the landing: the toggle at the edge, the link to the
+       blog before it. */
     .home-template:not(.is-head-open) #gh-head .gh-head-brand {
-        grid-template-columns: minmax(0, 1fr) auto auto auto;
+        grid-template-columns: minmax(0, 1fr) auto auto;
     }
 
     body.home-template:not(.is-head-open) #gh-head .gh-burger {
-        grid-row: 1;
-        grid-column: 4;
-        visibility: hidden;
+        display: none;
     }
 
     .home-template #gh-head .gh-head-bar-toggle {

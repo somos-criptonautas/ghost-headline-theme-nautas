@@ -394,8 +394,11 @@
     border-radius: 50%;
 }
 
+/* On the right, as the other "see all" links under a block. */
 .gh-community-related .gh-community-more {
-    margin-top: 2rem;
+    display: flex;
+    width: fit-content;
+    margin: 2rem 0 0 auto;
 }
 
 /* Topic dialog (community-related.hbs): the cards' border and radius, the
@@ -541,6 +544,45 @@
 .gh-feed > .gh-community-strip {
     grid-column: 1 / -1;
     margin: 0;
+    padding: 2.4rem;
+    border-radius: 1.2rem;
+    background-color: var(--cn-ui-sunken);
+}
+
+@media screen and (max-width: 767px) {
+    .gh-feed > .gh-community-strip {
+        padding: 2rem 1.6rem;
+    }
+}
+
+/* The forum's cards in the list: the articles' frame and hard shadow
+   (--cn-shadow) inverted - in the page's colour on the sunken ground, and
+   cast to the other side, so they read as another kind of card. */
+.gh-feed > .gh-community-strip .gh-community-card-link {
+    border: 2px solid var(--color-bg);
+    border-radius: 1rem;
+    box-shadow: -4px 4px 0 var(--color-bg);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.gh-feed > .gh-community-strip .gh-community-card-link:hover,
+.gh-feed > .gh-community-strip .gh-community-card-link:focus-visible {
+    border-color: var(--color-bg);
+    transform: translate(2px, -2px);
+    box-shadow: -6px 6px 0 var(--color-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gh-feed > .gh-community-strip .gh-community-card-link {
+        transition: none;
+    }
+}
+
+/* Room for that shadow on the left and the lift on top, which the row's
+   overflow would clip. */
+.gh-feed > .gh-community-strip .gh-carousel {
+    padding: 0.4rem 0.8rem 1.2rem 0.8rem;
+    scroll-padding-inline-start: 0.8rem;
 }
 
 .gh-community-strip .gh-community-cards {

@@ -17,10 +17,19 @@
     data-category="{{category}}"
     data-label-reply="{{t "reply"}}"
     data-label-replies="{{t "replies"}}">
+    {{!-- The strip is a card in a list and keeps the small heading with the
+        forum icon; under an article and on the landing the heading is a
+        block's, as "More articles" and "Featured". --}}
+    {{#if strip}}
     <h2 class="gh-community-related-title" id="gh-community-related-title">
         {{> "icons/discourse"}}
         {{t "Community"}}
     </h2>
+    {{else}}
+    <section class="gh-pagehead">
+        <h2 class="gh-pagehead-title" id="gh-community-related-title">{{t "Community"}}</h2>
+    </section>
+    {{/if}}
     <ol class="gh-community-cards{{#if strip}} gh-carousel{{/if}}"></ol>
     <a class="gh-community-more" target="_blank" rel="noopener">{{t "Go to the community"}} {{> "icons/phosphor/arrow-square-out"}}</a>
     {{!-- A card opens its topic here (community-sidebar.js). --}}
