@@ -363,10 +363,48 @@
     scale: -1 1;
 }
 
-/* The sprite's dark hoodie: a 1px ink outline keeps him on a dark page. */
-html[data-theme="dark"] .gh-mascot svg {
+/* The sprite's dark hoodie: a 1px ink outline keeps him on a dark page. The
+   light mask needs none. */
+html[data-theme="dark"] .gh-mascot:not(.is-mask) svg {
     filter: drop-shadow(1px 0 0 var(--color-base)) drop-shadow(-1px 0 0 var(--color-base))
         drop-shadow(0 -1px 0 var(--color-base));
+}
+
+/* Mask style: the mask floats over the border (its chin at row 40 of the
+   frame), bobbing 2px over a shadow that narrows as it rises, as on the forum. */
+.gh-mascot.is-mask svg {
+    animation: gh-mascot-bob 1.6s steps(1, end) infinite;
+}
+
+.gh-mascot.is-mask::after {
+    content: "";
+    position: absolute;
+    bottom: 1px;
+    left: 16px;
+    width: 16px;
+    height: 2px;
+    background-color: var(--color-base);
+    opacity: 0.15;
+    animation: gh-mascot-shadow 1.6s steps(1, end) infinite;
+}
+
+@keyframes gh-mascot-bob {
+    50% {
+        translate: 0 -2px;
+    }
+}
+
+@keyframes gh-mascot-shadow {
+    50% {
+        scale: 0.75 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gh-mascot.is-mask svg,
+    .gh-mascot.is-mask::after {
+        animation: none;
+    }
 }
 
 /* A thought balloon up to his right: a soft tint of the page toward the

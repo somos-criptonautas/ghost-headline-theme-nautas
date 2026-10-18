@@ -1,6 +1,8 @@
 /* Community sidebar mascot (partials/community-sidebar.hbs): anonist sits on
  * the box's top border over the heading and blinks; every 20 s he walks the
- * border, waves or, less often, scratches his head. Clicks go through the
+ * border, waves or, less often, scratches his head. In the Mask style (.is-mask)
+ * only the mask floats over the border: it glides instead of walking, spins
+ * instead of waving and winks instead of scratching. Clicks go through the
  * three phrases of the day, one from each list of PHRASES in its order,
  * drawn by the local date: the same for every visitor. Frames are the symbols of
  * assets/images/anonist-sprite.svg, swapped in steps. With reduced motion he
@@ -49,6 +51,8 @@
     var x = 0;
     var talking;
     var said = 0;
+    var masked = mascot.classList.contains('is-mask');
+    var REST = masked ? 'mask-idle' : 'sit';
 
     var show = function (frame) {
         use.setAttribute('href', sprite + '#anonist-48-' + frame);
@@ -73,7 +77,7 @@
         var i = 0;
         var tick = function () {
             if (i === steps.length) {
-                show('sit');
+                show(REST);
                 mascot.classList.remove('is-left');
                 busy = false;
                 return;
@@ -103,7 +107,7 @@
         [aside.clientWidth - mascot.offsetWidth, 0, home()].forEach(function (to) {
             while (at !== to) {
                 at += Math.max(-8, Math.min(8, to - at));
-                steps.push({frame: steps.length % 2 ? 'walk-b' : 'walk-a', x: at});
+                steps.push({frame: masked ? 'mask-idle' : steps.length % 2 ? 'walk-b' : 'walk-a', x: at});
             }
         });
         return steps;
@@ -118,8 +122,11 @@
         });
     };
 
-    var wave = [{frame: 'idle'}].concat(repeat(['salute'], 8), [{frame: 'idle'}]);
-    var scratch = repeat(['scratch-a', 'scratch-b'], 10);
+    // One turn of the mask, showing the strap on its back, as on the forum.
+    var wave = masked
+        ? repeat(['mask-idle', 'mask-turn-a', 'mask-side', 'mask-back', 'mask-side', 'mask-turn-b'], 6)
+        : [{frame: 'idle'}].concat(repeat(['salute'], 8), [{frame: 'idle'}]);
+    var scratch = masked ? repeat(['mask-wink'], 6) : repeat(['scratch-a', 'scratch-b'], 10);
 
     mascot.hidden = false;
 
@@ -160,7 +167,7 @@
 
     var blink = function () {
         if (!busy) {
-            play([{frame: 'sit-blink'}]);
+            play([{frame: masked ? 'mask-blink' : 'sit-blink'}]);
         }
         setTimeout(blink, 3000 + Math.random() * 3000);
     };

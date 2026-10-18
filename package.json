@@ -100,6 +100,16 @@
                 "group": "homepage",
                 "description": "anonist sits on the community sidebar on desktop and shows a phrase of the day on click."
             },
+            "community_mascot_style": {
+                "type": "select",
+                "options": [
+                    "Figure",
+                    "Mask"
+                ],
+                "default": "Figure",
+                "group": "homepage",
+                "description": "Figure: anonist sits and walks. Mask: only his mask, floating."
+            },
             "peertube_source": {
                 "type": "text",
                 "description": "Videos page: PeerTube URL, optionally | category ids, e.g. https://host | 15, 13 Educación"
