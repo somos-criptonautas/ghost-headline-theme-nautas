@@ -30,13 +30,37 @@
     }
 
 
+    /* Only the list scrolls, so the mascot on the top border isn't clipped. */
     .gh-community {
         position: sticky;
         top: 3.2rem;
         max-height: calc(100vh - 6.4rem);
+    }
+
+    .gh-community:not([hidden]) {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .gh-community-list {
+        min-height: 0;
         overflow-y: auto;
         overscroll-behavior: contain;
         scrollbar-width: thin;
+    }
+
+    .gh-community-more {
+        align-self: flex-start;
+    }
+
+    /* Room above the box for the mascot's 48px, under the sticky top. */
+    .gh-community:has(> .gh-mascot:not([hidden])) {
+        top: 8rem;
+        max-height: calc(100vh - 11.2rem);
+    }
+
+    .gh-mascot:not([hidden]) {
+        display: block;
     }
 }
 
@@ -297,6 +321,102 @@
 .gh-community-more svg {
     width: 1.6rem;
     height: 1.6rem;
+}
+
+/* Mascot
+/* anonist on the top border (assets/js/mascot.js, desktop only, shown from
+   1200px above). The 48px figure sits with the border at its row 41 and
+   stands with it at row 47; the script moves him and swaps frames in steps. */
+.gh-mascot {
+    position: absolute;
+    z-index: 1;
+    top: -42px;
+    left: 0;
+    display: none;
+    width: 48px;
+    height: 48px;
+}
+
+.gh-mascot.is-standing {
+    top: -48px;
+}
+
+.gh-mascot-button {
+    all: unset;
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.gh-mascot-button:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}
+
+.gh-mascot svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.gh-mascot.is-left svg {
+    scale: -1 1;
+}
+
+/* The sprite's dark hoodie: a 1px ink outline keeps him on a dark page. */
+html[data-theme="dark"] .gh-mascot svg {
+    filter: drop-shadow(1px 0 0 var(--color-base)) drop-shadow(-1px 0 0 var(--color-base))
+        drop-shadow(0 -1px 0 var(--color-base));
+}
+
+/* A thought balloon in the sprite's pixels: its mask and outline colors,
+   2px outline drawn by shadows so the corners stay notched, and a trail of
+   two squares down to his head. */
+.gh-mascot-bubble {
+    --ink: #14110f;
+    --paper: #e8e6e1;
+    --outline: 0 -2px 0 var(--ink), 0 2px 0 var(--ink), -2px 0 0 var(--ink), 2px 0 0 var(--ink);
+    position: absolute;
+    bottom: calc(100% + 18px);
+    left: 50%;
+    margin: 0;
+    padding: 4px 8px;
+    background-color: var(--paper);
+    box-shadow: var(--outline);
+    color: var(--ink);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+    transform: translateX(-50%);
+}
+
+.gh-mascot-bubble::before,
+.gh-mascot-bubble::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    background-color: var(--paper);
+    box-shadow: var(--outline);
+}
+
+.gh-mascot-bubble::before {
+    bottom: -10px;
+    width: 6px;
+    height: 4px;
+}
+
+.gh-mascot-bubble::after {
+    bottom: -18px;
+    margin-left: 6px;
+    width: 2px;
+    height: 2px;
+}
+
+.gh-mascot-bubble:empty {
+    display: none;
 }
 
 /* Category cards after a post's comments

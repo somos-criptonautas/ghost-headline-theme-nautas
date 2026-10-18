@@ -94,6 +94,12 @@
                 "group": "homepage",
                 "description": "Discourse topics or posts beside the home and tag pages. Needs CORS on the forum."
             },
+            "community_mascot": {
+                "type": "boolean",
+                "default": true,
+                "group": "homepage",
+                "description": "anonist sits on the community sidebar on desktop and shows a phrase of the day on click."
+            },
             "peertube_source": {
                 "type": "text",
                 "description": "Videos page: PeerTube URL, optionally | category ids, e.g. https://host | 15, 13 Educación"

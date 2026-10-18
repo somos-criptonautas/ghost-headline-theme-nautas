@@ -19,6 +19,18 @@
     data-label-reply="{{t "reply"}}"
     data-label-replies="{{t "replies"}}"
     data-label-in="{{t "in"}}">
+    {{!-- anonist, the forum's mascot, sitting on the box's top border on
+        desktop (the "Community mascot" setting); assets/js/mascot.js moves
+        him and shows the phrase of the day on click. The sprite is generated
+        by docs/frames.py in somos-criptonautas/discourse-nautas-mascot. --}}
+    {{#if @custom.community_mascot}}
+    <div class="gh-mascot" hidden>
+        <p class="gh-mascot-bubble" role="status"></p>
+        <button class="gh-mascot-button" type="button" aria-label="{{t "Phrase of the day"}}">
+            <svg viewBox="0 0 48 48" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><use href="{{asset "images/anonist-sprite.svg"}}#anonist-48-sit"/></svg>
+        </button>
+    </div>
+    {{/if}}
     {{!-- "Comunidad" as the heading, with the list picker beside it:
         visitors switch between topics and replies, and the choice is
         remembered in their browser. The theme setting only picks which one a
