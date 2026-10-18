@@ -86,7 +86,7 @@ text-align: left;
     /* Fonts */
     --font-sans:  'Inter Tight', 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans";
     --font-serif: 'Lora', Georgia, Times, serif;
-    --font-mono: Menlo, Courier, monospace;
+    --font-mono: 'JetBrains Mono', Menlo, Courier, monospace;
     --font-light: 300;
     --font-normal: 400;
     --font-bold: 600;

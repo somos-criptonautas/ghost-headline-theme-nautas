@@ -385,7 +385,7 @@ html[data-theme="dark"] .gh-mascot svg {
     background-color: var(--paper);
     box-shadow: var(--outline);
     color: var(--ink);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-family: var(--font-mono);
     font-size: 1.3rem;
     font-weight: 700;
     line-height: 1.4;

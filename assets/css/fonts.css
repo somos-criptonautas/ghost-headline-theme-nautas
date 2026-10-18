@@ -133,3 +133,13 @@
           url('../fonts/inter-tight-v1-latin-900italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
    }
    
+/* jetbrains-mono-700 - latin: the mascot's thought balloon (community.css);
+   OFL 1.1, see ../fonts/jetbrains-mono-OFL.txt */
+@font-face {
+    font-display: swap;
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../fonts/jetbrains-mono-v5-latin-700.woff2') format('woff2'),
+         url('../fonts/jetbrains-mono-v5-latin-700.woff') format('woff');
+}
