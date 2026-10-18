@@ -346,7 +346,6 @@
     display: block;
     width: 100%;
     height: 100%;
-    cursor: pointer;
 }
 
 .gh-mascot-button:focus-visible {
@@ -370,49 +369,65 @@ html[data-theme="dark"] .gh-mascot svg {
         drop-shadow(0 -1px 0 var(--color-base));
 }
 
-/* A thought balloon in the sprite's pixels: its mask and outline colors,
-   2px outline drawn by shadows so the corners stay notched, and a trail of
-   two squares down to his head. */
+/* A thought balloon up to his right: a soft tint of the page toward the
+   mask's color, the page's ink for text and line, and a trail of dots that
+   stops short of his head. In the right half of the box it opens on his left
+   (.is-flipped, set by the script). */
 .gh-mascot-bubble {
-    --ink: #14110f;
-    --paper: #e8e6e1;
-    --outline: 0 -2px 0 var(--ink), 0 2px 0 var(--ink), -2px 0 0 var(--ink), 2px 0 0 var(--ink);
+    --line: color-mix(in srgb, var(--color-base) 45%, var(--color-bg));
+    --fill: color-mix(in srgb, #e8e6e1 22%, var(--color-bg));
     position: absolute;
-    bottom: calc(100% + 18px);
-    left: 50%;
+    bottom: calc(100% - 14px);
+    left: calc(100% + 14px);
     margin: 0;
-    padding: 4px 8px;
-    background-color: var(--paper);
-    box-shadow: var(--outline);
-    color: var(--ink);
+    padding: 4px 12px;
+    border: 2px solid var(--line);
+    border-radius: 1.4em;
+    background-color: var(--fill);
+    color: var(--color-base);
     font-family: var(--font-mono);
     font-size: 1.3rem;
     font-weight: 700;
     line-height: 1.4;
     white-space: nowrap;
-    transform: translateX(-50%);
 }
 
 .gh-mascot-bubble::before,
 .gh-mascot-bubble::after {
     content: "";
     position: absolute;
-    left: 50%;
-    background-color: var(--paper);
-    box-shadow: var(--outline);
+    border: 2px solid var(--line);
+    border-radius: 50%;
+    background-color: var(--fill);
 }
 
 .gh-mascot-bubble::before {
-    bottom: -10px;
-    width: 6px;
-    height: 4px;
+    bottom: -12px;
+    left: -12px;
+    width: 8px;
+    height: 8px;
 }
 
 .gh-mascot-bubble::after {
-    bottom: -18px;
-    margin-left: 6px;
-    width: 2px;
-    height: 2px;
+    bottom: -20px;
+    left: -21px;
+    width: 4px;
+    height: 4px;
+}
+
+.gh-mascot.is-flipped .gh-mascot-bubble {
+    right: calc(100% + 14px);
+    left: auto;
+}
+
+.gh-mascot.is-flipped .gh-mascot-bubble::before {
+    right: -12px;
+    left: auto;
+}
+
+.gh-mascot.is-flipped .gh-mascot-bubble::after {
+    right: -21px;
+    left: auto;
 }
 
 .gh-mascot-bubble:empty {
