@@ -1249,13 +1249,6 @@
         }
     });
 
-    document.addEventListener('keydown', function (event) {
-        if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-            event.preventDefault();
-            open();
-        }
-    });
-
     // #/search/<query> links, the shape the previous search UI used.
     var fromHash = function () {
         var match = /^#\/search\/(.*)$/.exec(window.location.hash);

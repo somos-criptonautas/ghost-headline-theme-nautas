@@ -1,8 +1,8 @@
 {{!-- Feedback tab, desktop only (assets/css/feedback.css). assets/js/feedback.js
     posts it to the n8n webhook in the "Feedback webhook" setting, which hands
-    it to Chatwoot; the screenshot library loads only when the box is ticked. --}}
+    it to Chatwoot, with the image the reader picked, if any. --}}
 {{#if @custom.feedback_webhook}}
-<div class="cn-feedback" data-webhook="{{@custom.feedback_webhook}}" data-shot-lib="{{asset "js/vendor/html-to-image.min.js"}}">
+<div class="cn-feedback" data-webhook="{{@custom.feedback_webhook}}">
     <button class="cn-feedback-tab" type="button" aria-expanded="false" aria-controls="cn-feedback-panel">{{t "feedback"}}{{> "icons/phosphor/megaphone"}}</button>
     <form class="cn-feedback-panel" id="cn-feedback-panel" hidden
         data-sending="{{t "Sending…"}}" data-thanks="{{t "Thanks, we got it."}}" data-error="{{t "Could not send it. Try again in a moment."}}">
@@ -19,7 +19,10 @@
         <input type="email" name="email" maxlength="200" aria-label="{{t "Email"}}" placeholder="{{t "email (optional, so we can reply)"}}">
         {{!-- Honeypot: hidden from people, filled in by bots, dropped by n8n. --}}
         <input class="cn-feedback-hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <label class="cn-feedback-shot"><input type="checkbox" name="shot"> {{t "attach a screenshot of this page"}}</label>
+        <label class="cn-feedback-shot">
+            <input type="file" name="shot" accept="image/png,image/jpeg,image/webp">
+            {{> "icons/phosphor/upload-simple"}}<span class="cn-feedback-shot-name" data-empty="{{t "add a screenshot"}}">{{t "add a screenshot"}}</span>
+        </label>
         <button class="cn-feedback-send" type="submit">{{t "send"}}</button>
         <p class="cn-feedback-status" role="status"></p>
     </form>

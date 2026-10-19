@@ -24,7 +24,8 @@
     border-radius: 0 0.8rem 0.8rem 0;
     background: var(--color-bg);
     color: var(--color-base);
-    box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
+    /* No offset: the tab is turned half a turn, so one would point up. */
+    box-shadow: 0 0 0.6rem rgba(0, 0, 0, 0.1);
     font-size: 1.3rem;
     letter-spacing: 0.04em;
     cursor: pointer;
@@ -40,7 +41,7 @@
 
 .cn-feedback-tab:hover,
 .cn-feedback-tab[aria-expanded="true"] {
-    box-shadow: 0 0.2rem 0.9rem color-mix(in srgb, var(--color-base) 14%, transparent);
+    box-shadow: 0 0 1rem color-mix(in srgb, var(--color-base) 16%, transparent);
 }
 
 /* Turned with the text, reading bottom to top (images stay upright in
@@ -188,6 +189,8 @@
 }
 
 .cn-feedback-shot {
+    position: relative;
+    min-width: 0;
     display: flex;
     gap: 0.8rem;
     align-items: center;
@@ -196,8 +199,33 @@
     cursor: pointer;
 }
 
+.cn-feedback-shot svg {
+    flex: none;
+    width: 1.8rem;
+    height: 1.8rem;
+}
+
+.cn-feedback-shot-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* The file input stays focusable and announced; the label is what shows. */
 .cn-feedback-shot input {
-    cursor: pointer;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.cn-feedback-shot:hover {
+    color: var(--cn-ui-text);
+}
+
+.cn-feedback-shot:focus-within {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
 }
 
 .cn-feedback-send {

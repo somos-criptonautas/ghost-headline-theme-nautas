@@ -552,12 +552,9 @@
         return;
     }
 
-    // Shown from the first paint (this bundle runs before it), as rows of
-    // placeholders while aria-busy (community.css), so the column does not
-    // open and push the posts when the forum answers. Without the script it
-    // stays hidden.
-    aside.hidden = false;
-
+    // The markup shows it from the first paint, as rows of placeholders
+    // while aria-busy (community.css), so the posts do not move when the
+    // forum answers.
     if (scope) {
         picker.closest('.gh-community-picker').hidden = true;
     }

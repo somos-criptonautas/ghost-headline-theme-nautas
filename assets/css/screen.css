@@ -886,7 +886,7 @@ body .gh-read-next .gh-topic-content {
   body .gh-read-next .gh-topic-content {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 2rem;
-    row-gap: 7.2rem;
+    row-gap: 5rem;
   }
 }
 
@@ -1670,8 +1670,48 @@ html[data-theme="dark"].custom-no-feature-sign p a {
 
 /* Site footer */
 
+/* An ink band to close the page: dark on the light theme; on the dark one a
+   lifted surface under a rule rather than a white glare. Its own colour
+   tokens, so the links, icons and note inside follow it. */
 .footer-criptonauta {
-  margin: 5rem 1rem 3rem;
+  --color-bg: var(--cn-ink);
+  --color-base: var(--cn-paper);
+  --color-text: var(--cn-paper);
+  --color-secondary-text: color-mix(in srgb, var(--cn-paper) 70%, transparent);
+  /* Edge to edge: .global-padding's auto margins would shrink it to its
+     content in the .gh-site column; its side padding stays. */
+  width: 100%;
+  max-width: none;
+  margin: 5rem 0 0;
+  padding-top: 6.4rem;
+  padding-bottom: 4.8rem;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+html[data-theme="dark"] .footer-criptonauta {
+  --color-bg: var(--cn-ui-surface);
+  --color-base: var(--cn-ui-text);
+  --color-text: var(--cn-ui-text);
+  --color-secondary-text: var(--cn-ui-muted);
+  border-top: 1px solid var(--cn-ui-line);
+}
+
+@media screen and (max-width: 767px) {
+  .footer-criptonauta {
+    padding-top: 4.8rem;
+    padding-bottom: 3.2rem;
+  }
+}
+
+/* The links, then the icons 1.2rem under them - the same step as in the
+   open menu (.gh-head-more). */
+.footer-criptonauta .gh-foot-menu {
+  padding-bottom: 0;
+}
+
+.footer-criptonauta .it-foot-social {
+  padding-top: 1.2rem;
 }
 
 @media screen and (max-width: 767px) {
@@ -1764,7 +1804,9 @@ html[data-theme="dark"].custom-no-feature-sign p a {
     gap: 2rem;
   }
 
-  .gh-topic-grid .gh-card a.gh-card-link {
+  /* Not the /blog and tag lists (.gh-listing): one card per row there, set
+     as on desktop. */
+  .gh-topic-grid:not(.gh-listing) .gh-card a.gh-card-link {
     min-height: 400px;
     padding: 32px 24px;
   }
@@ -1777,7 +1819,9 @@ html[data-theme="dark"].custom-no-feature-sign p a {
     font-size: 3.2rem;
   }
 
-  .gh-topic-grid .gh-card:not(.large) .gh-card-excerpt {
+  /* Narrow cards (related posts) drop the excerpt and author; the /blog and
+     tag lists (.gh-listing) keep them, one card per row beside comunidad. */
+  .gh-topic-grid:not(.gh-listing) .gh-card:not(.large) .gh-card-excerpt {
     display: none;
   }
 
@@ -1785,7 +1829,7 @@ html[data-theme="dark"].custom-no-feature-sign p a {
     margin-top: 0.35rem;
   }
 
-  .gh-topic-grid .gh-card:not(.large) :where(.gh-card-author, .gh-card-footer-sep) {
+  .gh-topic-grid:not(.gh-listing) .gh-card:not(.large) :where(.gh-card-author, .gh-card-footer-sep) {
     display: none;
   }
 
@@ -2128,8 +2172,8 @@ a.toc-link {
 
   /* The open phone menu: the logo across the top. */
   .is-head-open img.logo-nav {
-    max-width: min(100%, 28rem);
-    max-height: 4.4rem;
+    max-width: min(100%, 32rem);
+    max-height: 5.6rem;
     margin: auto;
   }
 }
@@ -3030,7 +3074,7 @@ body,
 
 body:not(.home-template) .gh-listing .gh-topic-content {
   grid-template-columns: minmax(0, 1fr);
-  row-gap: 3.33rem;
+  row-gap: 2.4rem;
   column-gap: 2.22rem;
   justify-items: stretch;
   max-width: none;
@@ -3046,7 +3090,7 @@ body:not(.home-template) .gh-listing .gh-card {
   body .loop-wrap,
   body:not(.home-template) .gh-listing .gh-topic-content {
     column-gap: 2rem;
-    row-gap: 7.2rem;
+    row-gap: 5rem;
   }
 
   body .loop-wrap .item.is-loop {
@@ -3478,9 +3522,11 @@ a {
 }
 
 /* Ghost's toggle cards as the landing's questions on phones (landing.css):
-   a soft card, no line, rounder corners; light and dark from --cn-ui-soft. */
+   a soft card with the theme's hairline, rounder corners; light and dark
+   from --cn-ui-soft. */
 .kg-toggle-card {
   padding: 0 !important;
+  border: 1px solid var(--color-border) !important;
   border-radius: 1.2rem !important;
   background: var(--cn-ui-soft) !important;
   box-shadow: none !important;
@@ -6096,6 +6142,7 @@ button.gh-author-social-link {
     justify-content: flex-start;
     gap: 2rem;
     height: var(--head-bar-height);
+    padding-inline: 2.4rem;
   }
 
   #gh-head .gh-head-brand {
@@ -6107,9 +6154,13 @@ button.gh-author-social-link {
     flex: none;
   }
 
+  /* Room for the links first: the search grows up to 28rem, and what is
+     left sits after it, pushing the links and toggle to the right. */
   #gh-head .gh-head-search-field {
     order: 2;
     flex: 1 1 auto;
+    max-width: 28rem;
+    margin-right: auto;
   }
 
   /* The landing has no search: its link to the blog takes that place, and
@@ -6154,17 +6205,21 @@ button.gh-author-social-link {
   }
 
   #gh-head .gh-head-menu .nav a {
-    font-size: 1.7rem;
+    font-size: 1.9rem;
     white-space: nowrap;
   }
 
+  /* After a hairline, as on desktop. */
   #gh-head .gh-head-bar-toggle {
     order: 4;
     display: inline-flex;
     flex: none;
+    box-sizing: content-box;
     width: 2.2rem;
     height: 2.2rem;
     margin: 0;
+    padding: 0 0 0 1.6rem;
+    border-left: 1px solid var(--color-border);
   }
 
   #gh-head .gh-burger,

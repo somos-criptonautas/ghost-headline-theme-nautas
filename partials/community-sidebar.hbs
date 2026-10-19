@@ -3,9 +3,10 @@
     list a first visit opens on; the heading lets visitors switch. The list is filled
     by assets/js/community-sidebar.js from the forum's public JSON, which needs
     CORS on the Discourse side (DISCOURSE_ENABLE_CORS plus this site in the
-    "cors origins" setting). Until it loads - or if it never does - the aside
-    stays hidden, and the layout only opens a second column for an aside that
-    is showing (.gh-with-sidebar:has() in screen.css).
+    "cors origins" setting). It shows from the first paint as rows of
+    placeholders (aria-busy, community.css), so the posts never move when the
+    forum answers; if it never does, the script hides it. Without scripting
+    it never shows (html.js, set in <head> by theme.js).
 
     From 768px: a sticky column on the right. Phones: after the posts.
 
@@ -13,7 +14,7 @@
     slug, without the picker; a tag with no category gets the whole forum's
     list, as /blog does. --}}
 {{#if @custom.discourse_url}}{{#match @custom.community_sidebar "!=" "Off"}}
-<aside class="gh-community" aria-labelledby="gh-community-title" hidden
+<aside class="gh-community" aria-labelledby="gh-community-title" aria-busy="true"
     data-category="{{category}}"
     data-mode="{{#match @custom.community_sidebar "Latest posts"}}posts{{else}}topics{{/match}}"
     data-label-reply="{{t "reply"}}"

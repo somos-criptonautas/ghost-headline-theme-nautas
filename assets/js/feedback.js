@@ -1,9 +1,6 @@
 /* Feedback tab (partials/feedback.hbs): idea / error / soporte, an optional
- * e-mail and an optional screenshot of the visible page, posted as JSON to the
- * n8n webhook, which validates it and opens a Chatwoot conversation.
- *
- * html-to-image (assets/js/vendor) is ~20 KB and only needed when the box is
- * ticked, so it is fetched then rather than bundled.
+ * e-mail and an optional image the reader picks, posted as JSON to the n8n
+ * webhook, which validates it and opens a Chatwoot conversation.
  */
 (function () {
     var root = document.querySelector('.cn-feedback');
@@ -37,38 +34,33 @@
         }
     });
 
-    function loadLibrary() {
-        if (window.htmlToImage) {
-            return Promise.resolve();
-        }
-        return new Promise(function (resolve, reject) {
-            var script = document.createElement('script');
-            script.src = root.dataset.shotLib;
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
+    var name = form.querySelector('.cn-feedback-shot-name');
+    function showName() {
+        var file = fields.shot.files && fields.shot.files[0];
+        name.textContent = file ? file.name : name.dataset.empty;
     }
+    fields.shot.addEventListener('change', showName);
 
-    // The visible part of the page, without the tab and panel. Images from
-    // other origins are left out: the CDN's CORS headers are rejected, and one
-    // unreadable image fails the whole capture. A failed capture sends the
-    // message without it rather than not at all.
-    function screenshot() {
-        return loadLibrary().then(function () {
-            return window.htmlToImage.toJpeg(document.body, {
-                quality: 0.7,
-                pixelRatio: 1,
-                width: window.innerWidth,
-                height: window.innerHeight,
-                style: {transform: 'translateY(-' + window.scrollY + 'px)'},
-                filter: function (node) {
-                    if (node.tagName === 'IMG') {
-                        return new URL(node.currentSrc || node.src, location.href).origin === location.origin;
-                    }
-                    return node !== root;
-                }
-            });
+    // The picked image, at most 1600px on its longer side, as a JPEG data
+    // URL - the shape the n8n workflow already takes. One that cannot be
+    // read is left out rather than holding the message back.
+    var MAX_SIDE = 1600;
+    function picked() {
+        var file = fields.shot.files && fields.shot.files[0];
+        if (!file || !window.createImageBitmap) {
+            return Promise.resolve('');
+        }
+        return window.createImageBitmap(file).then(function (bitmap) {
+            var scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+            var canvas = document.createElement('canvas');
+            canvas.width = Math.round(bitmap.width * scale);
+            canvas.height = Math.round(bitmap.height * scale);
+            var context = canvas.getContext('2d');
+            // JPEG has no transparency: a white ground, not black.
+            context.fillStyle = '#fff';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+            return canvas.toDataURL('image/jpeg', 0.8);
         }).catch(function () {
             return '';
         });
@@ -82,7 +74,7 @@
         form.classList.add('is-sending');
         status.textContent = form.dataset.sending;
 
-        (fields.shot.checked ? screenshot() : Promise.resolve('')).then(function (image) {
+        picked().then(function (image) {
             return fetch(root.dataset.webhook, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -100,6 +92,7 @@
                 throw new Error(response.status);
             }
             form.reset();
+            showName();
             status.textContent = form.dataset.thanks;
         }).catch(function () {
             status.textContent = form.dataset.error;
