@@ -608,6 +608,11 @@ a.gh-card-link:hover {
   text-align: center;
 }
 
+/* tag.hbs: "+ more channels", in lowercase as the channel names. */
+.gh-article-tag.gh-more-channels {
+  text-transform: none;
+}
+
 /* Flex, so the arrow between the links centres on them like their icons. */
 nav.gh-article-tag {
   display: flex;
@@ -5939,6 +5944,29 @@ a.is-external .gh-ext::after {
   border-radius: 0.6rem;
 }
 
+/* The full logo instead of the icon where it fits: 600-767px (bar with the
+   burger) and 900-991px (tablet bar with the links); 768-899px keeps the icon
+   so the search field stays wide. No id here, so the light/dark switch on
+   .logo-nav still wins. */
+.gh-head-icon .logo-nav {
+  display: none;
+}
+
+@media screen and (min-width: 600px) and (max-width: 767px), screen and (min-width: 900px) and (max-width: 991px) {
+  .gh-head-icon:has(.logo-nav) .gh-head-icon-mark {
+    display: none;
+  }
+
+  .gh-head-icon .logo-nav {
+    display: block;
+    width: auto;
+    max-width: 18rem;
+    height: 3.2rem;
+    border-radius: 0;
+    object-fit: contain;
+  }
+}
+
 @media screen and (max-width: 991px) {
   body:not(.is-head-open) #gh-head .gh-head-brand {
     grid-template-columns: auto minmax(0, 1fr) auto;
@@ -6055,5 +6083,94 @@ button.gh-author-social-link {
 @media (prefers-reduced-motion: reduce) {
   #gh-head.is-docked {
     animation: none;
+  }
+}
+
+/* Tablet bar (768-991px): no burger. One row: icon or logo, the search
+   field taking the room left, the menu's links, the theme toggle. The
+   footer's links stay in the page footer. Phones keep the burger and the
+   full-screen menu; the shared main.js only opens it up to 767px. */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  #gh-head .gh-head-inner {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 2rem;
+    height: var(--head-bar-height);
+  }
+
+  #gh-head .gh-head-brand {
+    display: contents;
+  }
+
+  #gh-head .gh-head-icon {
+    order: 1;
+    flex: none;
+  }
+
+  #gh-head .gh-head-search-field {
+    order: 2;
+    flex: 1 1 auto;
+  }
+
+  /* The landing has no search: its link to the blog takes that place, and
+     the menu, whose only link is the same, steps aside. */
+  #gh-head .gh-head-bar-blog {
+    order: 2;
+    margin-right: auto;
+  }
+
+  .home-template #gh-head .gh-head-menu {
+    display: none;
+  }
+
+  #gh-head .gh-head-menu {
+    order: 3;
+    position: static;
+    display: block;
+    flex: none;
+    height: auto;
+    margin: 0;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #gh-head .gh-head-menu::after {
+    display: none;
+  }
+
+  #gh-head .gh-head-menu .nav {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 2rem;
+    margin: 0;
+  }
+
+  /* Visible at rest: the phone menu fades its items in on open. */
+  #gh-head .gh-head-menu .nav li {
+    margin: 0;
+    padding: 0;
+    opacity: 1;
+  }
+
+  #gh-head .gh-head-menu .nav a {
+    font-size: 1.7rem;
+    white-space: nowrap;
+  }
+
+  #gh-head .gh-head-bar-toggle {
+    order: 4;
+    display: inline-flex;
+    flex: none;
+    width: 2.2rem;
+    height: 2.2rem;
+    margin: 0;
+  }
+
+  #gh-head .gh-burger,
+  #gh-head .gh-head-brand-wrapper,
+  #gh-head .gh-head-actions,
+  #gh-head .gh-head-more {
+    display: none;
   }
 }

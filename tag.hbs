@@ -14,10 +14,26 @@
 	</span>
 </div>
 {{/tag}}
-<div class="gh-with-sidebar global-padding">
-	<div class="gh-with-sidebar-main">
-		{{>loop}}
+{{!-- The same cards as /blog (loop-grid: padding, excerpt, channel and
+    level), then the tag's forum topics after the first page's last post, the
+    block under an article. Later pages load in after it (infinite scroll). --}}
+<main class="gh-main gh-outer">
+	<div class="gh-inner">
+	<div class="gh-topic gh-topic-grid gh-topic-grid-item gh-listing">
+		<div class="gh-topic-content gh-feed">
+			{{#foreach posts}}
+			{{> "loop-grid" has_large_post=false}}
+			{{!-- The channel's videos after the sixth post, or after the last with fewer. --}}
+			{{^is "paged"}}{{#has number="6"}}{{> "channel-videos" category=../tag.slug}}{{else}}{{#if @last}}{{#has number="1,2,3,4,5"}}{{> "channel-videos" category=../tag.slug}}{{/has}}{{/if}}{{/has}}{{/is}}
+			{{^is "paged"}}{{#if @last}}{{> "community-related" category=../tag.slug}}{{/if}}{{/is}}
+			{{/foreach}}
+		</div>
+		{{#if pagination.next}}
+		<footer class="gh-topic-footer">
+			<a class="gh-topic-link gh-loadmore" href="{{page_url pagination.next}}">{{t "Show more"}} {{> "icons/arrow"}}</a>
+		</footer>
+		{{/if}}
 	</div>
-	{{> "community-sidebar" category=tag.slug}}
-</div>
-<a class="gh-article-tag " href="/tags">+ TAGs</a>
+	</div>
+</main>
+<a class="gh-article-tag gh-more-channels" href="/tags">+ {{t "more channels"}}</a>

@@ -1,0 +1,7 @@
+{{!-- Tablet (768-991px): the post's TOC behind a button stacked above back to
+    top, naming the section being read. assets/js/toc.js shows it once the TOC
+    has headings and opens #sidebar-toc as a panel above it (post.css). --}}
+<button class="gh-toc-toggle" type="button" aria-controls="sidebar-toc" aria-expanded="false" hidden>
+    {{> "icons/phosphor/lists"}}
+    <span class="gh-toc-current">{{t "In this article"}}</span>
+</button>

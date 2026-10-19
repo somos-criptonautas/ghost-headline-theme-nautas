@@ -456,15 +456,85 @@
         return box;
     };
 
-    /* A topic: the post the search found (indexed text first, the forum's own
-     * HTML when it arrives), the forum's AI summary of the discussion when one
-     * exists, and the replies one click away on the forum. The forum sends CORS
-     * headers for the site; any failure keeps what is already shown. */
+    /* Grey bars, or circles, where content is on its way. */
+    var skeleton = function (className, count) {
+        var box = document.createElement('div');
+        box.className = className;
+        box.setAttribute('aria-hidden', 'true');
+        for (var i = 0; i < count; i++) {
+            box.appendChild(document.createElement('span')).className = 'ns__skel';
+        }
+        return box;
+    };
+
+    // How many people to show before "+N", as the wiki co-authors list does.
+    var MAX_PEOPLE = 5;
+
+    /* Who took part, as avatars on the right: the topic's participants,
+     * most posts first, without the author already named in the meta line. */
+    var people = function (box, topic, hit, alive) {
+        var row = skeleton('ns__reader-people is-loading', Math.min(hit.reply_count, MAX_PEOPLE));
+        box.appendChild(row);
+        forumJSON('/t/' + topic + '.json')
+            .then(function (data) {
+                if (!alive()) {
+                    return;
+                }
+                var author = String(hit.username || '').toLowerCase();
+                var list = ((data && data.details && data.details.participants) || []).filter(function (p) {
+                    return p.username && p.avatar_template && p.username.toLowerCase() !== author;
+                });
+                row.textContent = '';
+                row.classList.remove('is-loading');
+                row.removeAttribute('aria-hidden');
+                list.slice(0, MAX_PEOPLE).forEach(function (p) {
+                    var src = String(p.avatar_template).replace('{size}', '48');
+                    src = src.charAt(0) === '/' && src.charAt(1) !== '/' ? FORUM + src : src;
+                    if (!/^https:\/\//.test(src)) {
+                        return;
+                    }
+                    var img = document.createElement('img');
+                    img.className = 'ns__reader-avatar';
+                    img.src = src;
+                    img.alt = p.username;
+                    img.title = p.username;
+                    img.width = 24;
+                    img.height = 24;
+                    img.loading = 'lazy';
+                    img.referrerPolicy = 'no-referrer';
+                    row.appendChild(img);
+                });
+                if (list.length > MAX_PEOPLE) {
+                    var more = document.createElement('span');
+                    more.className = 'ns__reader-more';
+                    more.textContent = '+' + (list.length - MAX_PEOPLE);
+                    row.appendChild(more);
+                }
+                row.hidden = !row.childNodes.length;
+            })
+            .catch(function () {
+                row.hidden = true;
+            });
+    };
+
+    // Wait this long for the forum's HTML before showing the indexed text.
+    var RICH_WAIT = 4000;
+
+    /* A topic: the post the search found - bars until the forum's own HTML
+     * arrives, the indexed text if it is late or fails - the forum's AI
+     * summary of the discussion when one exists, and who replied. The forum
+     * sends CORS headers for the site; any failure keeps what is shown. */
     var fillTopic = function (hit) {
         return function (box, alive) {
             var text = document.createElement('div');
             text.className = 'ns__reader-text';
-            emojify(text, String(hit.text || ''));
+            var plain = function () {
+                if (!text.childNodes.length || text.classList.contains('is-loading')) {
+                    text.textContent = '';
+                    text.classList.remove('is-loading');
+                    emojify(text, String(hit.text || ''));
+                }
+            };
             box.appendChild(text);
 
             var topic = /^\d+$/.test(String(hit.topic_id)) ? String(hit.topic_id) : '';
@@ -473,17 +543,28 @@
             summary.hidden = true;
             box.appendChild(summary);
 
-            if (FORUM && topic && hit.reply_count > 0) {
-                box.appendChild(outLink(FORUM + '/t/' + topic + '/2', t('see replies') + ' (' + hit.reply_count + ')', 'ns__reader-replies'));
-            }
-
             if (!FORUM || !window.fetch) {
+                plain();
                 return;
             }
+            if (topic && hit.reply_count > 0) {
+                people(box, topic, hit, alive);
+            }
             if (/^\d+$/.test(String(hit.id)) && window.NautasForumHTML) {
+                text.classList.add('is-loading');
+                text.appendChild(skeleton('ns__skels', 5));
+                window.setTimeout(function () {
+                    if (alive()) {
+                        plain();
+                    }
+                }, RICH_WAIT);
                 forumJSON('/posts/' + hit.id + '.json')
                     .then(function (post) {
-                        if (!post || !post.cooked || !alive()) {
+                        if (!alive()) {
+                            return;
+                        }
+                        if (!post || !post.cooked) {
+                            plain();
                             return;
                         }
                         // Rebuilt with safe tags only (forum-html.js, in main.min.js).
@@ -491,9 +572,18 @@
                         if (rich.textContent.trim()) {
                             rich.className = 'ns__reader-text is-rich';
                             text.replaceWith(rich);
+                            text = rich;
+                        } else {
+                            plain();
                         }
                     })
-                    .catch(function () {});
+                    .catch(function () {
+                        if (alive()) {
+                            plain();
+                        }
+                    });
+            } else {
+                plain();
             }
             /* Only topics someone already summarised have one; the rest answer
              * 404. Summaries are kept per language and the forum picks one by
@@ -626,7 +716,9 @@
                     hit.category,
                     date(hit.created_at),
                     hit.reply_count ? hit.reply_count + ' ' + t('replies') : ''
-                ], fillTopic(hit), outLink(hit.url, t('view in the community')));
+                ], fillTopic(hit), FORUM && /^\d+$/.test(String(hit.topic_id)) && hit.reply_count > 0
+                    ? outLink(FORUM + '/t/' + hit.topic_id + '/2', t('see replies') + ' (' + hit.reply_count + ')')
+                    : outLink(hit.url, t('view in the community')));
             });
         },
         videos: function (hit) {

@@ -244,8 +244,39 @@
 
 /* Player stage */
 
+/* A row of its own in the grid, under the clicked card's row
+   (assets/js/peertube-videos.js). Dense: when a rotation moves the row
+   ends, the cards after it fill the gap instead of leaving holes. */
+.gh-videos-grid {
+    grid-auto-flow: row dense;
+}
+
 .gh-videos-stage {
-    margin-bottom: 3.2rem;
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 2.4rem;
+    border-radius: var(--border-radius);
+    background-color: var(--color-bg-alt, var(--color-border));
+    animation: gh-videos-stage-in 0.25s ease;
+}
+
+@keyframes gh-videos-stage-in {
+    from {
+        opacity: 0;
+        transform: translateY(-0.8rem);
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .gh-videos-stage {
+        padding: 1.2rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gh-videos-stage {
+        animation: none;
+    }
 }
 
 /* 16:9 at the full block width, capped so the player plus its caption fit

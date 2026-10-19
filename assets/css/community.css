@@ -2,7 +2,7 @@
 /* partials/community-sidebar.hbs, filled by assets/js/community-sidebar.js
 /* ---------------------------------------------------------- */
 
-/* Layout: home.hbs and tag.hbs. One column by default, so a sidebar that is
+/* Layout: index.hbs. One column by default, so a sidebar that is
    off, still loading or never loads (it keeps `hidden`) changes nothing. The
    second column only opens for an aside that is actually showing. */
 .gh-with-sidebar {
@@ -14,7 +14,20 @@
     min-width: 0;
 }
 
-@media screen and (min-width: 1200px) {
+/* Tablet: a narrower column, and one card per row beside it (two would be
+   under 200px wide at 768px). */
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+    .gh-with-sidebar {
+        --gh-sidebar-width: 26rem;
+        --gh-sidebar-gap: 3.2rem;
+    }
+
+    body:not(.home-template) .gh-with-sidebar:has(> .gh-community:not([hidden])) .gh-listing .gh-topic-content {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media screen and (min-width: 768px) {
     .gh-with-sidebar:has(> .gh-community:not([hidden])) {
         display: grid;
         grid-template-columns: minmax(0, 1fr) var(--gh-sidebar-width);
@@ -22,19 +35,13 @@
         align-items: start;
     }
 
-    /* Tag pages: the loop grid's 84% cap and three columns were sized for
-       the full page width. Next to the sidebar, two columns use the room. */
-    .gh-with-sidebar:has(> .gh-community:not([hidden])) .loop-wrap {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        max-width: none;
-    }
-
 
     /* Only the list scrolls, so the mascot on the top border isn't clipped. */
     .gh-community {
         position: sticky;
-        top: 3.2rem;
-        max-height: calc(100vh - 6.4rem);
+        /* Under the fixed tablet bar (--head-bar-height, unset on desktop). */
+        top: calc(var(--head-bar-height, 0px) + 3.2rem);
+        max-height: calc(100vh - var(--head-bar-height, 0px) - 6.4rem);
     }
 
     .gh-community:not([hidden]) {
@@ -55,8 +62,8 @@
 
     /* Room above the box for the mascot's 48px, under the sticky top. */
     .gh-community:has(> .gh-mascot:not([hidden])) {
-        top: 8rem;
-        max-height: calc(100vh - 11.2rem);
+        top: calc(var(--head-bar-height, 0px) + 8rem);
+        max-height: calc(100vh - var(--head-bar-height, 0px) - 11.2rem);
     }
 
     .gh-mascot:not([hidden]) {
@@ -64,16 +71,8 @@
     }
 }
 
-/* tag.hbs wraps the shared loop partial, which brings its own page padding
-   and max width - the wrapper carries those now. */
-.gh-with-sidebar > .gh-with-sidebar-main > .loop-section {
-    max-width: none;
-    padding-right: 0;
-    padding-left: 0;
-}
-
-/* Below 1200px it follows the posts, as its own section. */
-@media screen and (max-width: 1199px) {
+/* Phones: it follows the posts, as its own section. */
+@media screen and (max-width: 767px) {
     .gh-community {
         max-width: 63.4rem;
         margin: 8rem auto 0;
@@ -324,8 +323,8 @@
 }
 
 /* Mascot
-/* anonist on the top border (assets/js/mascot.js, desktop only, shown from
-   1200px above). The 48px figure sits with the border at its row 41 and
+/* anonist on the top border (assets/js/mascot.js, shown from 768px up, where the
+   aside is a column). The 48px figure sits with the border at its row 41 and
    stands with it at row 47; the script moves him and swaps frames in steps. */
 .gh-mascot {
     position: absolute;
@@ -479,6 +478,14 @@ html[data-theme="dark"] .gh-mascot:not(.is-mask) svg {
 .gh-community-related {
     max-width: min(110rem, calc(100vw - 2 * var(--gap)));
     margin: 8rem auto 0;
+}
+
+/* Tag pages: in the list after the first page's posts, across it. */
+.gh-feed > .gh-community-related:not(.gh-community-strip) {
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: none;
+    margin: 0;
 }
 
 .gh-community-related-title {
@@ -693,16 +700,16 @@ html[data-theme="dark"] .gh-mascot:not(.is-mask) svg {
     cursor: pointer;
 }
 
-/* Community strip (home.hbs, index.hbs; community-related.hbs strip=true): below 1200px, in
-   place of the aside, which is the column from 1200px up. */
+/* Community strip (home.hbs, index.hbs; community-related.hbs strip=true): on phones, in
+   place of the aside, which is the column from 768px up. */
 
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 768px) {
     .gh-community-strip {
         display: none;
     }
 }
 
-@media screen and (max-width: 1199px) {
+@media screen and (max-width: 767px) {
     .gh-with-sidebar:has(.gh-community-strip) .gh-community {
         display: none;
     }

@@ -348,9 +348,10 @@
         return relative.format(0, 'minute');
     };
 
-    /* Player stage: the clicked video plays above the grid at the width of
-     * the page. Another card swaps it; close or Esc unloads the iframe,
-     * which stops playback, and returns focus to the card it came from.
+    /* Player stage: the clicked video plays in a row of its own right under
+     * the clicked card's row, so the page stays where the reader was.
+     * Another card swaps it; close or Esc unloads the iframe, which stops
+     * playback, and returns focus to the card it came from.
      * ------------------------------------------------------------------ */
 
     var stage = section.querySelector('.gh-videos-stage');
@@ -359,6 +360,19 @@
     var nowMeta = stage.querySelector('.gh-videos-now-meta');
     var closer = stage.querySelector('.gh-videos-close');
     var playing = null;
+    // The cards only: the stage sits among them while it plays.
+    var cards = grid.getElementsByClassName('gh-video');
+
+    // After the last card of the clicked one's row. If it moves up from a
+    // row above, the page is scrolled by what it left, so the card holds still.
+    var place = function (item) {
+        var columns = window.getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+        var i = Array.prototype.indexOf.call(cards, item);
+        var last = cards[Math.min(cards.length - 1, i - (i % columns) + columns - 1)];
+        var top = item.getBoundingClientRect().top;
+        grid.insertBefore(stage, last.nextSibling);
+        window.scrollBy({top: item.getBoundingClientRect().top - top, behavior: 'instant'});
+    };
 
     var mark = function () {
         var items = grid.querySelectorAll('.gh-video');
@@ -382,6 +396,8 @@
         playing = null;
         screen.textContent = '';
         stage.hidden = true;
+        // Back out of the grid, which the scripts below refill.
+        grid.parentNode.insertBefore(stage, grid);
         mark();
         if (returnFocus && from && document.body.contains(from)) {
             from.focus();
@@ -414,10 +430,12 @@
         });
 
         playing = {uuid: video.uuid, button: button};
+        place(button.closest('.gh-video'));
         stage.hidden = false;
         mark();
 
-        stage.scrollIntoView({block: 'start', behavior: behavior()});
+        // Only as far as it takes to see the player, if it is not in view.
+        stage.scrollIntoView({block: 'nearest', behavior: behavior()});
         frame.focus();
     };
 
@@ -544,13 +562,13 @@
                 grid.textContent = '';
             }
             batches++;
-            var offset = grid.children.length;
+            var offset = cards.length;
             batch.forEach(function (video, i) {
                 grid.appendChild(card(video, offset + i));
             });
             mark();
 
-            var empty = !grid.children.length;
+            var empty = !cards.length;
             message.hidden = !empty;
             if (empty && !shown && feed.failed) {
                 // The first request failed outright: the page as it was.
@@ -588,6 +606,8 @@
         // browser's scroll anchoring then follows the footer down as the new
         // cards arrive. Hold the height until they land.
         grid.style.minHeight = feed.shown.length ? '' : grid.offsetHeight + 'px';
+        // The cards go, and the stage with its row.
+        stop(false);
         grid.textContent = '';
         feed.shown.forEach(function (video, i) {
             grid.appendChild(card(video, i));
@@ -643,10 +663,10 @@
     };
 
     loadButton.addEventListener('click', function () {
-        var first = grid.children.length;
+        var first = cards.length;
         loadNext().then(function () {
             // Land keyboard users on the first new card.
-            var next = grid.children[first];
+            var next = cards[first];
             var target = next && next.querySelector('.gh-video-play');
             if (target && document.activeElement === loadButton) {
                 target.focus();

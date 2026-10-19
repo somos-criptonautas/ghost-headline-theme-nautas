@@ -325,6 +325,104 @@
     }
 }
 
+/* Tablet TOC (partials/toc-toggle.hbs, assets/js/toc.js): a pill stacked
+   above back to top - in its place while that one is hidden - and the
+   sidebar's list as a panel above the pill. Phones keep the list in the
+   page, desktop the column. */
+.gh-toc-toggle {
+    display: none;
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    body {
+        --gh-toc-bottom: calc(max(2rem, env(safe-area-inset-bottom)) + 5.6rem);
+    }
+
+    body:has(.gh-to-top:not(.is-visible)) {
+        --gh-toc-bottom: max(2rem, env(safe-area-inset-bottom));
+    }
+
+    .gh-toc-toggle:not([hidden]) {
+        position: fixed;
+        right: max(2rem, env(safe-area-inset-right));
+        bottom: var(--gh-toc-bottom);
+        z-index: 80;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        max-width: 28rem;
+        height: 4.4rem;
+        padding: 0 1.6rem;
+        border: 0;
+        border-radius: 2.2rem;
+        background-color: var(--color-bg);
+        color: var(--color-base);
+        box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
+        font-size: 1.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: bottom 0.2s ease;
+    }
+
+    .gh-toc-toggle:focus-visible {
+        outline: 2px solid var(--ghost-accent-color);
+        outline-offset: 2px;
+    }
+
+    .gh-toc-toggle svg {
+        flex: none;
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .gh-toc-current {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .gh-sidebar:not(.is-toc-empty) {
+        position: fixed;
+        right: max(2rem, env(safe-area-inset-right));
+        bottom: calc(var(--gh-toc-bottom) + 5.6rem);
+        z-index: 81;
+        display: none;
+        width: min(36rem, calc(100vw - 4rem));
+        max-height: 60vh;
+        margin: 0 !important;
+        padding: 2.4rem;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        border: 1px solid var(--color-border, var(--color-light-gray));
+        border-radius: 0.77rem;
+        background-color: var(--color-bg);
+        color: var(--color-base);
+        box-shadow: 0 0.4rem 2rem rgba(0, 0, 0, 0.12);
+    }
+
+    .gh-sidebar.is-open:not(.is-toc-empty) {
+        display: block;
+    }
+
+    .gh-sidebar h3 {
+        font-size: 1.8rem;
+    }
+
+    .gh-sidebar .toc {
+        font-size: 1.6rem;
+    }
+
+    .toc-list-item.is-active-li {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gh-toc-toggle:not([hidden]) {
+        transition: none;
+    }
+}
+
 /* Monero tip: a reaction-style pill under the reactions, opening the
    reactions' dialog with the QR and address. */
 

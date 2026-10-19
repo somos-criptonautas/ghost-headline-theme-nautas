@@ -47,5 +47,60 @@
             headingsOffset: 40,
             scrollSmoothOffset: -40
         });
+        toggle();
     });
+
+    /* Tablet: the list as a panel behind a button (partials/toc-toggle.hbs);
+     * CSS shows both only from 768 to 991px. The button names the section
+     * tocbot marks active. */
+    var toggle = function () {
+        var button = document.querySelector('.gh-toc-toggle');
+        // collection.js removes the column on a series hub.
+        if (!button || !sidebar.isConnected) {
+            return;
+        }
+        var current = button.querySelector('.gh-toc-current');
+        var queued = false;
+
+        var open = function (on) {
+            sidebar.classList.toggle('is-open', on);
+            button.setAttribute('aria-expanded', String(on));
+        };
+
+        button.hidden = false;
+        button.addEventListener('click', function () {
+            open(!sidebar.classList.contains('is-open'));
+        });
+        // A heading picked, Esc, or a tap outside closes it.
+        toc.addEventListener('click', function (event) {
+            if (event.target.closest('a')) {
+                open(false);
+            }
+        });
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && sidebar.classList.contains('is-open')) {
+                open(false);
+                button.focus();
+            }
+        });
+        document.addEventListener('click', function (event) {
+            if (!sidebar.contains(event.target) && !button.contains(event.target)) {
+                open(false);
+            }
+        });
+
+        window.addEventListener('scroll', function () {
+            if (queued) {
+                return;
+            }
+            queued = true;
+            window.requestAnimationFrame(function () {
+                queued = false;
+                var active = toc.querySelector('.is-active-link');
+                if (active) {
+                    current.textContent = active.textContent;
+                }
+            });
+        }, {passive: true});
+    };
 })();

@@ -516,9 +516,9 @@
         };
         if (SLUG.test(category)) {
             var path = '/latest';
-            // A tag page's strip stands in for its aside, so a tag with no
-            // forum category gets the whole forum's, as the aside does.
-            var strip = related.classList.contains('gh-community-strip');
+            // The strip and a tag page's block stand in for an aside, so a tag
+            // with no forum category gets the whole forum's, as the aside does.
+            var strip = related.classList.contains('gh-community-strip') || document.body.classList.contains('tag-template');
             (category ? categoryLatest(category).then(function (found) {
                 path = found.path;
                 return found.body;
