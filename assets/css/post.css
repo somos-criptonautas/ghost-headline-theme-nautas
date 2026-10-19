@@ -567,8 +567,9 @@ html[data-theme="dark"] .gh-image-band {
 }
 
 /* An article's image: no band - the channel is in the breadcrumb - only the
-   level, top right, in the band's colours. */
-:is(.gh-banded, .gh-cover) > .gh-level {
+   level, top right, in the band's colours. Cards on a tag page too
+   (loop-grid.hbs), where the channel is the page's. */
+:is(.gh-banded, .gh-cover, .gh-card-image) > .gh-level {
     position: absolute;
     top: 1.2rem;
     right: 1.2rem;
@@ -583,7 +584,7 @@ html[data-theme="dark"] .gh-image-band {
     text-transform: uppercase;
 }
 
-html[data-theme="dark"] :is(.gh-banded, .gh-cover) > .gh-level {
+html[data-theme="dark"] :is(.gh-banded, .gh-cover, .gh-card-image) > .gh-level {
     background-color: rgba(255, 255, 255, 0.85);
     color: #1A1A1A;
 }

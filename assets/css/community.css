@@ -25,15 +25,15 @@ html:not(.js) .gh-with-sidebar {
     display: block !important;
 }
 
-/* /blog's heading row (index.hbs): only on tablets, where the posts and the
-   comunidad box sit side by side - "Blog" like the box's "Comunidad", the
+/* /blog's heading row (index.hbs): on tablets (768-1199px, the narrow
+   comunidad column beside the posts) - "Blog" like the box's "Comunidad", the
    level switches smaller on its right, both level with the box's heading
    (its 2.4rem padding and 1px border down). */
 .gh-blog-title {
     display: none;
 }
 
-@media screen and (min-width: 768px) and (max-width: 991px) {
+@media screen and (min-width: 768px) and (max-width: 1199px) {
     .gh-blog-head {
         display: flex;
         align-items: center;
@@ -551,12 +551,19 @@ html[data-theme="dark"] .gh-mascot:not(.is-mask) svg {
     margin: 8rem auto 0;
 }
 
-/* Tag pages: in the list after the first page's posts, across it. */
+/* Tag pages: in the list after the first page's posts, across it, set off
+   from them about as far as under an article (8rem, with the list's gap). */
 .gh-feed > .gh-community-related:not(.gh-community-strip) {
     grid-column: 1 / -1;
     width: 100%;
     max-width: none;
-    margin: 0;
+    margin: 4rem 0 0;
+}
+
+@media screen and (min-width: 768px) {
+    .gh-feed > .gh-community-related:not(.gh-community-strip) {
+        margin-top: 3rem;
+    }
 }
 
 .gh-community-related-title {

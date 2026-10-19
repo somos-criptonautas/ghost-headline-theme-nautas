@@ -608,11 +608,6 @@ a.gh-card-link:hover {
   text-align: center;
 }
 
-/* tag.hbs: "+ more channels", in lowercase as the channel names. */
-.gh-article-tag.gh-more-channels {
-  text-transform: none;
-}
-
 /* Flex, so the arrow between the links centres on them like their icons. */
 nav.gh-article-tag {
   display: flex;
@@ -3346,6 +3341,11 @@ blockquote.twitter-tweet {
 
 .gh-main {
   padding-block: 5rem 6rem;
+}
+
+/* Tag pages: the tag's header (.archive-section) already ends in 3.33rem. */
+.tag-template .gh-main {
+  padding-top: 0;
 }
 
 @media screen and (max-width: 767px) {

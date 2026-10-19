@@ -308,7 +308,9 @@
    shadow in the same grey, clipped to the sides. */
 .gh-landing-next {
     margin-top: 6.4rem;
-    padding-block: 11.2rem;
+    /* A little less below: the heading's line-height already adds air
+       above its letters, so equal padding read as more under the cards. */
+    padding-block: 11.2rem 9.6rem;
     background: var(--cn-ui-surface);
     box-shadow: 0 0 0 100vmax var(--cn-ui-surface);
     clip-path: inset(0 -100vmax);
@@ -481,9 +483,9 @@
     object-fit: cover;
 }
 
-/* Destacado and the community, well below: reached on purpose, not landed on. */
+/* The featured posts ("Blog") and the community, after the grey band. */
 .gh-landing-more {
-    margin-top: 16rem;
+    margin-top: 8.8rem;
 }
 
 /* Each block fades in as it enters the screen (scroll-driven, no script). */
@@ -521,7 +523,7 @@
     }
 
     .gh-landing-next {
-        padding-block: 7.2rem;
+        padding-block: 7.2rem 6rem;
     }
 
     .gh-landing-paths {
@@ -533,7 +535,7 @@
     }
 
     .gh-landing-more {
-        margin-top: 9.6rem;
+        margin-top: 5.6rem;
     }
 }
 
