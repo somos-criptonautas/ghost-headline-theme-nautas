@@ -116,11 +116,11 @@
             },
             "newsletter_form": {
                 "type": "text",
-                "description": "Keila form address (https://…/forms/nfrm_…): the editor's signup cards show and send their e-mail there, without Portal."
+                "description": "Keila form address (https://…/forms/nfrm_…): signup cards send their e-mail there, without Portal."
             },
             "feedback_webhook": {
                 "type": "text",
-                "description": "n8n webhook for the desktop feedback tab (idea / error / support), e.g. https://api.criptonautas.co/webhook/blog-feedback. Empty hides the tab."
+                "description": "n8n webhook for the feedback tab (idea / error / support). Empty hides the tab."
             }
         }
     },

@@ -12,7 +12,7 @@
 		{{{t "Explore our {start-bold}tags{end-bold}" start-bold="<span>" end-bold="</span>"}}}
 		</small>
 	</div>
-	{{#get "tags" limit="all" filter="visibility:public" include="count.posts" order="count.posts desc" as |tags|}}
+	{{#get "tags" limit="100" filter="visibility:public" include="count.posts" order="count.posts desc" as |tags|}}
 	{{#if tags}}
 	<div class="loop-wrap is-tags">
 		{{#foreach tags}}
