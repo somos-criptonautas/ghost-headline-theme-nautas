@@ -1665,14 +1665,15 @@ html[data-theme="dark"].custom-no-feature-sign p a {
 
 /* Site footer */
 
-/* An ink band to close the page: dark on the light theme; on the dark one a
-   lifted surface under a rule rather than a white glare. Its own colour
+/* A dark band to close the page, in the brand kit's dark interface
+   (brand-kit src/pagina.py): its surface, text, muted text and line, the
+   same in both themes. Ink stays for text, as the kit has it. Its own colour
    tokens, so the links, icons and note inside follow it. */
 .footer-criptonauta {
-  --color-bg: var(--cn-ink);
-  --color-base: var(--cn-paper);
-  --color-text: var(--cn-paper);
-  --color-secondary-text: color-mix(in srgb, var(--cn-paper) 70%, transparent);
+  --color-bg: #222024;
+  --color-base: #F1F1F1;
+  --color-text: #F1F1F1;
+  --color-secondary-text: #B5B0AA;
   /* Edge to edge: .global-padding's auto margins would shrink it to its
      content in the .gh-site column; its side padding stays. */
   width: 100%;
@@ -1684,12 +1685,10 @@ html[data-theme="dark"].custom-no-feature-sign p a {
   color: var(--color-text);
 }
 
+/* On the dark theme the page is the kit's ground, one step darker: a rule
+   marks where the band starts. */
 html[data-theme="dark"] .footer-criptonauta {
-  --color-bg: var(--cn-ui-surface);
-  --color-base: var(--cn-ui-text);
-  --color-text: var(--cn-ui-text);
-  --color-secondary-text: var(--cn-ui-muted);
-  border-top: 1px solid var(--cn-ui-line);
+  border-top: 1px solid #3B393E;
 }
 
 @media screen and (max-width: 767px) {

@@ -8,20 +8,24 @@
   gap: 1.2rem;
   padding-top: 3.33rem;
 }
+/* Duotone icons (Phosphor, and the Discourse mark drawn to match) in the
+   secondary text colour - readable at rest - and the text colour on hover. */
 .it-foot-social a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 3.4rem;
-  height: 3.4rem;
+  /* Phosphor draws inside a padded grid: a slightly larger box keeps the
+     icons at the size the solid ones had. */
+  width: 4rem;
+  height: 4rem;
   padding: .4rem;
-  opacity: 0.33;
-  color: var(--color-base);
-  transition: opacity 0.2s ease;
+  color: var(--color-secondary-text);
+  transition: color 0.2s ease;
 }
 .it-foot-social a:hover,
-.it-foot-social a:active {
-  opacity: 1;
+.it-foot-social a:active,
+.it-foot-social a:focus-visible {
+  color: var(--color-base);
 }
 /* Equal boxes, and the icon scales to fill its box. The icons have different
    viewBoxes (github 16, rss 22), so height + width:auto rendered them at
@@ -31,11 +35,6 @@
   width: 100%;
   height: 100%;
   fill: currentColor;
-}
-/* 20% over the 3.4rem github box. */
-.it-foot-social a.rss {
-  width: 4.08rem;
-  height: 4.08rem;
 }
 @media screen and (max-width: 767px) {
     .it-foot-menu {width: 2.3rem;
