@@ -47,6 +47,30 @@
         key.hidden = false;
     }
 
+    /* 1c. Cmd/Ctrl+K opens the search modal. Here in the main bundle, not in
+     *     the deferred search-modal.js, so it is listening as early as
+     *     possible; by the physical key too, so Caps Lock or another layout
+     *     does not miss it; and in the capture phase, before anything on the
+     *     page can stop it reaching Firefox's own Ctrl+K (its search bar).
+     */
+    window.addEventListener('keydown', function (event) {
+        if (!(event.metaKey || event.ctrlKey) || event.altKey || event.shiftKey) {
+            return;
+        }
+        if (event.code !== 'KeyK' && String(event.key).toLowerCase() !== 'k') {
+            return;
+        }
+        event.preventDefault();
+        if (window.nautasSearch && typeof window.nautasSearch.open === 'function') {
+            window.nautasSearch.open();
+            return;
+        }
+        var trigger = document.querySelector('[data-ghost-search]');
+        if (trigger) {
+            trigger.click();
+        }
+    }, true);
+
     /* 2. Bar position. Up to 991px the bar is fixed to the viewport (header
      *    block in screen.css). Ghost renders its announcement bar above
      *    .gh-site, so a bar pinned at top:0 covered it. --head-top follows the

@@ -25,63 +25,73 @@ html:not(.js) .gh-with-sidebar {
     display: block !important;
 }
 
-/* /blog's heading row (index.hbs): on tablets (768-1199px, the narrow
-   comunidad column beside the posts) - "Blog" like the box's "Comunidad", the
-   level switches smaller on its right, both level with the box's heading
-   (its 2.4rem padding and 1px border down). */
-.gh-blog-title {
-    display: none;
+/* /blog's heading row (index.hbs), at every width: "Blog" like the comunidad
+   box's "Comunidad", the three level switches, small, on its right. Beside
+   the box (768px up) the row sits level with the box's heading - its 2.4rem
+   padding and 1px border down, then the 3.5rem picker's height (border-box,
+   so all of it in min-height). */
+.gh-blog-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+    /* No margin under it: the first card's own top padding is the gap. */
+    margin: 0;
+    /* In line with the cards' text, 1rem in (.gh-card-wrapper). */
+    padding: 0 1rem;
 }
 
-@media screen and (min-width: 768px) and (max-width: 1199px) {
-    .gh-blog-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1.2rem;
-        /* The box's padding and border, then its heading's 3.5rem (the
-           picker's height); border-box, so all of it here. */
-        min-height: calc(2.4rem + 1px + 3.5rem);
-        margin: 0;
-        /* In line with the cards' text, 1rem in (.gh-card-wrapper). */
-        padding: calc(2.4rem + 1px) 1rem 0;
-    }
+.gh-blog-title {
+    margin: 0;
+    padding: 0;
+    color: var(--color-base);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+}
 
-    .gh-blog-title {
-        display: block;
-        margin: 0;
-        padding: 0;
-        line-height: 1.2;
-        color: var(--color-base);
-        font-size: 2rem;
-        font-weight: 700;
-        letter-spacing: -0.01em;
-        text-transform: uppercase;
-    }
+.gh-blog-head .gh-levels {
+    gap: 0.8rem 1.6rem;
+    margin: 0;
+}
 
+.gh-blog-head .gh-level-switch {
+    gap: 0.6rem;
+    font-size: 1.4rem;
+}
+
+/* A smaller track and knob, so the three fit beside the heading. */
+.gh-blog-head .gh-level-switch::before {
+    width: 3.2rem;
+    height: 1.8rem;
+}
+
+.gh-blog-head .gh-level-switch::after {
+    width: 1rem;
+    height: 1rem;
+}
+
+.gh-blog-head .gh-level-switch[aria-checked="true"]::after {
+    transform: translate(1.6rem, -50%);
+}
+
+@media screen and (max-width: 479px) {
     .gh-blog-head .gh-levels {
-        gap: 0.8rem 1.6rem;
-        margin: 0;
+        gap: 0.8rem 1.2rem;
     }
 
     .gh-blog-head .gh-level-switch {
-        gap: 0.6rem;
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
+}
 
-    /* A smaller track and knob, so the three fit beside the heading. */
-    .gh-blog-head .gh-level-switch::before {
-        width: 3.2rem;
-        height: 1.8rem;
-    }
-
-    .gh-blog-head .gh-level-switch::after {
-        width: 1rem;
-        height: 1rem;
-    }
-
-    .gh-blog-head .gh-level-switch[aria-checked="true"]::after {
-        transform: translate(1.6rem, -50%);
+@media screen and (min-width: 768px) {
+    .gh-blog-head {
+        min-height: calc(2.4rem + 1px + 3.5rem);
+        padding-top: calc(2.4rem + 1px);
     }
 }
 

@@ -38,18 +38,17 @@ const mobileNavBreakpoint = () => ({
 });
 mobileNavBreakpoint.postcss = true;
 
-// Same breakpoint, JS side, in the two shared files that hardcode it:
-// - lib/dropdown.js collapses overflowing nav items into a "..." toggle whenever
-//   the viewport is wider than 767px - but from 768 to 991px this theme shows
-//   the burger menu, so the items ended up hidden behind "..." inside it.
-// - main.js (shared-theme-assets >= 2.7.5) only opens the burger at 767px and
-//   below, and closes it past that width - on a tablet the burger did nothing.
+// Same breakpoint, JS side, in lib/dropdown.js: it collapses overflowing nav
+// items into a "..." toggle whenever the viewport is wider than 767px - but from
+// 768 to 991px this theme shows the links in the tablet bar, in full.
+// main.js keeps its own 767px: the burger opens on phones only, and closes past
+// that width, as tablets have no burger (screen.css, tablet bar).
 // 767 -> 991 keeps the byte length, so sourcemap columns stay valid.
 const {Transform} = require('stream');
 const navBreakpointJs = () => new Transform({
     objectMode: true,
     transform(file, _encoding, callback) {
-        if (/(lib[\\/]dropdown|v1[\\/]main)\.js$/.test(file.path)) {
+        if (/lib[\\/]dropdown\.js$/.test(file.path)) {
             file.contents = Buffer.from(String(file.contents).replace(/max-width:\s*767px/g, 'max-width: 991px'));
         }
         callback(null, file);
@@ -128,7 +127,7 @@ function js(done) {
             ], {sourcemaps: true}).pipe(navBreakpointJs()),
             src('assets/js/vendor/photoswipe.umd.min.js', {sourcemaps: true}),
             src('assets/js/lightbox.js', {sourcemaps: true}),
-            src(`${sharedThemeAssetsPath}/assets/js/v1/main.js`, {sourcemaps: true}).pipe(navBreakpointJs()),
+            src(`${sharedThemeAssetsPath}/assets/js/v1/main.js`, {sourcemaps: true}),
             // theme.js is loaded on its own in <head> before first paint;
             // bundling it too would register the toggle handler twice and
             // cancel every click.
