@@ -36,8 +36,8 @@ html:not(.js) .gh-with-sidebar {
     align-items: center;
     justify-content: space-between;
     gap: 1.2rem;
-    /* No margin under it: the first card's own top padding is the gap. */
-    margin: 0;
+    /* Room under it, so the first card's picture doesn't touch the text. */
+    margin: 0 0 2.4rem;
     /* In line with the cards' text, 1rem in (.gh-card-wrapper). */
     padding: 0 1rem;
 }
@@ -413,6 +413,13 @@ html:not(.js) .gh-with-sidebar {
 
 .gh-community:has(> .gh-community-more) {
     padding-bottom: 0.8rem;
+}
+
+/* Desktop: on the right, as the other "see all" links under a block. */
+@media screen and (min-width: 1200px) {
+    .gh-community > .gh-community-more {
+        margin-right: 0;
+    }
 }
 
 /* Mascot

@@ -3203,6 +3203,14 @@ body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {
   }
 }
 
+/* Tag pages have no side column: three across on wide screens, as two were
+   most of the screen each. */
+@media screen and (min-width: 1200px) {
+  body.tag-template .gh-listing .gh-topic-content {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 /* Listing titles take the related-posts cards' size from 768px, so they
    don't grow when the community column drops out below 1200px. */
 @media screen and (min-width: 768px) {
