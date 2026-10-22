@@ -1,8 +1,9 @@
 /* Landing mascot (partials/landing.hbs): anonist's mask floats over the top
  * border of the first row of questions, the grid landing.js builds (it comes
  * first in the bundle: files join in name order). He says hello once, when the
- * questions scroll in; after that he only talks when clicked, a random line
- * each time. Every 12 s he glides along his card, hops the gap to the other
+ * questions scroll in, for 6 s; after that he only talks when clicked, a
+ * random line each time, one balloon at a time with a pause between them; a
+ * click anywhere else closes it. Every 12 s he glides along his card, hops the gap to the other
  * one, winks, smiles or plays peek-a-boo: he sinks behind the border, peeks
  * out, sinks again and comes back up in the other style, mask or whole figure.
  * Frames are the symbols of assets/images/anonist-sprite.svg, swapped in steps.
@@ -38,6 +39,8 @@
     var x = 0;
     var talking;
     var said = -1;
+    // When the next click may open a balloon: a pause after each one closes.
+    var ready = 0;
 
     // Frames shared by both styles go by their bare name; the mask's carry mask-.
     var show = function (frame) {
@@ -171,16 +174,20 @@
     };
 
     // The balloon opens on his side with more room and wraps to fit it (landing.css).
-    var say = function (text) {
+    var shut = function () {
+        clearTimeout(talking);
+        bubble.textContent = '';
+        ready = Date.now() + 1500;
+    };
+
+    var say = function (text, ms) {
         var right = grid.clientWidth - x - mascot.offsetWidth - 14;
         var left = x - 14;
         mascot.classList.toggle('is-flipped', left > right);
         bubble.style.maxWidth = Math.max(left, right) + 'px';
         bubble.textContent = text;
         clearTimeout(talking);
-        talking = setTimeout(function () {
-            bubble.textContent = '';
-        }, 2000 + text.length * 50);
+        talking = setTimeout(shut, ms || 2000 + text.length * 50);
     };
 
     grid.appendChild(mascot);
@@ -201,11 +208,20 @@
         seen = entries[0].isIntersecting;
         if (seen && !greeted) {
             greeted = true;
-            say(HELLO);
+            say(HELLO, 6000);
         }
     }).observe(grid);
 
+    document.addEventListener('pointerdown', function (event) {
+        if (bubble.textContent && !mascot.contains(event.target)) {
+            shut();
+        }
+    });
+
     mascot.querySelector('button').addEventListener('click', function () {
+        if (bubble.textContent || Date.now() < ready) {
+            return;
+        }
         // Any line but the last one he said.
         var next;
         do {
