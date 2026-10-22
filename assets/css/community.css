@@ -138,7 +138,7 @@ html:not(.js) .gh-with-sidebar {
     }
 
     .gh-community-more {
-        align-self: flex-start;
+        align-self: center;
     }
 
     /* Room above the box for the mascot's 48px, under the sticky top. */
@@ -401,6 +401,18 @@ html:not(.js) .gh-with-sidebar {
 .gh-community-more svg {
     width: 1.6rem;
     height: 1.6rem;
+}
+
+/* The aside's link: centred, with the room above it rather than below - the
+   box's bottom padding steps down to 0.8rem, the gap over it up to 2.4rem. */
+.gh-community > .gh-community-more {
+    display: flex;
+    width: fit-content;
+    margin: 2.4rem auto 0;
+}
+
+.gh-community:has(> .gh-community-more) {
+    padding-bottom: 0.8rem;
 }
 
 /* Mascot
