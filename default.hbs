@@ -81,21 +81,15 @@
                                 {{/if}}
                                 </a>{{/is}}
                     </div>
-                    {{!-- Phone and tablet bar: the site icon as the way back to the
-                        blog, the full logo instead where it fits (screen.css).
+                    {{!-- Tablet bar only: the site icon as the way back to the blog.
                         Not on the landing, where the logo is right below. --}}
                     {{^is "home"}}{{#if @site.icon}}
                     <a class="gh-head-icon" href="{{@site.url}}/blog/" aria-label="{{t "Blog"}}">
-                        <img class="gh-head-icon-mark" src="{{@site.icon}}" alt="" width="32" height="32">
-                        {{#if @site.logo}}
-                        <img class="logo-nav logo-light" src="{{@site.logo}}" alt="">
-                        <img class="logo-nav logo-dark" src="{{#if @custom.dark_logo}}{{@custom.dark_logo}}{{else}}{{@site.logo}}{{/if}}" alt="">
-                        {{/if}}
+                        <img src="{{@site.icon}}" alt="" width="32" height="32">
                     </a>
                     {{/if}}{{/is}}
-                    {{!-- Phone bar: logo | search | burger, sticky; the theme toggle
-                        shows only with the menu open, under the ✕. Tablet bar
-                        (768-991px): logo | search | menu links | theme, no burger.
+                    {{!-- Tablet/mobile bar: logo | search | burger, sticky. The
+                        theme toggle shows only with the menu open, under the ✕.
                         Desktop keeps search and theme in .gh-head-actions below;
                         CSS shows exactly one set at any width, and display:none
                         keeps the hidden one out of the accessibility tree.
@@ -153,7 +147,7 @@
                             </div>
                         </div>
                     </div>
-                    {{!-- The footer's links, in the open menu below 768px, so they
+                    {{!-- The footer's links, in the open menu below 992px, so they
                         are reachable without scrolling to the end. Hidden above. --}}
                     <div class="gh-head-more">
                         {{navigation type="secondary"}}
@@ -221,7 +215,7 @@
     </div>
     </div>
 
-    {{#is "post, page"}}{{> "toc-toggle"}}{{> "to-top"}}{{/is}}
+    {{#is "post, page"}}{{> "to-top"}}{{/is}}
     {{> "feedback"}}
     {{> "site-structure/site-scripts"}}
     {{{block "scripts"}}}

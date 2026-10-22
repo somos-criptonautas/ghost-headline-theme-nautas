@@ -50,6 +50,9 @@ Disallow: /
 User-Agent: SlySearch
 Disallow: /
 
+User-Agent: AcademicBotRTU
+Disallow: /
+
 # BLEXBot assists internet marketers to get information on the link structure
 # of sites and their interlinking on the web, to avoid any technical and
 # possible legal issues and improve overall online experience.
@@ -131,6 +134,16 @@ Disallow: /
 
 # https://webz.io/bot.html
 User-agent: Webzio-extended
+Disallow: /
+
+User-Agent: GenAI
+Disallow: /
+
+User-Agent: SemrushBot-OCOB
+User-Agent: SemrushBot-FT
+Disallow: /
+
+User-Agent: VelenPublicWebCrawler
 Disallow: /
 
 # https://kangaroollm.com.au/kangaroo-bot/`
