@@ -8,3 +8,4 @@ yarn.lock
 assets/js/canny.js
 assets/built/canny.js
 *.zip
+*.patch

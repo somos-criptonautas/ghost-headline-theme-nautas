@@ -46,6 +46,14 @@
             <span class="gh-landing-path-text">{{t "Where we trade and keep each other going"}}</span>
         </a>
     </nav>
+    {{!-- anonist on the questions' top border, always on: assets/js/mascot-landing.js
+        moves him into the grid landing.js builds and runs him. --}}
+    <div class="gh-mascot gh-landing-mascot is-mask" hidden>
+        <p class="gh-mascot-bubble" role="status"></p>
+        <button class="gh-mascot-button" type="button" aria-label="{{t "Talk to anonist"}}">
+            <svg viewBox="0 0 48 48" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><use href="{{asset "images/anonist-sprite.svg"}}#anonist-48-mask-idle"/></svg>
+        </button>
+    </div>
 </section>
 {{/foreach}}
 {{/get}}

@@ -35,7 +35,7 @@
         ]
     ];
     var STEP = 160;
-    var mascot = document.querySelector('.gh-mascot');
+    var mascot = document.querySelector('.gh-community .gh-mascot');
 
     if (!mascot) {
         return;

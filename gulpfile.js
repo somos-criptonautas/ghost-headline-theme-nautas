@@ -174,6 +174,7 @@ function zipper(done) {
             '!.git', '!.git/**',
             '!.github', '!.github/**',
             '!*.map',
+            '!*.patch',
             '!pnpm-debug.log',
             '!pnpm-lock.yaml',
             '!pnpm-workspace.yaml',

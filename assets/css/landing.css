@@ -232,6 +232,42 @@
     }
 }
 
+/* anonist on the first row's top border (assets/js/mascot-landing.js), drawn
+   by the sidebar's .gh-mascot rules (community.css): room above the grid for
+   him, feet and the mask's shadow on the border. --sink lowers him behind the
+   border, cut at its line; --y lifts him in a hop, over a shadow that stays. */
+.gh-landing-faq {
+    position: relative;
+}
+
+.gh-landing-faq:has(> .gh-landing-mascot) {
+    margin-top: 8rem;
+}
+
+.gh-landing-mascot:not([hidden]) {
+    display: block;
+    top: -48px;
+}
+
+.gh-landing-mascot svg {
+    translate: 0 calc(var(--y, 0px) + var(--sink, 0px));
+    clip-path: inset(0 0 var(--sink, 0px) 0);
+}
+
+.gh-landing-mascot.is-busy svg {
+    animation: none;
+}
+
+.gh-landing-mascot.is-peeking::after {
+    display: none;
+}
+
+/* The script gives the balloon the room on his side; long lines wrap there. */
+.gh-landing-mascot .gh-mascot-bubble {
+    width: max-content;
+    white-space: normal;
+}
+
 /* Each question is a button (assets/js/landing.js) that reads as the heading
    it sits in; below 992px it opens its answer, with + and − at the end. */
 .gh-landing-faq-toggle {
