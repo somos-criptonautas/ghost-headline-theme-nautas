@@ -190,7 +190,9 @@
         talking = setTimeout(shut, ms || 2000 + text.length * 50);
     };
 
-    grid.appendChild(mascot);
+    // First, so no card comes before him: .gh-content gives whatever follows
+    // a card a top margin, which dropped him off the border.
+    grid.prepend(mascot);
     place(cards()[0][0] + 16);
     mascot.classList.remove('is-left');
     mascot.hidden = false;

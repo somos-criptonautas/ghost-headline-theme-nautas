@@ -203,6 +203,18 @@
     margin: 0;
 }
 
+/* Full width means edge to edge: the section is the container, so the
+   scrollbar is left out (100vw counts it, and the page scrolled sideways). */
+.gh-landing-text {
+    container-type: inline-size;
+}
+
+.gh-landing .gh-landing-faq > .kg-width-full {
+    width: 100cqi;
+    max-width: none;
+    margin-left: calc(50% - 50cqi);
+}
+
 .gh-landing-faq-item {
     padding-top: 2.4rem;
     border-top: 1px solid var(--color-border);
