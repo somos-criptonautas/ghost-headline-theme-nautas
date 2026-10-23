@@ -434,9 +434,17 @@
         stage.hidden = false;
         mark();
 
-        // Only as far as it takes to see the player, if it is not in view.
-        stage.scrollIntoView({block: 'nearest', behavior: behavior()});
-        frame.focus();
+        // Bring the whole player to the middle of the window if any of it is
+        // out of view; a player taller than the window lines up at its top.
+        // offsetHeight, not the box: the opening animation shifts that.
+        var box = stage.getBoundingClientRect();
+        if (box.top < 0 || box.bottom > window.innerHeight) {
+            var fits = stage.offsetHeight <= window.innerHeight;
+            stage.scrollIntoView({block: fits ? 'center' : 'start', behavior: behavior()});
+        }
+        // preventScroll: focusing the frame would otherwise jump the page and
+        // cut the scroll above short.
+        frame.focus({preventScroll: true});
     };
 
     closer.addEventListener('click', function () {
