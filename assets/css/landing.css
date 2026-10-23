@@ -198,7 +198,9 @@
     margin-top: 4rem;
 }
 
-.gh-landing-faq > .kg-card {
+/* :is(…, #_) lifts these over .gh-content's margins around cards, up to
+   (0,5,1) on a last card, which put the full video back in the grid. */
+.gh-landing-faq > :is(.kg-card, #_) {
     grid-column: 1 / -1;
     margin: 0;
 }
@@ -209,7 +211,7 @@
     container-type: inline-size;
 }
 
-.gh-landing .gh-landing-faq > .kg-width-full {
+.gh-landing-faq > :is(.kg-width-full, #_) {
     width: 100cqi;
     max-width: none;
     margin-left: calc(50% - 50cqi);
