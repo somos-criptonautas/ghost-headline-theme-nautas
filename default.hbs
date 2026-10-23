@@ -222,7 +222,8 @@
     </div>
 
     {{#is "post, page"}}{{> "toc-toggle"}}{{> "to-top"}}{{/is}}
-    {{> "feedback"}}
+    {{!-- Not on the landing: it has its own ways to reach us. --}}
+    {{^is "home"}}{{> "feedback"}}{{/is}}
     {{> "site-structure/site-scripts"}}
     {{{block "scripts"}}}
     {{ghost_foot}}
