@@ -22,8 +22,11 @@
 
     Array.prototype.forEach.call(questions, function (question) {
         var group = [question];
+        // A card set to wide or full width in the editor (a video, a picture)
+        // stays out of the two-across cards: after its answer, across the grid.
+        var wides = [];
         for (var el = question.nextElementSibling; el && el.tagName !== 'H3'; el = el.nextElementSibling) {
-            group.push(el);
+            (question !== last && el.matches('.kg-width-wide, .kg-width-full') ? wides : group).push(el);
         }
         var item = question === last ? next : document.createElement('div');
         if (question !== last) {
@@ -32,6 +35,9 @@
         }
         group.forEach(function (node) {
             item.appendChild(node);
+        });
+        wides.forEach(function (node) {
+            grid.appendChild(node);
         });
     });
 
@@ -64,7 +70,7 @@
     // buttons step out of the way.
     var wide = window.matchMedia('(min-width: 992px)');
     var toggles = [];
-    Array.prototype.forEach.call(grid.children, function (item, index) {
+    Array.prototype.forEach.call(grid.querySelectorAll(':scope > .gh-landing-faq-item'), function (item, index) {
         var question = item.firstElementChild;
         var answer = document.createElement('div');
         answer.className = 'gh-landing-faq-answer';
