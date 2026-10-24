@@ -3154,9 +3154,10 @@ body:not(.home-template) .gh-listing .gh-card {
   transform: translate(2.2rem, -50%);
 }
 
-/* Cards a switch brings back come in, rather than popping (levels.js adds
-   is-switched on the first switch, so the first load does not animate). */
-@keyframes gh-level-in {
+/* The site's one way in for something that appears - a short fade and rise.
+   Cards a level switch brings back (levels.js adds is-switched on the first
+   switch, so the first load does not animate), a landing answer that opens. */
+@keyframes gh-in {
   from {
     opacity: 0;
     transform: translateY(0.8rem);
@@ -3164,7 +3165,7 @@ body:not(.home-template) .gh-listing .gh-card {
 }
 
 .gh-feed.is-switched > .gh-card {
-  animation: gh-level-in 0.25s ease;
+  animation: gh-in 0.25s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -217,6 +217,21 @@
     margin-left: calc(50% - 50cqi);
 }
 
+/* Phones: a wide video at 16:9 is a short strip; 4:3 fills more of the
+   screen, the sides cropped (the video covers its box). !important: Ghost
+   sets the 16:9 padding inline. */
+@media screen and (max-width: 767px) {
+    .gh-landing-faq > .kg-video-card .kg-video-container {
+        padding-bottom: 75% !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gh-landing-faq-item.is-open .gh-landing-faq-answer {
+        animation: none;
+    }
+}
+
 .gh-landing-faq-item {
     padding-top: 2.4rem;
     border-top: 1px solid var(--color-border);
@@ -354,6 +369,11 @@
 
     .gh-landing-faq-item:not(.is-open) .gh-landing-faq-answer {
         display: none;
+    }
+
+    /* Opens as a switched level's cards come back (gh-in, screen.css). */
+    .gh-landing-faq-item.is-open .gh-landing-faq-answer {
+        animation: gh-in 0.25s ease;
     }
 
     .gh-landing-faq-toggle:focus-visible {
