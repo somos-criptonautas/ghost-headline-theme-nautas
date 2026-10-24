@@ -176,13 +176,30 @@
    last question, how to go on, sits under them at full width and leads into
    the three cards. */
 
+/* One space between the landing's sections: 8rem, 5.6rem on phones. */
+.gh-landing {
+    --landing-gap: 8rem;
+}
+
+@media screen and (max-width: 767px) {
+    .gh-landing {
+        --landing-gap: 5.6rem;
+    }
+}
+
 .gh-landing-text {
-    padding: 2.4rem 0 8rem;
+    padding: 2.4rem 0 var(--landing-gap);
 }
 
 .gh-landing-text .gh-content,
 .gh-landing-way .gh-content {
     display: block;
+}
+
+/* The three ways in: the band's full width on tablets too, not the text
+   measure .gh-content keeps there ("comunidad" broke in two). */
+.gh-landing-way .gh-content {
+    max-width: none;
 }
 
 .gh-landing-text .gh-content > *,
@@ -192,9 +209,10 @@
 }
 
 .gh-landing-faq {
+    --faq-row-gap: 3.2rem;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 3.2rem 6.4rem;
+    gap: var(--faq-row-gap) 6.4rem;
     margin-top: 4rem;
 }
 
@@ -202,7 +220,8 @@
    (0,5,1) on a last card, which put the full video back in the grid. */
 .gh-landing-faq > :is(.kg-card, #_) {
     grid-column: 1 / -1;
-    margin: 0;
+    /* With the grid's row gap, the section space above it, as below it. */
+    margin: calc(var(--landing-gap) - var(--faq-row-gap)) 0 0;
 }
 
 /* Full width means edge to edge: the section is the container, so the
@@ -319,7 +338,8 @@
 @media screen and (max-width: 991px) {
     /* Soft cards: the brand's light surface and the theme's hairline. */
     .gh-landing-faq {
-        gap: 0.8rem;
+        --faq-row-gap: 0.8rem;
+        gap: var(--faq-row-gap);
     }
 
     .gh-landing-faq-item {
@@ -385,7 +405,8 @@
 /* How to go on and the three cards on a soft grey band, full bleed: a spread
    shadow in the same grey, clipped to the sides. */
 .gh-landing-next {
-    margin-top: 6.4rem;
+    /* What members say ends with the section space; nothing more above. */
+    margin-top: 0;
     /* A little less below: the heading's line-height already adds air
        above its letters, so equal padding read as more under the cards. */
     padding-block: 11.2rem 9.6rem;
@@ -447,7 +468,7 @@
 /* What members say */
 
 .gh-landing-voices {
-    padding: 8rem 0;
+    padding: var(--landing-gap) 0;
 }
 
 .gh-landing-voices-title {
@@ -594,11 +615,7 @@
 
 @media screen and (max-width: 767px) {
     .gh-landing-text {
-        padding: 1.6rem 0 5.6rem;
-    }
-
-    .gh-landing-voices {
-        padding: 5.6rem 0;
+        padding-top: 1.6rem;
     }
 
     .gh-landing-next {
@@ -642,4 +659,10 @@
     .gh-landing-more .gh-community-card:nth-child(n + 5) {
         display: none;
     }
+}
+
+/* The band of the three ways in meets the footer: no strip of page between
+   two coloured blocks. */
+.home-template .footer-criptonauta {
+    margin-top: 0;
 }
