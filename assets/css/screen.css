@@ -524,6 +524,25 @@ a.gh-card-link:hover {
   align-items: center;
 }
 
+/* Date and reading time on one line, the clock as tall as the text. */
+.gh-card-when {
+  flex-wrap: wrap;
+  column-gap: 1.2rem;
+}
+
+.gh-card-reading {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.gh-card-reading svg {
+  flex: none;
+  width: 1.2em;
+  height: 1.2em;
+}
+
 /* Styles specific to list style sections */
 
 .gh-topic-list {

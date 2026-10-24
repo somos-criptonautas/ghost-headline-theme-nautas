@@ -35,8 +35,12 @@
             <footer class="gh-card-footer">
                 <span class="gh-card-author">por {{#foreach authors}}{{#if @first}}{{name}}{{else}},
                     {{name}}{{/if}}{{/foreach}}</span>
-                {{!-- The last update, not the first publication. --}}
-                <time class="gh-card-date" datetime="{{date updated_at format="YYYY-MM-DD"}}">{{date updated_at timeago="true"}}</time>
+                {{!-- The last update, not the first publication; then the
+                    estimated reading time, on the same line. --}}
+                <span class="gh-card-when">
+                    <time class="gh-card-date" datetime="{{date updated_at format="YYYY-MM-DD"}}">{{date updated_at timeago="true"}}</time>
+                    <span class="gh-card-reading">{{> "icons/phosphor/clock"}}{{reading_time minute="1 min" minutes="% min"}}</span>
+                </span>
                 {{comment_count class="gh-card-comments"}}
             </footer>
         </div>
