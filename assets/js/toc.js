@@ -37,6 +37,11 @@
         if (!window.tocbot) {
             return;
         }
+        // A heading counts as the current one once it is in the top third of
+        // the window, where it is being read, not once it has reached the top
+        // edge; one picked from the list lands a quarter of the way down,
+        // inside that third, so it is the one marked.
+        var height = window.innerHeight;
         window.tocbot.init({
             tocSelector: '.toc',
             contentSelector: '.gh-content.gh-canvas',
@@ -44,8 +49,8 @@
             hasInnerContainers: true,
             scrollSmooth: true,
             scrollSmoothDuration: 420,
-            headingsOffset: 40,
-            scrollSmoothOffset: -40
+            headingsOffset: Math.round(height / 3),
+            scrollSmoothOffset: -Math.round(height / 4)
         });
         toggle();
     });
