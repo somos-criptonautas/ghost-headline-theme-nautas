@@ -1,7 +1,7 @@
 {{!< default}}
 {{!-- /blog/ (and /page/2/ on): every post, newest first, loading on as the
-    reader scrolls. The community: the aside column from 768px, on phones
-    the strip after the third post, as the reader scrolls into the list.
+    reader scrolls. The community: the aside column from 1200px; below,
+    the strip after the fourth post (two full rows on tablets).
     Page 1 opens with the feature image of the Ghost page "blog", when there
     is one (its own URL is taken by this route, so it shows only here), then
     the forum and the level pills over every post, newest first. Featured
@@ -38,7 +38,7 @@
             <div class="gh-topic-content gh-feed">
                 {{#foreach posts}}
                     {{> "loop-grid" has_large_post=false}}
-                    {{#has number="3"}}{{^is "paged"}}{{> "community-related" strip=true}}{{/is}}{{/has}}
+                    {{#has number="4"}}{{^is "paged"}}{{> "community-related" strip=true}}{{/is}}{{/has}}
                 {{/foreach}}
             </div>
 

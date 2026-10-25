@@ -650,6 +650,15 @@ nav.gh-article-tag {
   width: 100%;
 }
 
+/* Tablets: the cover at 70% of the column, centred - at full width a tall
+   one filled the screen and pushed the author out of view. */
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+  .post-template .gh-article-header .gh-article-image {
+    justify-self: center;
+    width: 70%;
+  }
+}
+
 .has-wide-image .gh-article-image {
   grid-column: wide-start / wide-end;
   margin-bottom: 5rem;
@@ -1724,7 +1733,7 @@ html[data-theme="dark"] .footer-criptonauta {
 }
 
 .footer-criptonauta .it-foot-social {
-  padding-top: 1.2rem;
+  padding-top: 1.5rem;
 }
 
 @media screen and (max-width: 767px) {
@@ -3217,7 +3226,7 @@ body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {
   flex-direction: inherit;
 }
 
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 768px) {
   body:not(.home-template) .gh-listing .gh-topic-content {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -6190,11 +6199,12 @@ button.gh-author-social-link {
     margin-right: auto;
   }
 
-  /* The landing has no search: its link to the blog takes that place, and
-     the menu, whose only link is the same, steps aside. */
+  /* The landing has no search: its link to the blog goes to the right,
+     before the theme toggle, and the menu, whose only link is the same,
+     steps aside. */
   #gh-head .gh-head-bar-blog {
     order: 2;
-    margin-right: auto;
+    margin-left: auto;
   }
 
   .home-template #gh-head .gh-head-menu {

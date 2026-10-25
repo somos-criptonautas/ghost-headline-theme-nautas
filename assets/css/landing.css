@@ -188,7 +188,9 @@
 }
 
 .gh-landing-text {
-    padding: 2.4rem 0 var(--landing-gap);
+    /* No space under it: the next section's top space is the one gap
+       between them, as everywhere on the landing. */
+    padding: 2.4rem 0 0;
 }
 
 .gh-landing-text .gh-content,
@@ -665,4 +667,11 @@
    two coloured blocks. */
 .home-template .footer-criptonauta {
     margin-top: 0;
+}
+
+/* Tablets: the question cards with room in proportion to their width. */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+    .gh-landing-faq-item {
+        padding: 2.8rem 3.2rem;
+    }
 }

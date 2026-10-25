@@ -88,27 +88,16 @@ html:not(.js) .gh-with-sidebar {
     }
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1200px) {
     .gh-blog-head {
         min-height: calc(2.4rem + 1px + 3.5rem);
         padding-top: calc(2.4rem + 1px);
     }
 }
 
-/* Tablet: a narrower column, and one card per row beside it (two would be
-   under 200px wide at 768px). */
-@media screen and (min-width: 768px) and (max-width: 1199px) {
-    .gh-with-sidebar {
-        --gh-sidebar-width: 26rem;
-        --gh-sidebar-gap: 3.2rem;
-    }
-
-    body:not(.home-template) .gh-with-sidebar:has(> .gh-community:not([hidden])) .gh-listing .gh-topic-content {
-        grid-template-columns: minmax(0, 1fr);
-    }
-}
-
-@media screen and (min-width: 768px) {
+/* The side column is desktop's (1200px up). Below, two cards a row on
+   tablets and the forum's cards in the list (the strip, below). */
+@media screen and (min-width: 1200px) {
     .gh-with-sidebar:has(> .gh-community:not([hidden])) {
         display: grid;
         grid-template-columns: minmax(0, 1fr) var(--gh-sidebar-width);
@@ -810,15 +799,25 @@ html[data-theme="dark"] .gh-mascot:not(.is-mask) svg {
 /* Community strip (home.hbs, index.hbs; community-related.hbs strip=true): on phones, in
    place of the aside, which is the column from 768px up. */
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 1200px) {
     .gh-community-strip {
         display: none;
     }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 1199px) {
     .gh-with-sidebar:has(.gh-community-strip) .gh-community {
         display: none;
+    }
+}
+
+/* Tablets: the strip's cards as under an article - two across, picture
+   beside the text - rather than a sideways row. */
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+    .gh-feed > .gh-community-strip .gh-community-cards.gh-carousel {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        overflow: visible;
     }
 }
 
@@ -827,7 +826,7 @@ html[data-theme="dark"] .gh-mascot:not(.is-mask) svg {
     margin: 4.8rem 0 0;
 }
 
-/* /blog and tag pages: in the list after the third post, across it. */
+/* /blog: in the list after the fourth post, across it. */
 .gh-feed > .gh-community-strip {
     grid-column: 1 / -1;
     margin: 0;
