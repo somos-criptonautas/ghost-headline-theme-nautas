@@ -3306,18 +3306,51 @@ body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {
   margin: 5vw auto;
 }
 
-.kg-callout-card {
-  padding: 1.7em 1.5em;
+/* Ghost's callout cards in the forum callouts' style (community.css
+   .forum-callout): a box tinted with the colour picked in the editor and an
+   edge in it, no frame. The emoji, larger, rests on the box's top edge at the
+   right - half out of it, so it takes no room from the text. */
+.gh-content .kg-callout-card {
+  --callout: var(--color-secondary-text);
+  position: relative;
+  display: block;
+  padding: 2.4rem 2.8rem;
+  border-left: 3px solid var(--callout);
+  border-radius: 0 0.6rem 0.6rem 0;
+  background: color-mix(in srgb, var(--callout) 10%, transparent);
+  box-shadow: none;
+  color: var(--color-base);
 }
 
-@media screen and (max-width: 767px) {
-  .kg-callout-emoji {
-    margin-left: -4rem;
-    margin-top: -4rem;
-    font-size: 4.5 rem !important;
-    padding: 0.33rem !important;
-  }
+.gh-content .kg-callout-card-blue { --callout: #3B82F6; }
+.gh-content .kg-callout-card-green { --callout: #22A06B; }
+.gh-content .kg-callout-card-yellow { --callout: #E8890C; }
+.gh-content .kg-callout-card-red { --callout: #E5484D; }
+.gh-content .kg-callout-card-pink { --callout: #E147AE; }
+.gh-content .kg-callout-card-purple { --callout: var(--cn-violeta-fill); }
+.gh-content .kg-callout-card-accent { --callout: var(--ghost-accent-color); }
+
+.gh-content .kg-callout-card.kg-callout-card-accent a {
+  color: inherit;
 }
+
+.gh-content .kg-callout-card .kg-callout-emoji {
+  position: absolute;
+  top: 0;
+  right: 1.6rem;
+  margin: 0;
+  padding: 0;
+  font-size: 3rem;
+  line-height: 1;
+  translate: 0 -55%;
+}
+
+/* Room above for the half of it that stands out. :is(…, #_) lifts this over
+   .gh-content's margins around cards, up to (0,5,1). */
+.gh-content > :is(.kg-callout-card, #_):has(.kg-callout-emoji) {
+  margin-top: calc(2em * var(--content-spacing-multiplier, 1) + 1.6rem);
+}
+
 
 .beta-box {
   max-width: 666px;
