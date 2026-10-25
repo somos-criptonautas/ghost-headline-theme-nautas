@@ -3314,7 +3314,8 @@ body:not(.home-template) .gh-listing .gh-card .gh-card-link:nth-child(even) {
   --callout: var(--color-secondary-text);
   position: relative;
   display: block;
-  padding: 2.4rem 2.8rem;
+  /* Room above and below the text; the sides as the box first had. */
+  padding: 2.8rem 2rem;
   border-left: 3px solid var(--callout);
   border-radius: 0 0.6rem 0.6rem 0;
   background: color-mix(in srgb, var(--callout) 10%, transparent);
