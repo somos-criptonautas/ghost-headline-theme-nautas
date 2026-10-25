@@ -229,3 +229,15 @@
         margin-inline: auto;
     }
 }
+
+/* A series hub (/journey): the cards clear of the cover, and the text right
+   after them - its first paragraph's 9-15rem (screen.css) is for text that
+   follows the cover directly. */
+body.is-collection .gh-collection.is-cards {
+    margin-top: 6.4rem;
+    margin-bottom: 4.8rem;
+}
+
+body.is-collection .gh-content:only-child > :first-child:not(.kg-width-full) {
+    margin-top: 0;
+}

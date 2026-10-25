@@ -6266,3 +6266,32 @@ button.gh-author-social-link {
     display: none;
   }
 }
+
+/* Ghost's video card positions its video inside a 16:9 box: the margin
+   .gh-content gives videos pushed it down, a strip of empty box on top and
+   the bottom cut off. */
+.gh-content .kg-video-card video {
+  margin: 0;
+}
+
+/* The tablet bar's theme toggle: its icon carries .feather's side margin,
+   which set it 5px further right than the bar's left icon is in. */
+#gh-head .gh-head-bar-toggle svg {
+  margin: 0;
+}
+
+/* Tablets: a full-image cover 30% shorter - at 80% of the screen it was all
+   there was to see. */
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+  .post-template .gh-cover,
+  .page-template .gh-cover {
+    --cover-height: 56vh;
+  }
+
+  @supports (height: 1svh) {
+    .post-template .gh-cover,
+    .page-template .gh-cover {
+      --cover-height: 56svh;
+    }
+  }
+}

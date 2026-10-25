@@ -653,6 +653,12 @@ html[data-theme="dark"] .gh-cover-caption {
     height: 1.1em;
 }
 
+/* Breadcrumbs are in capitals, whose middle sits above the line's: the
+   icons up to it. */
+.gh-article-tag .gh-channel-icon {
+    translate: 0 -0.08em;
+}
+
 /* Cards: channel left, difficulty right, the row under the image - set as
    the card footer (weight, colour, capitals), a step smaller. */
 .gh-card-marks {

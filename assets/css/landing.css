@@ -176,7 +176,8 @@
    last question, how to go on, sits under them at full width and leads into
    the three cards. */
 
-/* One space between the landing's sections: 8rem, 5.6rem on phones. */
+/* The landing's section space: 8rem, 5.6rem on phones - each section keeps
+   it above and below, so two of them meet with twice that between. */
 .gh-landing {
     --landing-gap: 8rem;
 }
@@ -188,9 +189,7 @@
 }
 
 .gh-landing-text {
-    /* No space under it: the next section's top space is the one gap
-       between them, as everywhere on the landing. */
-    padding: 2.4rem 0 0;
+    padding: 2.4rem 0 var(--landing-gap);
 }
 
 .gh-landing-text .gh-content,
@@ -222,8 +221,9 @@
    (0,5,1) on a last card, which put the full video back in the grid. */
 .gh-landing-faq > :is(.kg-card, #_) {
     grid-column: 1 / -1;
-    /* With the grid's row gap, the section space above it, as below it. */
-    margin: calc(var(--landing-gap) - var(--faq-row-gap)) 0 0;
+    /* With the grid's row gap, the space between two sections above it, as
+       below it (this section's bottom and the next one's top). */
+    margin: calc(2 * var(--landing-gap) - var(--faq-row-gap)) 0 0;
 }
 
 /* Full width means edge to edge: the section is the container, so the
@@ -386,7 +386,7 @@
     }
 
     .gh-landing-faq-answer > :first-child {
-        margin-top: 1.2rem;
+        margin-top: 2rem;
     }
 
     .gh-landing-faq-item:not(.is-open) .gh-landing-faq-answer {
@@ -407,8 +407,8 @@
 /* How to go on and the three cards on a soft grey band, full bleed: a spread
    shadow in the same grey, clipped to the sides. */
 .gh-landing-next {
-    /* What members say ends with the section space; nothing more above. */
-    margin-top: 0;
+    /* With what members say's bottom space, the space between two sections. */
+    margin-top: var(--landing-gap);
     /* A little less below: the heading's line-height already adds air
        above its letters, so equal padding read as more under the cards. */
     padding-block: 11.2rem 9.6rem;
@@ -669,9 +669,14 @@
     margin-top: 0;
 }
 
-/* Tablets: the question cards with room in proportion to their width. */
+/* Tablets: the question cards with room in proportion to their width, and
+   their questions between the phone's 2rem and desktop's 2.5rem. */
 @media screen and (min-width: 768px) and (max-width: 991px) {
     .gh-landing-faq-item {
         padding: 2.8rem 3.2rem;
+    }
+
+    .gh-landing .gh-landing-faq .gh-landing-faq-item h3 {
+        font-size: 2.4rem;
     }
 }
