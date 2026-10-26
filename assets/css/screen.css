@@ -3996,12 +3996,17 @@ blockquote.kg-blockquote-alt {
   padding: 1.05rem 1.7rem;
 }
 
-/* Ghost paints the box white with dark text, in dark mode too: the page's
-   ground and text instead, a hairline in the theme's border colour. */
+/* Ghost paints link, audio, file and product cards white with dark text,
+   in dark mode too - the shared card.css, with !important, through these two
+   variables: the page's ground and text instead, a hairline in the theme's
+   border colour. */
+.gh-content :is(.kg-bookmark-card, .kg-audio-card, .kg-file-card, .kg-product-card) {
+  --background-color: var(--color-bg);
+  --color-darker-gray: var(--color-base);
+}
+
 .gh-content .kg-bookmark-container {
   border-color: var(--color-border);
-  background: var(--color-bg);
-  color: var(--color-base);
 }
 
 .gh-content .kg-bookmark-description,
