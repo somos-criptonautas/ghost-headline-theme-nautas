@@ -642,6 +642,29 @@ html.ns-open {
     animation: ns-skel 1.4s ease-in-out infinite;
 }
 
+/* Result rows while a search is on its way: a title bar and a shorter
+   line under it, in a row's padding. */
+.ns__hit--loading {
+    display: block;
+}
+
+.ns__hit--loading .ns__skel:first-child {
+    width: 55%;
+    height: 1.6rem;
+    margin-bottom: 1rem;
+}
+
+.ns__hit--loading .ns__skel:last-child {
+    width: 85%;
+    margin-bottom: 0.4rem;
+}
+
+/* The previous query's rows, faded while the new answer is on its way. */
+.ns__list.is-stale {
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
 .ns__skels .ns__skel:nth-child(2) { width: 94%; }
 .ns__skels .ns__skel:nth-child(3) { width: 97%; }
 .ns__skels .ns__skel:nth-child(4) { width: 88%; }

@@ -654,9 +654,13 @@ html[data-theme="dark"] .gh-cover-caption {
 }
 
 /* Breadcrumbs are in capitals, whose middle sits above the line's: the
-   icons up to it. */
+   icons and the arrow between them up to it. */
 .gh-article-tag .gh-channel-icon {
     translate: 0 -0.08em;
+}
+
+.gh-article-tag > [aria-hidden="true"] {
+    translate: 0 -0.1em;
 }
 
 /* Cards: channel left, difficulty right, the row under the image - set as

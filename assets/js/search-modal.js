@@ -893,6 +893,20 @@
             return;
         }
 
+        /* Until the first answer for what is typed arrives: rows of grey bars
+         * where the results will go, or the previous query's rows faded. */
+        var current = SOURCES.some(function (source) {
+            var r = results[source.key];
+            return source.on && r && r.query === lastQuery;
+        });
+        panes.list.classList.toggle('is-stale', !current);
+        if (!current && !panes.list.children.length) {
+            for (var row = 0; row < 4; row++) {
+                state.appendChild(skeleton('ns__hit ns__hit--loading', 2));
+            }
+            return;
+        }
+
         /* "No results" only once it is true for what is typed: not while the
          * answer still on screen belongs to the previous query, not while a
          * search is in flight, and not before the semantic ranking - which can

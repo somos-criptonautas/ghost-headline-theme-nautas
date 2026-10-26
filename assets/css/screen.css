@@ -860,17 +860,8 @@ body .gh-read-next .gh-topic-grid .gh-card {
   padding: 0;
 }
 
-.gh-read-next .gh-card-wrapper {
-  padding: 1.8rem 0 0;
-}
-
-/* Phones: one card across, as on /blog - the same room above the text and
-   the same small inset from the picture's edge. */
-@media screen and (max-width: 767px) {
-  .gh-read-next .gh-card-wrapper {
-    padding: 2.33rem 0 0 1rem;
-  }
-}
+/* The card as on /blog (.gh-card-wrapper): the same room above the text
+   and inset from the picture's edge. */
 
 /* Card titles: 3rem in rows of three - between the old 2.11rem and the
    full var(--h1-size) of the two-per-row listings. Phones, one per row,
@@ -885,10 +876,6 @@ body .gh-read-next .gh-topic-grid .gh-card {
     font-size: var(--h1-size);
     line-height: 1.11;
   }
-}
-
-.gh-read-next .gh-topic-grid .gh-card:not(.large) .gh-card-excerpt {
-  display: none;
 }
 
 /* A grid: one card across on phones, two on tablets, three from 992px. */
@@ -4009,6 +3996,19 @@ blockquote.kg-blockquote-alt {
   padding: 1.05rem 1.7rem;
 }
 
+/* Ghost paints the box white with dark text, in dark mode too: the page's
+   ground and text instead, a hairline in the theme's border colour. */
+.gh-content .kg-bookmark-container {
+  border-color: var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-base);
+}
+
+.gh-content .kg-bookmark-description,
+.gh-content .kg-bookmark-metadata {
+  color: var(--color-secondary-text);
+}
+
 /* Bookmark hover */
 .kg-bookmark-container {
   opacity: 0.78;
@@ -4021,9 +4021,15 @@ blockquote.kg-blockquote-alt {
 }
 
 .kg-toggle-heading-text {
-  font-size: 2.5rem !important;
+  font-size: 2.2rem !important;
   margin: 0;
   padding: 0;
+}
+
+/* Lighter than the article's h2 and h3 (Ghost sets 700), so a toggle under
+   a heading reads as a question in that section, not a second heading. */
+.kg-toggle-card h4.kg-toggle-heading-text {
+  font-weight: 600;
 }
 
 .kg-toggle-card-icon,
