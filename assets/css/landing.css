@@ -405,7 +405,8 @@
 }
 
 /* How to go on and the three cards on a soft grey band, full bleed: a spread
-   shadow in the same grey, clipped to the sides. */
+   shadow in the same grey, clipped to the sides. Its heading on the left, as
+   the landing's other section headings. */
 .gh-landing-next {
     /* With what members say's bottom space, the space between two sections. */
     margin-top: var(--landing-gap);
@@ -415,10 +416,15 @@
     background: var(--cn-ui-surface);
     box-shadow: 0 0 0 100vmax var(--cn-ui-surface);
     clip-path: inset(0 -100vmax);
-    text-align: center;
 }
 
-/* The three ways in: cards on the kit's flat ink shadow, lifting off it. */
+/* The three ways in: cards on the kit's flat ink shadow, lifting off it -
+   the band's full width, edges in line with its heading. */
+.gh-landing-next .gh-landing-paths {
+    width: auto;
+    margin-inline: 0;
+}
+
 
 .gh-landing-paths {
     display: grid;
