@@ -53,7 +53,7 @@
             {{> "post-share" end=true}}
             {{> "comments"}}
             {{>webmentions}}
-            {{#if primary_tag}}{{> "community-related" category=primary_tag.slug}}{{/if}}
+            {{#foreach tags limit="1"}}{{> "community-related" category=slug}}{{/foreach}}
             {{/is}}
     </article>
     {{/post}}

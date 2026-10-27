@@ -43,6 +43,11 @@ html:not(.js) .gh-with-sidebar {
 }
 
 .gh-blog-title {
+    /* With the notebook icon the articles' breadcrumb uses for the blog, as
+       the comunidad box's heading has the forum's. */
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     margin: 0;
     padding: 0;
     color: var(--color-base);
@@ -51,6 +56,12 @@ html:not(.js) .gh-with-sidebar {
     line-height: 1.2;
     letter-spacing: -0.01em;
     text-transform: uppercase;
+}
+
+.gh-blog-title svg {
+    flex: none;
+    width: 2.2rem;
+    height: 2.2rem;
 }
 
 .gh-blog-head .gh-levels {

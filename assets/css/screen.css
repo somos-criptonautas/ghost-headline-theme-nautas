@@ -879,17 +879,21 @@ body .gh-read-next .gh-topic-grid .gh-card {
 }
 
 /* A grid: one card across on phones, two on tablets, three from 992px. */
+/* Phones: /blog's gap and the cards' own padding above and below (the
+   listing keeps it there), so the space under each card is the same. */
 body .gh-read-next .gh-topic-content {
   grid-template-columns: minmax(0, 1fr);
-  row-gap: 3.33rem;
+  row-gap: 2.4rem;
   column-gap: var(--grid-gap);
   justify-items: stretch;
   align-items: start;
   max-width: 100%;
 }
 
-.gh-read-next .gh-card.post {
-  padding-block: 0;
+@media screen and (min-width: 768px) {
+  .gh-read-next .gh-card.post {
+    padding-block: 0;
+  }
 }
 
 @media screen and (min-width: 768px) {
@@ -6339,4 +6343,11 @@ button.gh-author-social-link {
       --cover-height: 56svh;
     }
   }
+}
+
+/* With a level switched off, the posts left may all come after the forum
+   strip's place (after the fourth post): the strip goes to the end, so the
+   list opens with a post. */
+.gh-feed.is-filtered > .gh-community-strip {
+  order: 1;
 }

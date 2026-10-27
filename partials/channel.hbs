@@ -1,2 +1,4 @@
-{{!-- The post's channel (primary tag): its icon and name. --}}
-{{#primary_tag}}<span class="gh-channel">{{> "channel-icon" slug=slug}}{{name}}</span>{{/primary_tag}}
+{{!-- The post's channel: its first public tag's icon and name. Not
+    primary_tag: Ghost leaves that empty when an internal tag (#cover-filter)
+    comes first. --}}
+{{#foreach tags limit="1"}}<span class="gh-channel">{{> "channel-icon" slug=slug}}{{name}}</span>{{/foreach}}

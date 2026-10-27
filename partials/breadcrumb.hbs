@@ -9,4 +9,9 @@
 {{#foreach tags visibility="internal" limit="1"}}
 {{> "breadcrumb-trail" crumb_icon=slug crumb_name=slug crumb_url=(concat @site.url "/" slug "/") crumb_page_title=../title crumb_page_url=(concat @site.url "/" ../slug "/")}}
 {{/foreach}}
+{{else}}
+{{!-- An internal tag first leaves primary_tag empty: the first public one. --}}
+{{#foreach tags limit="1"}}
+{{> "breadcrumb-trail" crumb_icon=slug crumb_name=name crumb_url=url crumb_page_title=../title crumb_page_url=(concat @site.url "/" ../slug "/")}}
+{{/foreach}}
 {{/if}}

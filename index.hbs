@@ -25,7 +25,7 @@
             A "Blog" heading leads the row, level with the comunidad box's own
             heading where the box is beside the posts (community.css). --}}
         <div class="gh-blog-head">
-        <h2 class="gh-blog-title">{{t "Blog"}}</h2>
+        <h2 class="gh-blog-title">{{> "icons/phosphor/notebook"}}{{t "Blog"}}</h2>
         <div class="gh-levels" role="group" aria-label="{{t "Level"}}">
             {{#get "posts" filter="tag:hash-nivel-1" limit="1"}}{{#if posts}}<button class="gh-level-switch" type="button" role="switch" aria-checked="true" data-level="hash-nivel-1">{{t "level"}} 1</button>{{/if}}{{/get}}
             {{#get "posts" filter="tag:hash-nivel-2" limit="1"}}{{#if posts}}<button class="gh-level-switch" type="button" role="switch" aria-checked="true" data-level="hash-nivel-2">{{t "level"}} 2</button>{{/if}}{{/get}}
