@@ -966,11 +966,12 @@ html[data-theme="dark"] .kg-signup-card .kg-signup-card-button:hover {
     }
 }
 
-/* Glossary terms in beginner posts (assets/js/glossary.js): a faint dotted
-   underline, nothing else, and the definition in a small card when tapped. */
+/* Glossary terms (assets/js/glossary.js): a dotted underline in the brand's
+   ink violet - at 1px and 45% of the text colour nobody saw them - and the
+   definition in a small card when tapped. */
 .cn-term {
     all: unset;
-    border-bottom: 1px dotted color-mix(in srgb, var(--color-base) 45%, transparent);
+    border-bottom: 2px dotted var(--cn-violeta-tinta);
     cursor: help;
 }
 

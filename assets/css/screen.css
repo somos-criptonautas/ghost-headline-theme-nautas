@@ -794,7 +794,8 @@ gh-author-name-list {
    space under it, so it reads as the head of the cards, not the tail of
    the block before. */
 .gh-read-next .gh-pagehead {
-  margin: 6.4rem auto 0;
+  /* 8rem above, as the comments and Comunidad before it. */
+  margin: 8rem auto 0;
 }
 
 .gh-community-related .gh-pagehead {
@@ -879,21 +880,20 @@ body .gh-read-next .gh-topic-grid .gh-card {
 }
 
 /* A grid: one card across on phones, two on tablets, three from 992px. */
-/* Phones: /blog's gap and the cards' own padding above and below (the
-   listing keeps it there), so the space under each card is the same. */
+/* Phones: the space /blog leaves between cards (its 2.4rem gap and the
+   cards' 2.33rem padding above and below) as the gap alone, so the first
+   card is as close to the heading as Comunidad's. */
 body .gh-read-next .gh-topic-content {
   grid-template-columns: minmax(0, 1fr);
-  row-gap: 2.4rem;
+  row-gap: 7rem;
   column-gap: var(--grid-gap);
   justify-items: stretch;
   align-items: start;
   max-width: 100%;
 }
 
-@media screen and (min-width: 768px) {
-  .gh-read-next .gh-card.post {
-    padding-block: 0;
-  }
+.gh-read-next .gh-card.post {
+  padding-block: 0;
 }
 
 @media screen and (min-width: 768px) {
@@ -5541,7 +5541,8 @@ html[data-theme="dark"] .is-head-open .gh-burger::after {
 }
 
 .comunidad-comments .gh-pagehead {
-  margin: 5rem auto 1.2rem;
+  /* As Comunidad and Más artículos after it: 8rem above, 3rem to the thread. */
+  margin: 8rem auto 3rem;
 }
 
 .account-signout-wrap {
@@ -5885,11 +5886,6 @@ html.js .gh-loadmore {
 
   .gh-cover-content {
     margin-top: 0;
-  }
-
-  /* Phone author spacing */
-  .gh-author {
-    margin-top: 2rem;
   }
 
   .has-wide-image .gh-article-image {
@@ -6350,4 +6346,17 @@ button.gh-author-social-link {
    list opens with a post. */
 .gh-feed.is-filtered > .gh-community-strip {
   order: 1;
+}
+
+/* A full-image post: the article starts under the cover, not 56px into it,
+   so the author sits as far below the picture as on the other templates.
+   The cover's caption (absolute, under it) fits in the author's top space. */
+.post-template.has-full-image .gh-cover {
+  margin-bottom: 0;
+}
+
+/* Its main starts with an empty header (the title is on the cover): no top
+   padding for it, or the author sat 2.5rem lower than on the others. */
+.post-template.has-full-image .gh-main {
+  padding-top: 0;
 }
