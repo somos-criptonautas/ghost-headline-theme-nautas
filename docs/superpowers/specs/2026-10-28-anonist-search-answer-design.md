@@ -118,8 +118,10 @@ key stays in n8n credentials; the Typesense key there is search-only.
   `TYPESENSE_MUSHIN_KEY` secret so `sync-mushin.yml` fills it. The public
   search key does not need mushin; n8n uses its own search-only key over the
   four collections.
-- Measure the mushin distance threshold (0.5 today is a placeholder) with real
-  and control queries, like the other collections.
+- Mushin threshold: 0.45, measured 2026-10-28. Ten real questions had their
+  top hit at 0.26-0.39 and related ones up to 0.41; six control questions
+  (recipes, trains, football) started at 0.50. The embedder is remote, so
+  every mushin query needs `prefix=false`.
 
 ## Testing
 
