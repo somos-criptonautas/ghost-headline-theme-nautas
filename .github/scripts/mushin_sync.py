@@ -54,7 +54,7 @@ def hister_docs():
         for d in docs:
             # Anonymous search only sees user 0 already; checked again so the
             # site can never publish another user's scope.
-            if d.get("user_id", 0) == 0 and d.get("url"):
+            if d.get("user_id") == 0 and d.get("url"):
                 yield d
         page_key = res.get("page_key") or ""
         if not page_key or not docs:
