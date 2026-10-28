@@ -108,7 +108,10 @@
      * path on the forum. */
     var CATEGORY = {
         comunidad: 2,
-        cripto: 9,
+        // Monero, Bitcoin and Altcoins are separate categories on the forum,
+        // not cripto's subcategories (filonauta's and tech-apps' lists already
+        // carry their subcategories): cripto's list is the four, merged.
+        cripto: [9, 25, 23, 21],
         bitcoin: 23,
         monero: 25,
         altcoins: 21,
@@ -116,17 +119,34 @@
         opsec: 18,
         filonauta: 22,
         bienestar: 28,
+        sociedad: 39,
         taboo: 55
     };
 
     var categoryLatest = function (slug) {
-        var id = CATEGORY[slug];
-        if (!id) {
+        var ids = [].concat(CATEGORY[slug] || []);
+        if (!ids.length) {
             return Promise.reject(new Error('no category'));
         }
-        var path = '/c/' + id;
-        return getJSON(path + '/l/latest.json').then(function (body) {
-            return {body: body, path: path};
+        var path = '/c/' + ids[0];
+        return Promise.all(ids.map(function (id) {
+            return getJSON('/c/' + id + '/l/latest.json');
+        })).then(function (bodies) {
+            if (bodies.length === 1) {
+                return {body: bodies[0], path: path};
+            }
+            // One list, latest activity first, as /latest orders it; the
+            // posters of every list, for the avatars.
+            var topics = [];
+            var users = [];
+            bodies.forEach(function (body) {
+                topics = topics.concat((body && body.topic_list && body.topic_list.topics) || []);
+                users = users.concat((body && body.users) || []);
+            });
+            topics.sort(function (a, b) {
+                return String(b.bumped_at || '').localeCompare(String(a.bumped_at || ''));
+            });
+            return {body: {topic_list: {topics: topics}, users: users}, path: path};
         });
     };
 
