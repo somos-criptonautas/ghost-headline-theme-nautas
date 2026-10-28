@@ -6360,3 +6360,47 @@ button.gh-author-social-link {
 .post-template.has-full-image .gh-main {
   padding-top: 0;
 }
+
+/* Page heads: as far from the bar to a page's title as an article's title
+   is (--header-spacing: 80px, 48px on phones), and one gap from the title
+   block - with its description - to what follows. /blog, tag pages, /tags
+   and /videos had each their own (25 to 99px above, 24 to 101px below). */
+:root {
+  --page-gap: 3.2rem;
+}
+
+@media screen and (min-width: 768px) {
+  :root {
+    --page-gap: 4.8rem;
+  }
+}
+
+.gh-main:has(.gh-blog-head) {
+  padding-top: var(--header-spacing);
+}
+
+.archive-section {
+  /* The padding is the whole space: no margin on top of it (99px from 768px). */
+  margin-top: 0;
+  padding: var(--header-spacing) 0 var(--page-gap);
+}
+
+.archive-section > :last-child,
+.archive-section .center > :last-child {
+  margin-bottom: 0;
+}
+
+/* /tags: the line under its title is part of the head. */
+.custom-archive .global-subtitle {
+  margin: 0;
+  padding: 0;
+}
+
+.custom-archive .loop-wrap {
+  margin-top: var(--page-gap);
+  padding-top: 0;
+}
+
+.gh-videos-page {
+  margin-top: var(--page-gap);
+}

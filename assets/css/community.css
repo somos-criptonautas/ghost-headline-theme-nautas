@@ -36,8 +36,8 @@ html:not(.js) .gh-with-sidebar {
     align-items: center;
     justify-content: space-between;
     gap: 1.2rem;
-    /* Room under it, so the first card's picture doesn't touch the text. */
-    margin: 0 0 2.4rem;
+    /* The page heads' gap to what follows (screen.css, Page heads). */
+    margin: 0 0 var(--page-gap);
     /* In line with the cards' text, 1rem in (.gh-card-wrapper). */
     padding: 0 1rem;
 }
