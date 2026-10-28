@@ -102,7 +102,7 @@ and replaces that line while it is on screen.
 |---|---|
 | `package.json` | `anonist_webhook` setting (description ≤ 100 chars) |
 | `partials/site-structure/site-scripts.hbs` | pass the setting as `data-anonist` on the search config script |
-| `assets/js/search-config.js` | read `data-anonist`; set `mushinCollection: 'mushin'` once data is on |
+| `assets/js/search-config.js` | read `data-anonist`; `mushinCollection` stays empty (no data pill: only n8n reads mushin) |
 | `assets/js/search-modal.js` | question test, request on settled empty state, render, drop stale replies |
 | `assets/css/search.css` | answer block, legend, skeleton reuse |
 | `locales/*.json` | new strings |
@@ -114,8 +114,10 @@ key stays in n8n credentials; the Typesense key there is search-only.
 
 ## Before it can go live
 
-- Data on: set `HISTER_URL` so `sync-mushin.yml` fills the `mushin`
-  collection, and scope the public search key to it.
+- Data on: create the `mushin` collection, set `HISTER_URL` and the
+  `TYPESENSE_MUSHIN_KEY` secret so `sync-mushin.yml` fills it. The public
+  search key does not need mushin; n8n uses its own search-only key over the
+  four collections.
 - Measure the mushin distance threshold (0.5 today is a placeholder) with real
   and control queries, like the other collections.
 
