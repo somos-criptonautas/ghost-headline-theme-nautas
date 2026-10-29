@@ -66,7 +66,7 @@ temas del foro. `/blog` lista todos los posts con la comunidad al costado (aside
 - Propinas en Monero con el plugin discourse-monero-tips, en autores y reacciones.
 
 **Búsqueda**: modal de Typesense con blog, comunidad y videos. Los resultados del foro se
-leen dentro del modal con el resumen de IA del foro; los videos se reproducen ahí.
+leen dentro del modal con el resumen de IA del foro; los videos se reproducen ahí, desde el segundo que coincidió.
 
 **Otros**
 - Panel de estado de servicios en `/stack`, alimentado por un chequeo de n8n.
@@ -96,7 +96,7 @@ resuelven las páginas propias de arriba y BTCPay.
 
 | Workflow | Cuándo | Qué |
 | --- | --- | --- |
-| `sync-peertube.yml` | cada 3 h | Videos de PeerTube (con resúmenes de IA) al índice de búsqueda |
+| `sync-peertube.yml` | cada 3 h | Videos de PeerTube (con resúmenes de IA) y los fragmentos de sus subtítulos al índice de búsqueda. Fragmentos apagados hasta definir `VIDEO_CHUNKS` |
 | `sync-mushin.yml` | cada hora | Documentos de Hister a Typesense. Apagado hasta definir `HISTER_URL` |
 | `update-search-vendor.yml` | lunes | InstantSearch.js y el adaptador de Typesense, con la versión mayor fija |
 

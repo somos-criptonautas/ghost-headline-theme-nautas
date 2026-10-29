@@ -65,6 +65,13 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
     semanticTopics: true,
     semanticVideos: true,
     semanticMushin: true,
+
+    /* Videos: one row per video, opened at the caption moment that matched.
+     * Keep false until the videos collection has a `video_id` field and the
+     * sync has run with the VIDEO_CHUNKS variable set: Typesense rejects a
+     * group_by on a field it does not have, and the videos section then
+     * comes back empty. */
+    videoMoments: false,
     // By the page's language: en.criptonautas.co gets its own.
     commonSearches: /^en/i.test(document.documentElement.lang)
         ? ['how to start', 'how to use Monero', 'crypto trading']

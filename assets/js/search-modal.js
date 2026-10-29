@@ -617,10 +617,14 @@
     /* A video: PeerTube's player in place (its own fullscreen button), what
      * is said in it when that is what matched, then the description. */
     var VIDEO_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+    // A caption chunk has its own id; the video's is `video_id`.
+    var videoIdOf = function (hit) {
+        return String(hit.video_id || hit.id);
+    };
     var videoOrigin = function (hit) {
         try {
             var url = new URL(hit.url);
-            return url.protocol === 'https:' && VIDEO_ID.test(String(hit.id)) ? url.origin : '';
+            return url.protocol === 'https:' && VIDEO_ID.test(videoIdOf(hit)) ? url.origin : '';
         } catch (e) {
             return '';
         }
@@ -632,7 +636,8 @@
             media.className = 'ns__reader-video';
             var frame = document.createElement('iframe');
             // Same player settings as /videos: no peer-to-peer, no extra chrome.
-            frame.src = origin + '/videos/embed/' + hit.id + '?autoplay=1&p2p=0&warningTitle=0&peertubeLink=0';
+            frame.src = origin + '/videos/embed/' + videoIdOf(hit) + '?autoplay=1&p2p=0&warningTitle=0&peertubeLink=0' +
+                (hit.start > 0 ? '&start=' + Math.floor(hit.start) : '');
             frame.title = String(hit.title || '');
             frame.allow = 'autoplay; fullscreen; picture-in-picture';
             frame.setAttribute('allowfullscreen', '');
@@ -1002,6 +1007,11 @@
                         query_by_weights: '4,2,1',
                         highlight_fields: 'title,description,transcript'
                     };
+                    if (cfg.videoMoments) {
+                        // A video has its own document and one per caption chunk: one row per video.
+                        params[cfg.videosCollection].group_by = 'video_id';
+                        params[cfg.videosCollection].group_limit = 1;
+                    }
                 }
                 if (cfg.mushinCollection) {
                     params[cfg.mushinCollection] = {

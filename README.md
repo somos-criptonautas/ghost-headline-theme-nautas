@@ -65,7 +65,7 @@ lists every post with the community beside it (aside) or above it (strip).
 - Monero tips through the discourse-monero-tips plugin, on author pages and reactions.
 
 **Search** — Typesense modal with blog, community and video sources. Community results open
-in a reader inside the modal with the forum's AI summary; videos play in it.
+in a reader inside the modal with the forum's AI summary; videos play in it, from the second that matched.
 
 **Other**
 - Service status panel on `/stack`, fed by an n8n check.
@@ -95,7 +95,7 @@ handled by the custom pages above and by BTCPay instead.
 
 | Workflow | When | What |
 | --- | --- | --- |
-| `sync-peertube.yml` | every 3 h | PeerTube videos (with AI summaries) into the search index |
+| `sync-peertube.yml` | every 3 h | PeerTube videos (with AI summaries) and their caption chunks into the search index. Chunks off until `VIDEO_CHUNKS` is set |
 | `sync-mushin.yml` | hourly | Hister's documents into Typesense. Off until `HISTER_URL` is set |
 | `update-search-vendor.yml` | Mondays | InstantSearch.js and the Typesense adapter, majors pinned |
 

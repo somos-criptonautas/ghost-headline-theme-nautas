@@ -32,6 +32,8 @@ jobs:
           PEERTUBE_URL: ${{ vars.PEERTUBE_URL }}
           TYPESENSE_URL: https://typesense.criptonautas.co
           TYPESENSE_VIDEOS_KEY: ${{ secrets.TYPESENSE_VIDEOS_KEY }}
+          # Caption chunks: off while VIDEO_CHUNKS is unset.
+          VIDEO_CHUNKS: ${{ vars.VIDEO_CHUNKS }}
           # AI summaries: off while LLM_URL is unset.
           LLM_URL: ${{ vars.LLM_URL }}
           LLM_KEY: ${{ secrets.LLM_KEY }}

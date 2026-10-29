@@ -3,12 +3,15 @@
 collection that the site search reads. Run by sync-peertube.yml.
 
 One document per video: title, description, category and the text of its
-captions (WebVTT without the timings). Only what changed is sent, and a
+captions (WebVTT without the timings), plus one document per chunk of each
+caption track, with the second it starts at, so a search can open the video
+at the moment that matched. Only what changed is sent, and a
 video's captions are downloaded only when the video or one of its captions
 changed - each run otherwise costs one small JSON request per video.
 
 Env: PEERTUBE_URL, TYPESENSE_URL, TYPESENSE_VIDEOS_KEY (documents:* on the
-videos collection only), optional TYPESENSE_VIDEOS_COLLECTION.
+videos collection only), optional TYPESENSE_VIDEOS_COLLECTION. Caption chunks
+only with VIDEO_CHUNKS set, once the collection has their fields.
 
 AI summaries, the search's snippet for a video: with LLM_URL (an
 OpenAI-compatible base such as LiteLLM's, ending in /v1), LLM_KEY and
@@ -35,10 +38,18 @@ PEERTUBE = os.environ["PEERTUBE_URL"].rstrip("/")
 TYPESENSE = os.environ["TYPESENSE_URL"].rstrip("/")
 KEY = os.environ["TYPESENSE_VIDEOS_KEY"]
 COLLECTION = os.environ.get("TYPESENSE_VIDEOS_COLLECTION") or "videos"
+# Off until the collection has the video_id, start and chunks fields (README, search).
+CHUNKS = bool(os.environ.get("VIDEO_CHUNKS"))
 
 # Captions past this add cost and little recall.
 MAX_TRANSCRIPT = 30000
+# Caption chunks: the unit of semantic search. About a paragraph, so a match points at a moment.
+CHUNK_CHARS = 1200
+# Per caption track; a three-hour talk is about 130 chunks.
+MAX_CHUNKS = 300
 MAX_BODY_BYTES = 900_000
+# Typesense embeds each document during the import; more per request risks the 120 s timeout.
+MAX_DOCS = 100
 # Cloudflare answers urllib's default User-Agent with 403.
 UA = "nautas-peertube-sync"
 LLM_URL = (os.environ.get("LLM_URL") or "").rstrip("/")
@@ -94,17 +105,47 @@ def public_videos():
             return
 
 
-def vtt_text(vtt):
-    lines = []
+def seconds(stamp):
+    total = 0.0
+    for part in stamp.replace(",", ".").split(":"):
+        total = total * 60 + float(part)
+    return int(total)
+
+
+def vtt_cues(vtt):
+    # (start second, text) per cue.
+    cues, start = [], 0
     for line in vtt.splitlines():
         line = line.strip()
-        if not line or line == "WEBVTT" or TIMING.match(line) or line.isdigit() or line.startswith(("Kind:", "Language:", "NOTE")):
+        if TIMING.match(line):
+            start = seconds(line.split("-->")[0].strip())
+            continue
+        if not line or line == "WEBVTT" or line.isdigit() or line.startswith(("Kind:", "Language:", "NOTE")):
             continue
         line = TAG.sub("", line)
         # Auto captions repeat each line as the next cue rolls in.
-        if not lines or lines[-1] != line:
-            lines.append(line)
-    return " ".join(lines)
+        if not cues or cues[-1][1] != line:
+            cues.append((start, line))
+    return cues
+
+
+def vtt_text(vtt):
+    return " ".join(text for _, text in vtt_cues(vtt))
+
+
+def chunks(cues, size=CHUNK_CHARS):
+    # Consecutive cues up to `size` characters; each chunk starts at its first cue's second.
+    out, start, text = [], 0, ""
+    for at, line in cues:
+        if text and len(text) + 1 + len(line) > size:
+            out.append((start, text))
+            text = ""
+        if not text:
+            start = at
+        text = (text + " " + line).strip()
+    if text:
+        out.append((start, text))
+    return out[:MAX_CHUNKS]
 
 
 def captions_of(video):
@@ -126,6 +167,7 @@ def to_doc(video, captions, text):
     category = (video.get("category") or {}).get("label") or ""
     return {
         "id": video["uuid"],
+        "video_id": video["uuid"],
         "url": f"{PEERTUBE}/w/{video.get('shortUUID') or video['uuid']}",
         "title": video.get("name") or "",
         "description": (video.get("description") or "")[:5000],
@@ -151,10 +193,34 @@ def stamp(video, captions):
     return max([video.get("updatedAt") or ""] + [c.get("updatedAt") or "" for c in captions])
 
 
+def chunk_docs(video, captions):
+    # One document per chunk of each caption track, in the same collection as the video's own.
+    base = to_doc(video, captions, "")
+    docs = []
+    for caption in captions:
+        path = caption.get("captionPath") or ""
+        if not path.startswith("/"):
+            continue
+        language = (caption.get("language") or {}).get("id") or ""
+        for n, (at, text) in enumerate(chunks(vtt_cues(request("GET", PEERTUBE + path)))):
+            docs.append({
+                **base,
+                "id": f"{video['uuid']}-{language}-{n}",
+                "language": language,
+                "start": at,
+                # What is said at that moment goes where the embedding reads, next to the title.
+                "description": text,
+                "url": base["url"] + (f"?start={at}" if at else ""),
+            })
+    return docs
+
+
 def existing():
     base = f"{TYPESENSE}/collections/{COLLECTION}/documents"
-    body = request("GET", f"{base}/export?include_fields=id,updated,summary_by", typesense=True)
-    return {row["id"]: row for row in map(json.loads, filter(None, body.splitlines()))}
+    body = request("GET", f"{base}/export?include_fields=id,video_id,chunks,updated,summary_by", typesense=True)
+    rows = map(json.loads, filter(None, body.splitlines()))
+    # Caption chunks share the collection; only the videos' own documents are tracked here.
+    return {row["id"]: row for row in rows if row.get("video_id", row["id"]) == row["id"]}
 
 
 def import_docs(docs, action="upsert"):
@@ -162,7 +228,7 @@ def import_docs(docs, action="upsert"):
     lines = [json.dumps(d, ensure_ascii=False).encode() for d in docs]
     chunk, size = [], 0
     for line in lines + [None]:
-        if line is None or (chunk and size + len(line) > MAX_BODY_BYTES):
+        if line is None or (chunk and (size + len(line) > MAX_BODY_BYTES or len(chunk) >= MAX_DOCS)):
             if chunk:
                 out = request("POST", url, b"\n".join(chunk), typesense=True)
                 # Only the error: Typesense echoes the whole document, which
@@ -180,6 +246,14 @@ def delete_docs(ids):
     base = f"{TYPESENSE}/collections/{COLLECTION}/documents"
     for i in range(0, len(ids), 100):
         filter_by = urllib.parse.quote(f"id:[{','.join(ids[i:i + 100])}]")
+        request("DELETE", f"{base}?filter_by={filter_by}", typesense=True)
+
+
+def delete_chunks(ids):
+    # Chunks carry `start`; a video's own document does not.
+    base = f"{TYPESENSE}/collections/{COLLECTION}/documents"
+    for i in range(0, len(ids), 50):
+        filter_by = urllib.parse.quote(f"video_id:[{','.join(ids[i:i + 50])}] && start:>=0")
         request("DELETE", f"{base}?filter_by={filter_by}", typesense=True)
 
 
@@ -261,17 +335,31 @@ def main():
     if COMPARE:
         return compare()
     have = existing()
-    seen, order, changed = set(), [], []
+    seen, order, changed, patches, stale, fresh_chunks = set(), [], [], [], [], []
     for video in public_videos():
-        seen.add(video["uuid"])
-        order.append(video["uuid"])
+        uuid = video["uuid"]
+        seen.add(uuid)
+        order.append(uuid)
         captions = captions_of(video)
-        if have.get(video["uuid"], {}).get("updated") == stamp(video, captions):
+        row = have.get(uuid, {})
+        unchanged = row.get("updated") == stamp(video, captions)
+        if unchanged and (not CHUNKS or row.get("chunks") is not None):
+            continue
+        made = chunk_docs(video, captions) if CHUNKS else []
+        if CHUNKS:
+            stale.append(uuid)
+            fresh_chunks.extend(made)
+        if unchanged:
+            # Only the chunks are missing: patch the document so its summary stays.
+            patches.append({"id": uuid, "video_id": uuid, "chunks": len(made)})
             continue
         # An upsert replaces the document, summary included: write it again.
-        have.pop(video["uuid"], None)
+        have.pop(uuid, None)
         language = (video.get("language") or {}).get("id") or ""
-        changed.append(to_doc(video, captions, transcript(captions, language)))
+        doc = to_doc(video, captions, transcript(captions, language))
+        if CHUNKS:
+            doc["chunks"] = len(made)
+        changed.append(doc)
 
     # An empty answer (instance down) must not read as "everything was
     # removed" and wipe the collection.
@@ -279,7 +367,11 @@ def main():
         sys.exit("PeerTube returned no videos; leaving the collection as is")
 
     gone = [id_ for id_ in have if id_ not in seen]
+    if CHUNKS:
+        delete_chunks(stale + gone)
+        import_docs(fresh_chunks)
     import_docs(changed)
+    import_docs(patches, action="update")
     delete_docs(gone)
     print(f"{len(seen)} public videos, {len(changed)} upserted, {len(gone)} deleted")
     if LLM_URL and LLM_KEY and LLM_MODEL:
