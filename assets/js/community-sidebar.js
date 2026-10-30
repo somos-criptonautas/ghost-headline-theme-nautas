@@ -2,7 +2,7 @@
  * after a post's comments (partials/community-related.hbs). Ships inside
  * main.min.js.
  *
- * Reads the forum's public /top.json (all-time top topics, the default),
+ * Reads the forum's public /top.json (the year's top topics, the default),
  * /latest.json (latest topics) or /posts.json (posts). All
  * are anonymous endpoints, so only public content ever shows, and both need
  * the forum to answer cross-origin: DISCOURSE_ENABLE_CORS in app.yml plus
@@ -34,9 +34,9 @@
     var message = aside && aside.querySelector('.gh-community-message');
     // Renamed from gh-community-mode when top became the default, so earlier picks start over on it.
     var STORE = 'gh-community-list';
-    var MODES = {top: '/top.json?period=all', topics: '/latest.json', posts: '/posts.json'};
+    var MODES = {top: '/top.json?period=yearly', topics: '/latest.json', posts: '/posts.json'};
     // The forum page "go to the community" opens for each list.
-    var PAGES = {top: '/top?period=all', topics: '/latest', posts: '/posts'};
+    var PAGES = {top: '/top?period=yearly', topics: '/latest', posts: '/posts'};
 
     // The visitor's last pick wins over the theme setting's default.
     // Storage can throw (private mode, blocked site data): fall back.
@@ -529,8 +529,8 @@
                 path = found.path;
                 return found.body;
             }, function (error) {
-                return strip ? getJSON(MODES.top) : Promise.reject(error);
-            }) : getJSON(MODES.top)).then(function (body) {
+                return strip ? getJSON(GLOBAL.modes.top) : Promise.reject(error);
+            }) : getJSON(GLOBAL.modes.top)).then(function (body) {
                 return readable(topics(body));
             }).then(function (entries) {
                 entries = entries

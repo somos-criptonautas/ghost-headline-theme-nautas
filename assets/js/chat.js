@@ -274,12 +274,11 @@
         }
     });
 
-    get('/chat/api/channels/' + CHANNEL).then(function (data) {
-        var channel = data.channel || data;
-        if (channel && channel.title) {
-            title.textContent += ' ' + channel.title;
-        }
-    }, function () {});
+    // From the URL: the channel's own endpoint answers 403 to anonymous visitors.
+    var channelSlug = CHANNEL_URL.split('/').slice(-2)[0];
+    if (channelSlug && channelSlug !== '-') {
+        title.textContent += ' ' + decodeURIComponent(channelSlug).replace(/-/g, ' ');
+    }
 
     root.hidden = false;
     poll();
