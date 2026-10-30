@@ -3,7 +3,7 @@
    (post.css) with the last three posters, the label and the time of the last
    message. anonist is only his mask, a doorbell: hidden at rest, it pops up
    over the tab when a new message arrives (community.css styles him). Open,
-   the panel takes the tab's place. Under 992px the tab shrinks to avatars and
+   the panel takes the tab's place. Under 992px the tab drops the time and
    the panel is a full sheet. */
 .cn-chat {
     position: fixed;
@@ -40,9 +40,10 @@ body:has(.cn-chat.is-open) .gh-to-top {
     background-color: var(--color-bg);
     color: var(--color-base);
     box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
+    /* The same text as the feedback tab. */
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
     cursor: pointer;
     opacity: 0;
     visibility: hidden;
@@ -208,8 +209,9 @@ body:has(.cn-chat.is-open) .gh-to-top {
     /* The theme's h2 rule adds bottom padding. */
     padding: 0;
     overflow: hidden;
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: 0.04em;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -403,7 +405,6 @@ body:has(.cn-chat.is-open) .gh-to-top {
         right: max(1.6rem, env(safe-area-inset-right));
     }
 
-    .cn-chat-label,
     .cn-chat-ago,
     .cn-chat .gh-mascot-bubble {
         display: none;

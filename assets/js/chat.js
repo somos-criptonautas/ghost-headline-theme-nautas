@@ -277,7 +277,7 @@
     get('/chat/api/channels/' + CHANNEL).then(function (data) {
         var channel = data.channel || data;
         if (channel && channel.title) {
-            title.textContent = '# ' + channel.title;
+            title.textContent += ' ' + channel.title;
         }
     }, function () {});
 
