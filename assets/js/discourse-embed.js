@@ -101,6 +101,9 @@
             var height = Math.ceil(Number(event.data.height));
             if (frame && height > 0) {
                 frame.style.height = height + 'px';
+                // embed.js sets scrolling="yes" for fullApp. Tall enough now, and a
+                // frame that can scroll holds on to the wheel over it.
+                frame.scrolling = 'no';
             }
         }
     });
