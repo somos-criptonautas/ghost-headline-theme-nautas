@@ -3,8 +3,9 @@
  * wrote in the last 3 h, every 60 s otherwise, never in a hidden tab.
  * Members signed in to the forum can write: the same cookie and CSRF dance
  * as reactions.js. Message HTML goes through NautasForumHTML, never
- * innerHTML. If the forum fails, the pill stays as a link to the forum's chat
- * and anonist keeps his phrase of the day. Ships inside main.min.js.
+ * innerHTML. If the forum fails, the tab stays as a link to the forum's chat.
+ * A new message from someone else pops anonist's mask over the tab, a
+ * doorbell. Ships inside main.min.js.
  */
 (function () {
     var root = document.querySelector('.cn-chat');
@@ -29,6 +30,7 @@
     var avatars = root.querySelector('.cn-chat-avatars');
     var panelAvatars = root.querySelector('.cn-chat-panel-avatars');
     var dot = root.querySelector('.cn-chat-dot');
+    var ago = root.querySelector('.cn-chat-ago');
     var panel = root.querySelector('.cn-chat-panel');
     var title = root.querySelector('.cn-chat-title');
     var list = root.querySelector('.cn-chat-messages');
@@ -143,16 +145,33 @@
         }
     };
 
-    var say = function (text) {
-        if (mascot && typeof mascot.say === 'function' && desktop.matches) {
-            mascot.say(text);
+    var bubble = mascot && mascot.querySelector('.gh-mascot-bubble');
+    var rung;
+
+    var unring = function () {
+        clearTimeout(rung);
+        mascot.classList.remove('is-popped');
+        bubble.textContent = '';
+    };
+
+    // The doorbell: the mask pops over the tab for a few seconds; the balloon only on desktop.
+    var ring = function (text) {
+        if (!mascot || !panel.hidden || Date.now() - lastSaid < 120000) {
+            return;
         }
+        lastSaid = Date.now();
+        clearTimeout(rung);
+        bubble.textContent = desktop.matches ? P.plain(text, 80) : '';
+        mascot.classList.add('is-popped');
+        rung = setTimeout(unring, desktop.matches ? 5000 : 4000);
     };
 
     var setState = function () {
         var active = P.isActive(messages, Date.now());
         root.classList.toggle('is-active', active);
         dot.hidden = !active;
+        var newest = messages.length ? messages[messages.length - 1] : null;
+        ago.textContent = newest ? '· ' + P.ago(newest.created_at, Date.now(), document.documentElement.lang) : '';
         paintAvatars(avatars);
         paintAvatars(panelAvatars);
         pill.classList.add('is-visible');
@@ -166,10 +185,9 @@
         var newest = fresh.length ? fresh[fresh.length - 1] : null;
         var changed = !newest ? messages.length > 0 : newest.id !== lastId || fresh.length !== messages.length;
         messages = fresh;
-        if (newest && lastId && newest.id !== lastId && Date.now() - lastSaid > 120000) {
-            lastSaid = Date.now();
+        if (newest && lastId && newest.id !== lastId) {
             var u = newest.user || {};
-            say(P.plain((u.username || '') + ': ' + (newest.excerpt || newest.message || ''), 80));
+            ring((u.username || '') + ': ' + (newest.excerpt || newest.message || ''));
         }
         lastId = newest ? newest.id : 0;
         failed = false;
@@ -184,6 +202,7 @@
         failed = true;
         root.classList.remove('is-active');
         dot.hidden = true;
+        ago.textContent = '';
         pill.classList.add('is-visible');
         list.setAttribute('aria-busy', 'false');
         if (!panel.hidden) {
@@ -209,6 +228,9 @@
             return;
         }
         panel.hidden = false;
+        if (mascot) {
+            unring();
+        }
         root.classList.add('is-open');
         pill.setAttribute('aria-expanded', 'true');
         // A hidden panel loses its scroll position: reopen at the newest message.

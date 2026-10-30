@@ -1,12 +1,14 @@
-/* Community chat (partials/chat.hbs, assets/js/chat.js). A pill in the
-   bottom-right corner dressed like back to top (post.css): page background,
-   no border, the soft shadow. On posts and pages it sits left of back to top,
-   in a row. anonist sits on its top border (community.css styles him; here
-   only his seat and the bubble side). Under 992px the pill is his mask. */
+/* Community chat (partials/chat.hbs, assets/js/chat.js). One button docked to
+   the bottom edge, bottom right: a flat-bottomed tab dressed like back to top
+   (post.css) with the last three posters, the label and the time of the last
+   message. anonist is only his mask, a doorbell: hidden at rest, it pops up
+   over the tab when a new message arrives (community.css styles him). Open,
+   the panel takes the tab's place. Under 992px the tab shrinks to avatars and
+   the panel is a full sheet. */
 .cn-chat {
     position: fixed;
-    right: max(2rem, env(safe-area-inset-right));
-    bottom: max(2rem, env(safe-area-inset-bottom));
+    right: max(3.2rem, env(safe-area-inset-right));
+    bottom: 0;
     z-index: 85;
 }
 
@@ -15,7 +17,7 @@
     z-index: 95;
 }
 
-/* Left of back to top (4.4rem wide), 1.2rem apart, on posts and pages. */
+/* Left of back to top (4.4rem wide), 1.2rem apart, when the theme setting shows it. */
 body:has(.gh-to-top) .cn-chat {
     right: calc(max(2rem, env(safe-area-inset-right)) + 4.4rem + 1.2rem);
 }
@@ -31,9 +33,10 @@ body:has(.cn-chat.is-open) .gh-to-top {
     align-items: center;
     gap: 0.8rem;
     height: 4.4rem;
-    padding: 0 1.4rem 0 0.6rem;
-    border: 0;
-    border-radius: 2.2rem;
+    padding: 0 1.6rem 0 1rem;
+    border: 1px solid var(--cn-ui-line);
+    border-bottom: 0;
+    border-radius: 1.2rem 1.2rem 0 0;
     background-color: var(--color-bg);
     color: var(--color-base);
     box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
@@ -58,6 +61,11 @@ body:has(.cn-chat.is-open) .gh-to-top {
     box-shadow: 0 0.2rem 0.9rem color-mix(in srgb, var(--color-base) 14%, transparent);
 }
 
+/* The panel's header takes the tab's place. */
+.cn-chat.is-open .cn-chat-pill {
+    display: none;
+}
+
 .cn-chat-pill:focus-visible,
 .cn-chat-close:focus-visible,
 .cn-chat-out:focus-visible,
@@ -67,7 +75,7 @@ body:has(.cn-chat.is-open) .gh-to-top {
     outline-offset: 2px;
 }
 
-/* Stacked avatars: the last three posters, overlapping by a third. */
+/* Stacked avatars: the last three posters, tightly overlapped. */
 .cn-chat-avatars,
 .cn-chat-panel-avatars {
     display: flex;
@@ -79,8 +87,8 @@ body:has(.cn-chat.is-open) .gh-to-top {
 
 .cn-chat-avatars img,
 .cn-chat-panel-avatars img {
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border: 2px solid var(--color-bg);
     border-radius: 50%;
     background-color: var(--cn-ui-surface);
@@ -88,7 +96,28 @@ body:has(.cn-chat.is-open) .gh-to-top {
 
 .cn-chat-avatars img + img,
 .cn-chat-panel-avatars img + img {
-    margin-left: -1rem;
+    margin-left: -1.3rem;
+}
+
+/* A chat bubble stands in when there are no avatars (error, empty channel). */
+.cn-chat-icon {
+    display: none;
+}
+
+.cn-chat-avatars:empty + .cn-chat-icon {
+    display: grid;
+}
+
+.cn-chat-icon svg {
+    width: 2.4rem;
+    height: 2.4rem;
+}
+
+.cn-chat-ago {
+    margin-left: -0.2rem;
+    color: var(--cn-ui-muted);
+    font-size: 1.2rem;
+    font-weight: 400;
 }
 
 .cn-chat-dot {
@@ -98,33 +127,30 @@ body:has(.cn-chat.is-open) .gh-to-top {
     background-color: #2fb36b;
 }
 
-.cn-chat-mask {
-    display: none;
-    width: 3.2rem;
-    height: 3.2rem;
+/* anonist's mask, the doorbell: hidden in the tab, pops up with its chin on
+   the tab's top edge (chat.js adds .is-popped). The bubble opens to his left. */
+.cn-chat .gh-mascot {
+    top: auto;
+    bottom: calc(100% - 8px);
+    left: 1rem;
+    display: block;
+    width: 48px;
+    height: 48px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(1rem) scale(0.7);
+    transform-origin: 50% 100%;
+    transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
 }
 
-/* anonist on the pill's top border: the pill is his stage (mascot.js walks
-   its width) and the label his seat. In the corner the bubble always opens
-   to his left, as .is-flipped does in the sidebar. */
-.cn-chat .gh-mascot:not([hidden]) {
-    display: block;
+.cn-chat .gh-mascot.is-popped {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
 }
 
 .cn-chat .gh-mascot-button {
     cursor: pointer;
-}
-
-/* Panel open: he moves up to its top border. The panel sits 1.2rem over the
-   pill and is min(56rem, 100vh - 12rem) tall; seated he overlaps 6px into
-   the box, standing he rests on it (community.css: top -42px / -48px). */
-.cn-chat.is-open .gh-mascot {
-    top: auto;
-    bottom: calc(100% + 1.2rem + min(56rem, 100vh - 12rem) - 6px);
-}
-
-.cn-chat.is-open .gh-mascot.is-standing {
-    bottom: calc(100% + 1.2rem + min(56rem, 100vh - 12rem));
 }
 
 .cn-chat .gh-mascot-bubble {
@@ -144,17 +170,18 @@ body:has(.cn-chat.is-open) .gh-to-top {
     left: auto;
 }
 
-/* Panel: above the pill, right-aligned with it. */
+/* Panel: docked to the same corner, flat bottom. */
 .cn-chat-panel {
     position: absolute;
     right: 0;
-    bottom: calc(100% + 1.2rem);
+    bottom: 0;
     display: flex;
     flex-direction: column;
     width: 38rem;
-    height: min(56rem, calc(100vh - 12rem));
+    height: min(56rem, calc(100vh - 10rem));
     border: 1px solid var(--cn-ui-line);
-    border-radius: 1.2rem;
+    border-bottom: 0;
+    border-radius: 1.2rem 1.2rem 0 0;
     background-color: var(--color-bg);
     color: var(--cn-ui-text);
     box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
@@ -358,30 +385,45 @@ body:has(.cn-chat.is-open) .gh-to-top {
     .cn-chat-pill {
         transition: none;
     }
+
+    .cn-chat .gh-mascot {
+        transform: none;
+        transition: opacity 0.2s, visibility 0.2s;
+    }
 }
 
-/* Phones and tablets: his mask as a round button, the panel a full sheet. */
+/* Phones and tablets: the tab is only avatars and the dot, the mask pops
+   without a balloon, the panel is a full sheet. */
 @media (max-width: 991px) {
-    .cn-chat .gh-mascot:not([hidden]),
-    .cn-chat-avatars,
-    .cn-chat-label {
+    .cn-chat {
+        right: max(1.6rem, env(safe-area-inset-right));
+    }
+
+    .cn-chat-label,
+    .cn-chat-ago,
+    .cn-chat .gh-mascot-bubble {
         display: none;
     }
 
     .cn-chat-pill {
-        width: 4.4rem;
-        padding: 0;
-        justify-content: center;
+        height: 4rem;
+        padding: 0 1.2rem 0 0.8rem;
     }
 
-    .cn-chat-mask {
-        display: block;
+    .cn-chat-avatars img,
+    .cn-chat-panel-avatars img {
+        width: 2.2rem;
+        height: 2.2rem;
     }
 
-    .cn-chat-dot {
-        position: absolute;
-        top: 0.2rem;
-        right: 0.2rem;
+    .cn-chat-avatars img + img,
+    .cn-chat-panel-avatars img + img {
+        margin-left: -1.1rem;
+    }
+
+    .cn-chat .gh-mascot {
+        width: 40px;
+        height: 40px;
     }
 
     .cn-chat-panel {

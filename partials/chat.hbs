@@ -1,9 +1,10 @@
 {{!-- Community chat (assets/css/chat.css, assets/js/chat.js): a public forum
-    channel, the "Chat channel" setting, as a pill in the bottom-right corner
-    that opens a panel. Visitors read; members signed in to the forum write.
-    anonist sits on the pill when the "Community mascot" setting is on, and
-    then leaves the community sidebar. Hidden until the script fills it;
-    the script removes it on the slugs in "Chat hidden pages". --}}
+    channel, the "Chat channel" setting, as a tab docked to the bottom edge,
+    bottom right, that opens a panel. Visitors read; members signed in to the
+    forum write. With the "Community mascot" setting on, anonist's mask pops
+    up over the tab like a doorbell when a new message arrives, and then
+    leaves the community sidebar. Hidden until the script fills it; the
+    script removes it on the slugs in "Chat hidden pages". --}}
 {{#if @custom.discourse_url}}{{#if @custom.chat_channel}}
 <div class="cn-chat" hidden
     data-channel="{{@custom.chat_channel}}"
@@ -13,24 +14,24 @@
     data-load-error="{{t "The community could not be loaded."}}"
     data-send-error="{{t "Could not send it. Try again in a moment."}}">
     {{#if @custom.community_mascot}}
-    <div class="gh-mascot is-chat{{#match @custom.community_mascot_style "Mask"}} is-mask{{/match}}" hidden>
+    <div class="gh-mascot is-chat is-mask">
         <p class="gh-mascot-bubble" role="status"></p>
         <button class="gh-mascot-button" type="button" tabindex="-1" aria-label="{{t "Open the chat"}}">
-            <svg viewBox="0 0 48 48" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><use href="{{asset "images/anonist-sprite.svg"}}#anonist-48-{{#match @custom.community_mascot_style "Mask"}}mask-idle{{else}}sit{{/match}}"/></svg>
+            <svg viewBox="0 0 48 48" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><use href="{{asset "images/anonist-sprite.svg"}}#anonist-48-mask-idle"/></svg>
         </button>
     </div>
     {{/if}}
     <button class="cn-chat-pill" type="button" aria-label="{{t "community chat"}}" aria-haspopup="dialog" aria-expanded="false" aria-controls="cn-chat-panel">
         <span class="cn-chat-avatars" aria-hidden="true"></span>
-        <span class="cn-chat-label gh-mascot-seat">{{t "community chat"}}</span>
+        <span class="cn-chat-icon" aria-hidden="true">{{> "icons/phosphor/chat-circle"}}</span>
+        <span class="cn-chat-label">{{t "community chat"}}</span>
+        <span class="cn-chat-ago"></span>
         <span class="cn-chat-dot" hidden aria-hidden="true"></span>
-        {{!-- Phones: only his mask, as the button's face. --}}
-        <svg class="cn-chat-mask" viewBox="0 0 48 48" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><use href="{{asset "images/anonist-sprite.svg"}}#anonist-48-mask-idle"/></svg>
     </button>
     <section class="cn-chat-panel" id="cn-chat-panel" role="dialog" aria-labelledby="cn-chat-title" hidden>
         <header class="cn-chat-head">
-            <h2 class="cn-chat-title" id="cn-chat-title">{{t "community chat"}}</h2>
             <span class="cn-chat-panel-avatars" aria-hidden="true"></span>
+            <h2 class="cn-chat-title" id="cn-chat-title">{{t "community chat"}}</h2>
             <a class="cn-chat-out" href="{{@custom.chat_channel}}" target="_blank" rel="noopener" aria-label="{{t "Open in the forum"}}" title="{{t "Open in the forum"}}">{{> "icons/phosphor/arrow-square-out"}}</a>
             <button class="cn-chat-close" type="button" aria-label="{{t "Close"}}">&times;</button>
         </header>

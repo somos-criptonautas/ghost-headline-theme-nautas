@@ -129,3 +129,26 @@ No new dependencies. No server code. On the forum: the anonymous group in
 - In the browser on local Ghost: signed out, signed in, a hidden page, a
   quiet channel, forum unreachable, under 992 px, dark mode, reduced motion,
   keyboard only.
+
+## Revision, 2026-10-30
+
+The closed state changed; the panel, polling and writing did not.
+
+- Closed: one button, a flat-bottomed tab docked to the bottom edge, bottom
+  right (3.2rem in, the feedback tab owns the edge). Rounded top corners, page
+  background, 1px line, back-to-top shadow.
+- Contents: the last 3 distinct posters' avatars (2.5rem, overlapped), the
+  label "chat en comunidad", the time of the last message ("· hace 4 min",
+  `Intl.RelativeTimeFormat`) and the green dot when active (last 3 h). No
+  avatars (error, empty channel): a chat-bubble icon.
+- anonist is only his mask, a doorbell. Hidden at rest; a new message after
+  page load pops it over the tab with a balloon ("author: first words",
+  desktop only) for 5 s (4 s on phones, no balloon), 120 s cooldown, never with
+  the panel open. No walking, no mask in the open panel; mascot.js is
+  sidebar-only again.
+- Open: the panel takes the tab's place in the same corner, flat bottom, 38rem
+  by min(56rem, 100vh - 10rem); its header shows avatars, title, forum link,
+  close. Under 992 px it stays a full sheet.
+- Phones and tablets: the tab is avatars (2.2rem) plus the dot, 4rem tall.
+- Back to top is now the `back_to_top` theme setting, off by default; when on,
+  the tab sits left of it.

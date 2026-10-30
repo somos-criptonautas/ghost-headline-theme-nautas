@@ -1,6 +1,6 @@
 /* Pure helpers for the community chat (assets/js/chat.js): the channel id
  * from its URL, the hidden-pages list, avatar URLs, the active/quiet state
- * and bubble text. No DOM, so a node script can check them. Ships inside
+ * bubble text and the relative time of the last message. No DOM, so a node script can check them. Ships inside
  * main.min.js, before chat.js (the bundle is alphabetical). */
 window.NautasChatParse = (function () {
     var ACTIVE_WINDOW = 3 * 60 * 60 * 1000;
@@ -45,5 +45,22 @@ window.NautasChatParse = (function () {
         return s.length > max ? s.slice(0, max - 1) + '…' : s;
     };
 
-    return {channelId: channelId, hiddenSlugs: hiddenSlugs, isHidden: isHidden, avatar: avatar, isActive: isActive, plain: plain};
+    // Past times only: "ahora", "hace 4 min", "hace 3 h", "hace 2 d" in the page's language.
+    var ago = function (iso, now, locale) {
+        var t = Date.parse(iso);
+        if (isNaN(t)) {
+            return '';
+        }
+        var s = Math.max(0, Math.floor((now - t) / 1000));
+        var rtf = new Intl.RelativeTimeFormat(locale || undefined, {numeric: 'auto', style: 'short'});
+        if (s < 60) {
+            return rtf.format(0, 'second');
+        }
+        if (s < 3600) {
+            return rtf.format(-Math.floor(s / 60), 'minute');
+        }
+        return s < 86400 ? rtf.format(-Math.floor(s / 3600), 'hour') : rtf.format(-Math.floor(s / 86400), 'day');
+    };
+
+    return {channelId: channelId, hiddenSlugs: hiddenSlugs, isHidden: isHidden, avatar: avatar, isActive: isActive, plain: plain, ago: ago};
 })();

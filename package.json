@@ -98,7 +98,7 @@
                 "type": "boolean",
                 "default": true,
                 "group": "homepage",
-                "description": "anonist on the community sidebar or the chat pill (desktop); phrase of the day on click."
+                "description": "anonist on the community sidebar; with a Chat channel, his mask pops up on new messages."
             },
             "community_mascot_style": {
                 "type": "select",
