@@ -258,5 +258,73 @@
     poll();
 
     // --- signed-in members write (reactions.js does the same dance) ---
-    // Task 5 replaces the body of checkSession and adds the submit handler here.
+    var compose = root.querySelector('.cn-chat-compose');
+    var join = root.querySelector('.cn-chat-join');
+    var input = root.querySelector('.cn-chat-input');
+    var send = root.querySelector('.cn-chat-send');
+    var signedIn = null;
+
+    var withCookie = function (path, options) {
+        options = options || {};
+        options.credentials = 'include';
+        options.headers = Object.assign({Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest'}, options.headers);
+        return fetch(ORIGIN + path, options).then(function (r) {
+            if (!r.ok) {
+                throw new Error(r.status);
+            }
+            return r.json();
+        });
+    };
+
+    // Once per page: the session answers 404 for anyone not signed in.
+    checkSession = function () {
+        if (signedIn !== null) {
+            compose.hidden = !signedIn;
+            join.hidden = signedIn;
+            return;
+        }
+        withCookie('/session/current.json').then(function () {
+            signedIn = true;
+        }, function () {
+            signedIn = false;
+        }).then(function () {
+            compose.hidden = !signedIn;
+            join.hidden = signedIn;
+        });
+    };
+
+    compose.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = input.value.trim();
+        if (!text || send.disabled) {
+            return;
+        }
+        send.disabled = true;
+        status.textContent = '';
+        withCookie('/session/csrf.json').then(function (session) {
+            var body = new URLSearchParams();
+            body.set('message', text);
+            return withCookie('/chat/' + CHANNEL, {
+                method: 'POST',
+                headers: {'X-CSRF-Token': session.csrf, 'Content-Type': 'application/x-www-form-urlencoded'},
+                body: body.toString()
+            });
+        }).then(function () {
+            input.value = '';
+            poll();
+        }, function () {
+            status.textContent = root.getAttribute('data-send-error');
+        }).then(function () {
+            send.disabled = false;
+            input.focus();
+        });
+    });
+
+    // Enter sends, Shift+Enter breaks the line, as in the forum.
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            compose.requestSubmit();
+        }
+    });
 })();
