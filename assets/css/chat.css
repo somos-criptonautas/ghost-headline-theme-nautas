@@ -1,0 +1,398 @@
+/* Community chat (partials/chat.hbs, assets/js/chat.js). A pill in the
+   bottom-right corner dressed like back to top (post.css): page background,
+   no border, the soft shadow. On posts and pages it sits left of back to top,
+   in a row. anonist sits on its top border (community.css styles him; here
+   only his seat and the bubble side). Under 992px the pill is his mask. */
+.cn-chat {
+    position: fixed;
+    right: max(2rem, env(safe-area-inset-right));
+    bottom: max(2rem, env(safe-area-inset-bottom));
+    z-index: 85;
+}
+
+/* Left of back to top (4.4rem wide), 1.2rem apart, on posts and pages. */
+body:has(.gh-to-top) .cn-chat {
+    right: calc(max(2rem, env(safe-area-inset-right)) + 4.4rem + 1.2rem);
+}
+
+/* The panel scrolls on its own; back to top would only crowd the corner. */
+body:has(.cn-chat.is-open) .gh-to-top {
+    visibility: hidden;
+}
+
+.cn-chat-pill {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    height: 4.4rem;
+    padding: 0 1.4rem 0 0.6rem;
+    border: 0;
+    border-radius: 2.2rem;
+    background-color: var(--color-bg);
+    color: var(--color-base);
+    box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.8rem);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s, box-shadow 0.15s ease;
+}
+
+.cn-chat-pill.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+}
+
+.cn-chat-pill:hover,
+.cn-chat-pill[aria-expanded="true"] {
+    box-shadow: 0 0.2rem 0.9rem color-mix(in srgb, var(--color-base) 14%, transparent);
+}
+
+.cn-chat-pill:focus-visible,
+.cn-chat-close:focus-visible,
+.cn-chat-out:focus-visible,
+.cn-chat-send:focus-visible,
+.cn-chat-join:focus-visible {
+    outline: 2px solid var(--ghost-accent-color);
+    outline-offset: 2px;
+}
+
+/* Stacked avatars: the last three posters, overlapping by a third. */
+.cn-chat-avatars,
+.cn-chat-panel-avatars {
+    display: flex;
+}
+
+.cn-chat-avatars:empty {
+    display: none;
+}
+
+.cn-chat-avatars img,
+.cn-chat-panel-avatars img {
+    width: 3.2rem;
+    height: 3.2rem;
+    border: 2px solid var(--color-bg);
+    border-radius: 50%;
+    background-color: var(--cn-ui-surface);
+}
+
+.cn-chat-avatars img + img,
+.cn-chat-panel-avatars img + img {
+    margin-left: -1rem;
+}
+
+.cn-chat-dot {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background-color: #2fb36b;
+}
+
+.cn-chat-mask {
+    display: none;
+    width: 3.2rem;
+    height: 3.2rem;
+}
+
+/* anonist on the pill's top border: the pill is his stage (mascot.js walks
+   its width) and the label his seat. In the corner the bubble always opens
+   to his left, as .is-flipped does in the sidebar. */
+.cn-chat .gh-mascot:not([hidden]) {
+    display: block;
+}
+
+.cn-chat .gh-mascot-button {
+    cursor: pointer;
+}
+
+/* Panel open: he moves up to its top border. The panel sits 1.2rem over the
+   pill and is min(56rem, 100vh - 12rem) tall; seated he overlaps 6px into
+   the box, standing he rests on it (community.css: top -42px / -48px). */
+.cn-chat.is-open .gh-mascot {
+    top: auto;
+    bottom: calc(100% + 1.2rem + min(56rem, 100vh - 12rem) - 6px);
+}
+
+.cn-chat.is-open .gh-mascot.is-standing {
+    bottom: calc(100% + 1.2rem + min(56rem, 100vh - 12rem));
+}
+
+.cn-chat .gh-mascot-bubble {
+    right: calc(100% + 14px);
+    left: auto;
+    max-width: 32rem;
+    white-space: normal;
+}
+
+.cn-chat .gh-mascot-bubble::before {
+    right: -12px;
+    left: auto;
+}
+
+.cn-chat .gh-mascot-bubble::after {
+    right: -21px;
+    left: auto;
+}
+
+/* Panel: above the pill, right-aligned with it. */
+.cn-chat-panel {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 1.2rem);
+    display: flex;
+    flex-direction: column;
+    width: 38rem;
+    height: min(56rem, calc(100vh - 12rem));
+    border: 1px solid var(--cn-ui-line);
+    border-radius: 1.2rem;
+    background-color: var(--color-bg);
+    color: var(--cn-ui-text);
+    box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
+    font-size: 1.5rem;
+}
+
+.cn-chat-panel[hidden] {
+    display: none;
+}
+
+.cn-chat-head {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1.2rem 1.2rem 1.2rem 1.6rem;
+    border-bottom: 1px solid var(--cn-ui-line);
+}
+
+.cn-chat-title {
+    flex: 1;
+    margin: 0;
+    overflow: hidden;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cn-chat-out,
+.cn-chat-close {
+    display: grid;
+    place-items: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--cn-ui-muted);
+    font-size: 2.2rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.cn-chat-out svg {
+    width: 1.8rem;
+    height: 1.8rem;
+}
+
+.cn-chat-out:hover,
+.cn-chat-close:hover {
+    background-color: var(--cn-ui-hover);
+    color: var(--color-base);
+}
+
+.cn-chat-messages {
+    flex: 1;
+    min-height: 0;
+    padding: 1.2rem 1.6rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+}
+
+/* One header per run of messages by the same person, as the forum groups them. */
+.cn-chat-group {
+    display: grid;
+    grid-template-columns: 3.2rem 1fr;
+    gap: 0.2rem 1rem;
+    margin-top: 1.2rem;
+}
+
+.cn-chat-group:first-child {
+    margin-top: 0;
+}
+
+.cn-chat-group img {
+    grid-row: 1 / span 2;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    background-color: var(--cn-ui-surface);
+}
+
+.cn-chat-who {
+    display: flex;
+    gap: 0.8rem;
+    align-items: baseline;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.cn-chat-when {
+    color: var(--cn-ui-muted);
+    font-weight: 400;
+}
+
+.cn-chat-body {
+    grid-column: 2;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.cn-chat-body p {
+    margin: 0 0 0.4rem;
+}
+
+.cn-chat-body a {
+    color: var(--ghost-accent-color);
+}
+
+.cn-chat-emoji {
+    width: 1.3em;
+    height: 1.3em;
+    vertical-align: -0.25em;
+}
+
+.cn-chat-empty {
+    margin: 2rem 0;
+    color: var(--cn-ui-muted);
+    text-align: center;
+}
+
+.cn-chat-compose {
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-end;
+    padding: 1rem 1.2rem 1.2rem;
+    border-top: 1px solid var(--cn-ui-line);
+}
+
+.cn-chat-compose[hidden] {
+    display: none;
+}
+
+.cn-chat-input {
+    flex: 1;
+    min-height: 3.6rem;
+    max-height: 12rem;
+    padding: 0.8rem 1.2rem;
+    border: 1px solid var(--cn-ui-line);
+    border-radius: 1.8rem;
+    background-color: var(--cn-ui-sunken);
+    color: var(--cn-ui-text);
+    font: inherit;
+    line-height: 1.4;
+    resize: none;
+}
+
+.cn-chat-send {
+    display: grid;
+    place-items: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background-color: var(--ghost-accent-color);
+    color: #fff;
+    cursor: pointer;
+}
+
+.cn-chat-send svg {
+    width: 1.8rem;
+    height: 1.8rem;
+}
+
+.cn-chat-send:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.cn-chat-join {
+    display: block;
+    margin: 1.2rem;
+    padding: 1rem;
+    border-radius: 0.8rem;
+    background-color: var(--ghost-accent-color);
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+}
+
+.cn-chat-join[hidden] {
+    display: none;
+}
+
+.cn-chat-status {
+    margin: 0;
+    padding: 0 1.6rem 1rem;
+    color: var(--cn-ui-muted);
+    font-size: 1.3rem;
+}
+
+.cn-chat-status:empty {
+    display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cn-chat-pill {
+        transition: none;
+    }
+}
+
+/* Phones and tablets: his mask as a round button, the panel a full sheet. */
+@media (max-width: 991px) {
+    .cn-chat .gh-mascot,
+    .cn-chat-avatars,
+    .cn-chat-label {
+        display: none;
+    }
+
+    .cn-chat-pill {
+        width: 4.4rem;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .cn-chat-mask {
+        display: block;
+    }
+
+    .cn-chat-dot {
+        position: absolute;
+        top: 0.2rem;
+        right: 0.2rem;
+    }
+
+    .cn-chat-panel {
+        position: fixed;
+        inset: 0;
+        width: auto;
+        height: auto;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .cn-chat-head {
+        padding-top: max(1.2rem, env(safe-area-inset-top));
+    }
+
+    .cn-chat-compose {
+        padding-bottom: max(1.2rem, env(safe-area-inset-bottom));
+    }
+}
