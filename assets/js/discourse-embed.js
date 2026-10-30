@@ -20,7 +20,8 @@
     if (DISCOURSE_ORIGIN && container && container.dataset.embedUrl) {
         window.DiscourseEmbed = {
             discourseUrl: DISCOURSE_ORIGIN + '/',
-            discourseEmbedUrl: container.dataset.embedUrl,
+            // Both languages share the Spanish article's topic; slugs are identical.
+            discourseEmbedUrl: container.dataset.embedUrl.replace('//en.criptonautas.co/', '//criptonautas.co/'),
             fullApp: true,
             // Starting height only - replaced by the first height report, so
             // the whole thread shows without an inner scrollbar.
