@@ -22,6 +22,17 @@ jobs:
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
+    strategy:
+      # A failure on one site never stops the other's deploy.
+      fail-fast: false
+      matrix:
+        include:
+          - site: es
+            url_secret: GHOST_ADMIN_API_URL
+            key_secret: GHOST_ADMIN_API_KEY
+          - site: en
+            url_secret: GHOST_EN_ADMIN_API_URL
+            key_secret: GHOST_EN_ADMIN_API_KEY
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,7 +58,7 @@ jobs:
       - name: Preflight - Ghost Admin API must be reachable
         if: steps.latest.outputs.stale != 'true'
         env:
-          API_URL: ${{ secrets.GHOST_ADMIN_API_URL }}
+          API_URL: ${{ secrets[matrix.url_secret] }}
         run: |
           url="${API_URL%/}/ghost/api/admin/themes/"
           code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$url" || echo 000)
@@ -69,8 +80,8 @@ jobs:
         if: steps.latest.outputs.stale != 'true'
         uses: TryGhost/action-deploy-theme@b1ff2a5eeac1d5438a0aab35eb996fe4010d889e # v2.0.4
         with:
-          api-url: ${{ secrets.GHOST_ADMIN_API_URL }}
-          api-key: ${{ secrets.GHOST_ADMIN_API_KEY }}
+          api-url: ${{ secrets[matrix.url_secret] }}
+          api-key: ${{ secrets[matrix.key_secret] }}
           version: 'v5.0'
           theme-name: 'ghost-headline-theme-nautas'
           exclude: ".github pnpm-lock.yaml pnpm-workspace.yaml gulpfile.js README.md CLAUDE.md AGENTS.md LICENSE node_modules *.map"
