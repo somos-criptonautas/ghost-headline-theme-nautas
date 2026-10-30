@@ -98,7 +98,7 @@ resuelven las páginas propias de arriba y BTCPay.
 | --- | --- | --- |
 | `sync-peertube.yml` | cada 3 h | Videos de PeerTube (con resúmenes de IA) y los fragmentos de sus subtítulos al índice de búsqueda. Fragmentos apagados hasta definir `VIDEO_CHUNKS` |
 | `sync-mushin.yml` | cada hora | Documentos de Hister a Typesense. Apagado hasta definir `HISTER_URL` |
-| `update-search-vendor.yml` | lunes | InstantSearch.js y el adaptador de Typesense, con la versión mayor fija; abre un PR, despliega solo al fusionarlo |
+| `update-search-vendor.yml` | lunes | InstantSearch.js y el adaptador de Typesense, con la versión mayor fija; sube `vendor/search-update` con un enlace de comparación en el resumen de la ejecución, despliega solo al abrir y fusionar un PR |
 
 ## Desarrollo
 
