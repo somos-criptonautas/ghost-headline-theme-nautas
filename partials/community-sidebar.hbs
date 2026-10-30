@@ -1,4 +1,4 @@
-{{!-- Community sidebar: latest topics or latest posts from the Discourse
+{{!-- Community sidebar: top topics, latest topics or latest posts from the Discourse
     forum. The "Community sidebar" theme setting turns it off or picks the
     list a first visit opens on; the heading lets visitors switch. The list is filled
     by assets/js/community-sidebar.js from the forum's public JSON, which needs
@@ -16,7 +16,7 @@
 {{#if @custom.discourse_url}}{{#match @custom.community_sidebar "!=" "Off"}}
 <aside class="gh-community" aria-labelledby="gh-community-title" aria-busy="true"
     data-category="{{category}}"
-    data-mode="{{#match @custom.community_sidebar "Latest posts"}}posts{{else}}topics{{/match}}"
+    data-mode="{{#match @custom.community_sidebar "Latest posts"}}posts{{else}}{{#match @custom.community_sidebar "Latest topics"}}topics{{else}}top{{/match}}{{/match}}"
     data-label-reply="{{t "reply"}}"
     data-label-replies="{{t "replies"}}"
     data-label-in="{{t "in"}}">
@@ -34,7 +34,7 @@
     </div>
     {{/if}}
     {{!-- "Comunidad" as the heading, with the list picker beside it:
-        visitors switch between topics and replies, and the choice is
+        visitors switch between top topics, latest topics and replies, and the choice is
         remembered in their browser. The theme setting only picks which one a
         first visit opens on. --}}
     <div class="gh-community-head">
@@ -43,6 +43,7 @@
         </h2>
         <span class="gh-community-picker">
             <select class="gh-community-select" aria-label="{{t "Community list"}}">
+                <option value="top">{{t "Top stories"}}</option>
                 <option value="topics">{{t "Topics"}}</option>
                 <option value="posts">{{t "Replies"}}</option>
             </select>

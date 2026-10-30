@@ -2,7 +2,8 @@
  * after a post's comments (partials/community-related.hbs). Ships inside
  * main.min.js.
  *
- * Reads the forum's public /latest.json (topics) or /posts.json (posts). Both
+ * Reads the forum's public /top.json (all-time top topics, the default),
+ * /latest.json (latest topics) or /posts.json (posts). All
  * are anonymous endpoints, so only public content ever shows, and both need
  * the forum to answer cross-origin: DISCOURSE_ENABLE_CORS in app.yml plus
  * this site in Discourse's "cors origins" setting.
@@ -31,8 +32,11 @@
     var more = aside && aside.querySelector('.gh-community-more');
     var picker = aside && aside.querySelector('.gh-community-select');
     var message = aside && aside.querySelector('.gh-community-message');
-    var STORE = 'gh-community-mode';
-    var MODES = {topics: '/latest.json', posts: '/posts.json'};
+    // Renamed from gh-community-mode when top became the default, so earlier picks start over on it.
+    var STORE = 'gh-community-list';
+    var MODES = {top: '/top.json?period=all', topics: '/latest.json', posts: '/posts.json'};
+    // The forum page "go to the community" opens for each list.
+    var PAGES = {top: '/top?period=all', topics: '/latest', posts: '/posts'};
 
     // The visitor's last pick wins over the theme setting's default.
     // Storage can throw (private mode, blocked site data): fall back.
@@ -40,7 +44,8 @@
     try {
         stored = window.localStorage.getItem(STORE);
     } catch (e) {}
-    var mode = MODES[stored] ? stored : ((aside && aside.getAttribute('data-mode')) === 'posts' ? 'posts' : 'topics');
+    var preset = aside && aside.getAttribute('data-mode');
+    var mode = MODES[stored] ? stored : (MODES[preset] ? preset : 'top');
     var lang = document.documentElement.lang || undefined;
     // Both partials carry the same translated labels; either will do.
     var labelled = aside || related;
@@ -104,8 +109,8 @@
      * id, so a renamed forum slug or a subcategory (opsec, under tech-apps)
      * still answers: /c/<id> redirects to the full path, CORS headers
      * included. A tag not listed here has no category: the caller falls back
-     * to the whole forum or hides. Resolves to the topics and the category's
-     * path on the forum. */
+     * to the whole forum or hides. Resolves to the category's all-time top
+     * topics and its path on the forum. */
     var CATEGORY = {
         comunidad: 2,
         cripto: 9,
@@ -120,13 +125,13 @@
         taboo: 55
     };
 
-    var categoryLatest = function (slug) {
+    var categoryTop = function (slug) {
         var id = CATEGORY[slug];
         if (!id) {
             return Promise.reject(new Error('no category'));
         }
         var path = '/c/' + id;
-        return getJSON(path + '/l/latest.json').then(function (body) {
+        return getJSON(path + '/l/top.json?period=all').then(function (body) {
             return {body: body, path: path};
         });
     };
@@ -138,8 +143,8 @@
     var scope = (aside && aside.getAttribute('data-category')) || '';
     var scopePath = '';
     if (scope && SLUG.test(scope)) {
-        MODES = {topics: '/c/' + scope + '/l/latest.json'};
-        mode = 'topics';
+        MODES = {top: '/c/' + scope + '/l/top.json?period=all'};
+        mode = 'top';
     } else {
         scope = '';
     }
@@ -336,7 +341,7 @@
     // cached, so picking that list again retries.
     var load = function (which) {
         if (!cache[which]) {
-            cache[which] = (scope ? categoryLatest(scope).then(function (found) {
+            cache[which] = (scope ? categoryTop(scope).then(function (found) {
                 scopePath = found.path;
                 return found.body;
             }) : getJSON(MODES[which])).then(function (body) {
@@ -378,7 +383,7 @@
             });
             list.hidden = false;
             message.hidden = true;
-            more.href = ORIGIN + (scope ? scopePath : which === 'posts' ? '/posts' : '/latest');
+            more.href = ORIGIN + (scope ? scopePath : PAGES[which]);
             shown = true;
         }).then(null, function () {
             if (ticket !== request) {
@@ -507,7 +512,7 @@
     };
 
     // Posts: the primary tag's forum category (CATEGORY). /blog passes none:
-    // the whole forum's latest. No topics or no answer: it keeps `hidden`.
+    // the whole forum's top. No topics or no answer: it keeps `hidden`.
     if (related) {
         var category = related.getAttribute('data-category') || '';
         var count = parseInt(related.getAttribute('data-count'), 10) || RELATED;
@@ -516,16 +521,16 @@
             related.hidden = true;
         };
         if (SLUG.test(category)) {
-            var path = '/latest';
+            var path = PAGES.top;
             // The strip and a tag page's block stand in for an aside, so a tag
             // with no forum category gets the whole forum's, as the aside does.
             var strip = related.classList.contains('gh-community-strip') || document.body.classList.contains('tag-template');
-            (category ? categoryLatest(category).then(function (found) {
+            (category ? categoryTop(category).then(function (found) {
                 path = found.path;
                 return found.body;
             }, function (error) {
-                return strip ? getJSON('/latest.json') : Promise.reject(error);
-            }) : getJSON('/latest.json')).then(function (body) {
+                return strip ? getJSON(MODES.top) : Promise.reject(error);
+            }) : getJSON(MODES.top)).then(function (body) {
                 return readable(topics(body));
             }).then(function (entries) {
                 entries = entries

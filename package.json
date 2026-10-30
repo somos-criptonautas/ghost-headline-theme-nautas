@@ -89,8 +89,8 @@
             },
             "community_sidebar": {
                 "type": "select",
-                "options": ["Off", "Latest topics", "Latest posts"],
-                "default": "Latest topics",
+                "options": ["Off", "Top topics", "Latest topics", "Latest posts"],
+                "default": "Top topics",
                 "group": "homepage",
                 "description": "Discourse topics or posts beside the home and tag pages. Needs CORS on the forum."
             },
