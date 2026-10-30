@@ -749,7 +749,9 @@ git commit -m "Chat: styles"
     var root = document.querySelector('.cn-chat');
     var P = window.NautasChatParse;
 
-    if (!root || !P || !window.fetch || !window.NautasForumHTML) {
+    // The bundle is alphabetical: chat-parse.js loads before this file, forum-html.js
+    // after it, so NautasForumHTML is only looked up when a message is rendered.
+    if (!root || !P || !window.fetch) {
         return;
     }
 
