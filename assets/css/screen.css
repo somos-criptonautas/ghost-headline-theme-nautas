@@ -635,6 +635,7 @@ nav.gh-article-tag {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  margin-bottom: 1.05rem;
   font-size: 1.7rem;
 }
 

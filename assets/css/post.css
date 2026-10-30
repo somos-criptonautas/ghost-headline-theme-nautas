@@ -659,6 +659,11 @@ html[data-theme="dark"] .gh-cover-caption {
     translate: 0 -0.08em;
 }
 
+/* On the title's edge: the notebook drawing has its own air inside the svg. */
+.gh-article-tag a:first-child .gh-channel-icon {
+    margin-left: -0.12em;
+}
+
 .gh-article-tag > [aria-hidden="true"] {
     translate: 0 -0.1em;
 }
