@@ -142,15 +142,16 @@
     renderAvatar(reaction) {
         const author = reaction.author || {};
         const defaultAvatar = 'https://webmention.io/avatar/default.svg';
+        const name = this.escapeHtml(author.name || 'Someone');
         
         return `
-            <a href="${reaction.url}" 
+            <a href="${this.safeUrl(reaction.url) || '#'}" 
                class="wm-avatar-link" 
                target="_blank" 
                rel="noopener noreferrer"
-               title="${author.name || 'Someone'} ${this.getReactionText(reaction['wm-property'])}">
-                <img src="${author.photo || defaultAvatar}"
-                     alt="${author.name || 'Anonymous'}"
+               title="${name} ${this.getReactionText(reaction['wm-property'])}">
+                <img src="${this.safeUrl(author.photo) || defaultAvatar}"
+                     alt="${this.escapeHtml(author.name || 'Anonymous')}"
                      loading="lazy"
                      class="wm-avatar-img"
                      onerror="this.src='${defaultAvatar}'">
@@ -160,6 +161,8 @@
 
     renderMention(mention) {
       const author = mention.author || {};
+      const name = this.escapeHtml(author.name || 'Anonymous');
+      const mentionUrl = this.safeUrl(mention.url) || '#';
       const date = new Date(mention.published || mention['wm-received'])
           .toLocaleDateString('en-US', {
               year: 'numeric',
@@ -169,26 +172,26 @@
 
       return `
           <div class="wm-mention-item">
-              <img src="${author.photo || 'https://webmention.io/avatar/default.svg'}"
-                   alt="${author.name || 'Anonymous'}"
+              <img src="${this.safeUrl(author.photo) || 'https://webmention.io/avatar/default.svg'}"
+                   alt="${name}"
                    loading="lazy"
                    class="wm-author-img">
               
               <div class="wm-mention-content-wrapper">
                   <div class="wm-mention-header">
-                      <a href="${author.url || mention.url}" 
+                      <a href="${this.safeUrl(author.url) || mentionUrl}" 
                          class="wm-author-name" 
                          target="_blank" 
                          rel="noopener noreferrer">
-                          ${author.name || 'Anonymous'}
+                          ${name}
                       </a>
                       <span class="wm-mention-metadata">
                           ${this.getMentionType(mention['wm-property'])} on
-                          <a href="${mention.url}" 
+                          <a href="${mentionUrl}" 
                              class="wm-mention-source" 
                              target="_blank" 
                              rel="noopener noreferrer">
-                              ${this.getSourceName(mention.url)}
+                              ${this.escapeHtml(this.getSourceName(mention.url))}
                           </a>
                           — ${date}
                       </span>
@@ -232,22 +235,34 @@
     }
 
     formatContent(text) {
-        // Escape HTML
-        const escaped = text.replace(/[&<>"']/g, char => ({
-            '&': '&',
-            '<': '<',
-            '>': '>',
-            '"': '"',
-            "'": '&#39;'
-        }[char]));
-
-        // Truncate if too long
+        // Truncate first, so the cut cannot land inside an entity
+        const value = String(text);
         const maxLength = 280;
-        if (escaped.length > maxLength) {
-            return escaped.substring(0, maxLength) + '...';
+        if (value.length > maxLength) {
+            return this.escapeHtml(value.substring(0, maxLength)) + '...';
         }
 
-        return escaped;
+        return this.escapeHtml(value);
+    }
+
+    escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[char]));
+    }
+
+    // Returns an http(s) URL escaped for an attribute, or '' for anything else
+    safeUrl(value) {
+        try {
+            const url = new URL(value);
+            return ['http:', 'https:'].includes(url.protocol) ? this.escapeHtml(url.href) : '';
+        } catch (e) {
+            return '';
+        }
     }
 
     handleError(error) {
