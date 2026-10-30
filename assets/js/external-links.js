@@ -36,7 +36,8 @@
         }
 
         var text = last.nodeValue.replace(/\s+$/, '');
-        var cut = text.search(/\S+$/);
+        // Only the end of a long word: .gh-ext never wraps, and a whole URL kept on one line runs past a phone's edge.
+        var cut = Math.max(text.search(/\S+$/), text.length - 12);
         var tail = document.createElement('span');
         tail.className = 'gh-ext';
         tail.textContent = text.slice(cut);
