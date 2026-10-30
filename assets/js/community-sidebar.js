@@ -324,7 +324,7 @@
             time.dateTime = entry.date.toISOString();
             meta.appendChild(time);
         }
-        if (mode === 'topics' && entry.replies) {
+        if (mode !== 'posts' && entry.replies) {
             var form = plurals && plurals.select(entry.replies) === 'one' ? labels.one : labels.other;
             meta.appendChild(el('span', null, entry.replies + ' ' + form));
         }
