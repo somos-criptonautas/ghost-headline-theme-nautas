@@ -121,6 +121,14 @@
             "feedback_webhook": {
                 "type": "text",
                 "description": "n8n webhook for the feedback tab (idea / error / support). Empty hides the tab."
+            },
+            "chat_channel": {
+                "type": "text",
+                "description": "Chat channel URL (…/chat/c/general/2). Empty hides it. Needs anonymous_users in its chat groups."
+            },
+            "chat_hidden_pages": {
+                "type": "text",
+                "description": "Slugs of pages or posts without the chat, separated by commas: manifiesto, filosofia, the-matrix"
             }
         }
     },

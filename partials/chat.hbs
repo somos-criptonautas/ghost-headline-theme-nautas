@@ -1,0 +1,45 @@
+{{!-- Community chat (assets/css/chat.css, assets/js/chat.js): a public forum
+    channel, the "Chat channel" setting, as a pill in the bottom-right corner
+    that opens a panel. Visitors read; members signed in to the forum write.
+    anonist sits on the pill when the "Community mascot" setting is on, and
+    then leaves the community sidebar. Hidden until the script fills it;
+    the script removes it on the slugs in "Chat hidden pages". --}}
+{{#if @custom.discourse_url}}{{#if @custom.chat_channel}}
+<div class="cn-chat" hidden
+    data-channel="{{@custom.chat_channel}}"
+    data-slug="{{#post}}{{slug}}{{/post}}"
+    data-hidden="{{@custom.chat_hidden_pages}}"
+    data-active="{{t "community chat"}}"
+    data-send-error="{{t "Could not send it. Try again in a moment."}}">
+    {{#if @custom.community_mascot}}
+    <div class="gh-mascot is-chat{{#match @custom.community_mascot_style "Mask"}} is-mask{{/match}}" hidden>
+        <p class="gh-mascot-bubble" role="status"></p>
+        <button class="gh-mascot-button" type="button" aria-label="{{t "Open the chat"}}">
+            <svg viewBox="0 0 48 48" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><use href="{{asset "images/anonist-sprite.svg"}}#anonist-48-{{#match @custom.community_mascot_style "Mask"}}mask-idle{{else}}sit{{/match}}"/></svg>
+        </button>
+    </div>
+    {{/if}}
+    <button class="cn-chat-pill" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="cn-chat-panel">
+        <span class="cn-chat-avatars" aria-hidden="true"></span>
+        <span class="cn-chat-label gh-mascot-seat">{{t "community chat"}}</span>
+        <span class="cn-chat-dot" hidden aria-hidden="true"></span>
+        {{!-- Phones: only his mask, as the button's face. --}}
+        <svg class="cn-chat-mask" viewBox="0 0 48 48" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><use href="{{asset "images/anonist-sprite.svg"}}#anonist-48-mask-idle"/></svg>
+    </button>
+    <section class="cn-chat-panel" id="cn-chat-panel" role="dialog" aria-labelledby="cn-chat-title" hidden>
+        <header class="cn-chat-head">
+            <h2 class="cn-chat-title" id="cn-chat-title">{{t "community chat"}}</h2>
+            <span class="cn-chat-panel-avatars" aria-hidden="true"></span>
+            <a class="cn-chat-out" href="{{@custom.chat_channel}}" target="_blank" rel="noopener" aria-label="{{t "Open in the forum"}}" title="{{t "Open in the forum"}}">{{> "icons/phosphor/arrow-square-out"}}</a>
+            <button class="cn-chat-close" type="button" aria-label="{{t "Close"}}">&times;</button>
+        </header>
+        <div class="cn-chat-messages" aria-live="polite" aria-busy="true"></div>
+        <form class="cn-chat-compose" hidden>
+            <textarea class="cn-chat-input" name="message" rows="1" required maxlength="2000" aria-label="{{t "Message"}}" placeholder="{{t "Write a message…"}}"></textarea>
+            <button class="cn-chat-send" type="submit" aria-label="{{t "send"}}">{{> "icons/phosphor/arrow-up"}}</button>
+        </form>
+        <a class="cn-chat-join" href="{{@custom.chat_channel}}" target="_blank" rel="noopener" hidden>{{t "Join the conversation"}}</a>
+        <p class="cn-chat-status" role="status"></p>
+    </section>
+</div>
+{{/if}}{{/if}}
