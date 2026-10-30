@@ -221,7 +221,7 @@
     </div>
     </div>
 
-    {{#is "post, page"}}{{> "toc-toggle"}}{{> "to-top"}}{{/is}}
+    {{#is "post, page"}}{{> "toc-toggle"}}{{#if @custom.back_to_top}}{{> "to-top"}}{{/if}}{{/is}}
     {{!-- Not on the landing: it has its own mascot and ways to reach us. --}}
     {{^is "home"}}{{> "chat"}}{{/is}}
     {{!-- Not on the landing: it has its own ways to reach us. --}}

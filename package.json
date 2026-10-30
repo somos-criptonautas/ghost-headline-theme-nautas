@@ -129,6 +129,12 @@
             "chat_hidden_pages": {
                 "type": "text",
                 "description": "Slugs of pages or posts without the chat, separated by commas: manifiesto, filosofia, the-matrix"
+            },
+            "back_to_top": {
+                "type": "boolean",
+                "default": false,
+                "group": "post",
+                "description": "Back to top button on posts and pages (round arrow with reading progress, bottom right)."
             }
         }
     },
