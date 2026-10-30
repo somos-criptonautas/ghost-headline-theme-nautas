@@ -414,6 +414,8 @@ html[data-theme="dark"] .loop-wrap .item-image > img {
   padding: 0.3rem 0.8rem;
   border-radius: 0.6rem;
   background-color: rgba(24, 23, 25, 0.72);
+  /* The band's dark-theme text is dark; this tag stays dark in both. */
+  color: #F1F1F1;
 }
 
 .gh-topic-grid .gh-card-image.is-cover .gh-channel,
