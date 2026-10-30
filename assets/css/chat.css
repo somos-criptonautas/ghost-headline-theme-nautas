@@ -156,6 +156,8 @@ body:has(.cn-chat.is-open) .gh-to-top {
 .cn-chat .gh-mascot-bubble {
     right: calc(100% + 14px);
     left: auto;
+    /* Sized by its text, not by the 48px mask it hangs from. */
+    width: max-content;
     max-width: 32rem;
     white-space: normal;
 }
@@ -203,6 +205,8 @@ body:has(.cn-chat.is-open) .gh-to-top {
 .cn-chat-title {
     flex: 1;
     margin: 0;
+    /* The theme's h2 rule adds bottom padding. */
+    padding: 0;
     overflow: hidden;
     font-size: 1.5rem;
     font-weight: 700;
