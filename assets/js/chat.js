@@ -114,6 +114,13 @@
         var lastUser = null;
         messages.forEach(function (m) {
             var u = m.user || {};
+            var body;
+            try {
+                body = window.NautasForumHTML.render(m.cooked || '', ORIGIN, 'cn-chat-emoji');
+            } catch (err) {
+                // One bad message must not blank the panel.
+                return;
+            }
             if (!group || u.id !== lastUser) {
                 group = el('div', 'cn-chat-group');
                 var image = img(u);
@@ -127,7 +134,6 @@
                 list.appendChild(group);
                 lastUser = u.id;
             }
-            var body = window.NautasForumHTML.render(m.cooked || '', ORIGIN, 'cn-chat-emoji');
             body.className = 'cn-chat-body';
             group.appendChild(body);
         });
@@ -186,7 +192,9 @@
         if (document.hidden) {
             return;
         }
-        get('/chat/api/channels/' + CHANNEL + '/messages?page_size=50').then(apply, fail).then(function () {
+        get('/chat/api/channels/' + CHANNEL + '/messages?page_size=50').then(apply).catch(fail).then(function () {
+            // Overlapping polls (open, visibilitychange) must not leave a second chain running.
+            clearTimeout(timer);
             timer = setTimeout(poll, root.classList.contains('is-active') ? 15000 : 60000);
         });
     };
