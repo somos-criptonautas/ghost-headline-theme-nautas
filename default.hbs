@@ -33,7 +33,7 @@
     {{/is}}
     {{/if}}
     {{!-- Member flow pages: no use to anyone arriving from a search engine. --}}
-    {{#is "page"}}{{#post}}{{#match slug "~^" "hola-"}}<meta name="robots" content="noindex">{{else match slug "gracias"}}<meta name="robots" content="noindex">{{else match slug "continue"}}<meta name="robots" content="noindex">{{else match slug "nauta"}}<meta name="robots" content="noindex">{{else match slug "stats"}}<meta name="robots" content="noindex">{{/match}}{{/post}}{{/is}}
+    {{#is "page"}}{{#post}}{{#match slug "~^" "hola-"}}<meta name="robots" content="noindex">{{else match slug "gracias"}}<meta name="robots" content="noindex">{{else match slug "continue"}}<meta name="robots" content="noindex">{{else match slug "nauta"}}<meta name="robots" content="noindex">{{else match slug "stats"}}<meta name="robots" content="noindex">{{else match slug "lounge"}}<meta name="robots" content="noindex">{{else match slug "start"}}<meta name="robots" content="noindex">{{/match}}{{/post}}{{/is}}
     {{! Portal is not used on this site, and search is assets/js/search-modal.js,
         which owns [data-ghost-search] itself - Ghost's sodo-search tag was
         loading a file that 404s since the MagicPages build was dropped. The
