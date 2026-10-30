@@ -103,7 +103,7 @@
         });
     };
 
-    var paintList = function () {
+    var paintList = function (force) {
         var atBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 40;
         list.replaceChildren();
         list.setAttribute('aria-busy', 'false');
@@ -138,7 +138,7 @@
             body.className = 'cn-chat-body';
             group.appendChild(body);
         });
-        if (atBottom) {
+        if (atBottom || force) {
             list.scrollTop = list.scrollHeight;
         }
     };
@@ -211,7 +211,8 @@
         panel.hidden = false;
         root.classList.add('is-open');
         pill.setAttribute('aria-expanded', 'true');
-        paintList();
+        // A hidden panel loses its scroll position: reopen at the newest message.
+        paintList(true);
         checkSession();
         close.focus();
         poll();
