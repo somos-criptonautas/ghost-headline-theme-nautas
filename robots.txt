@@ -1,6 +1,12 @@
 User-agent: *
 Disallow: /noindex/
 Disallow: /misc/
+Disallow: /ghost/
+Disallow: /email/
+Disallow: /members/api/comments/counts/
+Disallow: /r/
+# Webmentions allowed
+Allow: /webmentions/receive/
 
 # I opt out of online advertising so malware that injects ads on my site won't
 # get paid. You should do the same. my ads.txt file contains a standard
@@ -97,7 +103,7 @@ Crawl-Delay: 10
 ## Gen-AI data scrapers ##
 
 # Eat shit, OpenAI.
-User-agent: ChatGPT-User
+# ChatGPT-User not listed: it fetches a page when a person asks, and citations need it.
 User-agent: GPTBot
 Disallow: /
 
@@ -166,9 +172,4 @@ Disallow: /
 # with integrated pre-trained LLMs.
 # TODO: investigate whether YouBot scrapes to train its own in-house LLM.
 
-# Ghost CMS + Webmentions allowed
 Sitemap: https://criptonautas.co/sitemap.xml
-Disallow: /ghost/
-Disallow: /email/
-Disallow: /members/api/comments/counts/
-Allow: /webmentions/receive/

@@ -453,6 +453,7 @@ a.gh-card-link:hover {
 
 .gh-topic-grid .gh-card-title {
   font-family: var(--gh-font-heading);
+  font-size: var(--h1-size);
   font-weight: 800;
   line-height: 1.11;
   letter-spacing: -0.02em;
@@ -2768,7 +2769,8 @@ body,
 }
 
 .archive-image img,
-.archive-title span {
+.archive-title span,
+.archive-title.is-tag::after {
   background-color: var(--color-one);
 }
 
@@ -2804,7 +2806,13 @@ body,
   transform: translateX(-5px);
 }
 
-.archive-title.is-tag span {
+/* The count, out of the title's text so the heading reads as the tag alone. */
+.archive-title.is-tag::after {
+  content: attr(data-count);
+}
+
+.archive-title.is-tag span,
+.archive-title.is-tag::after {
   font-family: var(--gh-font-heading);
   font-size: 1.8rem;
   font-weight: 800;
@@ -3875,7 +3883,7 @@ html[data-theme="dark"] .gh-post-upgrade-cta a.gh-btn html[data-theme="dark"] .g
   text-decoration: none;
 }
 
-.gh-topic .gh-topic-grid h2 {
+.gh-topic .gh-topic-grid h2:not(.gh-card-title) {
   display: none;
 }
 
