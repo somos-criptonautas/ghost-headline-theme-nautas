@@ -9,7 +9,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   update-search-ui:
@@ -64,19 +63,15 @@ jobs:
           fi
 
       # These files run on every page, so a person reviews them before they
-      # reach main. Merging that PR runs Test and then Deploy Theme as usual.
-      - name: Open a pull request
+      # reach main. The org blocks Actions from opening PRs, so this leaves a
+      # link to open one by hand. Merging it runs Test and then Deploy Theme.
+      - name: Push the update for review
         if: steps.git-check.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           branch=vendor/search-update
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -m "Update InstantSearch and Typesense adapter builds"
           git push --force origin "HEAD:refs/heads/$branch"
-          if [ -z "$(gh pr list --head "$branch" --state open --json number --jq '.[].number')" ]; then
-            gh pr create --head "$branch" \
-              --title "Update InstantSearch and Typesense adapter builds" \
-              --body "Weekly vendor update, downloaded from jsDelivr by update-search-vendor.yml. Check the versions and the diff before merging: merging deploys to production."
-          fi
+          url="https://github.com/$GITHUB_REPOSITORY/compare/main...$branch"
+          echo "New vendor builds to review: $url" >> "$GITHUB_STEP_SUMMARY"
