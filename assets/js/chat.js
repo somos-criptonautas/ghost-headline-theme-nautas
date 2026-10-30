@@ -20,7 +20,7 @@
     var CHANNEL = P.channelId(root.getAttribute('data-channel'));
     var CHANNEL_URL = root.getAttribute('data-channel');
 
-    if (!CHANNEL || P.isHidden(root.getAttribute('data-slug'), root.getAttribute('data-hidden'))) {
+    if (!CHANNEL || CHANNEL_URL.indexOf(ORIGIN + '/chat/') !== 0 || P.isHidden(root.getAttribute('data-slug'), root.getAttribute('data-hidden'))) {
         root.remove();
         return;
     }
@@ -104,6 +104,7 @@
     };
 
     var paintList = function () {
+        var atBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 40;
         list.replaceChildren();
         list.setAttribute('aria-busy', 'false');
         if (!messages.length) {
@@ -137,7 +138,9 @@
             body.className = 'cn-chat-body';
             group.appendChild(body);
         });
-        list.scrollTop = list.scrollHeight;
+        if (atBottom) {
+            list.scrollTop = list.scrollHeight;
+        }
     };
 
     var say = function (text) {
@@ -156,7 +159,8 @@
     };
 
     var apply = function (data) {
-        var fresh = (data.messages || []).filter(function (m) {
+        if (!data || !Array.isArray(data.messages)) { throw new Error('shape'); }
+        var fresh = data.messages.filter(function (m) {
             return !m.deleted_at;
         });
         var newest = fresh.length ? fresh[fresh.length - 1] : null;
@@ -183,7 +187,7 @@
         pill.classList.add('is-visible');
         list.setAttribute('aria-busy', 'false');
         if (!panel.hidden) {
-            list.replaceChildren(el('p', 'cn-chat-empty', root.getAttribute('data-send-error')));
+            list.replaceChildren(el('p', 'cn-chat-empty', root.getAttribute('data-load-error')));
         }
     };
 
@@ -262,7 +266,6 @@
     var join = root.querySelector('.cn-chat-join');
     var input = root.querySelector('.cn-chat-input');
     var send = root.querySelector('.cn-chat-send');
-    var signedIn = null;
 
     var withCookie = function (path, options) {
         options = options || {};
@@ -276,16 +279,13 @@
         });
     };
 
-    // Once per page: the session answers 404 for anyone not signed in.
+    // On every open: the session answers 404 for anyone not signed in; other failures show the join link.
     checkSession = function () {
-        if (signedIn !== null) {
-            compose.hidden = !signedIn;
-            join.hidden = signedIn;
-            return;
-        }
+        var signedIn;
         withCookie('/session/current.json').then(function () {
             signedIn = true;
         }, function () {
+            // 404 means signed out; any other failure also shows the join link, the safe side.
             signedIn = false;
         }).then(function () {
             compose.hidden = !signedIn;
@@ -322,7 +322,7 @@
 
     // Enter sends, Shift+Enter breaks the line, as in the forum.
     input.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
+        if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
             e.preventDefault();
             compose.requestSubmit();
         }

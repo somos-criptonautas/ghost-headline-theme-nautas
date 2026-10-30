@@ -151,7 +151,9 @@
             }
         };
         mascot.say = function (text) {
-            say(text, 5000);
+            if (!still) {
+                say(text, 5000);
+            }
         };
 
         mascot.querySelector('button').addEventListener('click', function () {

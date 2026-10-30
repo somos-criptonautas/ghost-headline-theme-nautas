@@ -10,6 +10,11 @@
     z-index: 85;
 }
 
+/* Above the fixed header (z-index 90) so the phone sheet's close button is reachable. */
+.cn-chat.is-open {
+    z-index: 95;
+}
+
 /* Left of back to top (4.4rem wide), 1.2rem apart, on posts and pages. */
 body:has(.gh-to-top) .cn-chat {
     right: calc(max(2rem, env(safe-area-inset-right)) + 4.4rem + 1.2rem);
@@ -357,7 +362,7 @@ body:has(.cn-chat.is-open) .gh-to-top {
 
 /* Phones and tablets: his mask as a round button, the panel a full sheet. */
 @media (max-width: 991px) {
-    .cn-chat .gh-mascot,
+    .cn-chat .gh-mascot:not([hidden]),
     .cn-chat-avatars,
     .cn-chat-label {
         display: none;
