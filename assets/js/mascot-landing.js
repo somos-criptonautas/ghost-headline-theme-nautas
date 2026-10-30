@@ -1,7 +1,8 @@
 /* Landing mascot (partials/landing.hbs): anonist's mask floats over the top
  * border of the first row of questions, the grid landing.js builds (it comes
- * first in the bundle: files join in name order). He says hello once, when the
- * questions scroll in, for 6 s; after that he only talks when clicked, a
+ * first in the bundle: files join in name order). He says hello once, for 6 s:
+ * after the questions have been on screen 6 s, or on the first click if it
+ * comes sooner. After that he only talks when clicked, a
  * random line each time, one balloon at a time with a pause between them; a
  * click anywhere else closes it. Every 12 s he glides along his card, hops the gap to the other
  * one, winks, smiles or plays peek-a-boo: he sinks behind the border, peeks
@@ -36,6 +37,7 @@
     var busy = false;
     var seen = false;
     var greeted = false;
+    var waiting;
     var x = 0;
     var talking;
     var said = -1;
@@ -206,11 +208,18 @@
         }
     }).observe(grid);
 
+    var greet = function () {
+        greeted = true;
+        clearTimeout(waiting);
+        say(HELLO, 6000);
+    };
+
+    // The 6 s start over each time the questions come back on screen.
     new IntersectionObserver(function (entries) {
         seen = entries[0].isIntersecting;
+        clearTimeout(waiting);
         if (seen && !greeted) {
-            greeted = true;
-            say(HELLO, 6000);
+            waiting = setTimeout(greet, 6000);
         }
     }).observe(grid);
 
@@ -224,13 +233,17 @@
         if (bubble.textContent || Date.now() < ready) {
             return;
         }
-        // Any line but the last one he said.
-        var next;
-        do {
-            next = Math.floor(Math.random() * PHRASES.length);
-        } while (next === said);
-        said = next;
-        say(PHRASES[said]);
+        if (greeted) {
+            // Any line but the last one he said.
+            var next;
+            do {
+                next = Math.floor(Math.random() * PHRASES.length);
+            } while (next === said);
+            said = next;
+            say(PHRASES[said]);
+        } else {
+            greet();
+        }
         if (!busy && !still) {
             play(masked
                 ? repeat(['idle', 'turn-a', 'side', 'back', 'side', 'turn-b'], 6)

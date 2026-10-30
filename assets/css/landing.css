@@ -307,6 +307,11 @@
     top: -48px;
 }
 
+/* A hint that he answers clicks, without looking like a link. */
+.gh-landing-mascot .gh-mascot-button {
+    cursor: help;
+}
+
 .gh-landing-mascot svg {
     translate: 0 calc(var(--y, 0px) + var(--sink, 0px));
     clip-path: inset(0 0 var(--sink, 0px) 0);
