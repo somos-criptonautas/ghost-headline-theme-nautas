@@ -1,4 +1,4 @@
-/* Landing (partials/landing.hbs): the page "inicio" arrives as one run of
+/* Landing (partials/landing.hbs): the page "home" arrives as one run of
  * paragraphs and h3 questions. Each question and its answer become one item,
  * two across from 992px (landing.css), read left to right; the last question -
  * how to go on - steps out of the grid, full width and one heading level up
