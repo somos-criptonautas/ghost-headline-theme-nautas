@@ -137,7 +137,7 @@ html:not(.js) .gh-with-sidebar {
 
     /* The scrollbar runs by the box's edge, and the text keeps the heading's
        right margin (--gh-scrollbar: community-sidebar.js). */
-    .gh-community-list,
+    .gh-community .gh-community-list,
     .gh-community .gh-community-reader {
         min-height: 0;
         margin-right: -2.4rem;
