@@ -266,6 +266,18 @@ html:not(.js) .gh-with-sidebar {
     pointer-events: none;
 }
 
+/* In the side column heading and picker must share 30rem, and end on its margin. */
+@media screen and (min-width: 1200px) {
+    .gh-community-select {
+        padding: 0.4rem 2.2rem 0.4rem 0.6rem;
+        font-size: 1.35rem;
+    }
+
+    .gh-community-picker svg {
+        right: 0.5rem;
+    }
+}
+
 .gh-community-message {
     margin: 1.2rem 0;
     color: var(--color-secondary-text);
@@ -324,7 +336,7 @@ html:not(.js) .gh-with-sidebar {
 
 /* Over search.css's reader padding, whichever loads last. */
 .gh-community .gh-community-reader {
-    padding-top: 0.4rem;
+    padding-top: 1rem;
     padding-bottom: 0.4rem;
     padding-left: 0;
 }
