@@ -8,6 +8,7 @@
 {{#if @custom.discourse_url}}{{#if @custom.chat_channel}}
 <div class="cn-chat" hidden
     data-channel="{{@custom.chat_channel}}"
+    data-private="{{@custom.chat_private_channels}}"
     data-slug="{{#post}}{{slug}}{{/post}}"
     data-hidden="{{@custom.chat_hidden_pages}}"
     data-active="{{t "community chat"}}"
@@ -32,6 +33,7 @@
         <header class="cn-chat-head">
             <span class="cn-chat-panel-avatars" aria-hidden="true"></span>
             <h2 class="cn-chat-title" id="cn-chat-title">{{t "chat"}}</h2>
+            <select class="cn-chat-channels" aria-label="{{t "Channel"}}" hidden></select>
             <a class="cn-chat-out" href="{{@custom.chat_channel}}" target="_blank" rel="noopener" aria-label="{{t "Open in the forum"}}" title="{{t "Open in the forum"}}">{{> "icons/phosphor/arrow-square-out"}}</a>
             <button class="cn-chat-close" type="button" aria-label="{{t "Close"}}">&times;</button>
         </header>

@@ -6,6 +6,11 @@
  * innerHTML. If the forum fails, the tab stays as a link to the forum's chat.
  * A new message from someone else pops anonist's mask over the tab, a
  * doorbell. Ships inside main.min.js.
+ *
+ * Private channels (the "Chat private channels" setting): whoever is signed in
+ * to the forum and can read one gets a selector in the panel. The forum decides,
+ * on every read; the setting only says which channels to offer. They are read
+ * with the cookie, while the panel is open, and nothing of them is stored.
  */
 (function () {
     var root = document.querySelector('.cn-chat');
@@ -20,6 +25,8 @@
     var ORIGIN = (document.documentElement.getAttribute('data-discourse') || '').replace(/\/+$/, '');
     var CHANNEL = P.channelId(root.getAttribute('data-channel'));
     var CHANNEL_URL = root.getAttribute('data-channel');
+    var GENERAL = {id: CHANNEL, url: CHANNEL_URL, title: P.channelSlug(CHANNEL_URL)};
+    var chosen = GENERAL;
 
     if (!CHANNEL || CHANNEL_URL.indexOf(ORIGIN + '/chat/') !== 0 || P.isHidden(root.getAttribute('data-slug'), root.getAttribute('data-hidden'))) {
         root.remove();
@@ -37,6 +44,8 @@
     var close = root.querySelector('.cn-chat-close');
     var mascot = root.querySelector('.gh-mascot');
     var status = root.querySelector('.cn-chat-status');
+    var out = root.querySelector('.cn-chat-out');
+    var picker = root.querySelector('.cn-chat-channels');
 
     var messages = [];
     var lastId = 0;
@@ -192,7 +201,8 @@
         lastId = newest ? newest.id : 0;
         failed = false;
         setState();
-        if (changed && !panel.hidden) {
+        // Busy: a channel just picked, painted even when it turns out empty.
+        if ((changed || list.getAttribute('aria-busy') === 'true') && !panel.hidden) {
             paintList();
         }
     };
@@ -215,14 +225,65 @@
         if (document.hidden) {
             return;
         }
-        get('/chat/api/channels/' + CHANNEL + '/messages?page_size=50').then(apply).catch(fail).then(function () {
+        var asked = CHANNEL;
+        var read = asked === GENERAL.id ? get : withCookie;
+        read('/chat/api/channels/' + asked + '/messages?page_size=50').then(function (data) {
+            // Picked another channel meanwhile: this answer must not land in it.
+            if (asked === CHANNEL) {
+                apply(data);
+            }
+        }).catch(function (err) {
+            if (asked !== CHANNEL) {
+                return;
+            }
+            if (asked !== GENERAL.id && /^(401|403|404)$/.test(err.message)) {
+                lose(asked);
+            } else {
+                fail();
+            }
+        }).then(function () {
             // Overlapping polls (open, visibilitychange) must not leave a second chain running.
             clearTimeout(timer);
             timer = setTimeout(poll, root.classList.contains('is-active') ? 15000 : 60000);
         });
     };
 
+    var show = function (channel) {
+        CHANNEL = channel.id;
+        CHANNEL_URL = channel.url;
+        messages = [];
+        lastId = 0;
+        failed = false;
+        list.replaceChildren();
+        list.setAttribute('aria-busy', 'true');
+        status.textContent = '';
+        out.href = channel.url;
+        join.href = channel.url;
+        picker.value = channel.id;
+        setState();
+        poll();
+    };
+
+    // No longer readable: out of the selector, back to the public channel.
+    var lose = function (id) {
+        var option = picker.querySelector('option[value="' + id + '"]');
+        if (option) {
+            option.remove();
+        }
+        if (picker.options.length < 2) {
+            picker.hidden = true;
+            root.classList.remove('has-channels');
+            title.textContent = GENERAL_TITLE;
+        }
+        input.value = '';
+        chosen = GENERAL;
+        show(GENERAL);
+    };
+
     var open = function () {
+        if (chosen !== GENERAL) {
+            show(chosen);
+        }
         if (failed) {
             window.open(CHANNEL_URL, '_blank', 'noopener');
             return;
@@ -246,6 +307,10 @@
         pill.setAttribute('aria-expanded', 'false');
         status.textContent = '';
         pill.focus();
+        // A private channel is read only with the panel open.
+        if (CHANNEL !== GENERAL.id) {
+            show(GENERAL);
+        }
     };
 
     pill.addEventListener('click', function () {
@@ -275,10 +340,9 @@
     });
 
     // From the URL: the channel's own endpoint answers 403 to anonymous visitors.
-    var channelSlug = CHANNEL_URL.split('/').slice(-2)[0];
-    if (channelSlug && channelSlug !== '-') {
-        title.textContent += ' ' + decodeURIComponent(channelSlug).replace(/-/g, ' ');
-    }
+    var BASE_TITLE = title.textContent;
+    var GENERAL_TITLE = BASE_TITLE + (GENERAL.title ? ' ' + GENERAL.title : '');
+    title.textContent = GENERAL_TITLE;
 
     root.hidden = false;
     poll();
@@ -301,6 +365,58 @@
         });
     };
 
+    var PRIVATE = P.channelList(root.getAttribute('data-private'), ORIGIN).filter(function (channel) {
+        return channel.id !== GENERAL.id;
+    });
+    var offered = false;
+
+    // Which of them this member can read: the forum's answer to each, once a page.
+    // The titles are a nicety (followed channels only); the slug stands in.
+    var offerChannels = function () {
+        offered = true;
+        Promise.all([
+            withCookie('/chat/api/me/channels').then(function (data) {
+                return data.public_channels || [];
+            }, function () {
+                return [];
+            }),
+            Promise.all(PRIVATE.map(function (channel) {
+                return withCookie('/chat/api/channels/' + channel.id + '/messages?page_size=1').then(function () {
+                    return channel;
+                }, function () {
+                    return null;
+                });
+            }))
+        ]).then(function (answers) {
+            var readable = answers[1].filter(Boolean);
+            if (!readable.length) {
+                return;
+            }
+            picker.replaceChildren();
+            [GENERAL].concat(readable).forEach(function (channel) {
+                var known = answers[0].filter(function (c) {
+                    return String(c.id) === channel.id;
+                })[0];
+                var option = el('option', '', (known && known.title) || channel.title || channel.id);
+                option.value = channel.id;
+                picker.appendChild(option);
+            });
+            picker.value = CHANNEL;
+            picker.hidden = false;
+            root.classList.add('has-channels');
+            title.textContent = BASE_TITLE;
+        });
+    };
+
+    picker.addEventListener('change', function () {
+        chosen = PRIVATE.filter(function (channel) {
+            return channel.id === picker.value;
+        })[0] || GENERAL;
+        // A draft for one channel must not go out in another.
+        input.value = '';
+        show(chosen);
+    });
+
     // On every open: the session answers 404 for anyone not signed in; other failures show the join link.
     checkSession = function () {
         var signedIn;
@@ -312,6 +428,13 @@
         }).then(function () {
             compose.hidden = !signedIn;
             join.hidden = signedIn;
+            if (signedIn && PRIVATE.length && !offered) {
+                offerChannels();
+            } else if (!signedIn && offered) {
+                offered = false;
+                picker.replaceChildren();
+                lose(CHANNEL);
+            }
         });
     };
 

@@ -1,6 +1,7 @@
 /* Pure helpers for the community chat (assets/js/chat.js): the channel id
  * from its URL, the hidden-pages list, avatar URLs, the active/quiet state
- * bubble text and the relative time of the last message. No DOM, so a node script can check them. Ships inside
+ * bubble text, the relative time of the last message and the private channels
+ * of the "Chat private channels" setting. No DOM, so a node script can check them. Ships inside
  * main.min.js, before chat.js (the bundle is alphabetical). */
 window.NautasChatParse = (function () {
     var ACTIVE_WINDOW = 3 * 60 * 60 * 1000;
@@ -9,6 +10,27 @@ window.NautasChatParse = (function () {
         var path = String(url || '').split(/[?#]/)[0].replace(/\/+$/, '');
         var last = path.split('/').pop();
         return /^\d+$/.test(last) ? last : '';
+    };
+
+    // The forum's URL carries the channel's slug: …/chat/c/lideres/73.
+    var channelSlug = function (url) {
+        var slug = String(url || '').split(/[?#]/)[0].replace(/\/+$/, '').split('/').slice(-2)[0];
+        return slug && slug !== '-' ? decodeURIComponent(slug).replace(/-/g, ' ') : '';
+    };
+
+    // Comma-separated URLs: only this forum's chat, each channel once.
+    var channelList = function (list, origin) {
+        var seen = {};
+        return String(list || '').split(',').map(function (url) {
+            url = url.trim();
+            return {id: channelId(url), url: url, title: channelSlug(url)};
+        }).filter(function (channel) {
+            if (!channel.id || seen[channel.id] || channel.url.indexOf(origin + '/chat/') !== 0) {
+                return false;
+            }
+            seen[channel.id] = true;
+            return true;
+        });
     };
 
     var hiddenSlugs = function (list) {
@@ -62,5 +84,5 @@ window.NautasChatParse = (function () {
         return s < 86400 ? rtf.format(-Math.floor(s / 3600), 'hour') : rtf.format(-Math.floor(s / 86400), 'day');
     };
 
-    return {channelId: channelId, hiddenSlugs: hiddenSlugs, isHidden: isHidden, avatar: avatar, isActive: isActive, plain: plain, ago: ago};
+    return {channelId: channelId, channelSlug: channelSlug, channelList: channelList, hiddenSlugs: hiddenSlugs, isHidden: isHidden, avatar: avatar, isActive: isActive, plain: plain, ago: ago};
 })();

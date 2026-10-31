@@ -216,6 +216,22 @@ body:has(.cn-chat.is-open) .gh-to-top {
     white-space: nowrap;
 }
 
+.has-channels .cn-chat-title {
+    flex: none;
+}
+
+.cn-chat-channels {
+    flex: 1;
+    min-width: 0;
+    height: 3.2rem;
+    padding: 0 0.6rem;
+    border: 1px solid var(--cn-ui-line);
+    border-radius: 0.6rem;
+    background: var(--color-bg);
+    color: var(--color-base);
+    font-size: 1.3rem;
+}
+
 .cn-chat-out,
 .cn-chat-close {
     display: grid;
