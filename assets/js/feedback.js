@@ -1,4 +1,4 @@
-/* Feedback tab (partials/feedback.hbs): idea / error / soporte, an optional
+/* Feedback (partials/feedback.hbs): idea / error / soporte, an optional
  * e-mail and an optional image the reader picks, posted as JSON to the n8n
  * webhook, which validates it and opens a Chatwoot conversation.
  */
@@ -7,30 +7,25 @@
     if (!root) {
         return;
     }
-    var tab = root.querySelector('.cn-feedback-tab');
+    var dialog = root.querySelector('.cn-feedback-dialog');
     var form = root.querySelector('.cn-feedback-panel');
     var status = form.querySelector('.cn-feedback-status');
     var fields = form.elements;
 
-    function toggle(open) {
-        form.hidden = !open;
-        tab.setAttribute('aria-expanded', String(open));
-        if (open) {
+    // Focus goes back to the button that opened it: the dialog does that itself.
+    document.querySelectorAll('.cn-feedback-open').forEach(function (button) {
+        button.addEventListener('click', function () {
+            dialog.showModal();
             fields.message.focus();
-        }
-    }
-
-    tab.addEventListener('click', function () {
-        toggle(form.hidden);
+        });
     });
     root.querySelector('.cn-feedback-close').addEventListener('click', function () {
-        toggle(false);
-        tab.focus();
+        dialog.close();
     });
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape' && !form.hidden) {
-            toggle(false);
-            tab.focus();
+    // A click on the backdrop lands on the <dialog> itself.
+    dialog.addEventListener('click', function (event) {
+        if (event.target === dialog) {
+            dialog.close();
         }
     });
 

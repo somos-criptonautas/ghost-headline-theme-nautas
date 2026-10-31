@@ -1,10 +1,11 @@
-{{!-- Feedback tab, desktop only (assets/css/feedback.css). assets/js/feedback.js
-    posts it to the n8n webhook in the "Feedback webhook" setting, which hands
+{{!-- The feedback form, opened from the .cn-feedback-open buttons in default.hbs:
+    the head from 768px, the open menu below (assets/css/feedback.css).
+    assets/js/feedback.js posts it to the n8n webhook in the "Feedback webhook" setting, which hands
     it to Chatwoot, with the image the reader picked, if any. --}}
 {{#if @custom.feedback_webhook}}
 <div class="cn-feedback" data-webhook="{{@custom.feedback_webhook}}">
-    <button class="cn-feedback-tab" type="button" aria-expanded="false" aria-controls="cn-feedback-panel">{{t "feedback"}}{{> "icons/phosphor/megaphone"}}</button>
-    <form class="cn-feedback-panel" id="cn-feedback-panel" hidden
+    <dialog class="cn-feedback-dialog" aria-labelledby="cn-feedback-title">
+    <form class="cn-feedback-panel" id="cn-feedback-panel"
         data-sending="{{t "Sending…"}}" data-thanks="{{t "Thanks, we got it."}}" data-error="{{t "Could not send it. Try again in a moment."}}">
         <div class="cn-feedback-head">
             <p class="cn-feedback-title" id="cn-feedback-title">{{t "What do you want to tell us?"}}</p>
@@ -26,5 +27,6 @@
         <button class="cn-feedback-send" type="submit">{{t "send"}}</button>
         <p class="cn-feedback-status" role="status"></p>
     </form>
+    </dialog>
 </div>
 {{/if}}

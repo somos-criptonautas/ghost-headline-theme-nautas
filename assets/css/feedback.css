@@ -1,72 +1,49 @@
-/* Feedback tab (partials/feedback.hbs). Desktop only, dressed like back to
-   top (post.css): the page background, no border, the same soft shadow, and
-   on hover that shadow in the text colour. */
-.cn-feedback {
-    display: none;
-}
-
-@media (min-width: 992px) {
-    .cn-feedback {
-        position: fixed;
-        top: 50%;
-        right: 0;
-        z-index: 90;
-        display: block;
-        transform: translateY(-50%);
-    }
-}
-
-/* Rotated half a turn so it reads bottom to top; the element's left edge is
-   the one against the screen, hence no left border and right-side radius. */
-.cn-feedback-tab {
-    padding: 1.4rem 0.7rem;
-    border: 0;
-    border-radius: 0 0.8rem 0.8rem 0;
-    background: var(--color-bg);
-    color: var(--color-base);
-    /* No offset: the tab is turned half a turn, so one would point up. */
-    box-shadow: 0 0 0.6rem rgba(0, 0, 0, 0.1);
-    font-size: 1.3rem;
-    letter-spacing: 0.04em;
+/* Feedback (partials/feedback.hbs): an icon beside the theme toggle from 768px,
+   in the open menu below, with a little more contrast there: the re-launch
+   wants the feedback. The form opens in a dialog. */
+.cn-feedback-open {
     cursor: pointer;
-    writing-mode: vertical-rl;
-    rotate: 180deg;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .cn-feedback-tab {
-        transition: box-shadow 0.15s ease;
+.cn-feedback-open svg {
+    width: 2.2rem;
+    height: 2.2rem;
+}
+
+@media (max-width: 767px) {
+    .nav-icons .cn-feedback-open {
+        display: none;
+    }
+
+    .gh-head-more .cn-feedback-open {
+        display: grid;
+        place-items: center;
+        width: 4.4rem;
+        height: 4.4rem;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background-color: var(--cn-ui-surface);
+        color: var(--color-base);
     }
 }
 
-.cn-feedback-tab:hover,
-.cn-feedback-tab[aria-expanded="true"] {
-    box-shadow: 0 0 1rem color-mix(in srgb, var(--color-base) 16%, transparent);
+.cn-feedback-dialog {
+    width: min(36rem, calc(100vw - 3.2rem));
+    max-height: calc(100dvh - 3.2rem);
+    padding: 0;
+    border: 0;
+    border-radius: 1.2rem;
+    background: none;
 }
 
-/* Turned with the text, reading bottom to top (images stay upright in
-   vertical text and the tab adds half a turn, so a quarter turn more), and
-   mirrored so it calls out along the word: "feedback ->". */
-.cn-feedback-tab svg {
-    width: 1.6rem;
-    height: 1.6rem;
-    margin-top: 0.6rem;
-    rotate: 90deg;
-    scale: -1 1;
-}
-
-.cn-feedback-tab:focus-visible {
-    outline: 2px solid var(--ghost-accent-color);
-    outline-offset: 2px;
+.cn-feedback-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.45);
 }
 
 .cn-feedback-panel {
-    position: absolute;
-    top: 50%;
-    right: calc(100% + 1.2rem);
     display: grid;
     gap: 1rem;
-    width: 36rem;
     padding: 2rem;
     border: 1px solid var(--cn-ui-line);
     border-radius: 1.2rem;
@@ -74,11 +51,6 @@
     color: var(--cn-ui-text);
     box-shadow: 0 0.1rem 0.5rem rgba(0, 0, 0, 0.08);
     font-size: 1.7rem;
-    transform: translateY(-50%);
-}
-
-.cn-feedback-panel[hidden] {
-    display: none;
 }
 
 .cn-feedback-head {
@@ -252,4 +224,11 @@
 
 .cn-feedback-status:empty {
     display: none;
+}
+
+/* Tablets: the icon's room comes out of the search bar. */
+@media (min-width: 768px) and (max-width: 991px) {
+    #gh-head .gh-search-bar {
+        width: 11.5rem;
+    }
 }

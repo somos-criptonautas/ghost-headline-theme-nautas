@@ -413,7 +413,9 @@
         var body = el('span', 'gh-community-body');
 
         if (mode === 'posts') {
-            body.appendChild(el('span', 'gh-community-excerpt', entry.excerpt || entry.title));
+            var excerpt = el('span', 'gh-community-excerpt');
+            excerpt.appendChild(el('span', 'gh-community-mark', entry.excerpt || entry.title));
+            body.appendChild(excerpt);
             var where = el('span', 'gh-community-topic', labels.where + ' ' + entry.title);
             body.appendChild(where);
         } else {
