@@ -17,6 +17,8 @@
     // Same forum as the comments embed (discourse-embed.js).
     var ORIGIN = (document.documentElement.getAttribute('data-discourse') || '').replace(/\/+$/, '');
     var SHOWN = 8;
+    // The "Community hidden categories" setting: left out of every list here.
+    var HIDDEN = (document.documentElement.getAttribute('data-community-hidden') || '').split(',').map(Number);
     var TIMEOUT = 8000;
 
     var RELATED = 4;
@@ -211,7 +213,7 @@
         return list
             // Pinned topics sit at the top of /latest regardless of age.
             .filter(function (topic) {
-                return topic && !topic.pinned && !topic.pinned_globally && topic.visible !== false;
+                return topic && !topic.pinned && !topic.pinned_globally && topic.visible !== false && HIDDEN.indexOf(topic.category_id) === -1;
             })
             .map(function (topic) {
                 var poster = (topic.posters || [])[0];
@@ -235,7 +237,7 @@
             // post_type 1 is a regular post; the rest are whispers, small
             // actions and moderator notes.
             .filter(function (post) {
-                return post && post.post_type === 1 && !post.hidden && !post.deleted_at;
+                return post && post.post_type === 1 && !post.hidden && !post.deleted_at && HIDDEN.indexOf(post.category_id) === -1;
             })
             .map(function (post) {
                 return {

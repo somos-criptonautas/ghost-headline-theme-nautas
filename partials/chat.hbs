@@ -13,14 +13,14 @@
     data-active="{{t "community chat"}}"
     data-load-error="{{t "The community could not be loaded."}}"
     data-send-error="{{t "Could not send it. Try again in a moment."}}">
-    {{#if @custom.community_mascot}}
+    {{#match @custom.community_mascot "!=" "Off"}}
     <div class="gh-mascot is-chat is-mask">
         <p class="gh-mascot-bubble" role="status"></p>
         <button class="gh-mascot-button" type="button" tabindex="-1" aria-label="{{t "Open the chat"}}">
             <svg viewBox="0 0 48 48" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><use href="{{asset "images/anonist-sprite.svg"}}#anonist-48-mask-idle"/></svg>
         </button>
     </div>
-    {{/if}}
+    {{/match}}
     <button class="cn-chat-pill" type="button" aria-label="{{t "community chat"}}" aria-haspopup="dialog" aria-expanded="false" aria-controls="cn-chat-panel">
         <span class="cn-chat-avatars" aria-hidden="true"></span>
         <span class="cn-chat-icon" aria-hidden="true">{{> "icons/phosphor/chat-circle"}}</span>

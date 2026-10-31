@@ -94,21 +94,22 @@
                 "group": "homepage",
                 "description": "Discourse topics or posts beside the home and tag pages. Needs CORS on the forum."
             },
-            "community_mascot": {
-                "type": "boolean",
-                "default": true,
+            "community_hidden_categories": {
+                "type": "text",
+                "default": "",
                 "group": "homepage",
-                "description": "anonist on the community sidebar; with a Chat channel, his mask pops up on new messages."
+                "description": "Forum category ids left out of every community list, separated by commas: 15, 41"
             },
-            "community_mascot_style": {
+            "community_mascot": {
                 "type": "select",
                 "options": [
+                    "Off",
                     "Figure",
                     "Mask"
                 ],
                 "default": "Figure",
                 "group": "homepage",
-                "description": "Figure: anonist sits and walks. Mask: only his mask, floating."
+                "description": "anonist on the sidebar: sits and walks, or his mask. With a Chat channel, mask on the chat."
             },
             "peertube_source": {
                 "type": "text",

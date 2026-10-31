@@ -82,7 +82,8 @@ handled by the custom pages above and by BTCPay instead.
 | `discourse_url` | Forum for comments, reactions, community lists and tips. Empty turns them off |
 | `discourse_comments`, `discourse_reactions` | Toggle each one |
 | `community_sidebar` | What the community aside lists |
-| `community_mascot`, `community_mascot_style` | anonist on the aside on desktop: on/off, and `Figure` (sits, walks) or `Mask` (floats, glides, spins) |
+| `community_mascot` | anonist on the aside on desktop: `Off`, `Figure` (sits, walks) or `Mask` (floats, glides, spins). With a chat channel, his mask moves to the chat |
+| `community_hidden_categories` | Forum category ids left out of every community list |
 | `monero_tips_username` | Forum account that receives tips. Empty hides them |
 | `search_host`, `search_key` | Typesense host and **search-only** key. Empty: Ghost's own search |
 | `peertube_source` | PeerTube URL for the videos page, optionally `\| category ids` |
