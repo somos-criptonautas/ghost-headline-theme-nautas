@@ -360,7 +360,9 @@
         return out;
     };
 
-    var openReader = function (hit, row, metaParts, fill, out) {
+    /* wait: bars for all of it until fill calls back (a topic: post and summary
+     * both answered), rather than piece by piece. */
+    var openReader = function (hit, row, metaParts, fill, out, wait) {
         closeReader();
         readerScroll = panes.body.scrollTop;
         reader = document.createElement('article');
@@ -370,6 +372,39 @@
             return reader === shown;
         };
 
+        var content = document.createElement('div');
+        var title = document.createElement('h2');
+        title.className = 'ns__reader-title';
+        title.textContent = String(hit.title || '');
+        content.appendChild(title);
+        if (metaParts.length) {
+            content.appendChild(meta(metaParts));
+        }
+
+        var body = content;
+        var bars = null;
+        var show = function () {
+            if (bars && alive()) {
+                bars.remove();
+                content.hidden = false;
+                bars = null;
+            }
+        };
+        if (wait) {
+            body = document.createElement('div');
+            body.className = 'ns__reader-topic';
+            content.appendChild(body);
+            bars = skeleton('ns__skels ns__reader-bars', 8);
+            content.hidden = true;
+            reader.appendChild(bars);
+            window.setTimeout(show, 6000);
+        }
+        reader.appendChild(content);
+        fill(body, alive, show);
+
+        // Always in view: back to the list, or on to the source.
+        var foot = document.createElement('div');
+        foot.className = 'ns__reader-foot';
         var back = document.createElement('button');
         back.type = 'button';
         back.className = 'ns__reader-back';
@@ -377,24 +412,7 @@
         back.addEventListener('click', function () {
             closeReader(row);
         });
-        reader.appendChild(back);
-
-        var title = document.createElement('h2');
-        title.className = 'ns__reader-title';
-        title.textContent = String(hit.title || '');
-        reader.appendChild(title);
-        reader.appendChild(meta(metaParts));
-
-        fill(reader, alive);
-
-        // The end: back to the list, or on to the source.
-        var foot = document.createElement('div');
-        foot.className = 'ns__reader-foot';
-        var again = back.cloneNode(true);
-        again.addEventListener('click', function () {
-            closeReader(row);
-        });
-        foot.appendChild(again);
+        foot.appendChild(back);
         foot.appendChild(out);
         reader.appendChild(foot);
 
@@ -545,13 +563,14 @@
      * summary of the discussion when one exists, and who replied. The forum
      * sends CORS headers for the site; any failure keeps what is shown. */
     var fillTopic = function (hit) {
-        return function (box, alive) {
-            // hit.ready, if given: post and summary have both answered.
+        return function (box, alive, ready) {
+            // ready, if given: post and summary have both answered.
+            ready = ready || hit.ready;
             var waiting = hit.reply_count > 0 ? 2 : 1;
             var settle = function () {
                 waiting -= 1;
-                if (!waiting && hit.ready) {
-                    hit.ready();
+                if (!waiting && ready) {
+                    ready();
                 }
             };
             var text = document.createElement('div');
@@ -751,14 +770,11 @@
                 hit.image || hit.category_image
             );
             return readsHere(row, function () {
-                openReader(hit, row, [
-                    hit.username ? '@' + hit.username : '',
-                    hit.category,
-                    date(hit.created_at),
-                    hit.reply_count ? hit.reply_count + ' ' + t('replies') : ''
-                ], fillTopic(hit), FORUM && /^\d+$/.test(String(hit.topic_id)) && hit.reply_count > 0
-                    ? outLink(inLang(FORUM + '/t/' + hit.topic_id + '/2'), t('see replies') + ' · ' + hit.reply_count)
-                    : outLink(inLang(hit.url), t('view in the community')));
+                var one = window.Intl && Intl.PluralRules && new Intl.PluralRules(document.documentElement.lang).select(hit.reply_count) === 'one';
+                openReader(hit, row, [], fillTopic(Object.assign({}, hit, {
+                    username: '',
+                    replies_label: hit.reply_count ? hit.reply_count + ' ' + t(one ? 'reply' : 'replies') : ''
+                })), outLink(inLang(hit.url), t('view in the community')), true);
             });
         },
         videos: function (hit) {
