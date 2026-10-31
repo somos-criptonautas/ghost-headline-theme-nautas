@@ -3709,6 +3709,43 @@ a {
   padding-bottom: 6rem;
 }
 
+/* 60 columns at 0.6em each: fits the page's width at any size. Room below the
+   digits for anonist's mask, 8em square, which not-found.js moves in em. */
+.error-art {
+  position: relative;
+  width: 36em;
+  height: 21em;
+  margin: 0 auto 3rem;
+  font-family: var(--font-mono);
+  font-size: min(calc((100vw - 4rem) / 36), 1rem);
+  line-height: 1;
+  /* Warm, from the mask (anonist-sprite.svg) without being its colors. */
+  color: #2E2924;
+}
+
+html[data-theme="dark"] .error-art {
+  color: #BFB8AA;
+}
+
+.error-art pre {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: none;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+}
+
+.error-art svg {
+  position: absolute;
+  bottom: 0.5em;
+  left: 50%;
+  width: 8em;
+  height: 8em;
+  transform: translateX(-50%);
+}
+
 .gh-inner {
   max-width: 1500px;
 }
