@@ -218,6 +218,19 @@ class TranslateTest(unittest.TestCase):
         self.assertEqual(docs["b"]["language"], "en")
         self.assertNotIn("b-en", docs)
 
+    def test_a_failed_login_translates_nothing(self):
+        a = video("a")
+        caps = [caption("en")]
+        fake = FakeInstance([{"id": "a", "video_id": "a", "updated": sync.stamp(a, caps), "language": "en"}])
+        sync.request, sync.public_videos, sync.captions_of = fake, (lambda: iter([a])), (lambda v: caps)
+        sync.llm, sync.peertube_token = self.answer, (lambda: "")
+        user, sync.PEERTUBE_USER = sync.PEERTUBE_USER, "someone"
+        try:
+            sync.main()
+        finally:
+            sync.PEERTUBE_USER = user
+        self.assertEqual(fake.imports, [])
+
     def test_translated_videos_are_left_alone_and_their_english_document_is_kept(self):
         a = video("a")
         caps = [caption("en"), caption("es")]

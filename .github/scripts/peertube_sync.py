@@ -237,7 +237,14 @@ def peertube_token():
         return json.loads(request("POST", f"{PEERTUBE}/api/v1/users/token", form, headers={
             "Content-Type": "application/x-www-form-urlencoded"}))["access_token"]
     except (OSError, KeyError, ValueError) as error:
-        print(f"PeerTube login failed: {type(error).__name__} {getattr(error, 'code', '')}")
+        # PeerTube's own reason says what to fix and carries no credentials.
+        reason = ""
+        if isinstance(error, urllib.error.HTTPError):
+            try:
+                reason = json.loads(error.read()).get("code") or ""
+            except ValueError:
+                pass
+        print(f"PeerTube login failed: {type(error).__name__} {getattr(error, 'code', '')} {reason}")
         return ""
 
 
@@ -479,13 +486,15 @@ def main():
     have = existing()
     seen, order, changed, patches, stale, fresh_chunks = set(), [], [], [], [], []
     token = peertube_token() if LOCALIZE else ""
+    # A failed login would translate everything now and again once the captions arrive.
+    localize = LOCALIZE and (token or not PEERTUBE_USER)
     translated, failed = 0, 0
     for video in public_videos():
         uuid = video["uuid"]
         seen.update((uuid, f"{uuid}-en"))
         order.append(uuid)
         captions = captions_of(video)
-        if LOCALIZE and translated < TRANSLATE_MAX:
+        if localize and translated < TRANSLATE_MAX:
             tracks = bool(token and missing_tracks(captions))
             stale_docs = [l for l in LANGUAGES if not is_current(have.get(doc_id(uuid, l), {}), l, video, captions)]
             if tracks or stale_docs:
@@ -537,7 +546,7 @@ def main():
     import_docs(patches, action="update")
     delete_docs(gone)
     print(f"{len(seen) // 2} public videos, {len(changed)} upserted, {len(gone)} deleted")
-    if LOCALIZE:
+    if localize:
         print(f"{translated} videos translated, {failed} failed")
     if LLM_URL and LLM_KEY and LLM_MODEL:
         written = {doc["id"] for doc in changed}
