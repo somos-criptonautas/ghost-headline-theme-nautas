@@ -394,9 +394,26 @@ html:not(.js) .gh-with-sidebar {
     font-size: 1.5rem;
 }
 
-.gh-community-reader .ns__reader-foot {
+.gh-community-reader .ns__reader-people {
+    gap: 0.8rem;
+    margin-top: 0;
+}
+
+.ns__reader-replies {
+    color: var(--ns-muted);
+    font-size: 1.3rem;
+}
+
+.gh-community-reader-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
     margin-top: 1.2rem;
-    padding-top: 0;
+}
+
+.gh-community-reader-nav .gh-community-more {
+    margin: 0;
 }
 
 .gh-community-reader img {

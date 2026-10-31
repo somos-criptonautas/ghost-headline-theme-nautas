@@ -297,13 +297,13 @@
      * its post, AI summary and who replied. Without it (search off, not loaded
      * yet), a locked topic or a modified click: the link, in a new tab. */
     var reader = null;
-    var readerBack = null;
+    var readerNav = null;
     var closeReader = function (link) {
         if (!reader) {
             return;
         }
         reader.remove();
-        readerBack.remove();
+        readerNav.remove();
         reader = null;
         more.hidden = false;
         aside.querySelector('.gh-community-list').hidden = false;
@@ -327,11 +327,7 @@
         var content = el('div');
         content.hidden = true;
         var slot = el('div', 'gh-community-reader-body');
-        var foot = el('div', 'ns__reader-foot');
-        foot.appendChild(entry.replies > 0
-            ? R.outLink(R.inLang(ORIGIN + '/t/' + entry.id + '/2'), R.t('see replies') + ' · ' + entry.replies)
-            : R.outLink(entry.url, R.t('view in the community')));
-        content.append(el('h3', 'ns__reader-title', entry.title), slot, foot);
+        content.append(el('h3', 'ns__reader-title', entry.title), slot);
         shown.append(bars, content);
 
         var show = function () {
@@ -343,17 +339,28 @@
         };
         setTimeout(show, 6000);
 
-        readerBack = el('button', 'gh-community-more', aside.getAttribute('data-label-back'));
-        readerBack.type = 'button';
-        readerBack.addEventListener('click', function () {
+        // One row: back to the list, on to this topic in the forum.
+        readerNav = el('div', 'gh-community-reader-nav');
+        var back = el('button', 'gh-community-more', aside.getAttribute('data-label-back'));
+        back.type = 'button';
+        back.addEventListener('click', function () {
             closeReader(link);
         });
+        var out = el('a', 'gh-community-more', R.t('view in the community') + ' ');
+        out.href = entry.url;
+        out.target = '_blank';
+        out.rel = 'noopener';
+        var icon = more.querySelector('svg');
+        if (icon) {
+            out.appendChild(icon.cloneNode(true));
+        }
+        readerNav.append(back, out);
         var list = aside.querySelector('.gh-community-list');
         list.hidden = true;
         more.hidden = true;
         list.parentNode.insertBefore(shown, list);
-        more.parentNode.insertBefore(readerBack, more);
-        readerBack.focus();
+        more.parentNode.insertBefore(readerNav, more);
+        back.focus();
 
         getJSON('/t/' + entry.id + '.json').then(function (topic) {
             var first = topic && topic.post_stream && topic.post_stream.posts && topic.post_stream.posts[0];
@@ -364,7 +371,15 @@
                 show();
                 return;
             }
-            R.fill({id: first.id, topic_id: entry.id, reply_count: entry.replies, text: '', ready: show})(slot, function () {
+            var form = plurals && plurals.select(entry.replies) === 'one' ? labels.one : labels.other;
+            R.fill({
+                id: first.id,
+                topic_id: entry.id,
+                reply_count: entry.replies,
+                replies_label: entry.replies + ' ' + form,
+                text: '',
+                ready: show
+            })(slot, function () {
                 return reader === shown;
             });
         }).then(null, show);

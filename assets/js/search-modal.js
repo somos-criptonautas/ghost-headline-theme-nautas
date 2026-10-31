@@ -513,6 +513,13 @@
                     more.textContent = '+' + (list.length - MAX_PEOPLE);
                     row.appendChild(more);
                 }
+                // The community list has no meta line to say how many (community-sidebar.js).
+                if (hit.replies_label) {
+                    var count = document.createElement('span');
+                    count.className = 'ns__reader-replies';
+                    count.textContent = hit.replies_label;
+                    row.insertBefore(count, row.firstChild);
+                }
                 row.hidden = !row.childNodes.length;
             })
             .catch(function () {
