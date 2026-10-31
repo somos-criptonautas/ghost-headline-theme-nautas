@@ -414,6 +414,13 @@ html:not(.js) .gh-with-sidebar {
 
 .gh-community-reader-nav .gh-community-more {
     margin: 0;
+    font-size: 1.2rem;
+    white-space: nowrap;
+}
+
+.gh-community-reader-nav .gh-community-more svg {
+    width: 1.4rem;
+    height: 1.4rem;
 }
 
 .gh-community-reader img {
