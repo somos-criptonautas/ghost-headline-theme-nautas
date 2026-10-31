@@ -51,7 +51,6 @@ lists every post with the community beside it (aside) or above it (strip).
 | `custom-post-no-suggested.hbs` | Post without the related-posts footer |
 | `custom-collection.hbs` | Series hub: chapter cards (tarot style), stepper and previous/next with images. The series comes from the page's internal tag |
 | `custom-videos.hbs` | PeerTube videos with channel chips, Random/Tendencia/Recientes and load more |
-| `custom-signin` / `custom-signup` / `custom-account` | Membership pages |
 | `custom-authors` / `custom-tags` | Archive listings |
 
 **Forum integration** ([Discourse](https://comunidad.criptonautas.co))

@@ -52,7 +52,6 @@ temas del foro. `/blog` lista todos los posts con la comunidad al costado (aside
 | `custom-post-no-suggested.hbs` | Post sin los relacionados al pie |
 | `custom-collection.hbs` | Índice de una serie: capítulos como cartas de tarot, stepper y anterior/siguiente con imágenes. La serie sale de la etiqueta interna de la página |
 | `custom-videos.hbs` | Videos de PeerTube con chips de canal, Random/Tendencia/Recientes y cargar más |
-| `custom-signin` / `custom-signup` / `custom-account` | Páginas de membresía |
 | `custom-authors` / `custom-tags` | Listados de archivo |
 
 **Integración con el foro** ([Discourse](https://comunidad.criptonautas.co))

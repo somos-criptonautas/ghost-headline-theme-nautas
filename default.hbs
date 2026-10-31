@@ -184,15 +184,6 @@
             {{#foreach posts visibility='all'}}
             {{/foreach}}
             {{/get}}
-            {{#unless @member}}
-            <section class="d-none">
-                <h4 class="gh-subscribe-title">{{ t "Subscribe to" }}</h3>
-                    <div class="gh-subscribe-description">{{ t "Newsletter description"}}</div>
-
-                    <a class="gh-subscribe-btn gh-btn" href="{{@site.url}}/start">{{ t "Subscribe now" }}</a>
-
-            </section>
-            {{/unless}}
         </div>
     </footer>
     {{/is}}
