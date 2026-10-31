@@ -9,8 +9,6 @@
     <!-- prettier-ignore-start -->
     <link rel="stylesheet" href="{{asset "built/screen.css"}}">
     <!-- prettier-ignore-end -->
-    <link href="{{@site.url}}/continue" rel="prefetch">
-    <link href="{{@site.url}}/start" rel="prefetch">
     {{#if @custom.discourse_url}}
     <link rel="preconnect" href="{{@custom.discourse_url}}">
     {{#is "post"}}{{#if @custom.discourse_comments}}
@@ -32,8 +30,8 @@
     <link rel="stylesheet" href="{{asset "built/home.css"}}">
     {{/is}}
     {{/if}}
-    {{!-- Member flow pages: no use to anyone arriving from a search engine. --}}
-    {{#is "page"}}{{#post}}{{#match slug "~^" "hola-"}}<meta name="robots" content="noindex">{{else match slug "gracias"}}<meta name="robots" content="noindex">{{else match slug "continue"}}<meta name="robots" content="noindex">{{else match slug "nauta"}}<meta name="robots" content="noindex">{{else match slug "stats"}}<meta name="robots" content="noindex">{{else match slug "lounge"}}<meta name="robots" content="noindex">{{else match slug "start"}}<meta name="robots" content="noindex">{{/match}}{{/post}}{{/is}}
+    {{!-- Pages with nothing for someone arriving from a search engine. --}}
+    {{#is "page"}}{{#post}}{{#match slug "stats"}}<meta name="robots" content="noindex">{{else match slug "lounge"}}<meta name="robots" content="noindex">{{/match}}{{/post}}{{/is}}
     {{!-- A channel with no posts yet stays out of search until it has one. --}}
     {{#is "tag"}}{{#match pagination.total 0}}<meta name="robots" content="noindex">{{/match}}{{/is}}
     {{{block "description"}}}

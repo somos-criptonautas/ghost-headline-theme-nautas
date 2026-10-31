@@ -15,6 +15,7 @@
     <div class="gh-inner">
     <div class="gh-with-sidebar">
         <div class="gh-with-sidebar-main">
+        <h1 class="gh-visually-hidden">{{t "Criptonautas blog: crypto, trading and privacy"}}</h1>
         {{^if pagination.prev}}
         {{#get "pages" filter="slug:blog" limit="1"}}{{#foreach pages}}{{#if feature_image}}
         <figure class="gh-blog-image">
