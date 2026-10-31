@@ -406,10 +406,8 @@
     };
 
     var forumJSON = function (path, lang) {
-        var headers = { Accept: 'application/json' };
-        if (lang) {
-            headers['Accept-Language'] = lang;
-        }
+        // In the site's language unless told otherwise: the forum would follow the browser's.
+        var headers = { Accept: 'application/json', 'Accept-Language': lang || document.documentElement.lang || 'es' };
         return fetch(FORUM + path, { credentials: 'omit', headers: headers }).then(function (response) {
             return response.ok ? response.json() : null;
         });
@@ -998,7 +996,8 @@
                     group_limit: 1
                 };
                 if (cfg.topicsByLocale) {
-                    params[cfg.topicsCollection].filter_by = 'locale:=' + (document.documentElement.lang || 'es').slice(0, 2);
+                    // Not locale:=es: the index tags hundreds of Spanish posts as pt and the like.
+                    params[cfg.topicsCollection].filter_by = /^en/i.test(document.documentElement.lang) ? 'locale:=en' : 'locale:!=en';
                 }
                 if (cfg.videosCollection) {
                     params[cfg.videosCollection] = {

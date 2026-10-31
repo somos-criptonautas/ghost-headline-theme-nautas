@@ -223,7 +223,8 @@
                     locked: topic.is_locked_down === true,
                     url: topicUrl(topic.slug, topic.id),
                     image: image(topic.image_url),
-                    title: String(topic.title || ''),
+                    // `title` stays in the topic's own language; the translation comes as escaped HTML.
+                    title: plainText(topic.fancy_title) || String(topic.title || ''),
                     user: user ? String(user.username || '') : '',
                     avatar: user ? avatar(user.avatar_template) : null,
                     date: date(topic.last_posted_at || topic.bumped_at || topic.created_at),
