@@ -1,0 +1,14 @@
+{{!-- Structured data {{ghost_head}} does not emit: who publishes the site, on
+    the home, and the course, on its page. The strings are written out rather
+    than taken from Ghost so no title can break the JSON. --}}
+{{#is "home"}}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","@id":"{{@site.url}}/#organization","name":"Criptonautas","url":"{{@site.url}}/","logo":"{{@site.logo}}","sameAs":["https://github.com/somos-criptonautas","https://fedi.pub/@blog@criptonautas.co"],"founder":{"@type":"Person","name":"satonotdead","url":"{{@site.url}}/team/satonotdead/","sameAs":["https://satonotdead.co","https://x.com/satonotdead","https://mastodon.social/@satonotdead"]}}
+</script>
+{{/is}}
+{{!-- Spanish only until the English site has the course translated. --}}
+{{#match @site.locale "es"}}{{#is "page"}}{{#post}}{{#match slug "curso"}}
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Course","name":"Curso abierto de trading cripto","description":"Cómo tradear cripto, publicado entero y sin costo. Se lee libre y se practica acompañado en la comunidad.","url":"{{@site.url}}/curso/","inLanguage":"{{@site.locale}}","isAccessibleForFree":true,"provider":{"@type":"Organization","name":"Criptonautas","url":"{{@site.url}}/"}}
+</script>
+{{/match}}{{/post}}{{/is}}{{/match}}

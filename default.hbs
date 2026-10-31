@@ -37,6 +37,7 @@
     {{!-- A channel with no posts yet stays out of search until it has one. --}}
     {{#is "tag"}}{{#match pagination.total 0}}<meta name="robots" content="noindex">{{/match}}{{/is}}
     {{{block "description"}}}
+    {{> "schema"}}
     {{! Portal is not used on this site, and search is assets/js/search-modal.js,
         which owns [data-ghost-search] itself - Ghost's sodo-search tag was
         loading a file that 404s since the MagicPages build was dropped. The
