@@ -608,12 +608,9 @@ html.ns-open {
     border-left: 3px solid var(--ns-src-videos);
 }
 
-/* The forum's AI summary of the discussion, set apart from the post. */
+/* The forum's AI summary of the discussion, after the post. */
 .ns__reader-summary {
     margin-top: 2.4rem;
-    padding: 1.4rem 1.6rem;
-    border: 1px solid var(--ns-border);
-    border-radius: 0.8rem;
 }
 
 .ns__reader-summary-label {
@@ -720,8 +717,6 @@ html.ns-open {
     justify-content: space-between;
     gap: 1.2rem;
     margin-top: 2.4rem;
-    padding-top: 1.2rem;
-    border-top: 1px solid var(--ns-border);
 }
 
 .ns__reader-foot .ns__reader-back {

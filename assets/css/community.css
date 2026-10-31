@@ -135,10 +135,16 @@ html:not(.js) .gh-with-sidebar {
         flex-direction: column;
     }
 
-    .gh-community-list {
+    /* The scrollbar runs by the box's edge, and the text keeps the heading's
+       right margin (--gh-scrollbar: community-sidebar.js). */
+    .gh-community-list,
+    .gh-community .gh-community-reader {
         min-height: 0;
+        margin-right: -2.4rem;
+        padding-right: calc(2.4rem - var(--gh-scrollbar, 0px));
         overflow-y: auto;
         overscroll-behavior: contain;
+        scrollbar-gutter: stable;
         scrollbar-width: thin;
     }
 
@@ -168,7 +174,7 @@ html:not(.js) .gh-with-sidebar {
 /* Box */
 
 .gh-community {
-    padding: 2.4rem;
+    padding: 2.1rem 2.4rem 2.4rem;
     border: 1px solid var(--color-border, var(--color-light-gray));
     border-radius: 0.77rem;
     background-color: var(--color-bg);
@@ -314,11 +320,25 @@ html:not(.js) .gh-with-sidebar {
     --ns-muted: color-mix(in srgb, var(--color-base) 63%, transparent);
     --ns-border: var(--color-border);
     --ns-focus: color-mix(in srgb, var(--color-base) 40%, transparent);
-    min-height: 0;
-    padding: 0.8rem 0 1.6rem;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
+}
+
+/* Over search.css's reader padding, whichever loads last. */
+.gh-community .gh-community-reader {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    padding-left: 0;
+}
+
+@media screen and (max-width: 1199px) {
+    .gh-community .gh-community-reader {
+        padding-right: 0;
+    }
+}
+
+.gh-community-reader .gh-community-reader-bars .ns__skel:first-child {
+    width: 70%;
+    height: 1.6rem;
+    margin-bottom: 1.6rem;
 }
 
 /* The summary is there to spare the long read: it comes first and stands in
@@ -326,7 +346,7 @@ html:not(.js) .gh-with-sidebar {
 .gh-community-reader-body {
     display: flex;
     flex-direction: column;
-    gap: 1.6rem;
+    gap: 1.2rem;
 }
 
 .gh-community-reader-body > .ns__reader-summary {
@@ -341,24 +361,30 @@ html:not(.js) .gh-with-sidebar {
 .gh-community-reader-body > .ns__reader-text,
 .gh-community-reader-body > .ns__reader-summary {
     overflow: hidden;
-    -webkit-mask-image: linear-gradient(#000 70%, transparent);
-    mask-image: linear-gradient(#000 70%, transparent);
+    -webkit-mask-image: linear-gradient(#000 80%, transparent);
+    mask-image: linear-gradient(#000 80%, transparent);
 }
 
 .gh-community-reader-body > .ns__reader-text {
-    max-height: 22rem;
+    max-height: 30rem;
 }
 
 .gh-community-reader-body > .ns__reader-summary {
-    max-height: 36rem;
+    max-height: 44rem;
 }
 
 .gh-community-reader .ns__reader-title {
-    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
 }
 
 .gh-community-reader .ns__reader-text {
     font-size: 1.5rem;
+}
+
+.gh-community-reader .ns__reader-foot {
+    margin-top: 1.2rem;
+    padding-top: 0;
 }
 
 .gh-community-reader img {
@@ -489,11 +515,23 @@ html[data-theme="dark"] :is(.gh-community-link:hover, .gh-community-link:focus-v
 .gh-community > .gh-community-more {
     display: flex;
     width: fit-content;
-    margin: 2.4rem auto 0;
+    margin: 1.2rem auto 0;
+}
+
+.gh-community > .gh-community-more[hidden] {
+    display: none;
+}
+
+button.gh-community-more {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: inherit;
+    cursor: pointer;
 }
 
 .gh-community:has(> .gh-community-more) {
-    padding-bottom: 0.8rem;
+    padding-bottom: 0.7rem;
 }
 
 /* Desktop: on the right, as the other "see all" links under a block. */

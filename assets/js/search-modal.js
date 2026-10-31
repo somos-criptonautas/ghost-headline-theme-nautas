@@ -539,6 +539,14 @@
      * sends CORS headers for the site; any failure keeps what is shown. */
     var fillTopic = function (hit) {
         return function (box, alive) {
+            // hit.ready, if given: post and summary have both answered.
+            var waiting = hit.reply_count > 0 ? 2 : 1;
+            var settle = function () {
+                waiting -= 1;
+                if (!waiting && hit.ready) {
+                    hit.ready();
+                }
+            };
             var text = document.createElement('div');
             text.className = 'ns__reader-text';
             var plain = function () {
@@ -558,6 +566,8 @@
 
             if (!FORUM || !window.fetch) {
                 plain();
+                waiting = 1;
+                settle();
                 return;
             }
             if (topic && hit.reply_count > 0) {
@@ -594,9 +604,11 @@
                         if (alive()) {
                             plain();
                         }
-                    });
+                    })
+                    .then(settle);
             } else {
                 plain();
+                settle();
             }
             /* Only topics someone already summarised have one; the rest answer
              * 404. Summaries are kept per language and the forum picks one by
@@ -622,7 +634,10 @@
                         summary.append(label, body);
                         summary.hidden = false;
                     })
-                    .catch(function () {});
+                    .catch(function () {})
+                    .then(settle);
+            } else if (hit.reply_count > 0) {
+                settle();
             }
         };
     };
@@ -735,7 +750,7 @@
                     date(hit.created_at),
                     hit.reply_count ? hit.reply_count + ' ' + t('replies') : ''
                 ], fillTopic(hit), FORUM && /^\d+$/.test(String(hit.topic_id)) && hit.reply_count > 0
-                    ? outLink(inLang(FORUM + '/t/' + hit.topic_id + '/2'), t('see replies') + ' (' + hit.reply_count + ')')
+                    ? outLink(inLang(FORUM + '/t/' + hit.topic_id + '/2'), t('see replies') + ' · ' + hit.reply_count)
                     : outLink(inLang(hit.url), t('view in the community')));
             });
         },

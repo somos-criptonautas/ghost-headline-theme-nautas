@@ -33,6 +33,11 @@
     var list = aside && aside.querySelector('.gh-community-list');
     var more = aside && aside.querySelector('.gh-community-more');
     var picker = aside && aside.querySelector('.gh-community-select');
+    // The scrollbar's width, for the list's padding (community.css).
+    if (aside) {
+        var probe = aside.querySelector('.gh-community-list');
+        aside.style.setProperty('--gh-scrollbar', (probe.offsetWidth - probe.clientWidth) + 'px');
+    }
     var message = aside && aside.querySelector('.gh-community-message');
     // Renamed from gh-community-mode when top became the default, so earlier picks start over on it.
     var STORE = 'gh-community-list';
@@ -292,52 +297,77 @@
      * its post, AI summary and who replied. Without it (search off, not loaded
      * yet), a locked topic or a modified click: the link, in a new tab. */
     var reader = null;
+    var readerBack = null;
     var closeReader = function (link) {
         if (!reader) {
             return;
         }
         reader.remove();
+        readerBack.remove();
         reader = null;
+        more.hidden = false;
         aside.querySelector('.gh-community-list').hidden = false;
         if (link) {
             link.focus();
         }
     };
 
-    var openReader = function (entry, link, facts) {
+    var openReader = function (entry, link) {
         var R = window.NautasTopicReader;
         closeReader();
         var shown = el('article', 'gh-community-reader ns__reader');
         reader = shown;
-        var back = el('button', 'ns__reader-back', aside.getAttribute('data-label-back'));
-        back.type = 'button';
-        back.addEventListener('click', function () {
-            closeReader(link);
-        });
-        var title = el('h3', 'ns__reader-title', entry.title);
+        shown.setAttribute('aria-busy', 'true');
+
+        // Bars for all of it until the forum has answered, rather than piece by piece.
+        var bars = el('div', 'gh-community-reader-bars ns__skels');
+        for (var i = 0; i < 7; i += 1) {
+            bars.appendChild(el('span', 'ns__skel'));
+        }
+        var content = el('div');
+        content.hidden = true;
         var slot = el('div', 'gh-community-reader-body');
-        slot.setAttribute('aria-busy', 'true');
         var foot = el('div', 'ns__reader-foot');
         foot.appendChild(entry.replies > 0
-            ? R.outLink(R.inLang(ORIGIN + '/t/' + entry.id + '/2'), R.t('see replies') + ' (' + entry.replies + ')')
+            ? R.outLink(R.inLang(ORIGIN + '/t/' + entry.id + '/2'), R.t('see replies') + ' · ' + entry.replies)
             : R.outLink(entry.url, R.t('view in the community')));
-        shown.append(back, title, facts.cloneNode(true), slot, foot);
+        content.append(el('h3', 'ns__reader-title', entry.title), slot, foot);
+        shown.append(bars, content);
+
+        var show = function () {
+            if (reader === shown) {
+                bars.remove();
+                content.hidden = false;
+                shown.removeAttribute('aria-busy');
+            }
+        };
+        setTimeout(show, 6000);
+
+        readerBack = el('button', 'gh-community-more', aside.getAttribute('data-label-back'));
+        readerBack.type = 'button';
+        readerBack.addEventListener('click', function () {
+            closeReader(link);
+        });
         var list = aside.querySelector('.gh-community-list');
         list.hidden = true;
+        more.hidden = true;
         list.parentNode.insertBefore(shown, list);
-        back.focus();
+        more.parentNode.insertBefore(readerBack, more);
+        readerBack.focus();
 
         getJSON('/t/' + entry.id + '.json').then(function (topic) {
             var first = topic && topic.post_stream && topic.post_stream.posts && topic.post_stream.posts[0];
-            if (reader !== shown || !first) {
+            if (reader !== shown) {
                 return;
             }
-            R.fill({id: first.id, topic_id: entry.id, reply_count: entry.replies, text: ''})(slot, function () {
+            if (!first) {
+                show();
+                return;
+            }
+            R.fill({id: first.id, topic_id: entry.id, reply_count: entry.replies, text: '', ready: show})(slot, function () {
                 return reader === shown;
             });
-        }).then(null, function () {}).then(function () {
-            slot.removeAttribute('aria-busy');
-        });
+        }).then(null, show);
     };
 
     var row = function (entry) {
@@ -400,7 +430,7 @@
                     return;
                 }
                 event.preventDefault();
-                openReader(entry, link, meta);
+                openReader(entry, link);
             });
         }
         return item;
