@@ -115,7 +115,7 @@
                     </form>
                     {{/is}}
                     {{^is "home"}}{{#if @custom.feedback_webhook}}
-                    <button type="button" class="cn-feedback-open gh-icon-btn gh-head-bar-feedback" aria-label="{{t "feedback"}}" title="{{t "feedback"}}">{{> "icons/phosphor/megaphone"}}</button>
+                    <button type="button" class="cn-feedback-open gh-icon-btn gh-head-bar-feedback" aria-label="{{t "feedback"}}" title="{{t "feedback"}}">{{> "icons/phosphor/clipboard-text"}}</button>
                     {{/if}}{{/is}}
                     <button type="button" class="it-dark-light gh-icon-btn gh-head-bar-toggle" aria-label="{{t "Toggle theme"}}">
                         <div class="icon-dark">{{> icons/light}}</div>
@@ -149,7 +149,7 @@
                         <div class="actions-container">
                             <div class="nav-icons">
                                 {{^is "home"}}{{#if @custom.feedback_webhook}}
-                                <button type="button" class="cn-feedback-open gh-icon-btn" aria-label="{{t "feedback"}}" title="{{t "feedback"}}">{{> "icons/phosphor/megaphone"}}</button>
+                                <button type="button" class="cn-feedback-open gh-icon-btn" aria-label="{{t "feedback"}}" title="{{t "feedback"}}">{{> "icons/phosphor/clipboard-text"}}</button>
                                 {{/if}}{{/is}}
                                 <button type="button" class="it-dark-light gh-icon-btn" aria-label="{{t "Toggle theme"}}">
                                     <div class="icon-dark">
@@ -176,7 +176,7 @@
                             <a href="{{@custom.github_url}}" class="github" target="_blank" rel="noopener" aria-label="{{t "Github"}}">{{> "icons/phosphor/github-logo"}}</a>
                             {{/if}}
                             {{^is "home"}}{{#if @custom.feedback_webhook}}
-                            <button type="button" class="cn-feedback-open" aria-label="{{t "feedback"}}">{{> "icons/phosphor/megaphone"}}</button>
+                            <button type="button" class="cn-feedback-open" aria-label="{{t "feedback"}}">{{> "icons/phosphor/clipboard-text"}}</button>
                             {{/if}}{{/is}}
                         </div>
                     </div>

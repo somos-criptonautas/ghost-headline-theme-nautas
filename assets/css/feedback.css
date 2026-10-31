@@ -5,7 +5,16 @@
     cursor: pointer;
 }
 
-.cn-feedback-open svg {
+/* The size of the theme toggle beside it. */
+#gh-head .cn-feedback-open.gh-icon-btn {
+    flex: none;
+    width: 2.2rem;
+    height: 2.2rem;
+    margin: 0 1.2rem 0 0;
+    padding: 0;
+}
+
+.gh-head-more .cn-feedback-open svg {
     width: 2.2rem;
     height: 2.2rem;
 }
@@ -233,9 +242,10 @@
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
+    /* Same order as the toggle, and just before it in the markup. */
     #gh-head .gh-head-bar-feedback {
-        display: grid;
-        place-items: center;
+        order: 4;
+        display: block;
     }
 
     #gh-head .gh-head-search-field {
