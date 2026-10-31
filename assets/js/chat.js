@@ -92,8 +92,11 @@
     };
 
     var when = function (iso) {
-        var d = new Date(iso);
-        return isNaN(d) ? '' : d.toLocaleTimeString(document.documentElement.lang || undefined, {hour: '2-digit', minute: '2-digit'});
+        return P.stamp(iso, Date.now(), document.documentElement.lang);
+    };
+
+    var dayOf = function (iso) {
+        return new Date(iso).toDateString();
     };
 
     // The last three distinct posters, newest first.
@@ -124,6 +127,7 @@
         }
         var group = null;
         var lastUser = null;
+        var lastDay = null;
         messages.forEach(function (m) {
             var u = m.user || {};
             var body;
@@ -133,7 +137,8 @@
                 // One bad message must not blank the panel.
                 return;
             }
-            if (!group || u.id !== lastUser) {
+            // A new day starts a new group: its heading is what shows the date.
+            if (!group || u.id !== lastUser || dayOf(m.created_at) !== lastDay) {
                 group = el('div', 'cn-chat-group');
                 var image = img(u);
                 if (image) {
@@ -145,6 +150,7 @@
                 group.appendChild(who);
                 list.appendChild(group);
                 lastUser = u.id;
+                lastDay = dayOf(m.created_at);
             }
             body.className = 'cn-chat-body';
             group.appendChild(body);
@@ -215,6 +221,7 @@
         ago.textContent = '';
         pill.classList.add('is-visible');
         list.setAttribute('aria-busy', 'false');
+        panelAvatars.replaceChildren();
         if (!panel.hidden) {
             list.replaceChildren(el('p', 'cn-chat-empty', root.getAttribute('data-load-error')));
         }
@@ -261,6 +268,9 @@
         join.href = channel.url;
         picker.value = channel.id;
         setState();
+        if (!panel.hidden) {
+            panelAvatars.replaceChildren(el('span', 'cn-chat-skeleton'), el('span', 'cn-chat-skeleton'), el('span', 'cn-chat-skeleton'));
+        }
         poll();
     };
 

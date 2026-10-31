@@ -67,6 +67,24 @@ window.NautasChatParse = (function () {
         return s.length > max ? s.slice(0, max - 1) + '…' : s;
     };
 
+    // A message's time: the hour today, with the day before that, with the year before this one.
+    var stamp = function (iso, now, locale) {
+        var d = new Date(iso);
+        if (isNaN(d)) {
+            return '';
+        }
+        var today = new Date(now);
+        var options = {hour: '2-digit', minute: '2-digit'};
+        if (d.toDateString() !== today.toDateString()) {
+            options.day = 'numeric';
+            options.month = 'short';
+            if (d.getFullYear() !== today.getFullYear()) {
+                options.year = 'numeric';
+            }
+        }
+        return d.toLocaleString(locale || undefined, options);
+    };
+
     // Past times only: "ahora", "hace 4 min", "hace 3 h", "hace 2 d" in the page's language.
     var ago = function (iso, now, locale) {
         var t = Date.parse(iso);
@@ -84,5 +102,5 @@ window.NautasChatParse = (function () {
         return s < 86400 ? rtf.format(-Math.floor(s / 3600), 'hour') : rtf.format(-Math.floor(s / 86400), 'day');
     };
 
-    return {channelId: channelId, channelSlug: channelSlug, channelList: channelList, hiddenSlugs: hiddenSlugs, isHidden: isHidden, avatar: avatar, isActive: isActive, plain: plain, ago: ago};
+    return {channelId: channelId, channelSlug: channelSlug, channelList: channelList, stamp: stamp, hiddenSlugs: hiddenSlugs, isHidden: isHidden, avatar: avatar, isActive: isActive, plain: plain, ago: ago};
 })();

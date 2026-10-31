@@ -33,9 +33,9 @@
         <header class="cn-chat-head">
             <span class="cn-chat-panel-avatars" aria-hidden="true"></span>
             <h2 class="cn-chat-title" id="cn-chat-title">{{t "chat"}}</h2>
-            <select class="cn-chat-channels" aria-label="{{t "Channel"}}" hidden></select>
+            <span class="cn-chat-picker"><select class="cn-chat-channels" aria-label="{{t "Channel"}}" hidden></select>{{> "icons/phosphor/caret-down"}}</span>
             <a class="cn-chat-out" href="{{@custom.chat_channel}}" target="_blank" rel="noopener" aria-label="{{t "Open in the forum"}}" title="{{t "Open in the forum"}}">{{> "icons/phosphor/arrow-square-out"}}</a>
-            <button class="cn-chat-close" type="button" aria-label="{{t "Close"}}">&times;</button>
+            <button class="cn-chat-close" type="button" aria-label="{{t "Close"}}">{{> "icons/phosphor/x"}}</button>
         </header>
         <div class="cn-chat-messages" aria-busy="true"></div>
         <form class="cn-chat-compose" hidden>
