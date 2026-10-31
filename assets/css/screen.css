@@ -3714,7 +3714,7 @@ a {
 .error-art {
   position: relative;
   width: 36em;
-  height: 21em;
+  height: 24.5em;
   margin: 0 auto 3rem;
   font-family: var(--font-mono);
   font-size: min(calc((100vw - 4rem) / 36), 1rem);
