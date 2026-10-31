@@ -3709,41 +3709,47 @@ a {
   padding-bottom: 6rem;
 }
 
-/* 60 columns at 0.6em each: fits the page's width at any size. Room below the
-   digits for anonist's mask, 8em square, which not-found.js moves in em. */
-.error-art {
-  position: relative;
-  width: 36em;
-  height: 24.5em;
-  margin: 0 auto 3rem;
-  font-family: var(--font-mono);
-  font-size: min(calc((100vw - 4rem) / 36), 1rem);
-  line-height: 1;
-  /* Warm, from the mask (anonist-sprite.svg) without being its colors. */
-  color: #2E2924;
-}
-
-html[data-theme="dark"] .error-art {
-  color: #BFB8AA;
-}
-
-.error-art pre {
+/* The code with anonist's mask for a zero. The digits take the mask's own
+   shade and outline, it floats in steps as his frames do. The stroke paints
+   under the fill, so half shows: one of the mask's pixels. */
+.error-kicker {
   margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background: none;
-  color: inherit;
-  font: inherit;
-  line-height: inherit;
+  color: var(--cn-ui-muted);
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.error-art svg {
-  position: absolute;
-  bottom: 0.5em;
-  left: 50%;
-  width: 8em;
-  height: 8em;
-  transform: translateX(-50%);
+.error-code {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.2rem 0 2.4rem;
+  color: var(--cn-mask-shade);
+  font-size: clamp(8.2rem, 19vw, 14.4rem);
+  font-weight: 800;
+  line-height: 1;
+  paint-order: stroke fill;
+  -webkit-text-stroke: 0.034em var(--cn-mask-ink);
+}
+
+.error-code svg {
+  width: 0.82em;
+  height: 0.82em;
+  margin: 0 0.04em;
+  animation: error-float 3s steps(6) infinite alternate;
+}
+
+@keyframes error-float {
+  from { transform: translateY(-0.03em); }
+  to { transform: translateY(0.03em); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .error-code svg {
+    animation: none;
+  }
 }
 
 .gh-inner {

@@ -3,10 +3,12 @@
 <main class="gh-main gh-outer">
     <div class="gh-inner">
 		<div class="error-center">
-<div class="error-art" data-code="{{statusCode}}" aria-hidden="true">
-<pre></pre>
-<svg viewBox="0 0 48 48" shape-rendering="crispEdges" focusable="false"><use href="{{asset "images/anonist-sprite.svg"}}#anonist-48-mask-idle"></use></svg>
-</div>
+{{#match statusCode 404}}
+<p class="error-kicker">{{t "Page not found"}}</p>
+<div class="error-code" role="img" aria-label="404"><span aria-hidden="true">4</span><svg viewBox="0 0 48 48" shape-rendering="crispEdges" aria-hidden="true" focusable="false"><use href="{{asset "images/anonist-sprite.svg"}}#anonist-48-mask-idle"></use></svg><span aria-hidden="true">4</span></div>
+{{else}}
+<p class="error-kicker">error {{statusCode}}</p>
+{{/match}}
 <h1>{{ t "Somebody turned off" }}</h1>
 <p>{{ t "Please check our last articles" }}
 		</p></div>

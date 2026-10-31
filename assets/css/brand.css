@@ -15,6 +15,9 @@
     --cn-ink: #14110F;
     --cn-paper: #E8E6E1;
     --cn-halftone: #7E7973;
+    /* anonist's mask (assets/images/anonist-sprite.svg): shade and outline. */
+    --cn-mask-shade: #C9C4BB;
+    --cn-mask-ink: #14110F;
     /* Violet in shapes: logos, marks, figures (deeper in dark than the text violet). */
     --cn-violeta-tinta-formas: #5814EA;
 
