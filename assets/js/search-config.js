@@ -48,6 +48,9 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
      * Needs the collection's `locale` field, from the
      * discourse-typesense-index plugin. */
     topicsByLocale: true,
+    /* The same for videos. Keep false until peertube_sync.py has translated
+     * them (VIDEO_TRANSLATE): until then `language` is only the video's own. */
+    videosByLocale: false,
 
     /* Semantic (hybrid) search, per collection. Keep false until that
      * collection has an `embedding` field: Typesense rejects a query naming a

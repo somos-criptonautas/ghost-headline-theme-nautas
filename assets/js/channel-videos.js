@@ -92,7 +92,7 @@
     var play = function (video, media) {
         var frame = document.createElement('iframe');
         // Same player settings as /videos: no peer-to-peer, no extra chrome.
-        frame.src = origin + '/videos/embed/' + video.uuid + '?autoplay=1&p2p=0&warningTitle=0&peertubeLink=0';
+        frame.src = origin + '/videos/embed/' + video.uuid + '?autoplay=1&p2p=0&warningTitle=0&peertubeLink=0&subtitle=' + (document.documentElement.lang || 'es').slice(0, 2);
         frame.title = video.name;
         frame.allow = 'autoplay; fullscreen; picture-in-picture';
         frame.setAttribute('allowfullscreen', '');

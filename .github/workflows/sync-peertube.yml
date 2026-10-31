@@ -39,5 +39,9 @@ jobs:
           LLM_KEY: ${{ secrets.LLM_KEY }}
           LLM_MODEL: ${{ inputs.model || vars.LLM_MODEL }}
           LLM_MAX: ${{ vars.LLM_MAX }}
+          # Spanish and English for every video: off while VIDEO_TRANSLATE is unset.
+          VIDEO_TRANSLATE: ${{ vars.VIDEO_TRANSLATE }}
+          PEERTUBE_USER: ${{ secrets.PEERTUBE_USER }}
+          PEERTUBE_PASSWORD: ${{ secrets.PEERTUBE_PASSWORD }}
           COMPARE_MODELS: ${{ inputs.compare }}
         run: python3 .github/scripts/peertube_sync.py

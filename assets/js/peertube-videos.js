@@ -408,7 +408,7 @@
         var frame = document.createElement('iframe');
         // p2p=0: no WebRTC peer-to-peer, so viewers' IPs are not shared with
         // other viewers. warningTitle/peertubeLink drop the player's chrome.
-        frame.src = video.embed + '?autoplay=1&p2p=0&warningTitle=0&peertubeLink=0';
+        frame.src = video.embed + '?autoplay=1&p2p=0&warningTitle=0&peertubeLink=0&subtitle=' + (lang || 'es').slice(0, 2);
         frame.title = video.title;
         frame.allow = 'autoplay; fullscreen; picture-in-picture';
         frame.setAttribute('allowfullscreen', '');

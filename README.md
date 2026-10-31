@@ -95,7 +95,7 @@ handled by the custom pages above and by BTCPay instead.
 
 | Workflow | When | What |
 | --- | --- | --- |
-| `sync-peertube.yml` | every 3 h | PeerTube videos (with AI summaries) and their caption chunks into the search index. Chunks off until `VIDEO_CHUNKS` is set |
+| `sync-peertube.yml` | every 3 h | PeerTube videos (with AI summaries) and their caption chunks into the search index. Chunks off until `VIDEO_CHUNKS` is set. Spanish and English for each video (captions uploaded to PeerTube) with `VIDEO_TRANSLATE`, videos per run, plus the `PEERTUBE_USER` and `PEERTUBE_PASSWORD` secrets for the captions |
 | `sync-mushin.yml` | hourly | Hister's documents into Typesense. Off until `HISTER_URL` is set |
 | `update-search-vendor.yml` | Mondays | InstantSearch.js and the Typesense adapter, majors pinned; pushes `vendor/search-update` with a compare link in the run summary, deploys only once you open and merge a PR |
 

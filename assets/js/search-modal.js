@@ -639,7 +639,7 @@
             media.className = 'ns__reader-video';
             var frame = document.createElement('iframe');
             // Same player settings as /videos: no peer-to-peer, no extra chrome.
-            frame.src = origin + '/videos/embed/' + videoIdOf(hit) + '?autoplay=1&p2p=0&warningTitle=0&peertubeLink=0' +
+            frame.src = origin + '/videos/embed/' + videoIdOf(hit) + '?autoplay=1&p2p=0&warningTitle=0&peertubeLink=0&subtitle=' + (document.documentElement.lang || 'es').slice(0, 2) +
                 (hit.start > 0 ? '&start=' + Math.floor(hit.start) : '');
             frame.title = String(hit.title || '');
             frame.allow = 'autoplay; fullscreen; picture-in-picture';
@@ -1011,6 +1011,9 @@
                         query_by_weights: '4,2,1',
                         highlight_fields: 'title,description,transcript'
                     };
+                    if (cfg.videosByLocale) {
+                        params[cfg.videosCollection].filter_by = /^en/i.test(document.documentElement.lang) ? 'language:=en' : 'language:!=en';
+                    }
                     if (cfg.videoMoments) {
                         // A video has its own document and one per caption chunk: one row per video.
                         params[cfg.videosCollection].group_by = 'video_id';

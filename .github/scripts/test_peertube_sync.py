@@ -171,5 +171,65 @@ class MainTest(unittest.TestCase):
         self.assertEqual(fake.deletes, [])
 
 
+class TranslateTest(unittest.TestCase):
+    def setUp(self):
+        self.saved = (sync.request, sync.public_videos, sync.captions_of, sync.llm, sync.upload_caption, sync.peertube_token, sync.LOCALIZE, sync.TRANSLATE_MAX, sync.CHUNKS)
+        sync.LOCALIZE, sync.TRANSLATE_MAX, sync.CHUNKS = True, 1, False
+
+    def tearDown(self):
+        (sync.request, sync.public_videos, sync.captions_of, sync.llm, sync.upload_caption, sync.peertube_token, sync.LOCALIZE, sync.TRANSLATE_MAX, sync.CHUNKS) = self.saved
+
+    @staticmethod
+    def answer(system, text, *rest):
+        if system.startswith("Translate this video's"):
+            return 'Sure: {"title": "Título", "description": "Texto"}'
+        return "\n".join(line.split("|")[0] + "|<b>uno</b> --> dos" for line in text.splitlines())
+
+    def test_a_track_keeps_its_timings_and_loses_markup(self):
+        sync.llm = self.answer
+        vtt = sync.translate_vtt(VTT, "es")
+        self.assertIn("00:00:01.000 --> 00:00:03.000\nuno → dos\n", vtt)
+        self.assertIn("00:01:02.500 --> 00:01:05.000\nuno → dos\n", vtt)
+        self.assertTrue(vtt.startswith("WEBVTT"))
+
+    def test_a_lost_line_fails_instead_of_shifting_the_captions(self):
+        sync.llm = lambda *a: "0|solo una"
+        with self.assertRaises(ValueError):
+            sync.translate_lines(["one", "two"], "es")
+
+    def test_a_video_gets_a_document_and_a_track_per_language_within_the_budget(self):
+        a, b = video("a"), video("b")
+        uploads = []
+        caps = {"a": [caption("en")], "b": [caption("en")]}
+        def captions(v):
+            return caps[v["uuid"]]
+        def upload(uuid, language, vtt, token):
+            uploads.append((uuid, language))
+            caps[uuid] = caps[uuid] + [caption(language)]
+        fake = FakeInstance([])
+        sync.request, sync.public_videos, sync.captions_of = fake, (lambda: iter([a, b])), captions
+        sync.llm, sync.upload_caption, sync.peertube_token = self.answer, upload, (lambda: "t")
+        sync.main()
+        self.assertEqual(uploads, [("a", "es")])
+        docs = {d["id"]: d for _, batch in fake.imports for d in batch}
+        self.assertEqual((docs["a"]["language"], docs["a"]["title"]), ("es", "Título"))
+        self.assertEqual((docs["a-en"]["language"], docs["a-en"]["title"], docs["a-en"]["video_id"]), ("en", "Title a", "a"))
+        # over budget: as it is, translated on a later run
+        self.assertEqual(docs["b"]["language"], "en")
+        self.assertNotIn("b-en", docs)
+
+    def test_translated_videos_are_left_alone_and_their_english_document_is_kept(self):
+        a = video("a")
+        caps = [caption("en"), caption("es")]
+        now = sync.stamp(a, caps)
+        fake = FakeInstance([{"id": "a", "video_id": "a", "updated": now, "language": "es"},
+                             {"id": "a-en", "video_id": "a", "updated": now, "language": "en"}])
+        sync.request, sync.public_videos, sync.captions_of = fake, (lambda: iter([a])), (lambda v: caps)
+        sync.llm, sync.peertube_token = self.answer, (lambda: "t")
+        sync.main()
+        self.assertEqual(fake.imports, [])
+        self.assertEqual(fake.deletes, [])
+
+
 if __name__ == "__main__":
     unittest.main()
