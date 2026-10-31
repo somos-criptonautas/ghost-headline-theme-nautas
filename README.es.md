@@ -156,4 +156,4 @@ Ghost Foundation. Las traducciones del tema vienen de `@tryghost/theme-translati
 
 Copyright (c) 2013-2026 Ghost Foundation, publicado bajo la [licencia MIT](LICENSE).
 
-Texto de este README bajo [CC BY-NC-SA 4.0](CC-BY-NC-SA-4.0.txt).
+Nuestros agregados a este README están bajo [CC BY-NC-SA 4.0](CC-BY-NC-SA-4.0.txt); el texto del proyecto original conserva su licencia.
