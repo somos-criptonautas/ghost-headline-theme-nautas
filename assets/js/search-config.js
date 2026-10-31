@@ -22,9 +22,7 @@ window.__NAUTAS_SEARCH_CONFIG__ = {
 
     // Ghost posts, filled by @magicpages/ghost-typesense (indexer only - its
     // own search UI is not used).
-    // English: 'ghost_en' once that collection exists. Its key leaves out 'ghost',
-    // and naming a collection outside the key rejects every source.
-    postsCollection: /^en/i.test(document.documentElement.lang) ? '' : 'ghost',
+    postsCollection: /^en/i.test(document.documentElement.lang) ? 'ghost_en' : 'ghost',
     // Discourse posts, filled by the discourse-typesense-index plugin. This is
     // the ALIAS name from its typesense_collection setting.
     topicsCollection: 'discourse_posts',
