@@ -221,7 +221,7 @@
             var id = term.getAttribute('data-topic');
             title.textContent = term.textContent;
             text.textContent = '…';
-            more.href = ORIGIN + '/t/' + id;
+            more.href = ORIGIN + '/t/' + id + '?tl=' + LANG.slice(0, 2);
             card.hidden = false;
             place(term);
             definition(id).then(function (found) {

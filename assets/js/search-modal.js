@@ -405,6 +405,11 @@
         back.focus();
     };
 
+    // Links open the forum in the site's language: it would follow the browser's.
+    var inLang = function (url) {
+        return url + (url.indexOf('?') === -1 ? '?' : '&') + 'tl=' + (document.documentElement.lang || 'es').slice(0, 2);
+    };
+
     var forumJSON = function (path, lang) {
         // In the site's language unless told otherwise: the forum would follow the browser's.
         var headers = { Accept: 'application/json', 'Accept-Language': lang || document.documentElement.lang || 'es' };
@@ -699,7 +704,7 @@
         },
         topics: function (hit) {
             var row = hitRow(
-                hit.url || '/',
+                hit.url ? inLang(hit.url) : '/',
                 ICON_TOPIC,
                 { hit: hit, attribute: 'title', fallback: hit.title },
                 { hit: hit, attribute: 'text', fallback: hit.text, prefix: hit.username ? '@' + hit.username + ': ' : '' },
@@ -720,8 +725,8 @@
                     date(hit.created_at),
                     hit.reply_count ? hit.reply_count + ' ' + t('replies') : ''
                 ], fillTopic(hit), FORUM && /^\d+$/.test(String(hit.topic_id)) && hit.reply_count > 0
-                    ? outLink(FORUM + '/t/' + hit.topic_id + '/2', t('see replies') + ' (' + hit.reply_count + ')')
-                    : outLink(hit.url, t('view in the community')));
+                    ? outLink(inLang(FORUM + '/t/' + hit.topic_id + '/2'), t('see replies') + ' (' + hit.reply_count + ')')
+                    : outLink(inLang(hit.url), t('view in the community')));
             });
         },
         videos: function (hit) {

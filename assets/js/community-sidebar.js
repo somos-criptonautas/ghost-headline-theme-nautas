@@ -151,13 +151,18 @@
         scope = '';
     }
 
+    // Links open the forum in the site's language: it would follow the browser's.
+    var inLang = function (url) {
+        return url + (url.indexOf('?') === -1 ? '?' : '&') + 'tl=' + (lang || 'es').slice(0, 2);
+    };
+
     var topicUrl = function (slug, id, postNumber) {
         id = parseInt(id, 10);
         if (!(id > 0)) {
             return null;
         }
         slug = typeof slug === 'string' && SLUG.test(slug) && slug ? slug : '-';
-        return ORIGIN + '/t/' + slug + '/' + id + (postNumber > 1 ? '/' + postNumber : '');
+        return inLang(ORIGIN + '/t/' + slug + '/' + id + (postNumber > 1 ? '/' + postNumber : ''));
     };
 
     // Discourse avatar templates are either a forum path or an absolute URL
@@ -386,7 +391,7 @@
             });
             list.hidden = false;
             message.hidden = true;
-            more.href = ORIGIN + (scope ? scopePath : PAGES[which]);
+            more.href = inLang(ORIGIN + (scope ? scopePath : PAGES[which]));
             shown = true;
         }).then(null, function () {
             if (ticket !== request) {
@@ -549,7 +554,7 @@
                 entries.forEach(function (entry) {
                     cards.appendChild(card(entry));
                 });
-                related.querySelector('.gh-community-more').href = ORIGIN + path;
+                related.querySelector('.gh-community-more').href = inLang(ORIGIN + path);
                 related.hidden = false;
             }, none).then(function () {
                 related.removeAttribute('aria-busy');
