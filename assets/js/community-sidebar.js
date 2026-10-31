@@ -320,7 +320,9 @@
             var where = el('span', 'gh-community-topic', labels.where + ' ' + entry.title);
             body.appendChild(where);
         } else {
-            body.appendChild(el('span', 'gh-community-name', entry.title));
+            var name = el('span', 'gh-community-name');
+            name.appendChild(el('span', 'gh-community-mark', entry.title));
+            body.appendChild(name);
         }
 
         var meta = el('span', 'gh-community-meta');

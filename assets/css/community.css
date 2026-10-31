@@ -295,13 +295,25 @@ html:not(.js) .gh-with-sidebar {
     opacity: 1;
 }
 
-.gh-community-link:hover .gh-community-name,
-.gh-community-link:hover .gh-community-excerpt,
-.gh-community-link:focus-visible .gh-community-name,
-.gh-community-link:focus-visible .gh-community-excerpt {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 2px;
+/* The cards' highlighter (screen.css), lower and paler: a list of these
+   should not read as loud as an article's title. */
+.gh-community-mark {
+    --cn-mark: transparent;
+    background-image: linear-gradient(var(--cn-mark), var(--cn-mark));
+    background-repeat: no-repeat;
+    background-position: 0 88%;
+    background-size: 100% 34%;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+.gh-community-link:hover .gh-community-mark,
+.gh-community-link:focus-visible .gh-community-mark {
+    --cn-mark: color-mix(in srgb, var(--cn-marcador) 45%, var(--cn-ui-bg));
+}
+
+html[data-theme="dark"] :is(.gh-community-link:hover, .gh-community-link:focus-visible) .gh-community-mark {
+    --cn-mark: color-mix(in srgb, var(--cn-marcador) 34%, transparent);
 }
 
 .gh-community-link:focus-visible {
