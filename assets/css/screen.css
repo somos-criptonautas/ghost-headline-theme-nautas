@@ -3709,9 +3709,9 @@ a {
   padding-bottom: 6rem;
 }
 
-/* The code with anonist's mask for a zero. The digits take the mask's own
-   shade and outline, it floats in steps as his frames do. The stroke paints
-   under the fill, so half shows: one of the mask's pixels. */
+/* The code with anonist's mask for a zero: pixel 4s (error-digit.hbs) in his
+   skin and outline, inverted in dark, where his dark line would be lost. He
+   floats in steps, as his frames do. */
 .error-kicker {
   margin: 0;
   color: var(--cn-ui-muted);
@@ -3722,22 +3722,38 @@ a {
 }
 
 .error-code {
+  --error-fill: var(--cn-mask-skin);
+  --error-line: var(--cn-mask-ink);
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 0.05em;
   margin: 1.2rem 0 2.4rem;
-  color: var(--cn-mask-shade);
   font-size: clamp(8.2rem, 19vw, 14.4rem);
-  font-weight: 800;
   line-height: 1;
-  paint-order: stroke fill;
-  -webkit-text-stroke: 0.034em var(--cn-mask-ink);
 }
 
-.error-code svg {
+html[data-theme="dark"] .error-code {
+  --error-fill: var(--cn-mask-dark);
+  --error-line: var(--cn-mask-light);
+}
+
+.error-code > svg {
+  width: auto;
+  height: 0.72em;
+}
+
+.error-digit-fill {
+  fill: var(--error-fill);
+}
+
+.error-digit-line {
+  fill: var(--error-line);
+}
+
+.error-code > .error-mask {
   width: 0.82em;
   height: 0.82em;
-  margin: 0 0.04em;
   animation: error-float 3s steps(6) infinite alternate;
 }
 
@@ -3747,7 +3763,7 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .error-code svg {
+  .error-code > .error-mask {
     animation: none;
   }
 }

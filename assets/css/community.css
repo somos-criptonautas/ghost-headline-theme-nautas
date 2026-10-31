@@ -321,6 +321,30 @@ html:not(.js) .gh-with-sidebar {
     scrollbar-width: thin;
 }
 
+/* The summary is there to spare the long read: it comes first and stands in
+   for the post. With none, a stretch of the post, and the link below for the rest. */
+.gh-community-reader-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+}
+
+.gh-community-reader-body > .ns__reader-summary {
+    order: -1;
+    margin: 0;
+}
+
+.gh-community-reader-body:has(> .ns__reader-summary:not([hidden])) > .ns__reader-text {
+    display: none;
+}
+
+.gh-community-reader-body > .ns__reader-text {
+    max-height: 22rem;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(#000 70%, transparent);
+    mask-image: linear-gradient(#000 70%, transparent);
+}
+
 .gh-community-reader .ns__reader-title {
     font-size: 1.8rem;
 }

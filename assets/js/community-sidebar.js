@@ -309,7 +309,7 @@
         closeReader();
         var shown = el('article', 'gh-community-reader ns__reader');
         reader = shown;
-        var back = el('button', 'ns__reader-back', R.t('← back to results'));
+        var back = el('button', 'ns__reader-back', aside.getAttribute('data-label-back'));
         back.type = 'button';
         back.addEventListener('click', function () {
             closeReader(link);
