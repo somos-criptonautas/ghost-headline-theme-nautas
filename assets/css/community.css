@@ -382,16 +382,23 @@ html:not(.js) .gh-with-sidebar {
 }
 
 .gh-community-reader-body > .ns__reader-summary {
-    max-height: 44rem;
+    max-height: 49rem;
 }
 
 .gh-community-reader .ns__reader-title {
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
+    padding: 0;
     font-size: 1.5rem;
 }
 
-.gh-community-reader .ns__reader-text {
-    font-size: 1.5rem;
+.gh-community .gh-community-reader .ns__reader-text {
+    font-size: 1.4rem;
+    line-height: 1.5;
+}
+
+.gh-community-reader .ns__reader-summary-label {
+    margin-bottom: 0.4rem;
+    padding: 0;
 }
 
 .gh-community-reader .ns__reader-people {
@@ -409,12 +416,17 @@ html:not(.js) .gh-with-sidebar {
     align-items: center;
     justify-content: space-between;
     gap: 1.2rem;
-    margin-top: 1.2rem;
+    margin-top: 1.6rem;
+}
+
+/* As much air under the row as the heading has over it. */
+.gh-community:has(> .gh-community-reader-nav) {
+    padding-bottom: 1.8rem;
 }
 
 .gh-community-reader-nav .gh-community-more {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     white-space: nowrap;
 }
 
@@ -1098,6 +1110,9 @@ html[data-theme="dark"] .gh-mascot:not(.is-mask) svg {
    placeholders, the 12.3rem of the real ones, so nothing moves when they
    arrive. */
 .gh-community[aria-busy="true"] .gh-community-list:empty {
+    /* The bars stay inside the margin: nothing to scroll yet. */
+    margin-right: 0;
+    padding-right: 0;
     height: 98.4rem;
     background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--color-base) 7%, transparent) 0 10.7rem, transparent 10.7rem 12.3rem);
     border-radius: 0.6rem;
