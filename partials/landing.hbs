@@ -35,12 +35,12 @@
             <span class="gh-landing-path-name">{{t "Blog"}} <span aria-hidden="true">→</span></span>
             <span class="gh-landing-path-text">{{t "Articles to understand crypto and trading"}}</span>
         </a>
-        <a class="gh-landing-path" href="{{@site.url}}/curso/">
+        <a class="gh-landing-path" href="{{@site.url}}/{{#match @site.locale "en"}}course{{else}}curso{{/match}}/">
             {{> "icons/phosphor/student"}}
             <span class="gh-landing-path-name">{{t "Course"}} <span aria-hidden="true">→</span></span>
             <span class="gh-landing-path-text">{{t "The path, step by step"}}</span>
         </a>
-        <a class="gh-landing-path" href="{{@site.url}}/comunidad/">
+        <a class="gh-landing-path" href="{{@site.url}}/{{#match @site.locale "en"}}community{{else}}comunidad{{/match}}/">
             {{> "icons/phosphor/globe-hemisphere-west"}}
             <span class="gh-landing-path-name">{{t "Community"}} <span aria-hidden="true">→</span></span>
             <span class="gh-landing-path-text">{{t "Where we trade and keep each other going"}}</span>

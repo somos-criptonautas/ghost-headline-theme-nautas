@@ -91,7 +91,7 @@
     });
 
     // Same Spanish topic as the comments embed (discourse-embed.js).
-    fetch(ORIGIN + '/embed/comments?embed_url=' + encodeURIComponent(root.getAttribute('data-embed-url').replace('//en.criptonautas.co/', '//criptonautas.co/')), {
+    fetch(ORIGIN + '/embed/comments?embed_url=' + encodeURIComponent((document.querySelector('link[rel="alternate"][hreflang="es"]') || {}).href || root.getAttribute('data-embed-url').replace('//en.criptonautas.co/', '//criptonautas.co/')), {
         credentials: 'omit'
     }).then(function (response) {
         if (!response.ok) {
