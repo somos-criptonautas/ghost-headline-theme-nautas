@@ -6,6 +6,11 @@
     is one (its own URL is taken by this route, so it shows only here), then
     the forum and the level pills over every post, newest first. Featured
     posts are the landing's (home.hbs), not repeated here. --}}
+{{!-- This route has no Ghost page or context to take them from. Page 1 only. --}}
+{{^if pagination.prev}}
+{{#contentFor "title"}}{{t "Criptonautas blog: crypto, trading and privacy"}}{{/contentFor}}
+{{#contentFor "description"}}<meta name="description" content="{{t "Articles and curated publications on crypto, trading and privacy, with no paid promotions."}}">{{/contentFor}}
+{{/if}}
 <main class="gh-main gh-outer">
     <div class="gh-inner">
     <div class="gh-with-sidebar">
