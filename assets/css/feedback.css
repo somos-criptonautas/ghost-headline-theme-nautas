@@ -226,9 +226,20 @@
     display: none;
 }
 
-/* Tablets: the icon's room comes out of the search bar. */
+/* Below 992px the head's icons live in the bar: this one from 768px, where the
+   menu still fits beside it. */
+.gh-head-bar-feedback {
+    display: none;
+}
+
 @media (min-width: 768px) and (max-width: 991px) {
-    #gh-head .gh-search-bar {
-        width: 11.5rem;
+    #gh-head .gh-head-bar-feedback {
+        display: grid;
+        place-items: center;
+    }
+
+    #gh-head .gh-head-search-field {
+        flex-shrink: 1;
+        width: 12rem;
     }
 }
