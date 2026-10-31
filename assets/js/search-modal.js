@@ -523,6 +523,16 @@
     // Wait this long for the forum's HTML before showing the indexed text.
     var RICH_WAIT = 4000;
 
+    // The community list opens its topics with this same reader (community-sidebar.js).
+    window.NautasTopicReader = {
+        fill: function (hit) {
+            return fillTopic(hit);
+        },
+        outLink: outLink,
+        inLang: inLang,
+        t: t
+    };
+
     /* A topic: the post the search found - bars until the forum's own HTML
      * arrives, the indexed text if it is late or fails - the forum's AI
      * summary of the discussion when one exists, and who replied. The forum

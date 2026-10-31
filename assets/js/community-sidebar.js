@@ -288,6 +288,58 @@
         return node;
     };
 
+    /* A topic opens in the box, as in the search: search-modal.js's reader, with
+     * its post, AI summary and who replied. Without it (search off, not loaded
+     * yet), a locked topic or a modified click: the link, in a new tab. */
+    var reader = null;
+    var closeReader = function (link) {
+        if (!reader) {
+            return;
+        }
+        reader.remove();
+        reader = null;
+        aside.querySelector('.gh-community-list').hidden = false;
+        if (link) {
+            link.focus();
+        }
+    };
+
+    var openReader = function (entry, link, facts) {
+        var R = window.NautasTopicReader;
+        closeReader();
+        var shown = el('article', 'gh-community-reader ns__reader');
+        reader = shown;
+        var back = el('button', 'ns__reader-back', R.t('← back to results'));
+        back.type = 'button';
+        back.addEventListener('click', function () {
+            closeReader(link);
+        });
+        var title = el('h3', 'ns__reader-title', entry.title);
+        var slot = el('div', 'gh-community-reader-body');
+        slot.setAttribute('aria-busy', 'true');
+        var foot = el('div', 'ns__reader-foot');
+        foot.appendChild(entry.replies > 0
+            ? R.outLink(R.inLang(ORIGIN + '/t/' + entry.id + '/2'), R.t('see replies') + ' (' + entry.replies + ')')
+            : R.outLink(entry.url, R.t('view in the community')));
+        shown.append(back, title, facts.cloneNode(true), slot, foot);
+        var list = aside.querySelector('.gh-community-list');
+        list.hidden = true;
+        list.parentNode.insertBefore(shown, list);
+        back.focus();
+
+        getJSON('/t/' + entry.id + '.json').then(function (topic) {
+            var first = topic && topic.post_stream && topic.post_stream.posts && topic.post_stream.posts[0];
+            if (reader !== shown || !first) {
+                return;
+            }
+            R.fill({id: first.id, topic_id: entry.id, reply_count: entry.replies, text: ''})(slot, function () {
+                return reader === shown;
+            });
+        }).then(null, function () {}).then(function () {
+            slot.removeAttribute('aria-busy');
+        });
+    };
+
     var row = function (entry) {
         var item = el('li', 'gh-community-item');
         var link = el('a', 'gh-community-link');
@@ -342,6 +394,15 @@
 
         link.appendChild(body);
         item.appendChild(link);
+        if (mode !== 'posts' && entry.id && !entry.locked) {
+            link.addEventListener('click', function (event) {
+                if (!window.NautasTopicReader || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                    return;
+                }
+                event.preventDefault();
+                openReader(entry, link, meta);
+            });
+        }
         return item;
     };
 
@@ -576,6 +637,7 @@
     }
     picker.value = mode;
     picker.addEventListener('change', function () {
+        closeReader();
         if (!MODES[picker.value]) {
             return;
         }

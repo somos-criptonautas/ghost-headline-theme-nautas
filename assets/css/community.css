@@ -125,6 +125,11 @@ html:not(.js) .gh-with-sidebar {
         max-height: calc(100vh - var(--head-bar-height, 0px) - 6.4rem);
     }
 
+    /* Ends above the chat tab (3.4rem), never under it. */
+    body:has(.cn-chat:not([hidden])) .gh-community {
+        max-height: calc(100vh - var(--head-bar-height, 0px) - 8.2rem);
+    }
+
     .gh-community:not([hidden]) {
         display: flex;
         flex-direction: column;
@@ -297,6 +302,38 @@ html:not(.js) .gh-with-sidebar {
 
 /* The cards' highlighter (screen.css), lower and paler: a list of these
    should not read as loud as an article's title. */
+/* A topic opened in the box: search.css's reader, in a narrower column. */
+.gh-community-list[hidden] {
+    display: none;
+}
+
+.gh-community-reader {
+    --ns-bg: var(--color-bg);
+    --ns-bg-alt: var(--color-bg-alt);
+    --ns-text: var(--color-base);
+    --ns-muted: color-mix(in srgb, var(--color-base) 63%, transparent);
+    --ns-border: var(--color-border);
+    --ns-focus: color-mix(in srgb, var(--color-base) 40%, transparent);
+    min-height: 0;
+    padding: 0.8rem 0 1.6rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+}
+
+.gh-community-reader .ns__reader-title {
+    font-size: 1.8rem;
+}
+
+.gh-community-reader .ns__reader-text {
+    font-size: 1.5rem;
+}
+
+.gh-community-reader img {
+    max-width: 100%;
+    height: auto;
+}
+
 .gh-community-mark {
     --cn-mark: transparent;
     background-image: linear-gradient(var(--cn-mark), var(--cn-mark));
